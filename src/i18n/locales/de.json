@@ -1,0 +1,71 @@
+{
+  "common": {
+    "appName": "AniBrain",
+    "loading": "Lädt…",
+    "error": "Etwas ist schiefgelaufen. Bitte versuch es erneut.",
+    "back": "Zurück",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "continue": "Weiter",
+    "comingSoon": "Bald verfügbar"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "passwordMin": "Mindestens 8 Zeichen",
+    "noAccount": "Noch kein Konto? Registrieren",
+    "haveAccount": "Schon ein Konto? Anmelden",
+    "forgotPassword": "Passwort vergessen?",
+    "resetSent": "E-Mail zum Zurücksetzen wurde gesendet.",
+    "confirmSent": "Bestätigungs-E-Mail gesendet — bitte Postfach prüfen.",
+    "errors": {
+      "invalid_credentials": "E-Mail oder Passwort ist falsch.",
+      "email_not_confirmed": "Bitte bestätige zuerst deine E-Mail-Adresse.",
+      "user_already_exists": "Diese E-Mail ist bereits registriert.",
+      "weak_password": "Das Passwort ist zu schwach (mind. 8 Zeichen).",
+      "generic": "Anmeldung fehlgeschlagen. Bitte versuch es erneut."
+    }
+  },
+  "username": {
+    "title": "Wähle deinen Spielernamen",
+    "subtitle": "So sehen dich andere in Duellen und der Bestenliste.",
+    "placeholder": "z. B. OtakuMeister",
+    "rules": "3–16 Zeichen, nur Buchstaben, Zahlen und _",
+    "taken": "Dieser Name ist leider schon vergeben.",
+    "invalid": "3–16 Zeichen, nur Buchstaben, Zahlen und _"
+  },
+  "nav": {
+    "home": "Start",
+    "solo": "Solo",
+    "duel": "Duell",
+    "leaderboard": "Bestenliste",
+    "profile": "Profil"
+  },
+  "home": {
+    "greeting": "Hey {{name}}!",
+    "solo": "Solo-Quiz",
+    "soloSub": "Kategorien, Schwierigkeit, XP",
+    "duel": "Duell",
+    "duelSub": "Rundenbasiert gegen andere",
+    "leaderboard": "Bestenliste",
+    "leaderboardSub": "Die besten Otakus weltweit",
+    "profile": "Profil",
+    "profileSub": "Statistiken & Einstellungen"
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Sprache",
+    "stats": "Statistiken",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Level",
+    "logout": "Abmelden",
+    "deleteAccount": "Konto löschen",
+    "deleteConfirmTitle": "Konto wirklich löschen?",
+    "deleteConfirmText": "Alle deine Daten (Profil, Duelle, Statistiken) werden dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.",
+    "deleteConfirmButton": "Ja, endgültig löschen",
+    "deleteError": "Löschen fehlgeschlagen. Bitte versuch es später erneut."
+  }
+}

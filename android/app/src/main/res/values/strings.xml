@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AniBrain</string>
+    <string name="title_activity_main">AniBrain</string>
+    <string name="package_name">at.gallab.animequiz</string>
+    <string name="custom_url_scheme">at.gallab.animequiz</string>
+</resources>

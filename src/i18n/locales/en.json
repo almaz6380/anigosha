@@ -1,0 +1,71 @@
+{
+  "common": {
+    "appName": "AniBrain",
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "comingSoon": "Coming soon"
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "passwordMin": "At least 8 characters",
+    "noAccount": "No account yet? Sign up",
+    "haveAccount": "Already have an account? Log in",
+    "forgotPassword": "Forgot password?",
+    "resetSent": "Password reset email sent.",
+    "confirmSent": "Confirmation email sent — please check your inbox.",
+    "errors": {
+      "invalid_credentials": "Email or password is incorrect.",
+      "email_not_confirmed": "Please confirm your email address first.",
+      "user_already_exists": "This email is already registered.",
+      "weak_password": "Password is too weak (min. 8 characters).",
+      "generic": "Sign-in failed. Please try again."
+    }
+  },
+  "username": {
+    "title": "Choose your player name",
+    "subtitle": "This is how others see you in duels and the leaderboard.",
+    "placeholder": "e.g. OtakuMaster",
+    "rules": "3–16 characters, letters, numbers and _ only",
+    "taken": "Sorry, that name is already taken.",
+    "invalid": "3–16 characters, letters, numbers and _ only"
+  },
+  "nav": {
+    "home": "Home",
+    "solo": "Solo",
+    "duel": "Duel",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile"
+  },
+  "home": {
+    "greeting": "Hey {{name}}!",
+    "solo": "Solo Quiz",
+    "soloSub": "Categories, difficulty, XP",
+    "duel": "Duel",
+    "duelSub": "Turn-based against others",
+    "leaderboard": "Leaderboard",
+    "leaderboardSub": "The best otakus worldwide",
+    "profile": "Profile",
+    "profileSub": "Stats & settings"
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language",
+    "stats": "Stats",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Level",
+    "logout": "Log out",
+    "deleteAccount": "Delete account",
+    "deleteConfirmTitle": "Really delete your account?",
+    "deleteConfirmText": "All your data (profile, duels, stats) will be permanently deleted. This cannot be undone.",
+    "deleteConfirmButton": "Yes, delete permanently",
+    "deleteError": "Deletion failed. Please try again later."
+  }
+}
