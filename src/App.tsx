@@ -6,6 +6,7 @@ import UsernamePage from './pages/auth/UsernamePage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ComingSoonPage from './pages/ComingSoonPage';
+import SoloPage from './pages/SoloPage';
 
 function AppRoutes() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/solo" element={<ComingSoonPage titleKey="nav.solo" />} />
+      <Route path="/solo" element={<SoloPage />} />
       <Route path="/duel" element={<ComingSoonPage titleKey="nav.duel" />} />
       <Route path="/leaderboard" element={<ComingSoonPage titleKey="nav.leaderboard" />} />
       <Route path="/profile" element={<ProfilePage />} />

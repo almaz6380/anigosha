@@ -67,5 +67,29 @@
     "deleteConfirmText": "All your data (profile, duels, stats) will be permanently deleted. This cannot be undone.",
     "deleteConfirmButton": "Yes, delete permanently",
     "deleteError": "Deletion failed. Please try again later."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Easy",
+      "2": "Medium",
+      "3": "Hard"
+    },
+    "difficultyHint": {
+      "1": "For anyone who knows the show",
+      "2": "For attentive viewers",
+      "3": "For true experts"
+    },
+    "noQuestions": "There are no questions in this category yet. Try another one!",
+    "didYouKnow": "Did you know?",
+    "nextHint": "Next hint",
+    "report": "Report question",
+    "reported": "Thanks, reported!",
+    "finish": "Finish round",
+    "resultTitle": "Result",
+    "xpEarned": "+{{xp}} XP earned",
+    "noXpAgain": "This round has already been scored.",
+    "again": "Play again",
+    "share": "Share result",
+    "shareText": "I got {{correct}} out of {{total}} questions right on {{category}}! Can you beat that?"
   }
 }

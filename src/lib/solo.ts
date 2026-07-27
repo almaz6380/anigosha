@@ -1,0 +1,95 @@
+import { supabase } from './supabase';
+
+export interface Category {
+  id: string;
+  slug: string;
+  name_de: string;
+  name_en: string;
+  sort_order: number;
+}
+
+export interface SoloQuestion {
+  id: string;
+  type: 'mc' | 'who_am_i' | 'emoji' | 'image';
+  image: string | null;
+  prompt: string;
+  options: string[];
+  hints: string[] | null;
+}
+
+export interface AnswerResult {
+  correct: boolean;
+  correct_index: number;
+  explanation: string | null;
+  counted: boolean;
+}
+
+export interface SoloResult {
+  correct: number;
+  total: number;
+  xp: number;
+  replay: boolean;
+}
+
+/** Kategorien, in denen (noch) keine Fragen liegen, meldet erst startSolo — die
+ *  Fragen-Tabelle ist für Clients gesperrt, Zählungen gibt es hier bewusst nicht. */
+export async function fetchCategories(): Promise<Category[]> {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id, slug, name_de, name_en, sort_order')
+    .order('sort_order');
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function startSolo(
+  slug: string,
+  difficulty: number,
+  lang: string,
+  limit = 10
+): Promise<{ session_id: string; questions: SoloQuestion[] }> {
+  const { data, error } = await supabase.rpc('start_solo_session', {
+    p_category: slug,
+    p_difficulty: difficulty,
+    p_lang: lang,
+    p_limit: limit,
+  });
+  if (error) throw error;
+  return data as { session_id: string; questions: SoloQuestion[] };
+}
+
+export async function answerSolo(
+  sessionId: string,
+  questionId: string,
+  answer: number
+): Promise<AnswerResult> {
+  const { data, error } = await supabase.rpc('answer_solo_question', {
+    p_session: sessionId,
+    p_question: questionId,
+    p_answer: answer,
+  });
+  if (error) throw error;
+  return data as AnswerResult;
+}
+
+export async function finishSolo(sessionId: string): Promise<SoloResult> {
+  const { data, error } = await supabase.rpc('finish_solo_session', {
+    p_session: sessionId,
+  });
+  if (error) throw error;
+  return data as SoloResult;
+}
+
+export type ReportReason = 'wrong_answer' | 'unclear' | 'typo' | 'spoiler' | 'other';
+
+export async function reportQuestion(
+  questionId: string,
+  userId: string,
+  reason: ReportReason
+): Promise<void> {
+  const { error } = await supabase
+    .from('question_reports')
+    .insert({ question_id: questionId, user_id: userId, reason });
+  // Doppelmeldung derselben Frage ist kein Fehler, den der Nutzer sehen muss
+  if (error && error.code !== '23505') throw error;
+}

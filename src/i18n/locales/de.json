@@ -67,5 +67,29 @@
     "deleteConfirmText": "Alle deine Daten (Profil, Duelle, Statistiken) werden dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.",
     "deleteConfirmButton": "Ja, endgültig löschen",
     "deleteError": "Löschen fehlgeschlagen. Bitte versuch es später erneut."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Leicht",
+      "2": "Mittel",
+      "3": "Schwer"
+    },
+    "difficultyHint": {
+      "1": "Für alle, die die Serie kennen",
+      "2": "Für aufmerksame Zuschauer",
+      "3": "Für echte Kenner"
+    },
+    "noQuestions": "Für diese Kategorie gibt es noch keine Fragen. Probier eine andere aus!",
+    "didYouKnow": "Wusstest du?",
+    "nextHint": "Nächster Hinweis",
+    "report": "Frage melden",
+    "reported": "Danke, gemeldet!",
+    "finish": "Runde beenden",
+    "resultTitle": "Ergebnis",
+    "xpEarned": "+{{xp}} XP verdient",
+    "noXpAgain": "Diese Runde wurde bereits gewertet.",
+    "again": "Nochmal spielen",
+    "share": "Ergebnis teilen",
+    "shareText": "Ich habe {{correct}} von {{total}} Fragen zu {{category}} richtig beantwortet! Schaffst du mehr?"
   }
 }
