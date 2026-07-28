@@ -127,7 +127,13 @@ Regeln dazu:
 - `tools/create-test-user.mjs` legt einen Testnutzer über die Admin-API an.
 - `tools/create-bots.mjs` legt die 12 Duell-Bots an (idempotent über die E-Mail).
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
-  `test-duel-flow.mjs` (19). Sie prüfen vor allem die Fairness-Zusagen: keine Lösungen am Client,
+  `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`).
+- **Visuelle Prüfung:** `tools/shot-home.mjs` und `tools/shot-levelup.mjs` nehmen mit
+  Playwright Screenshots auf (`npx playwright install chromium` einmalig nötig,
+  Paket per `npm i --no-save playwright`). `shot-levelup.mjs` setzt dafür die XP des
+  Testnutzers knapp unter eine Schwelle und spielt eine Runde durch.
+  **Design-Änderungen immer so gegenprüfen** — die Wolken waren im ersten Entwurf
+  unsichtbar und der Level-Schleier zu dünn; beides fiel nur im Screenshot auf. Sie prüfen vor allem die Fairness-Zusagen: keine Lösungen am Client,
   kein Zug außer der Reihe, XP/Elo nur serverseitig.
 - **Niemals committen:** `.env`, `.supabase-db-password.txt`, `supabase/.temp/` (enthält `pooler-url`
   mit DB-Passwort) — alle drei stehen in `.gitignore`.

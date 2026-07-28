@@ -32,7 +32,7 @@ const CLOUD: Record<Daytime, string> = {
   morning: 'rgba(255,255,255,0.92)',
   day: 'rgba(255,255,255,0.95)',
   evening: 'rgba(255,240,235,0.80)',
-  night: 'rgba(167,139,250,0.22)',
+  night: 'rgba(167,139,250,0.34)',
 };
 
 export function isNightSky(): boolean {
@@ -69,11 +69,16 @@ export default function SkyBackground() {
 
       {/* Ziehende Wolken. Jede besteht aus mehreren weichen Kreisen —
           das wirkt natürlicher als eine einzelne Ellipse. */}
+      {/* Oben ist der Himmel am dunkelsten — dort heben sich weisse Wolken
+          am besten ab. Weiter unten werden sie kleiner und blasser, das
+          erzeugt Tiefe. Negative Verzoegerungen verteilen sie beim Laden
+          ueber die Breite, statt alle links starten zu lassen. */}
       {[
-        { top: '8%', scale: 1, dur: 74, delay: 0, opacity: 1 },
-        { top: '26%', scale: 0.62, dur: 92, delay: -30, opacity: 0.75 },
-        { top: '44%', scale: 0.85, dur: 63, delay: -50, opacity: 0.55 },
-        { top: '62%', scale: 0.5, dur: 86, delay: -12, opacity: 0.4 },
+        { top: '4%', scale: 1.15, dur: 74, delay: -20, opacity: 0.95 },
+        { top: '19%', scale: 0.8, dur: 92, delay: -55, opacity: 0.85 },
+        { top: '33%', scale: 1, dur: 63, delay: -38, opacity: 0.7 },
+        { top: '52%', scale: 0.65, dur: 86, delay: -8, opacity: 0.55 },
+        { top: '70%', scale: 0.9, dur: 105, delay: -70, opacity: 0.45 },
       ].map((c, i) => (
         <div
           key={i}
@@ -86,10 +91,10 @@ export default function SkyBackground() {
             animationDelay: `${c.delay}s`,
           }}
         >
-          <span className="sky-puff" style={{ background: cloud, width: 110, height: 110, left: 0, bottom: 0 }} />
-          <span className="sky-puff" style={{ background: cloud, width: 150, height: 150, left: 62, bottom: 6 }} />
-          <span className="sky-puff" style={{ background: cloud, width: 96, height: 96, left: 170, bottom: 0 }} />
-          <span className="sky-puff" style={{ background: cloud, width: 200, height: 78, left: 24, bottom: 0 }} />
+          <span className="sky-puff" style={{ background: cloud, width: 130, height: 130, left: 0, bottom: 4 }} />
+          <span className="sky-puff" style={{ background: cloud, width: 185, height: 185, left: 70, bottom: 10 }} />
+          <span className="sky-puff" style={{ background: cloud, width: 120, height: 120, left: 200, bottom: 2 }} />
+          <span className="sky-puff" style={{ background: cloud, width: 250, height: 92, left: 20, bottom: 0 }} />
         </div>
       ))}
     </div>

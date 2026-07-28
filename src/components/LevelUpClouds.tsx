@@ -33,7 +33,7 @@ export default function LevelUpClouds({
       role="status"
       aria-live="polite"
     >
-      <div className="absolute inset-0 bg-night-950/70 levelup-veil" />
+      <div className="absolute inset-0 bg-night-950/92 levelup-veil" />
 
       {!reduced && (
         <>

@@ -105,7 +105,14 @@ ok(remis ? ende.winner_id === null : !!ende.winner_id,
    remis ? 'Unentschieden: kein Sieger eingetragen' : 'ein Sieger wurde eingetragen');
 
 const eloNachher = await elo();
-const eloErwartet = remis && eloVorher === ende.opponent.elo ? eloNachher === eloVorher : eloNachher !== eloVorher;
+// Die Erwartung muss die Formel abbilden: round(32 * (Ergebnis - Erwartungswert)).
+// Bei Unentschieden zwischen aehnlich starken Spielern ist das gerundet 0 —
+// eine Aenderung zu verlangen liess den Test sporadisch fehlschlagen.
+const eloRichtung = ende.my_score > ende.opp_score ? 1 : ende.my_score < ende.opp_score ? -1 : 0;
+const eloErwartet =
+  eloRichtung > 0 ? eloNachher > eloVorher
+  : eloRichtung < 0 ? eloNachher < eloVorher
+  : Math.abs(eloNachher - eloVorher) <= 16;   // Remis: hoechstens halbes K
 ok(eloErwartet, `Elo ${eloVorher} → ${eloNachher} (${remis ? 'Unentschieden' : 'Entscheidung'})`);
 
 const doppelt = await sql(`select elo_applied from public.matches where id = '${M}';`);

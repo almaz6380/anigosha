@@ -36,7 +36,10 @@ html {
 .sky-puff {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(14px);
+  /* 8px statt 14px: staerker weichgezeichnet loesen sich weisse Formen vor
+     hellblauem Himmel komplett auf — im ersten Entwurf waren die Wolken
+     im Screenshot nicht zu erkennen. */
+  filter: blur(8px);
 }
 
 @keyframes sky-drift {
@@ -51,7 +54,9 @@ html {
   width: 420px;
   height: 220px;
   top: 50%;
-  margin-top: -110px;
+  /* Die Puffs sitzen am unteren Rand des Containers — ohne diesen Versatz
+     liegt die Wolke unter dem Text statt auf seiner Hoehe. */
+  margin-top: -190px;
 }
 
 .levelup-puff {
