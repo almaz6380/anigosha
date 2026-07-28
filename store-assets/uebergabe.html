@@ -79,21 +79,33 @@ npm install</pre>
 
 <p>Danach fehlen vier Dinge, die bewusst nicht im Repository liegen:</p>
 
-<h3>1. Die Datei <code>.env</code> — ohne sie startet nichts</h3>
-<div class="warn box">
-  <strong>Nicht per Mail oder Chat übertragen.</strong> Sie enthält den Service-Role-Schlüssel,
-  der alle Rechte an der Datenbank hat. Per AirDrop oder Passwortmanager kopieren — oder
-  neu holen (siehe unten).
-</div>
+<h3>1. Die Datei <code>.env</code> — in zwei Stufen</h3>
+
+<p><strong>Stufe A — entwickeln und lokal spielen.</strong> Nichts kopieren nötig:</p>
+<pre>npx vercel login &amp;&amp; npx vercel link      # Projekt: anigosha
+npx vercel env pull .env                 # holt URL + Anon-Key von Vercel</pre>
+<p>Damit läuft <code>npm run dev</code> vollständig — Anmeldung, Fragen, Duelle.</p>
+
+<p><strong>Stufe B — zusätzlich Testskripte und Migrationen.</strong> Dafür fehlen zwei
+geheime Schlüssel, die absichtlich nicht bei Vercel liegen:</p>
 <table>
   <tr><th>Schlüssel</th><th>Woher</th></tr>
-  <tr><td><code>VITE_SUPABASE_URL</code><br><code>VITE_SUPABASE_ANON_KEY</code></td>
-      <td>Supabase-Dashboard → Projekt <code>anigosha</code> → Project Settings → API</td></tr>
   <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td>
-      <td>dieselbe Seite, Abschnitt „service_role" — geheim halten</td></tr>
+      <td>Supabase-Dashboard → Projekt <code>anigosha</code> → Project Settings → API →
+          Abschnitt „service_role"</td></tr>
   <tr><td><code>SUPABASE_ACCESS_TOKEN</code></td>
       <td>supabase.com/dashboard/account/tokens — dort neu erzeugen</td></tr>
 </table>
+
+<div class="warn box">
+  <strong>Diese beiden nie per Mail oder Chat verschicken.</strong> Der Service-Role-Key
+  umgeht sämtliche Zugriffsregeln und kann alle Spielstände lesen und ändern.
+</div>
+
+<div class="ok box">
+  <strong>Deployen geht auch ganz ohne <code>.env</code>.</strong> Vercel baut mit seinen
+  eigenen hinterlegten Werten — ein Push auf <code>main</code> genügt.
+</div>
 
 <h3>2. <code>.claude/settings.local.json</code></h3>
 <p>Erlaubt Claude, Datenbank-Migrationen selbst einzuspielen. Der Pfad muss der des

@@ -172,13 +172,27 @@ npm install
 
 Danach fehlen noch **vier Dinge, die bewusst nicht im Repo liegen**:
 
-**1. `.env` — zwingend, sonst startet nichts.** Nicht per Mail oder Chat übertragen
-(enthält den Service-Role-Key, der alle Rechte hat). Entweder per AirDrop/Passwort-
-manager kopieren oder neu holen:
-- `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` → Supabase-Dashboard, Projekt
-  `anigosha` (ref `hehrqqiobpbmmadmvpql`) → Project Settings → API
-- `SUPABASE_SERVICE_ROLE_KEY` → dieselbe Seite, Abschnitt „service_role" (geheim!)
+**1. `.env` — in zwei Stufen, je nachdem was du vorhast.**
+
+*Stufe A — entwickeln und lokal spielen.* Nichts kopieren nötig:
+```bash
+npx vercel login && npx vercel link      # Projekt: anigosha
+npx vercel env pull .env                 # holt URL + Anon-Key von Vercel
+```
+Damit läuft `npm run dev` vollständig: Anmeldung, Fragen, Duelle.
+
+*Stufe B — zusätzlich Testskripte und Migrationen.* Dafür fehlen noch zwei
+**geheime** Schlüssel, die absichtlich nicht bei Vercel liegen:
+- `SUPABASE_SERVICE_ROLE_KEY` → Supabase-Dashboard → Projekt `anigosha`
+  (ref `hehrqqiobpbmmadmvpql`) → Project Settings → API → Abschnitt „service_role"
 - `SUPABASE_ACCESS_TOKEN` → https://supabase.com/dashboard/account/tokens (neu erzeugen)
+
+Beide unten an die `.env` anhängen. **Nicht per Mail oder Chat verschicken** — der
+Service-Role-Key umgeht sämtliche Zugriffsregeln und kann alle Spielstände lesen
+und ändern.
+
+**Deployen geht auch ganz ohne `.env`**: Vercel baut mit seinen eigenen hinterlegten
+Werten, ein Push auf `main` genügt.
 
 **2. `.claude/settings.local.json`** — erlaubt Claude, Migrationen selbst einzuspielen.
 Muss den Pfad des *neuen* Rechners enthalten:
