@@ -39,6 +39,19 @@ export function isNightSky(): boolean {
   return daytime(new Date().getHours()) === 'night';
 }
 
+/** Oberste Farbe des aktuellen Verlaufs — dieselbe bekommt die Statusleiste,
+ *  damit oben kein andersfarbiger Balken steht. */
+const TOP_COLOR: Record<Daytime, string> = {
+  morning: '#7cc4f2',
+  day: '#3da5e8',
+  evening: '#5b7fc7',
+  night: '#0f0a1e',
+};
+
+export function skyTopColor(): string {
+  return TOP_COLOR[daytime(new Date().getHours())];
+}
+
 export default function SkyBackground() {
   const phase = daytime(new Date().getHours());
   const cloud = CLOUD[phase];

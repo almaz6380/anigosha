@@ -128,6 +128,14 @@ Regeln dazu:
 - `tools/create-bots.mjs` legt die 12 Duell-Bots an (idempotent über die E-Mail).
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
   `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`).
+- **Levelkurve:** `xpForLevel(n) = 50 · (n² − 1)` → Schwellen 150, 400, 750, 1200 …
+  Der erste Aufstieg kommt nach ein bis zwei Runden. Bei fester Schrittweite (500)
+  dauerte er rund vier Runden — beim Testen hat ihn deshalb nie jemand gesehen.
+- **`theme-color` wird zur Laufzeit umgeschaltet** (`src/hooks/useThemeColor.ts`).
+  iOS färbt den Streifen über der Seite danach; stand dort fest Dunkelviolett,
+  erschien über dem hellen Himmel ein schwarzer Balken. `tools/check-theme-color.mjs`
+  hält den Fall fest. **In Playwright-Screenshots ist dieser Fehler unsichtbar** —
+  die Statusleiste gehört zu iOS, nicht zur Seite.
 - **Visuelle Prüfung:** `tools/shot-home.mjs` und `tools/shot-levelup.mjs` nehmen mit
   Playwright Screenshots auf (`npx playwright install chromium` einmalig nötig,
   Paket per `npm i --no-save playwright`). `shot-levelup.mjs` setzt dafür die XP des

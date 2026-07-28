@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Swords, Brain, Trophy, User, CalendarDays, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import SkyBackground, { isNightSky } from '../components/SkyBackground';
+import SkyBackground, { isNightSky, skyTopColor } from '../components/SkyBackground';
+import { useThemeColor } from '../hooks/useThemeColor';
 import { levelProgress } from '../lib/level';
 
 const cards = [
@@ -20,6 +21,9 @@ export default function HomePage() {
   // Ohne diese Umschaltung wäre der Startbildschirm tagsüber unlesbar —
   // die globale Textfarbe (#ede9fe) ist für dunkle Seiten gemacht.
   const night = isNightSky();
+  // Ohne das steht über dem Himmel ein dunkler Balken: iOS färbt die
+  // Statusleiste nach theme-color, und die stand fest auf Dunkelviolett.
+  useThemeColor(skyTopColor());
   const ink = night ? 'text-violet-50' : 'text-slate-900';
   const inkSoft = night ? 'text-violet-200/80' : 'text-slate-700';
   const inkFaint = night ? 'text-violet-200/60' : 'text-slate-600';

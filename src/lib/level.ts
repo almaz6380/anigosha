@@ -1,27 +1,36 @@
 /**
  * Levelsystem — eine einzige Quelle für die Rechnung.
  *
- * Vorher stand `Math.floor(xp / 500) + 1` als magische Zahl in der ProfilePage.
- * Sobald Level an mehreren Stellen auftauchen (Start, Profil, Levelaufstieg),
- * muss die Formel an einer Stelle liegen — sonst laufen die Anzeigen auseinander.
+ * Die Abstände wachsen mit jedem Level: 150, 400, 750, 1200, 1750 …
+ * Der erste Aufstieg kommt damit nach ein bis zwei Runden (bei fester
+ * Schrittweite von 500 dauerte er rund vier — der Erfolgsmoment kam so spät,
+ * dass ihn beim Testen niemand je zu sehen bekam), spätere Level bleiben
+ * trotzdem etwas wert.
+ *
+ * Die Schwellenreihe lässt sich geschlossen darstellen:
+ *   xpForLevel(n)  = 50 · (n² − 1)
+ *   levelFromXp(x) = ⌊√(x / 50 + 1)⌋
  */
 
-export const XP_PER_LEVEL = 500;
+/** Faktor der Levelkurve. Größer = langsamer Aufstieg. */
+export const LEVEL_FACTOR = 50;
 
-export function levelFromXp(xp: number): number {
-  return Math.floor(Math.max(0, xp) / XP_PER_LEVEL) + 1;
+/** XP-Stand, ab dem das übergebene Level beginnt. Level 1 startet bei 0. */
+export function xpForLevel(level: number): number {
+  const n = Math.max(1, level);
+  return LEVEL_FACTOR * (n * n - 1);
 }
 
-/** XP-Stand, ab dem das übergebene Level beginnt. */
-export function xpForLevel(level: number): number {
-  return (level - 1) * XP_PER_LEVEL;
+export function levelFromXp(xp: number): number {
+  const safe = Math.max(0, xp);
+  return Math.floor(Math.sqrt(safe / LEVEL_FACTOR + 1));
 }
 
 export interface LevelProgress {
   level: number;
   /** XP innerhalb des aktuellen Levels */
   inLevel: number;
-  /** XP, die dieses Level insgesamt umfasst */
+  /** XP, die dieses Level insgesamt umfasst — wächst mit jedem Level */
   needed: number;
   /** 0…1 für Fortschrittsbalken */
   ratio: number;
@@ -30,12 +39,15 @@ export interface LevelProgress {
 export function levelProgress(xp: number): LevelProgress {
   const safe = Math.max(0, xp);
   const level = levelFromXp(safe);
-  const inLevel = safe - xpForLevel(level);
+  const start = xpForLevel(level);
+  // Die Levelbreite ist nicht mehr konstant — sie muss je Level berechnet werden.
+  const needed = xpForLevel(level + 1) - start;
+  const inLevel = safe - start;
   return {
     level,
     inLevel,
-    needed: XP_PER_LEVEL,
-    ratio: Math.min(1, inLevel / XP_PER_LEVEL),
+    needed,
+    ratio: Math.min(1, inLevel / needed),
   };
 }
 
@@ -47,8 +59,8 @@ export function levelProgress(xp: number): LevelProgress {
  * vergebenen XP zurück, der alte Stand steht im Profil. Das kommt ohne
  * zusätzliche Serverabfrage aus.
  *
- * Mehrere Stufen auf einmal (bei sehr großen Gewinnen) melden nur die
- * höchste — sonst müssten Animationen hintereinander laufen.
+ * Mehrere Stufen auf einmal melden nur die höchste — sonst müssten
+ * Animationen hintereinander laufen.
  */
 export function levelUpFrom(xpBefore: number, xpGained: number): number | null {
   if (xpGained <= 0) return null;
