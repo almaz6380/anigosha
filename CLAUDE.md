@@ -132,6 +132,22 @@ Regeln dazu:
 - **Niemals committen:** `.env`, `.supabase-db-password.txt`, `supabase/.temp/` (enthält `pooler-url`
   mit DB-Passwort) — alle drei stehen in `.gitignore`.
 
+## Rechtstexte und Routing
+
+- `src/pages/legal/legalContent.ts` — Impressum, Datenschutz, Nutzungsbedingungen (DE+EN).
+  Betreiber: Josef Gallab, Oberhofenweg 21b, 6380 St. Johann in Tirol, **anigosha@wellbooked.at**.
+  **Entwürfe, keine Rechtsberatung** — vor dem Launch prüfen lassen.
+- Öffentlich erreichbar unter `/legal/impressum`, `/legal/datenschutz`, `/legal/agb`.
+  Die Routen liegen bewusst **vor dem Anmelde-Gate**: Apple und Google rufen die
+  Datenschutz-URL ohne Konto auf; hinter dem Login gilt sie als nicht vorhanden.
+- **`vercel.json` ist Pflicht** (SPA-Rewrites). Ohne sie liefert Vercel für jeden
+  direkt aufgerufenen Pfad einen 404 — auch für /solo, /duel und die Datenschutz-URL.
+- **Die Live-Domain muss eine Projekt-Domain sein, kein Deployment-Alias.**
+  Ein per `vercel alias set` gesetzter Alias bleibt beim alten Deployment stehen und
+  wandert NICHT mit. Genau das ist am 28.07. passiert.
+- **Bei jeder neuen Datenverarbeitung** (Push, Käufe, Analyse) die Datenschutzerklärung
+  ergänzen — sonst stimmt sie nicht mehr.
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)
