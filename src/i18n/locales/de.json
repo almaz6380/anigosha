@@ -1,13 +1,14 @@
 {
   "common": {
-    "appName": "AniBrain",
+    "appName": "Kioku",
     "loading": "Lädt…",
     "error": "Etwas ist schiefgelaufen. Bitte versuch es erneut.",
     "back": "Zurück",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "continue": "Weiter",
-    "comingSoon": "Bald verfügbar"
+    "comingSoon": "Bald verfügbar",
+    "bot": "Bot"
   },
   "auth": {
     "login": "Anmelden",
@@ -41,7 +42,8 @@
     "solo": "Solo",
     "duel": "Duell",
     "leaderboard": "Bestenliste",
-    "profile": "Profil"
+    "profile": "Profil",
+    "daily": "Tägliche Challenge"
   },
   "home": {
     "greeting": "Hey {{name}}!",
@@ -52,7 +54,9 @@
     "leaderboard": "Bestenliste",
     "leaderboardSub": "Die besten Otakus weltweit",
     "profile": "Profil",
-    "profileSub": "Statistiken & Einstellungen"
+    "profileSub": "Statistiken & Einstellungen",
+    "daily": "Tägliche Challenge",
+    "dailySub": "5 Fragen, jeden Tag neu"
   },
   "profile": {
     "title": "Profil",
@@ -66,7 +70,9 @@
     "deleteConfirmTitle": "Konto wirklich löschen?",
     "deleteConfirmText": "Alle deine Daten (Profil, Duelle, Statistiken) werden dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.",
     "deleteConfirmButton": "Ja, endgültig löschen",
-    "deleteError": "Löschen fehlgeschlagen. Bitte versuch es später erneut."
+    "deleteError": "Löschen fehlgeschlagen. Bitte versuch es später erneut.",
+    "streak": "Tagesserie",
+    "streakBest": "Bestwert"
   },
   "solo": {
     "difficulty": {
@@ -90,6 +96,30 @@
     "noXpAgain": "Diese Runde wurde bereits gewertet.",
     "again": "Nochmal spielen",
     "share": "Ergebnis teilen",
-    "shareText": "Ich habe {{correct}} von {{total}} Fragen zu {{category}} richtig beantwortet! Schaffst du mehr?"
+    "shareText": "Ich habe {{correct}} von {{total}} Fragen zu {{category}} richtig beantwortet! Schaffst du mehr?",
+    "fiftyFifty": "50:50 — zwei Antworten entfernen",
+    "streakDays_one": "{{count}} Tag in Folge",
+    "streakDays_other": "{{count}} Tage in Folge"
+  },
+  "daily": {
+    "title": "Tägliche Challenge",
+    "sub": "5 Fragen — für alle gleich",
+    "alreadyDone": "Du hast die heutige Challenge schon gespielt. Morgen gibt es fünf neue Fragen!",
+    "leaderboard": "Tagesbestenliste",
+    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Kioku-Challenge geschafft!"
+  },
+  "duel": {
+    "new": "Neues Duell starten",
+    "empty": "Noch keine Duelle. Starte dein erstes!",
+    "yourTurn": "Du bist dran",
+    "waiting": "Gegner ist dran",
+    "waitingLong": "{{name}} ist am Zug. Schau später wieder rein!",
+    "round": "Runde {{n}}/4",
+    "won": "Gewonnen",
+    "lost": "Verloren",
+    "draw": "Unentschieden",
+    "endRound": "Runde abgeben",
+    "queued": "Gerade ist kein Gegner frei. Wir suchen weiter — versuch es gleich nochmal.",
+    "botHint": "Gegner mit diesem Zeichen sind computergesteuert."
   }
 }

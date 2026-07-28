@@ -1,10 +1,16 @@
-# CLAUDE.md — AniBrain (Anime-Quiz-App)
+# CLAUDE.md — Kioku (Anime-Quiz-App)
 
 ## Projektübersicht
 
-Anime-Quiz-App für App Store + Google Play. Wissensquiz zu echten Animes (Textfragen — Fakten sind legal) plus Bilderrätsel mit bewusst verfremdeten KI-Szenen. **NIEMALS Bilder erkennbarer geschützter Anime-Charaktere** (Urheberrecht, Takedown-Risiko fürs ganze Entwicklerkonto) und **keine Anime-Titel im App-Store-Titel/Untertitel/Keywords**.
+Anime-Quiz-App (Kioku) für App Store + Google Play. Wissensquiz zu echten Animes (Textfragen — Fakten sind legal) plus Bilderrätsel mit bewusst verfremdeten KI-Szenen. **NIEMALS Bilder erkennbarer geschützter Anime-Charaktere** (Urheberrecht, Takedown-Risiko fürs ganze Entwicklerkonto) und **keine Anime-Titel im App-Store-Titel/Untertitel/Keywords**.
 
-**App-Name (Arbeitstitel):** AniBrain
+**App-Name:** Kioku (記憶 = Gedächtnis) — Store-Titel „Kioku — Anime Quiz & Duelle"
+**Namenshistorie:** Hieß bis 28.07.2026 AniBrain. Verworfen, weil anibrain.ai vier Jahre
+lang ein bekannter Anime-Dienst war und das „Ani"-Präfix im Store übersättigt ist
+(AniGuessr, Anidle, AniPocket …). **„Tamashi" ebenfalls verworfen:** TAMASHII NATIONS
+ist die Anime-Merchandise-Marke von Bandai Spirits — Konfliktrisiko für das gesamte
+Entwicklerkonto. Vor dem Launch: Markenrecherche zu Kioku in TMview/EUIPO/DPMA,
+Klassen 9 und 41.
 **Bundle-ID:** at.gallab.animequiz
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
 **Sprachen:** DE + EN zum Launch; weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen)
@@ -50,19 +56,52 @@ Anime-Quiz-App für App Store + Google Play. Wissensquiz zu echten Animes (Textf
       Workflow ab jetzt: `npm run build && npx cap sync` vor jedem nativen Test.
       (iOS nutzt Swift Package Manager, keine CocoaPods.)
 
-### Offen: M2 Fragen+Solo, M3 Duelle+Bots, M4 Monetarisierung+Push, M5 Release (siehe Tasks/Plan)
+### M2 Fragen + Solo — FERTIG (27./28.07.2026)
+- [x] Migration `0002`: categories, questions, question_translations, solo_sessions, question_reports, bots
+- [x] **804 Fragen** — alle 12 Kategorien à 67 (22 leicht / 22 mittel / 23 schwer), je DE+EN mit Erklärung
+      (Migrationen `0003`–`0015`, alle über `seed_question()`, idempotent)
+- [x] SoloPage: Kategorie → Schwierigkeit → Sofort-Feedback → Erklärung → Melden → Ergebnis + Teilen
+- [x] Migration `0016`: 50:50-Joker (serverseitig!), Streak, Tägliche Challenge, Tagesbestenliste
+
+### M3 Duelle + Bots — FERTIG (28.07.2026)
+- [x] Migration `0017`: matches, match_rounds, match_answers, match_queue + RPCs
+- [x] 4 Runden à 3 Fragen, quer über alle Kategorien (sonst Vorteil für die eigene Lieblingsserie)
+- [x] **12 Bots** via `tools/create-bots.mjs`, Elo 820–1380 / Trefferquote 35–88 %
+- [x] Matchmaking sucht **erst Menschen**, Bots füllen nur die Lücke; dezent gekennzeichnet
+- [x] **Bots ziehen „lazy"** beim nächsten Zugriff des Gegners statt per Cron —
+      spart die Cron-Infrastruktur, Wartezeit wird trotzdem eingehalten
+- [x] Elo (K=32), `elo_applied`-Merker gegen Doppelwertung, globale Bestenliste
+- [x] DuelPage (Übersicht + Partie), LeaderboardPage
+
+### M4 Monetarisierung — IN ARBEIT (28.07.2026)
+- [x] `@capacitor-community/admob@8`, `src/lib/ads.ts` mit **Googles Test-IDs** (`USE_TEST_ADS = true`)
+- [x] UMP-Einwilligung + iOS-ATT, Test-App-IDs in Info.plist und AndroidManifest, `cap sync` gelaufen
+- [x] Interstitial nach Solo-Runde mit Bremse: jede 2. Runde, mind. 90 s Abstand
+- [x] `showRewardedAd()` für den Streak-Schutz vorbereitet, `setAdsPremiumStatus()` als Werbefrei-Schalter
+- [x] **Echte AdMob-IDs eingetragen (28.07.)** — Konto `pub-8860791993288062` (dasselbe wie MyPeak):
+      App-IDs in Info.plist/AndroidManifest, Anzeigenblöcke unter `PROD` in `src/lib/ads.ts`
+- [ ] **`USE_TEST_ADS = false` erst unmittelbar vor dem Release-Build!** Bis dahin laufen
+      Test-Anzeigen. Eigene Live-Anzeigen anzusehen/anzuklicken kann das Konto sperren —
+      und daran hängen auch MyPeak und WELLbooked.
+- [ ] DSGVO-Einwilligungsnachricht in AdMob erstellen **und veröffentlichen** (vor Launch)
+- [ ] RevenueCat „remove_ads", Push (FCM/APNs)
+
+### Offen: M5 Release
 
 ## Umgebung / Werkzeuge
 
-### Migrationen — Ablauf (so gewollt, 27.07.2026)
+### Migrationen — Ablauf (Stand 28.07.2026)
 
-Schreibende Änderungen an der Datenbank macht **Josef selbst im Supabase-SQL-Editor**, nicht Claude.
+Claude spielt Migrationen selbst ein. Freigegeben über eine Permission-Regel in
+`.claude/settings.local.json` (gitignored) für `node …/tools/run-sql.mjs`.
 
-1. Claude schreibt die Migration nach `supabase/migrations/000X_name.sql` (durchnummeriert).
-2. Josef öffnet https://supabase.com/dashboard/project/hehrqqiobpbmmadmvpql/sql/new,
-   fügt den Dateiinhalt ein und drückt **Run**.
-3. Claude verifiziert danach **nur lesend** mit `node tools/run-sql.mjs <select.sql>`, ob alles
-   angekommen ist (Tabellen, Policies, Spalten), und hakt die Migration oben in „Aktueller Stand" ab.
+**Pflichtablauf je Migration:**
+1. Datei nach `supabase/migrations/000X_name.sql` schreiben (durchnummeriert, idempotent).
+2. **Trockenlauf**: `begin;` + Datei + `rollback;` durch `run-sql.mjs` jagen. Fängt Syntax- und
+   Logikfehler ab, ohne die Produktivdatenbank anzufassen. Hat schon mehrfach gegriffen
+   (Unterabfrage im CHECK, Fensterfunktion in Aggregat).
+3. Erst dann echt einspielen und **lesend** nachzählen.
+4. Testskript in `tools/` ergänzen oder erweitern, danach alle drei laufen lassen.
 
 Regeln dazu:
 - Migrationen **immer idempotent** (`create table if not exists`, `drop policy if exists …`).
@@ -74,6 +113,10 @@ Regeln dazu:
   nur HTTPS geht raus). Auf Josefs Rechner ginge es, wird aber nicht gebraucht.
 - `tools/run-sql.mjs` bleibt als **Lese-/Verifikationswerkzeug** bestehen.
 - `tools/create-test-user.mjs` legt einen Testnutzer über die Admin-API an.
+- `tools/create-bots.mjs` legt die 12 Duell-Bots an (idempotent über die E-Mail).
+- **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
+  `test-duel-flow.mjs` (19). Sie prüfen vor allem die Fairness-Zusagen: keine Lösungen am Client,
+  kein Zug außer der Reihe, XP/Elo nur serverseitig.
 - **Niemals committen:** `.env`, `.supabase-db-password.txt`, `supabase/.temp/` (enthält `pooler-url`
   mit DB-Passwort) — alle drei stehen in `.gitignore`.
 

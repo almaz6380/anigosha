@@ -41,7 +41,7 @@ ok(Array.isArray(leak) && leak.length === 0, 'questions-Tabelle liefert dem Clie
 // 4. Runde starten
 const start = await rpc('start_solo_session', { p_category: 'one_piece', p_difficulty: 1, p_lang: 'de', p_limit: 10 });
 const qs = start.questions ?? [];
-ok(qs.length === 5, `Runde gestartet: ${qs.length} Fragen erhalten (erwartet 5)`);
+ok(qs.length === 10, `Runde gestartet: ${qs.length} Fragen erhalten (erwartet 10)`);
 ok(qs.every((q) => q.options?.length === 4), 'jede Frage hat 4 Antwortmöglichkeiten');
 ok(!JSON.stringify(qs).includes('correct_index'), 'keine Lösung in den Fragedaten enthalten');
 
@@ -78,6 +78,16 @@ await fetch(`${url}/rest/v1/profiles?id=eq.${uid}`, { method: 'PATCH', headers: 
 const after3 = (await (await fetch(`${url}/rest/v1/profiles?select=xp&id=eq.${uid}`, { headers: H })).json())[0]?.xp ?? 0;
 ok(after3 === after, 'direkter XP-Schreibversuch des Clients wird geblockt');
 
-// 10. Leere Kategorie meldet sauber
-const empty = await rpc('start_solo_session', { p_category: 'naruto', p_difficulty: 1, p_lang: 'de', p_limit: 10 });
-ok(String(empty.message ?? '').includes('no questions'), 'leere Kategorie meldet "no questions available"');
+// 10. Unbekannte Kategorie meldet sauber (alle 12 echten Kategorien sind gefüllt)
+const empty = await rpc('start_solo_session', { p_category: 'gibt_es_nicht', p_difficulty: 1, p_lang: 'de', p_limit: 10 });
+ok(String(empty.message ?? '').includes('unknown category'), 'unbekannte Kategorie wird abgewiesen');
+
+// 11. Jede Kategorie liefert auf jeder Stufe eine volle Runde
+let voll = 0;
+for (const slug of ['one_piece','naruto','dragon_ball','pokemon','detektiv_conan','inuyasha','ranma','attack_on_titan','death_note','my_hero','demon_slayer','jujutsu_kaisen']) {
+  for (const d of [1, 2, 3]) {
+    const r = await rpc('start_solo_session', { p_category: slug, p_difficulty: d, p_lang: 'de', p_limit: 10 });
+    if ((r.questions ?? []).length === 10) voll++;
+  }
+}
+ok(voll === 36, `alle 36 Kombinationen aus Kategorie und Stufe liefern volle Runden (${voll}/36)`);

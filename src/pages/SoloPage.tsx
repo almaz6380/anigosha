@@ -1,29 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Check, Flag, Lightbulb, Share2, X } from 'lucide-react';
+import { ArrowLeft, Check, Flag, Flame, Lightbulb, Scissors, Share2, Trophy, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { maybeShowInterstitial } from '../lib/ads';
 import {
   answerSolo,
+  dailyLeaderboard,
   fetchCategories,
   finishSolo,
   reportQuestion,
+  startDaily,
   startSolo,
+  useFiftyFifty,
   type AnswerResult,
   type Category,
+  type LeaderboardRow,
   type SoloQuestion,
   type SoloResult,
 } from '../lib/solo';
 
 type Step = 'category' | 'difficulty' | 'quiz' | 'result';
 
-export default function SoloPage() {
+export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { session, refreshProfile } = useAuth();
   const lang = i18n.language.startsWith('en') ? 'en' : 'de';
 
-  const [step, setStep] = useState<Step>('category');
+  const [step, setStep] = useState<Step>(daily ? 'quiz' : 'category');
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
   const [busy, setBusy] = useState(false);
@@ -37,12 +42,41 @@ export default function SoloPage() {
   const [hintsShown, setHintsShown] = useState(1);
   const [reported, setReported] = useState(false);
   const [result, setResult] = useState<SoloResult | null>(null);
+  const [hidden, setHidden] = useState<number[]>([]);
+  const [jokerUsed, setJokerUsed] = useState(false);
+  const [board, setBoard] = useState<LeaderboardRow[]>([]);
+  const [alreadyDone, setAlreadyDone] = useState(false);
 
+  const resetQuestionState = useCallback(() => {
+    setPicked(null);
+    setFeedback(null);
+    setHintsShown(1);
+    setReported(false);
+    setHidden([]);
+  }, []);
+
+  // Solo: Kategorien laden. Challenge: sofort die Fragen des Tages holen.
   useEffect(() => {
-    fetchCategories()
-      .then(setCategories)
-      .catch(() => setError(t('common.error')));
-  }, [t]);
+    if (daily) {
+      setBusy(true);
+      startDaily(lang)
+        .then((d) => {
+          setSessionId(d.session_id);
+          setQuestions(d.questions ?? []);
+          setAlreadyDone(d.already_done);
+          if (d.already_done) {
+            dailyLeaderboard().then(setBoard).catch(() => {});
+            setStep('result');
+          }
+        })
+        .catch(() => setError(t('common.error')))
+        .finally(() => setBusy(false));
+    } else {
+      fetchCategories()
+        .then(setCategories)
+        .catch(() => setError(t('common.error')));
+    }
+  }, [daily, lang, t]);
 
   const current = questions[index];
 
@@ -55,10 +89,8 @@ export default function SoloPage() {
       setSessionId(data.session_id);
       setQuestions(data.questions ?? []);
       setIndex(0);
-      setPicked(null);
-      setFeedback(null);
-      setHintsShown(1);
-      setReported(false);
+      setJokerUsed(false);
+      resetQuestionState();
       setStep('quiz');
     } catch (e) {
       const msg = (e as { message?: string })?.message ?? '';
@@ -79,13 +111,20 @@ export default function SoloPage() {
     }
   }
 
+  async function joker() {
+    if (!sessionId || !current || jokerUsed || picked !== null) return;
+    try {
+      setHidden(await useFiftyFifty(sessionId, current.id));
+      setJokerUsed(true);
+    } catch {
+      setJokerUsed(true);
+    }
+  }
+
   async function next() {
     if (index + 1 < questions.length) {
       setIndex(index + 1);
-      setPicked(null);
-      setFeedback(null);
-      setHintsShown(1);
-      setReported(false);
+      resetQuestionState();
       return;
     }
     if (!sessionId) return;
@@ -93,7 +132,11 @@ export default function SoloPage() {
     try {
       setResult(await finishSolo(sessionId));
       await refreshProfile();
+      if (daily) await dailyLeaderboard().then(setBoard).catch(() => {});
       setStep('result');
+      // Entscheidet selbst, ob wirklich eine Anzeige kommt (jede 2. Runde,
+      // mind. 90 s Abstand, nie bei Werbefreiheit).
+      maybeShowInterstitial();
     } catch {
       setError(t('common.error'));
     } finally {
@@ -113,11 +156,13 @@ export default function SoloPage() {
 
   function share() {
     if (!result) return;
-    const text = t('solo.shareText', {
-      correct: result.correct,
-      total: result.total,
-      category: lang === 'en' ? category?.name_en : category?.name_de,
-    });
+    const text = daily
+      ? t('daily.shareText', { correct: result.correct, total: result.total })
+      : t('solo.shareText', {
+          correct: result.correct,
+          total: result.total,
+          category: lang === 'en' ? category?.name_en : category?.name_de,
+        });
     if (navigator.share) navigator.share({ text }).catch(() => {});
     else navigator.clipboard?.writeText(text);
   }
@@ -153,7 +198,10 @@ export default function SoloPage() {
   if (step === 'difficulty') {
     return (
       <div className={shell}>
-        <Header onBack={() => setStep('category')} title={lang === 'en' ? category?.name_en ?? '' : category?.name_de ?? ''} />
+        <Header
+          onBack={() => setStep('category')}
+          title={lang === 'en' ? category?.name_en ?? '' : category?.name_de ?? ''}
+        />
         {error && <Notice>{error}</Notice>}
         <div className="flex flex-col gap-3 mt-6">
           {[1, 2, 3].map((d) => (
@@ -173,35 +221,74 @@ export default function SoloPage() {
   }
 
   // --- Ergebnis ------------------------------------------------------------
-  if (step === 'result' && result) {
+  if (step === 'result') {
     return (
       <div className={shell}>
-        <Header onBack={() => navigate('/')} title={t('solo.resultTitle')} />
-        <div className="mt-10 text-center">
-          <div className="text-6xl font-extrabold bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent">
-            {result.correct}/{result.total}
+        <Header onBack={() => navigate('/')} title={daily ? t('daily.title') : t('solo.resultTitle')} />
+
+        {result ? (
+          <>
+            <div className="mt-8 text-center">
+              <div className="text-6xl font-extrabold bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent">
+                {result.correct}/{result.total}
+              </div>
+              <p className="mt-3 text-accent-400/70">
+                {result.replay ? t('solo.noXpAgain') : t('solo.xpEarned', { xp: result.xp })}
+              </p>
+              {result.streak != null && result.streak > 0 && (
+                <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-pink-400">
+                  <Flame className="w-4 h-4" />
+                  {t('solo.streakDays', { count: result.streak })}
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <Notice>{alreadyDone ? t('daily.alreadyDone') : error ?? t('common.loading')}</Notice>
+        )}
+
+        {daily && board.length > 0 && (
+          <div className="mt-8">
+            <div className="flex items-center gap-2 text-sm text-accent-400/70 mb-3">
+              <Trophy className="w-4 h-4" />
+              {t('daily.leaderboard')}
+            </div>
+            <div className="rounded-2xl border border-night-700 bg-night-900 divide-y divide-night-800">
+              {board.slice(0, 10).map((r) => (
+                <div key={`${r.rank}-${r.username}`} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+                  <span className="w-6 text-accent-400/60">{r.rank}</span>
+                  <span className="flex-1 truncate">
+                    {r.username}
+                    {r.is_bot && <span className="ml-1.5 text-[10px] text-accent-400/40">{t('common.bot')}</span>}
+                  </span>
+                  <span className="font-semibold">{r.correct}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <p className="mt-3 text-accent-400/70">
-            {result.replay ? t('solo.noXpAgain') : t('solo.xpEarned', { xp: result.xp })}
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 mt-10">
-          <button
-            onClick={share}
-            className="rounded-2xl border border-night-700 bg-night-900 p-4 font-semibold flex items-center justify-center gap-2 hover:border-accent-500 transition-colors"
-          >
-            <Share2 className="w-5 h-5 text-accent-400" />
-            {t('solo.share')}
-          </button>
-          <button
-            onClick={() => {
-              setResult(null);
-              setStep('difficulty');
-            }}
-            className="rounded-2xl bg-accent-500 p-4 font-semibold text-night-950"
-          >
-            {t('solo.again')}
-          </button>
+        )}
+
+        <div className="flex flex-col gap-3 mt-8">
+          {result && (
+            <button
+              onClick={share}
+              className="rounded-2xl border border-night-700 bg-night-900 p-4 font-semibold flex items-center justify-center gap-2 hover:border-accent-500 transition-colors"
+            >
+              <Share2 className="w-5 h-5 text-accent-400" />
+              {t('solo.share')}
+            </button>
+          )}
+          {!daily && (
+            <button
+              onClick={() => {
+                setResult(null);
+                setStep('difficulty');
+              }}
+              className="rounded-2xl bg-accent-500 p-4 font-semibold text-night-950"
+            >
+              {t('solo.again')}
+            </button>
+          )}
           <Link to="/" className="text-center text-accent-400/60 text-sm py-2">
             {t('common.back')}
           </Link>
@@ -214,7 +301,7 @@ export default function SoloPage() {
   if (!current) {
     return (
       <div className={shell}>
-        <Header onBack={() => setStep('category')} title={t('nav.solo')} />
+        <Header onBack={() => navigate('/')} title={daily ? t('daily.title') : t('nav.solo')} />
         <Notice>{error ?? t('common.loading')}</Notice>
       </div>
     );
@@ -222,7 +309,10 @@ export default function SoloPage() {
 
   return (
     <div className={shell}>
-      <Header onBack={() => navigate('/')} title={`${index + 1} / ${questions.length}`} />
+      <Header
+        onBack={() => navigate('/')}
+        title={`${daily ? t('daily.title') + ' · ' : ''}${index + 1} / ${questions.length}`}
+      />
 
       <div className="h-1 rounded-full bg-night-800 mt-4 overflow-hidden">
         <div
@@ -233,7 +323,6 @@ export default function SoloPage() {
 
       <h2 className="text-xl font-semibold mt-8 leading-snug">{current.prompt}</h2>
 
-      {/* „Wer bin ich?": Hinweise nacheinander aufdecken */}
       {current.type === 'who_am_i' && current.hints && (
         <div className="mt-4 flex flex-col gap-2">
           {current.hints.slice(0, hintsShown).map((h, i) => (
@@ -255,6 +344,7 @@ export default function SoloPage() {
 
       <div className="flex flex-col gap-3 mt-6">
         {current.options.map((option, i) => {
+          if (hidden.includes(i)) return null;
           const isCorrect = feedback && i === feedback.correct_index;
           const isWrongPick = feedback && i === picked && !feedback.correct;
           return (
@@ -279,6 +369,16 @@ export default function SoloPage() {
           );
         })}
       </div>
+
+      {picked === null && !jokerUsed && (
+        <button
+          onClick={joker}
+          className="mt-5 w-full rounded-2xl border border-night-700 bg-night-900 p-3 text-sm font-medium flex items-center justify-center gap-2 hover:border-accent-500 transition-colors"
+        >
+          <Scissors className="w-4 h-4 text-accent-400" />
+          {t('solo.fiftyFifty')}
+        </button>
+      )}
 
       {feedback && (
         <div className="mt-6">

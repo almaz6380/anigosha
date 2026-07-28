@@ -29,6 +29,8 @@ export interface SoloResult {
   total: number;
   xp: number;
   replay: boolean;
+  /** Laufende Tagesserie nach dieser Runde (vom Server gepflegt) */
+  streak?: number;
 }
 
 /** Kategorien, in denen (noch) keine Fragen liegen, meldet erst startSolo — die
@@ -78,6 +80,43 @@ export async function finishSolo(sessionId: string): Promise<SoloResult> {
   });
   if (error) throw error;
   return data as SoloResult;
+}
+
+/** 50:50-Joker. Der Server entscheidet, welche zwei falschen Antworten fallen —
+ *  der Client kennt die Lösung nicht. Einmal pro Runde. */
+export async function useFiftyFifty(sessionId: string, questionId: string): Promise<number[]> {
+  const { data, error } = await supabase.rpc('use_fifty_fifty', {
+    p_session: sessionId,
+    p_question: questionId,
+  });
+  if (error) throw error;
+  return (data as { remove: number[] }).remove ?? [];
+}
+
+export interface DailyStart {
+  session_id: string;
+  questions: SoloQuestion[];
+  already_done: boolean;
+}
+
+export async function startDaily(lang: string): Promise<DailyStart> {
+  const { data, error } = await supabase.rpc('start_daily_challenge', { p_lang: lang });
+  if (error) throw error;
+  return data as DailyStart;
+}
+
+export interface LeaderboardRow {
+  username: string;
+  avatar_id: string | null;
+  is_bot: boolean;
+  correct: number;
+  rank: number;
+}
+
+export async function dailyLeaderboard(): Promise<LeaderboardRow[]> {
+  const { data, error } = await supabase.rpc('daily_leaderboard');
+  if (error) throw error;
+  return (data as LeaderboardRow[]) ?? [];
 }
 
 export type ReportReason = 'wrong_answer' | 'unclear' | 'typo' | 'spoiler' | 'other';

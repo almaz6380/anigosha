@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
       <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
         <div className="text-lg font-semibold mb-3">{profile?.username}</div>
-        <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="grid grid-cols-4 gap-2 text-center">
           <div>
             <div className="text-xl font-bold text-accent-400">{profile?.xp ?? 0}</div>
             <div className="text-xs text-accent-400/60">{t('profile.xp')}</div>
@@ -57,7 +57,16 @@ export default function ProfilePage() {
             </div>
             <div className="text-xs text-accent-400/60">{t('profile.level')}</div>
           </div>
+          <div>
+            <div className="text-xl font-bold text-pink-400">{profile?.streak_current ?? 0}</div>
+            <div className="text-xs text-accent-400/60">{t('profile.streak')}</div>
+          </div>
         </div>
+        {(profile?.streak_best ?? 0) > 0 && (
+          <div className="text-xs text-accent-400/50 text-center mt-3">
+            {t('profile.streakBest')}: {profile?.streak_best}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">

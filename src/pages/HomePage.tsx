@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Swords, Brain, Trophy, User } from 'lucide-react';
+import { Swords, Brain, Trophy, User, CalendarDays, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const cards = [
@@ -22,6 +22,25 @@ export default function HomePage() {
       <p className="text-accent-400/70 mt-1 mb-8">
         {t('home.greeting', { name: profile?.username ?? '' })}
       </p>
+
+      <Link
+        to="/daily"
+        className="block rounded-2xl bg-gradient-to-r from-accent-500/20 to-pink-500/20 border border-accent-500/40 p-5 mb-4 hover:border-accent-400 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <CalendarDays className="w-8 h-8 text-accent-400 shrink-0" />
+          <div className="flex-1">
+            <div className="font-semibold">{t('home.daily')}</div>
+            <div className="text-xs text-accent-400/70 mt-0.5">{t('home.dailySub')}</div>
+          </div>
+          {(profile?.streak_current ?? 0) > 0 && (
+            <div className="flex items-center gap-1 text-pink-400 text-sm font-semibold">
+              <Flame className="w-4 h-4" />
+              {profile?.streak_current}
+            </div>
+          )}
+        </div>
+      </Link>
 
       <div className="grid grid-cols-2 gap-4">
         {cards.map(({ to, icon: Icon, title, sub }) => (

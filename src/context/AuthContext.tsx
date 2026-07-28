@@ -11,6 +11,9 @@ export interface Profile {
   elo: number;
   language: string;
   is_bot: boolean;
+  streak_current: number;
+  streak_best: number;
+  last_play_date: string | null;
 }
 
 interface AuthContextValue {

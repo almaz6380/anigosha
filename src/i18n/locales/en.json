@@ -1,13 +1,14 @@
 {
   "common": {
-    "appName": "AniBrain",
+    "appName": "Kioku",
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
     "back": "Back",
     "save": "Save",
     "cancel": "Cancel",
     "continue": "Continue",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "bot": "Bot"
   },
   "auth": {
     "login": "Log in",
@@ -41,7 +42,8 @@
     "solo": "Solo",
     "duel": "Duel",
     "leaderboard": "Leaderboard",
-    "profile": "Profile"
+    "profile": "Profile",
+    "daily": "Daily Challenge"
   },
   "home": {
     "greeting": "Hey {{name}}!",
@@ -52,7 +54,9 @@
     "leaderboard": "Leaderboard",
     "leaderboardSub": "The best otakus worldwide",
     "profile": "Profile",
-    "profileSub": "Stats & settings"
+    "profileSub": "Stats & settings",
+    "daily": "Daily Challenge",
+    "dailySub": "5 questions, new every day"
   },
   "profile": {
     "title": "Profile",
@@ -66,7 +70,9 @@
     "deleteConfirmTitle": "Really delete your account?",
     "deleteConfirmText": "All your data (profile, duels, stats) will be permanently deleted. This cannot be undone.",
     "deleteConfirmButton": "Yes, delete permanently",
-    "deleteError": "Deletion failed. Please try again later."
+    "deleteError": "Deletion failed. Please try again later.",
+    "streak": "Daily streak",
+    "streakBest": "Best"
   },
   "solo": {
     "difficulty": {
@@ -90,6 +96,30 @@
     "noXpAgain": "This round has already been scored.",
     "again": "Play again",
     "share": "Share result",
-    "shareText": "I got {{correct}} out of {{total}} questions right on {{category}}! Can you beat that?"
+    "shareText": "I got {{correct}} out of {{total}} questions right on {{category}}! Can you beat that?",
+    "fiftyFifty": "50:50 — remove two answers",
+    "streakDays_one": "{{count}} day in a row",
+    "streakDays_other": "{{count}} days in a row"
+  },
+  "daily": {
+    "title": "Daily Challenge",
+    "sub": "5 questions — the same for everyone",
+    "alreadyDone": "You have already played today's challenge. Five new questions tomorrow!",
+    "leaderboard": "Today's leaderboard",
+    "shareText": "I got {{correct}} out of {{total}} in today's Kioku challenge!"
+  },
+  "duel": {
+    "new": "Start a new duel",
+    "empty": "No duels yet. Start your first one!",
+    "yourTurn": "Your turn",
+    "waiting": "Opponent's turn",
+    "waitingLong": "{{name}} is playing. Check back later!",
+    "round": "Round {{n}}/4",
+    "won": "Won",
+    "lost": "Lost",
+    "draw": "Draw",
+    "endRound": "Hand over the round",
+    "queued": "No opponent free right now. We keep looking — try again shortly.",
+    "botHint": "Opponents with this mark are computer-controlled."
   }
 }

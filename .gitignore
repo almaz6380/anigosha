@@ -37,3 +37,7 @@ android/build/
 android/app/build/
 android/local.properties
 *.keystore
+.vercel
+
+# Claude Code: persönliche Einstellungen (nicht teilen)
+.claude/settings.local.json
