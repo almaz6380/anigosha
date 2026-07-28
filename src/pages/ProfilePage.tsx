@@ -124,6 +124,12 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
+      <div className="mt-8 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-accent-400/50">
+        <Link to="/legal/impressum">{t('legal.imprint')}</Link>
+        <Link to="/legal/datenschutz">{t('legal.privacy')}</Link>
+        <Link to="/legal/agb">{t('legal.terms')}</Link>
+      </div>
+
     </div>
   );
 }

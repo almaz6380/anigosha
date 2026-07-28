@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage';
 import SoloPage from './pages/SoloPage';
 import DuelPage from './pages/DuelPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import LegalPage from './pages/legal/LegalPage';
 
 function AppRoutes() {
   const { t } = useTranslation();
@@ -23,7 +24,24 @@ function AppRoutes() {
     );
   }
 
-  if (!session) return <AuthPage />;
+  // Rechtstexte vor dem Anmelde-Gate: Apple und Google rufen die
+  // Datenschutz-URL ohne Konto auf. Hinter dem Login gilt sie als fehlend.
+  const legalRoutes = (
+    <>
+      <Route path="/legal/impressum" element={<LegalPage doc="imprint" />} />
+      <Route path="/legal/datenschutz" element={<LegalPage doc="privacy" />} />
+      <Route path="/legal/agb" element={<LegalPage doc="terms" />} />
+    </>
+  );
+
+  if (!session) {
+    return (
+      <Routes>
+        {legalRoutes}
+        <Route path="*" element={<AuthPage />} />
+      </Routes>
+    );
+  }
   if (profile && !profile.username) return <UsernamePage />;
 
   return (
@@ -34,6 +52,7 @@ function AppRoutes() {
       <Route path="/duel" element={<DuelPage />} />
       <Route path="/leaderboard" element={<LeaderboardPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      {legalRoutes}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

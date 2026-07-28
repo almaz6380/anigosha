@@ -121,5 +121,11 @@
     "endRound": "Hand over the round",
     "queued": "No opponent free right now. We keep looking — try again shortly.",
     "botHint": "Opponents with this mark are computer-controlled."
+  },
+  "legal": {
+    "imprint": "Legal Notice",
+    "privacy": "Privacy",
+    "terms": "Terms of Use",
+    "legal": "Legal"
   }
 }

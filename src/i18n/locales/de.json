@@ -121,5 +121,11 @@
     "endRound": "Runde abgeben",
     "queued": "Gerade ist kein Gegner frei. Wir suchen weiter — versuch es gleich nochmal.",
     "botHint": "Gegner mit diesem Zeichen sind computergesteuert."
+  },
+  "legal": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "legal": "Rechtliches"
   }
 }
