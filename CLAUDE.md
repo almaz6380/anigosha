@@ -19,8 +19,8 @@ Anime-Quiz-App (Anigosha) für App Store + Google Play. Wissensquiz zu echten An
 Websuche sauber, das Register zeigte drei Treffer in unseren Klassen. Jeder künftige
 Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Spiele).
 **Bundle-ID:** at.gallab.animequiz
-**Live:** https://kioku-quiz.vercel.app (Vercel-Projekt `kioku`; alter Alias anibrain.vercel.app zeigt weiter dorthin)
-**Repository:** https://github.com/almaz6380/kioku (privat, seit 28.07.2026)
+**Live:** https://anigosha.vercel.app (Vercel-Projekt `anigosha`; alte Aliase kioku-quiz.vercel.app und anibrain.vercel.app zeigen weiter dorthin)
+**Repository:** https://github.com/almaz6380/anigosha (privat, seit 28.07.2026)
 **Deploy:** Vercel ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.

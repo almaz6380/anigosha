@@ -42,7 +42,7 @@ let angelegt = 0;
 let vorhanden = 0;
 
 for (const b of BOTS) {
-  // Die Domain bleibt bewusst @anibrain.bot, obwohl die App inzwischen Kioku heisst:
+  // Die Domain bleibt bewusst @anibrain.bot, obwohl die App inzwischen Anigosha heisst:
   // Das Skript erkennt bestehende Bots an ihrer E-Mail. Eine Aenderung wuerde beim
   // naechsten Lauf zwoelf zusaetzliche Bots anlegen. Die Adressen sind nie sichtbar.
   const email = `bot.${b.name.toLowerCase()}@anibrain.bot`;
