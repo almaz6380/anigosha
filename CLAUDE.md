@@ -1,16 +1,23 @@
-# CLAUDE.md — Kioku (Anime-Quiz-App)
+# CLAUDE.md — Anigosha (Anime-Quiz-App)
 
 ## Projektübersicht
 
-Anime-Quiz-App (Kioku) für App Store + Google Play. Wissensquiz zu echten Animes (Textfragen — Fakten sind legal) plus Bilderrätsel mit bewusst verfremdeten KI-Szenen. **NIEMALS Bilder erkennbarer geschützter Anime-Charaktere** (Urheberrecht, Takedown-Risiko fürs ganze Entwicklerkonto) und **keine Anime-Titel im App-Store-Titel/Untertitel/Keywords**.
+Anime-Quiz-App (Anigosha) für App Store + Google Play. Wissensquiz zu echten Animes (Textfragen — Fakten sind legal) plus Bilderrätsel mit bewusst verfremdeten KI-Szenen. **NIEMALS Bilder erkennbarer geschützter Anime-Charaktere** (Urheberrecht, Takedown-Risiko fürs ganze Entwicklerkonto) und **keine Anime-Titel im App-Store-Titel/Untertitel/Keywords**.
 
-**App-Name:** Kioku (記憶 = Gedächtnis) — Store-Titel „Kioku — Anime Quiz & Duelle"
-**Namenshistorie:** Hieß bis 28.07.2026 AniBrain. Verworfen, weil anibrain.ai vier Jahre
-lang ein bekannter Anime-Dienst war und das „Ani"-Präfix im Store übersättigt ist
-(AniGuessr, Anidle, AniPocket …). **„Tamashi" ebenfalls verworfen:** TAMASHII NATIONS
-ist die Anime-Merchandise-Marke von Bandai Spirits — Konfliktrisiko für das gesamte
-Entwicklerkonto. Vor dem Launch: Markenrecherche zu Kioku in TMview/EUIPO/DPMA,
-Klassen 9 und 41.
+**App-Name:** Anigosha — Store-Titel „Anigosha: Anime Quiz & Duelle" (DE) /
+„Anigosha: Anime Quiz & Duels" (EN). Kunstwort, **in TMview geprüft: keine Treffer**.
+
+**Namenshistorie — vier verworfene Namen, jeweils mit Grund:**
+| Name | Warum verworfen |
+|---|---|
+| AniBrain | anibrain.ai war 4 Jahre ein bekannter Anime-Dienst; „Ani"-Präfix übersättigt |
+| Tamashi | TAMASHII NATIONS = Dachmarke von Bandai Spirits (Anime-Merchandise) |
+| Kioku | TMview: 812 Treffer, davon **KIOKU STUDIO (Israel + WIPO) in Klasse 41** und KIOKU (China) in Klasse 9 |
+| Animatch/Animind/Animia/Animora/Animaze | alle vergeben; **Animaze** sogar als Marke in Klassen 9 **und** 41 |
+
+**Lehre daraus:** Eine Websuche ersetzt keine Markenrecherche. Bei Kioku war die
+Websuche sauber, das Register zeigte drei Treffer in unseren Klassen. Jeder künftige
+Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Spiele).
 **Bundle-ID:** at.gallab.animequiz
 **Live:** https://kioku-quiz.vercel.app (Vercel-Projekt `kioku`; alter Alias anibrain.vercel.app zeigt weiter dorthin)
 **Repository:** https://github.com/almaz6380/kioku (privat, seit 28.07.2026)

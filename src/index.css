@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Kioku-Farbwelt: dunkles Violett + Pink-Akzent (bewusst anders als MyPeak-Gold) */
+  /* Anigosha-Farbwelt: dunkles Violett + Pink-Akzent (bewusst anders als MyPeak-Gold) */
   --color-night-950: #0f0a1e;
   --color-night-900: #17102c;
   --color-night-800: #221741;

@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Kioku",
+    "appName": "Anigosha",
     "loading": "Lädt…",
     "error": "Etwas ist schiefgelaufen. Bitte versuch es erneut.",
     "back": "Zurück",
@@ -106,7 +106,7 @@
     "sub": "5 Fragen — für alle gleich",
     "alreadyDone": "Du hast die heutige Challenge schon gespielt. Morgen gibt es fünf neue Fragen!",
     "leaderboard": "Tagesbestenliste",
-    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Kioku-Challenge geschafft!"
+    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Anigosha-Challenge geschafft!"
   },
   "duel": {
     "new": "Neues Duell starten",

@@ -1,12 +1,12 @@
 // ===========================================================================
-//  AdMob-Anbindung für Kioku
+//  AdMob-Anbindung für Anigosha
 // ===========================================================================
 //  Solange USE_TEST_ADS = true laufen ausschließlich Google-Test-Anzeigen.
 //  Das ist während der Entwicklung Pflicht: Eigene Live-Anzeigen anzuklicken
 //  ist ein Richtlinienverstoß und kann das AdMob-Konto sperren.
 //
 //  Vor dem Launch-Build:
-//   1. In AdMob je eine App „Kioku" für iOS und Android anlegen → die beiden
+//   1. In AdMob je eine App „Anigosha" für iOS und Android anlegen → die beiden
 //      App-IDs in ios/App/App/Info.plist (GADApplicationIdentifier) und in
 //      android/app/src/main/AndroidManifest.xml eintragen.
 //   2. Je einen Interstitial- und Rewarded-Anzeigenblock anlegen → IDs unten
@@ -33,7 +33,7 @@ const TEST = {
   },
 };
 
-// Echte Kioku-Anzeigenblöcke (Konto pub-8860791993288062, angelegt 28.07.2026).
+// Echte Anigosha-Anzeigenblöcke (Konto pub-8860791993288062, angelegt 28.07.2026).
 // Werden erst genutzt, wenn USE_TEST_ADS oben auf false steht — das passiert
 // bewusst erst unmittelbar vor dem Release-Build.
 const PROD = {

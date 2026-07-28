@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Kioku",
+    "appName": "Anigosha",
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
     "back": "Back",
@@ -106,7 +106,7 @@
     "sub": "5 questions — the same for everyone",
     "alreadyDone": "You have already played today's challenge. Five new questions tomorrow!",
     "leaderboard": "Today's leaderboard",
-    "shareText": "I got {{correct}} out of {{total}} in today's Kioku challenge!"
+    "shareText": "I got {{correct}} out of {{total}} in today's Anigosha challenge!"
   },
   "duel": {
     "new": "Start a new duel",
