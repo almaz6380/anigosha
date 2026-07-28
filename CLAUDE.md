@@ -14,6 +14,9 @@ Klassen 9 und 41.
 **Bundle-ID:** at.gallab.animequiz
 **Live:** https://kioku-quiz.vercel.app (Vercel-Projekt `kioku`; alter Alias anibrain.vercel.app zeigt weiter dorthin)
 **Repository:** https://github.com/almaz6380/kioku (privat, seit 28.07.2026)
+**Deploy:** Vercel ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
+Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
+alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
 **Sprachen:** DE + EN zum Launch; weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen)
 **Monetarisierung:** AdMob (Interstitial + Rewarded) + IAP „Werbung entfernen" (RevenueCat)
@@ -129,3 +132,4 @@ Regeln dazu:
 - Supabase-Migrationen nummeriert in `supabase/migrations/`, idempotent (drop policy if exists …)
 - Wiederverwendungs-Vorlagen: `~/Projects/mypeak/src/lib/ads.js` (AdMob+UMP), `revenuecat.js`, `~/Projects/wellbooked/src/lib/push-client.ts`
 - KEIN Commit/Deploy ohne ausdrückliche Freigabe von Josef
+
