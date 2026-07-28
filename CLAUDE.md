@@ -162,6 +162,39 @@ Regeln dazu:
 - **Bei jeder neuen Datenverarbeitung** (Push, Käufe, Analyse) die Datenschutzerklärung
   ergänzen — sonst stimmt sie nicht mehr.
 
+## Auf einem zweiten Rechner einrichten
+
+```bash
+git clone https://github.com/almaz6380/anigosha.git
+cd anigosha
+npm install
+```
+
+Danach fehlen noch **vier Dinge, die bewusst nicht im Repo liegen**:
+
+**1. `.env` — zwingend, sonst startet nichts.** Nicht per Mail oder Chat übertragen
+(enthält den Service-Role-Key, der alle Rechte hat). Entweder per AirDrop/Passwort-
+manager kopieren oder neu holen:
+- `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` → Supabase-Dashboard, Projekt
+  `anigosha` (ref `hehrqqiobpbmmadmvpql`) → Project Settings → API
+- `SUPABASE_SERVICE_ROLE_KEY` → dieselbe Seite, Abschnitt „service_role" (geheim!)
+- `SUPABASE_ACCESS_TOKEN` → https://supabase.com/dashboard/account/tokens (neu erzeugen)
+
+**2. `.claude/settings.local.json`** — erlaubt Claude, Migrationen selbst einzuspielen.
+Muss den Pfad des *neuen* Rechners enthalten:
+```json
+{ "permissions": { "allow": ["Bash(node /PFAD/ZU/anigosha/tools/run-sql.mjs *)"] } }
+```
+
+**3. Vercel-Anbindung:** `npx vercel login`, dann `npx vercel link` → Projekt `anigosha`.
+Zum Deployen nicht nötig (Push auf `main` genügt), nur für CLI-Befehle.
+
+**4. Playwright für visuelle Prüfungen:** `npm i --no-save playwright && npx playwright install chromium`
+
+**Vor jeder Arbeitssitzung `git fetch`** — Vercel deployt bei jedem Push auf `main`
+automatisch. Wer auf einem alten Stand aufsetzt, rollt mit seinem Push die
+Live-Version zurück.
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)

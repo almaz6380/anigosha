@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Anigosha — Projektübergabe</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 10.5pt; line-height: 1.55; color: #1f2333; margin: 0;
+  }
+  h1 { font-size: 21pt; margin: 0 0 2mm; color: #4c1d95; }
+  h2 {
+    font-size: 13pt; margin: 9mm 0 3mm; color: #4c1d95;
+    border-bottom: 1.5px solid #ddd6fe; padding-bottom: 1.5mm;
+    page-break-after: avoid;
+  }
+  h3 { font-size: 11pt; margin: 5mm 0 2mm; color: #5b21b6; page-break-after: avoid; }
+  p, li { margin: 0 0 2mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+  .lead { color: #52525b; margin-bottom: 5mm; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; }
+  th, td { text-align: left; padding: 1.6mm 2mm; border-bottom: 1px solid #e9e5f5; vertical-align: top; }
+  th { background: #f5f3ff; color: #4c1d95; font-weight: 600; }
+  code {
+    font-family: "SF Mono", Menlo, monospace; font-size: 8.8pt;
+    background: #f4f4f5; padding: 0.4mm 1mm; border-radius: 2px;
+  }
+  pre {
+    background: #faf9fc; border: 1px solid #e9e5f5; border-left: 3px solid #8b5cf6;
+    padding: 2.5mm 3mm; border-radius: 3px; font-family: "SF Mono", Menlo, monospace;
+    font-size: 8.5pt; line-height: 1.45; overflow: hidden; white-space: pre-wrap;
+  }
+  .box {
+    background: #f5f3ff; border-left: 3px solid #8b5cf6;
+    padding: 2.5mm 3.5mm; margin: 3mm 0; border-radius: 0 3px 3px 0;
+  }
+  .warn { background: #fff7ed; border-left-color: #ea580c; }
+  .ok { background: #f0fdf4; border-left-color: #16a34a; }
+  .muted { color: #71717a; font-size: 9pt; }
+  .break { page-break-before: always; }
+  .tag {
+    display: inline-block; background: #ede9fe; color: #5b21b6;
+    padding: 0.3mm 1.5mm; border-radius: 3px; font-size: 8.5pt; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1>Anigosha — Projektübergabe</h1>
+<p class="lead">Anime-Quiz-App mit Solo-Modus, Duellen und Bots · Stand 28. Juli 2026<br>
+Diese Übersicht fasst zusammen, was gebaut wurde, warum es so gebaut wurde und was noch offen ist.</p>
+
+<h2>Die App in einem Absatz</h2>
+<p>Anigosha ist ein Anime-Wissensquiz für iOS und Android (plus Web). Es gibt einen Solo-Modus
+mit zwölf Serien in drei Schwierigkeitsstufen, eine tägliche Challenge, die für alle Spieler
+identisch ist, und rundenbasierte Duelle nach dem Quizduell-Muster. Wo noch keine echten
+Gegner da sind, treten computergesteuerte an. Finanziert wird die App über Werbung; später
+soll es einen Kauf „Werbung entfernen" geben.</p>
+
+<h2>Zugänge und Adressen</h2>
+<table>
+  <tr><th>Was</th><th>Wo</th></tr>
+  <tr><td>Live-App</td><td>https://anigosha.vercel.app</td></tr>
+  <tr><td>Repository (privat)</td><td>https://github.com/almaz6380/anigosha</td></tr>
+  <tr><td>Projektverzeichnis</td><td><code>~/Projects/anime-quiz</code></td></tr>
+  <tr><td>Datenbank</td><td>Supabase, Projekt <code>anigosha</code>, ref <code>hehrqqiobpbmmadmvpql</code> (Frankfurt)</td></tr>
+  <tr><td>Hosting</td><td>Vercel-Projekt <code>anigosha</code> — <strong>Push auf <code>main</code> deployt automatisch</strong></td></tr>
+  <tr><td>Werbung</td><td>AdMob-Konto <code>pub-8860791993288062</code> (dasselbe wie MyPeak)</td></tr>
+  <tr><td>Bundle-ID</td><td><code>at.gallab.animequiz</code> — bewusst neutral, überlebt jede Umbenennung</td></tr>
+  <tr><td>Testzugang</td><td><code>solo-test@anibrain.local</code> / <code>TestPasswort123</code></td></tr>
+</table>
+
+<h2>Auf dem zweiten MacBook einrichten</h2>
+<pre>git clone https://github.com/almaz6380/anigosha.git
+cd anigosha
+npm install</pre>
+
+<p>Danach fehlen vier Dinge, die bewusst nicht im Repository liegen:</p>
+
+<h3>1. Die Datei <code>.env</code> — ohne sie startet nichts</h3>
+<div class="warn box">
+  <strong>Nicht per Mail oder Chat übertragen.</strong> Sie enthält den Service-Role-Schlüssel,
+  der alle Rechte an der Datenbank hat. Per AirDrop oder Passwortmanager kopieren — oder
+  neu holen (siehe unten).
+</div>
+<table>
+  <tr><th>Schlüssel</th><th>Woher</th></tr>
+  <tr><td><code>VITE_SUPABASE_URL</code><br><code>VITE_SUPABASE_ANON_KEY</code></td>
+      <td>Supabase-Dashboard → Projekt <code>anigosha</code> → Project Settings → API</td></tr>
+  <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td>
+      <td>dieselbe Seite, Abschnitt „service_role" — geheim halten</td></tr>
+  <tr><td><code>SUPABASE_ACCESS_TOKEN</code></td>
+      <td>supabase.com/dashboard/account/tokens — dort neu erzeugen</td></tr>
+</table>
+
+<h3>2. <code>.claude/settings.local.json</code></h3>
+<p>Erlaubt Claude, Datenbank-Migrationen selbst einzuspielen. Der Pfad muss der des
+<em>neuen</em> Rechners sein:</p>
+<pre>{ "permissions": { "allow": ["Bash(node /PFAD/ZU/anigosha/tools/run-sql.mjs *)"] } }</pre>
+
+<h3>3. Vercel (optional)</h3>
+<p><code>npx vercel login</code>, dann <code>npx vercel link</code> → Projekt <code>anigosha</code>.
+Zum Deployen nicht nötig — ein Push auf <code>main</code> genügt.</p>
+
+<h3>4. Playwright (für visuelle Prüfungen)</h3>
+<pre>npm i --no-save playwright &amp;&amp; npx playwright install chromium</pre>
+
+<div class="warn box">
+  <strong>Vor jeder Sitzung <code>git fetch</code>.</strong> Vercel deployt bei jedem Push auf
+  <code>main</code> automatisch. Wer auf einem alten Stand aufsetzt, rollt mit seinem Push
+  die Live-Version zurück. Dasselbe Problem gab es schon bei RechtsKarten.
+</div>
+
+<div class="break"></div>
+
+<h2>Was fertig ist</h2>
+
+<table>
+  <tr><th>Meilenstein</th><th>Inhalt</th></tr>
+  <tr><td><span class="tag">M1</span> Fundament</td>
+      <td>Anmeldung, Profil, Spielername, Zwei Sprachen (DE/EN), Konto-Löschung, native Projekte für iOS und Android</td></tr>
+  <tr><td><span class="tag">M2</span> Fragen &amp; Solo</td>
+      <td><strong>804 Fragen</strong> — zwölf Serien à 67, je auf Deutsch und Englisch mit Erklärung.
+      Solo-Quiz, 50:50-Joker, Tagesserie, tägliche Challenge mit Bestenliste</td></tr>
+  <tr><td><span class="tag">M3</span> Duelle &amp; Bots</td>
+      <td>Vier Runden à drei Fragen, zwölf Bot-Gegner (Elo 820–1380), Elo-Wertung, globale Bestenliste</td></tr>
+  <tr><td><span class="tag">M4</span> Werbung</td>
+      <td>AdMob eingebaut mit DSGVO-Einwilligung. Läuft mit <strong>Test-Anzeigen</strong>, echte IDs sind hinterlegt</td></tr>
+  <tr><td><span class="tag">M5</span> Vorarbeiten</td>
+      <td>Impressum, Datenschutzerklärung, Nutzungsbedingungen (DE+EN), öffentlich erreichbar</td></tr>
+</table>
+
+<h3>Die zwölf Serien</h3>
+<p>One Piece · Naruto · Dragon Ball · Pokémon · Detektiv Conan · InuYasha · Ranma ½ ·
+Attack on Titan · Death Note · My Hero Academia · Demon Slayer · Jujutsu Kaisen<br>
+<span class="muted">Je 22 leichte, 22 mittlere und 23 schwere Fragen.</span></p>
+
+<h2>Entscheidungen, die man kennen muss</h2>
+
+<h3>Der Name — vier Anläufe</h3>
+<table>
+  <tr><th>Verworfen</th><th>Grund</th></tr>
+  <tr><td>AniBrain</td><td>anibrain.ai war vier Jahre ein bekannter Anime-Dienst; das „Ani"-Präfix ist im Store übersättigt</td></tr>
+  <tr><td>Tamashi</td><td>TAMASHII NATIONS ist die Anime-Marke von Bandai Spirits</td></tr>
+  <tr><td>Kioku</td><td>Markenregister: KIOKU STUDIO in Klasse 41, KIOKU in Klasse 9 — genau unsere Klassen</td></tr>
+  <tr><td>Animatch, Animind, Animia, Animora, Animaze</td><td>alle vergeben; Animaze sogar als Marke in Klasse 9 <em>und</em> 41</td></tr>
+</table>
+<div class="ok box">
+  <strong>Die wichtigste Lehre des Projekts:</strong> Eine Websuche ersetzt keine Markenrecherche.
+  Bei „Kioku" war die Websuche völlig sauber — das Register zeigte 812 Einträge, darunter drei
+  in unseren Klassen. Jeder Namenskandidat gehört <strong>zuerst</strong> in TMview, Klassen 9
+  (Software) und 41 (Spiele).
+</div>
+
+<h3>Keine Bilder von Anime-Figuren</h3>
+<p>Feste Entscheidung: keine erkennbaren geschützten Figuren, auch keine KI-generierten.
+Solche Bilder wären abgeleitete Werke — das Risiko trifft nicht nur diese App, sondern
+das ganze Entwicklerkonto samt MyPeak und WELLbooked. Stattdessen Textwissen (Fakten sind
+frei) und später verfremdete Bilderrätsel.</p>
+
+<h3>Lösungen verlassen nie den Server</h3>
+<p>Die Fragen-Tabelle ist für Clients komplett gesperrt. Die richtige Antwort kommt erst
+zurück, <em>nachdem</em> geantwortet wurde, und nur die erste Antwort zählt. XP und Elo
+werden ausschließlich serverseitig vergeben; ein direkter Schreibversuch prallt ab.
+Auch der 50:50-Joker rechnet auf dem Server, weil der Browser die Lösung gar nicht kennt.</p>
+
+<h3>Bots ziehen ohne Zeitsteuerung</h3>
+<p>Statt eines Cron-Dienstes ziehen die Bots beim nächsten Zugriff des Gegners — ihre
+Wartezeit halten sie trotzdem ein. Das spart eine komplette Infrastruktur, die
+stillschweigend ausfallen kann. (Genau das war bei WELLbooked passiert: Crons, die
+monatelang tot waren.)</p>
+
+<div class="break"></div>
+
+<h2>Arbeitsweise, die sich bewährt hat</h2>
+
+<h3>Migrationen immer erst trocken</h3>
+<p>Jede Datenbankänderung läuft zuerst in einer Transaktion, die zurückgerollt wird:</p>
+<pre>{ echo "begin;"; cat migration.sql; echo "rollback;"; } &gt; dry.sql
+node tools/run-sql.mjs dry.sql</pre>
+<p>Das hat mehrfach Fehler abgefangen, bevor sie die Produktivdatenbank erreichten —
+etwa eine Unterabfrage in einer CHECK-Bedingung und eine Fensterfunktion in einer
+Aggregation.</p>
+
+<h3>Tests</h3>
+<table>
+  <tr><th>Skript</th><th>Prüft</th></tr>
+  <tr><td><code>test-solo-flow.mjs</code></td><td>Solo-Runde, XP, alle 36 Kategorie-Stufen-Kombinationen (12)</td></tr>
+  <tr><td><code>test-joker-daily.mjs</code></td><td>50:50-Joker, tägliche Challenge, Tagesserie (15)</td></tr>
+  <tr><td><code>test-duel-flow.mjs</code></td><td>komplettes Duell, Fairness, Elo (19)</td></tr>
+  <tr><td><code>test-level.mts</code></td><td>Levelkurve und Grenzfälle (27) — <code>npx tsx</code></td></tr>
+  <tr><td><code>check-theme-color.mjs</code></td><td>Farbe der Statusleiste je Seite</td></tr>
+  <tr><td><code>shot-home.mjs</code>, <code>shot-levelup.mjs</code></td><td>Screenshots für visuelle Prüfung</td></tr>
+</table>
+
+<h3>Design-Änderungen immer anschauen</h3>
+<p>Zwei Fehler fielen ausschließlich im Screenshot auf: Die Wolken waren im ersten Entwurf
+unsichtbar (zu stark weichgezeichnet), und der Schleier beim Levelaufstieg war zu dünn.
+Ein dritter Fehler — der schwarze Balken über dem Himmel — war selbst im Screenshot
+unsichtbar, weil die Statusleiste zu iOS gehört und nicht zur Seite. <strong>Manche Fehler
+kann nur ein Blick aufs echte Gerät zeigen.</strong></p>
+
+<h2>Was noch offen ist</h2>
+
+<h3>Vor der Veröffentlichung zwingend</h3>
+<ol>
+  <li><strong>Markenrecherche „Anigosha"</strong> in TMview, EUIPO und DPMA (Klassen 9 und 41) —
+      war bei der Vorprüfung frei, sollte vor dem Launch bestätigt werden</li>
+  <li><strong><code>USE_TEST_ADS</code> auf <code>false</code></strong> in <code>src/lib/ads.ts</code> — erst
+      unmittelbar vor dem Release-Build. Eigene Live-Anzeigen anzusehen kann das AdMob-Konto
+      sperren, an dem auch MyPeak hängt</li>
+  <li><strong>DSGVO-Einwilligungsnachricht in AdMob</strong> erstellen <em>und veröffentlichen</em></li>
+  <li><strong>E-Mail <code>anigosha@wellbooked.at</code></strong> einrichten — sie steht im Impressum,
+      du musst darüber erreichbar sein</li>
+  <li><strong>Rechtstexte prüfen lassen</strong> — sind sorgfältige Entwürfe, keine Rechtsberatung.
+      Die WKO-Rechtsberatung ist für Mitglieder kostenlos</li>
+</ol>
+
+<h3>Danach</h3>
+<ul>
+  <li><strong>Firebase + Push</strong> („Du bist dran!" bei Duellen) — braucht ein Firebase-Projekt
+      und für iOS einen APNs-Schlüssel aus dem Apple-Konto</li>
+  <li><strong>RevenueCat</strong> für „Werbung entfernen" — setzt Store-Einträge voraus</li>
+  <li><strong>Store-Einträge</strong> in App Store Connect und Play Console, App-Icon, Screenshots</li>
+  <li><strong>Offene Designfrage:</strong> Duelle vergeben derzeit kein XP, nur Elo. Ein
+      Levelaufstieg ist nur über Solo-Runden möglich. Das wirkt schief, sobald jemand
+      überwiegend duelliert</li>
+</ul>
+
+<h2>Wer macht was</h2>
+<table>
+  <tr><th>Claude allein</th><th>Nur Josef</th></tr>
+  <tr>
+    <td>Code, Tests, Fehlerbehebung<br>Datenbank-Migrationen<br>Deployment<br>
+        Store-Texte, Rechtstexte<br>Screenshots<br>Technische Anbindung von AdMob,
+        RevenueCat, Firebase</td>
+    <td>Konten anlegen (Identität, Verträge)<br>Apple-Schlüssel und Zertifikate<br>
+        Store-Einträge anlegen<br>Zahlungs- und Steuerangaben<br>Markenrecherche<br>
+        App-Icon und Grafiken<br>Test auf echter Hardware<br>Die finale Einreichung</td>
+  </tr>
+</table>
+
+<p class="muted" style="margin-top:8mm">Die vollständige technische Dokumentation steht in
+<code>CLAUDE.md</code> im Repository — dort sind auch alle Konventionen und Fallstricke
+festgehalten, die während der Entwicklung aufgetreten sind.</p>
+
+</body>
+</html>
