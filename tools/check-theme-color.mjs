@@ -34,25 +34,36 @@ await page.addInitScript(([u, s]) => {
 }]);
 
 const themeColor = () => page.getAttribute('meta[name="theme-color"]', 'content');
+// Der html-Hintergrund ist der eigentliche Uebeltaeter: Er scheint ueberall
+// dort durch, wo der Himmel nicht hinreicht — etwa im Bereich der Statusleiste.
+const htmlBg = () => page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
 
 await page.goto(url, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 const home = await themeColor();
-console.log(`Startseite:  ${home}`);
+const homeBg = await htmlBg();
+console.log(`Startseite:  theme-color ${home}, html-Hintergrund ${homeBg}`);
 
 await page.goto(`${url}/solo`, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 const solo = await themeColor();
-console.log(`Solo-Quiz:   ${solo}`);
+const soloBg = await htmlBg();
+console.log(`Solo-Quiz:   theme-color ${solo}, html-Hintergrund ${soloBg}`);
 
 // Nachts ist der Himmelston absichtlich derselbe wie die Standardfarbe —
 // dann prüfen wir nur, dass Solo korrekt zurückstellt.
 const nacht = new Date().getHours() >= 21 || new Date().getHours() < 6;
 const ok1 = nacht ? home === '#0f0a1e' : home !== '#0f0a1e';
 const ok2 = solo === '#0f0a1e';
+// rgb(15, 10, 30) ist #0f0a1e
+const dunkel = 'rgb(15, 10, 30)';
+const ok3 = nacht ? homeBg === dunkel : homeBg !== dunkel;
+const ok4 = soloBg === dunkel;
 
 console.log(`\n${ok1 ? '  OK  ' : ' FEHL '} Startseite trägt den Himmelston${nacht ? ' (nachts = Standardfarbe)' : ''}`);
-console.log(`${ok2 ? '  OK  ' : ' FEHL '} Solo-Quiz stellt auf Dunkelviolett zurück`);
+console.log(`${ok3 ? '  OK  ' : ' FEHL '} html-Hintergrund folgt dem Himmel (sonst schwarzer Balken oben)`);
+console.log(`${ok2 ? '  OK  ' : ' FEHL '} Solo-Quiz stellt theme-color zurück`);
+console.log(`${ok4 ? '  OK  ' : ' FEHL '} Solo-Quiz stellt den html-Hintergrund zurück`);
 
 await browser.close();
-process.exit(ok1 && ok2 ? 0 : 1);
+process.exit(ok1 && ok2 && ok3 && ok4 ? 0 : 1);

@@ -4,26 +4,35 @@ import { useEffect } from 'react';
 export const DEFAULT_THEME_COLOR = '#0f0a1e';
 
 /**
- * Färbt den Bereich der Statusleiste passend zur aktuellen Seite.
+ * Färbt alles, was außerhalb des Seiteninhalts liegt, passend zur Seite.
  *
- * Hintergrund: iOS und Android füllen den Streifen über der Seite mit dem
- * Wert aus `<meta name="theme-color">`. Steht dort das dunkle Violett,
- * während die Seite ein heller Himmel ist, entsteht oben ein schwarzer
- * Balken — genau das war auf dem iPhone zu sehen.
+ * Zwei Stellen müssen dafür zusammenspielen — die erste allein reichte nicht:
  *
- * Beim Verlassen der Seite wird der vorherige Wert wiederhergestellt, sonst
- * bliebe die helle Farbe über dem dunklen Quiz stehen.
+ * 1. `<meta name="theme-color">` — danach färben iOS und Android den Streifen
+ *    über der Seite.
+ * 2. Die Hintergrundfarbe von `<html>`. Sie steht fest auf Dunkelviolett, und
+ *    der Himmel liegt mit negativem z-index dahinter. Überall dort, wo der
+ *    Himmel nicht hinreicht (Bereich der Statusleiste, Überscrollen), scheint
+ *    deshalb der dunkle html-Hintergrund durch — genau das war der schwarze
+ *    Balken auf dem iPhone.
+ *
+ * Beim Verlassen der Seite werden beide Werte zurückgestellt, sonst bliebe
+ * der helle Ton über dem dunklen Quiz stehen.
  */
 export function useThemeColor(color: string) {
   useEffect(() => {
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (!meta) return;
+    const root = document.documentElement;
 
-    const vorher = meta.content;
-    meta.content = color;
+    const vorherMeta = meta?.content;
+    const vorherBg = root.style.backgroundColor;
+
+    if (meta) meta.content = color;
+    root.style.backgroundColor = color;
 
     return () => {
-      meta.content = vorher;
+      if (meta && vorherMeta !== undefined) meta.content = vorherMeta;
+      root.style.backgroundColor = vorherBg;
     };
   }, [color]);
 }
