@@ -127,5 +127,9 @@
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
     "legal": "Rechtliches"
+  },
+  "level": {
+    "reached": "Level erreicht",
+    "title": "Level {{level}}"
   }
 }

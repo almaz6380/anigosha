@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { levelProgress } from '../lib/level';
 
 const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
@@ -53,7 +54,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <div className="text-xl font-bold text-accent-400">
-              {Math.floor((profile?.xp ?? 0) / 500) + 1}
+              {levelProgress(profile?.xp ?? 0).level}
             </div>
             <div className="text-xs text-accent-400/60">{t('profile.level')}</div>
           </div>

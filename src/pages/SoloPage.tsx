@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Check, Flag, Flame, Lightbulb, Scissors, Share2, Trophy, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitial } from '../lib/ads';
+import LevelUpClouds from '../components/LevelUpClouds';
+import { levelUpFrom } from '../lib/level';
 import {
   answerSolo,
   dailyLeaderboard,
@@ -25,7 +27,7 @@ type Step = 'category' | 'difficulty' | 'quiz' | 'result';
 export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { session, refreshProfile } = useAuth();
+  const { session, profile, refreshProfile } = useAuth();
   const lang = i18n.language.startsWith('en') ? 'en' : 'de';
 
   const [step, setStep] = useState<Step>(daily ? 'quiz' : 'category');
@@ -46,6 +48,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const [jokerUsed, setJokerUsed] = useState(false);
   const [board, setBoard] = useState<LeaderboardRow[]>([]);
   const [alreadyDone, setAlreadyDone] = useState(false);
+  const [newLevel, setNewLevel] = useState<number | null>(null);
 
   const resetQuestionState = useCallback(() => {
     setPicked(null);
@@ -130,13 +133,18 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     if (!sessionId) return;
     setBusy(true);
     try {
-      setResult(await finishSolo(sessionId));
+      const xpBefore = profile?.xp ?? 0;
+      const res = await finishSolo(sessionId);
+      setResult(res);
       await refreshProfile();
       if (daily) await dailyLeaderboard().then(setBoard).catch(() => {});
       setStep('result');
-      // Entscheidet selbst, ob wirklich eine Anzeige kommt (jede 2. Runde,
-      // mind. 90 s Abstand, nie bei Werbefreiheit).
-      maybeShowInterstitial();
+
+      // Levelaufstieg? Dann erst die Wolken, Werbung danach — sonst schiebt
+      // sich eine Anzeige über den Glücksmoment.
+      const up = levelUpFrom(xpBefore, res.xp ?? 0);
+      if (up) setNewLevel(up);
+      else maybeShowInterstitial();
     } catch {
       setError(t('common.error'));
     } finally {
@@ -224,6 +232,15 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   if (step === 'result') {
     return (
       <div className={shell}>
+        {newLevel !== null && (
+          <LevelUpClouds
+            level={newLevel}
+            onDone={() => {
+              setNewLevel(null);
+              maybeShowInterstitial();
+            }}
+          />
+        )}
         <Header onBack={() => navigate('/')} title={daily ? t('daily.title') : t('solo.resultTitle')} />
 
         {result ? (

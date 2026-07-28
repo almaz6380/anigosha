@@ -17,6 +17,112 @@ html {
   background-color: var(--color-night-950);
 }
 
+/* ---------------------------------------------------------------------------
+   Himmel auf dem Startbildschirm
+   Wolken bestehen aus mehreren weichen Kreisen — wirkt natürlicher als eine
+   einzelne Ellipse. Sie ziehen einmal komplett durchs Bild und beginnen von
+   vorn; die Breite (420px) fließt in die Endposition ein, damit sie außerhalb
+   des Bildes verschwinden statt zu springen.
+--------------------------------------------------------------------------- */
+.sky-cloud {
+  width: 420px;
+  height: 200px;
+  animation-name: sky-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.sky-puff {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(14px);
+}
+
+@keyframes sky-drift {
+  from { left: -440px; }
+  to   { left: 100%; }
+}
+
+/* ---------------------------------------------------------------------------
+   Levelaufstieg: Wolken ziehen auf und geben die Zahl frei
+--------------------------------------------------------------------------- */
+.levelup-cloud {
+  width: 420px;
+  height: 220px;
+  top: 50%;
+  margin-top: -110px;
+}
+
+.levelup-puff {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.93);
+  filter: blur(10px);
+}
+
+/* Von außen herein, kurz halten, wieder hinaus */
+.levelup-cloud-left {
+  left: 50%;
+  margin-left: -420px;
+  animation: levelup-left 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.levelup-cloud-right {
+  left: 50%;
+  animation: levelup-right 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes levelup-left {
+  0%   { transform: translateX(-120vw); opacity: 0; }
+  28%  { transform: translateX(90px);   opacity: 1; }
+  55%  { transform: translateX(90px);   opacity: 1; }
+  100% { transform: translateX(-120vw); opacity: 0; }
+}
+
+@keyframes levelup-right {
+  0%   { transform: translateX(120vw);  opacity: 0; }
+  28%  { transform: translateX(-90px);  opacity: 1; }
+  55%  { transform: translateX(-90px);  opacity: 1; }
+  100% { transform: translateX(120vw);  opacity: 0; }
+}
+
+/* Die Zahl erscheint erst, wenn die Wolken sich wieder öffnen */
+.levelup-text {
+  opacity: 0;
+  animation: levelup-reveal 2.6s ease-out forwards;
+}
+
+@keyframes levelup-reveal {
+  0%, 45% { opacity: 0; transform: scale(0.85); }
+  62%     { opacity: 1; transform: scale(1.06); }
+  75%     { transform: scale(1); }
+  88%     { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+.levelup-text-static {
+  animation: levelup-fade 1.6s ease-out forwards;
+}
+
+@keyframes levelup-fade {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.levelup-veil {
+  animation: levelup-fade 2.6s ease-out forwards;
+}
+
+/* Wer Bewegung reduziert, bekommt keine ziehenden Wolken —
+   weder im Himmel noch beim Levelaufstieg. */
+@media (prefers-reduced-motion: reduce) {
+  .sky-cloud { animation: none; }
+  .levelup-cloud { display: none; }
+}
+
 body {
   margin: 0;
   color: #ede9fe;
