@@ -217,3 +217,47 @@ Live-Version zurück.
 - Wiederverwendungs-Vorlagen: `~/Projects/mypeak/src/lib/ads.js` (AdMob+UMP), `revenuecat.js`, `~/Projects/wellbooked/src/lib/push-client.ts`
 - KEIN Commit/Deploy ohne ausdrückliche Freigabe von Josef
 
+
+---
+
+## Handy-Betrieb: Builds, Deploys und fal.ai auf Zuruf
+
+Josef arbeitet meist vom Handy. Für **alle** Sitzungen dieses Repos gilt darum eine
+Dauer-Freigabe. Sie sagt nur, *dass* Claude das darf — sie ersetzt nie das „ja" zum
+einzelnen Lauf.
+
+**Grundsätzlich erlaubt:**
+- die App bauen, signieren und in die Stores hochladen — auf GitHubs Rechnern, ohne Mac
+- Deploys auslösen
+- fal.ai für Bildmaterial nutzen (Store-Screenshots, Icons, Grafiken)
+
+**Bedingung, ausnahmslos:** Jeder einzelne Lauf braucht vorher ein ausdrückliches
+„ja" von Josef im Chat. Davor in drei Zeilen zusammenfassen: *was* passiert, *welche
+Versionsnummer*, *wohin* es geht (Store / Produktion / nur Artefakt zum Ansehen) —
+bei fal.ai zusätzlich Modell, Anzahl Bilder und ungefähre Kosten. Geht etwas schief:
+melden und stehen bleiben, nicht auf eigene Faust nachbessern und noch einmal
+hochladen. Ergebnisse (Bilder, Build-Artefakte, Logs) mit `SendUserFile` direkt im
+Chat zeigen — auf dem Handy gibt es keinen Dateimanager.
+
+**Schlüssel gehören weder ins Repo noch in den Chat:**
+
+| Zweck | Ort |
+|---|---|
+| Signierung + Store-Upload | GitHub → Repo → Settings → Secrets and variables → Actions |
+| `FAL_KEY` | Umgebungsvariable der Claude-Umgebung (claude.ai/code → Environment) |
+| Vercel / Supabase | Vercel-Env bzw. lokale `.env` (gitignored) |
+
+Ein Schlüssel, der im Chat steht, steht dauerhaft im Sitzungsprotokoll → gilt als
+verbrannt und muss ersetzt werden. Fehlt einer: sagen **welcher** und **wo er
+hingehört**, statt zu raten oder einen Umweg zu bauen.
+
+**fal.ai läuft in der Sitzung** (Josef braucht dafür kein Terminal):
+`curl -s https://fal.run/<modell> -H "Authorization: Key $FAL_KEY" -H 'Content-Type: application/json' -d '{"prompt":"…"}'`
+→ Bild herunterladen, ins Repo legen, committen, im Chat zeigen. Ohne gesetzten
+`FAL_KEY` ist der Weg zu: dann sagen, dass die Variable in der Umgebung fehlt.
+
+**Auslösen in diesem Repo:** Noch **kein** Release-Workflow — Vorlage:
+`mahjong-app/.github/workflows/*` + `store/ci-setup.md`. Die Web-App deployt Vercel
+bei jedem Push auf `main` (deshalb vor der Arbeit immer `git fetch`). Vor einem
+Release-Build `USE_TEST_ADS = false` setzen — und niemals die eigenen Live-Anzeigen
+anklicken, an dem AdMob-Konto hängen auch MyPeak und WELLbooked.

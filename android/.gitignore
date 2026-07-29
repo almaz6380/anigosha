@@ -57,6 +57,10 @@ captures/
 #*.jks
 #*.keystore
 
+# Signierschlüssel gehören NIE ins Repo (weder lokal noch aus der CI).
+upload-keystore.jks
+keystore.properties
+
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx/
