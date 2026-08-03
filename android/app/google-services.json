@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977622396637",
+    "project_id": "anigosha-9b46f",
+    "storage_bucket": "anigosha-9b46f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977622396637:android:d2fd9456cb5e1774f1b534",
+        "android_client_info": {
+          "package_name": "at.gallab.animequiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuBcEaKTD7GIO_LCfz4M8_mWRvgGPrIyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
