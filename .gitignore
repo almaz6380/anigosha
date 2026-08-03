@@ -41,3 +41,6 @@ android/local.properties
 
 # Claude Code: persönliche Einstellungen (nicht teilen)
 .claude/settings.local.json
+
+# Vom Icon-Werkzeug erzeugte Zwischenstände
+assets/
