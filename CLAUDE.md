@@ -96,7 +96,60 @@ alter Stand die Live-Version.
       Test-Anzeigen. Eigene Live-Anzeigen anzusehen/anzuklicken kann das Konto sperren —
       und daran hängen auch MyPeak und WELLbooked.
 - [ ] DSGVO-Einwilligungsnachricht in AdMob erstellen **und veröffentlichen** (vor Launch)
-- [ ] RevenueCat „remove_ads", Push (FCM/APNs)
+- [ ] RevenueCat „remove_ads"
+
+### Push-Benachrichtigungen — FERTIG gebaut (03.08.2026), Gerätetest offen
+
+Firebase-Projekt `anigosha-9b46f` (Nummer 977622396637). APNs-Schlüssel `FXBV5QV9J3`,
+Team `JU8STVD4SJ` — in **beiden** Slots hinterlegt (Entwicklung *und* Produktion; fehlt
+der Entwicklungs-Slot, schweigt Push im Testbuild und man sucht den Fehler im Code).
+
+**Die Kette:**
+```
+Zugwechsel in matches → Trigger matches_notify → push_outbox
+   → pg_cron (jede Minute) → push_dispatch → pg_net
+   → Edge Function send-push → Google OAuth → FCM → Gerät
+```
+
+- Migration `0018_push.sql`: `push_tokens`, `push_outbox`, Trigger, `run_due_bot_turns`
+- Migration `0019_push_versand.sql`: `push_dispatch`, `push_outbox_fail`, Aufräumjob
+- Edge Function `send-push` (veröffentlicht), Client `src/lib/push.ts`,
+  `public/firebase-messaging-sw.js`, Schalter unter Profil
+- Tests: `test-push.mjs` (25), `test-push-versand.mjs` (8) — beide grün
+
+**Entscheidungen, die man kennen muss:**
+
+- **Bots ziehen jetzt nach Zeitplan**, nicht mehr nur „lazy". Grund: Ein lazy ziehender
+  Bot zieht erst, wenn der Mensch die Partie öffnet — dann steht der aber schon vor dem
+  Bildschirm. Gegen Bots, also zum Start gegen fast jeden Gegner, wäre Push wirkungslos
+  gewesen. Die lazy-Aufrufe in `duel_state`/`list_duels` bleiben zusätzlich bestehen.
+- **Ein Trigger statt Änderungen in den RPCs.** `matches_notify` sieht jeden Zugwechsel,
+  egal wer ihn auslöst. Kernregel: `new.turn` zeigt immer auf den Empfänger — wer gerade
+  gezogen hat, steht ohnehin vor dem Bildschirm.
+- **`@capacitor-firebase/messaging`, nicht `@capacitor/push-notifications`.** Letzteres
+  gibt auf iOS das rohe **APNs**-Token heraus, nicht das Firebase-Token. Der Versand über
+  FCM scheitert damit auf dem iPhone durchgängig — mit der Meldung „ungültiges Token",
+  die nach einem Gerätefehler aussieht statt nach der falschen Sorte Token.
+- **Eigenes Geheimnis `PUSH_SECRET` statt Vergleich mit dem Service-Role-Schlüssel.**
+  Supabase hat die Schlüsselformate umgestellt; was die Laufzeitumgebung unter
+  `SUPABASE_SERVICE_ROLE_KEY` liefert, ist nicht mehr verlässlich derselbe Wert wie in
+  unserer `.env`. Genau daran ist der erste Versandversuch mit 401 gescheitert.
+- **Edge Functions mit `--use-api` veröffentlichen.** Der Docker-Weg der CLI bricht hier
+  mit `Effect.tryPromise` ab.
+- **Geheimnisse:** `FCM_SERVICE_ACCOUNT`, `PUSH_SECRET`, `APP_URL` als Supabase-Secrets;
+  `anigosha_push_url`, `anigosha_service_key`, `anigosha_push_secret` im Vault (der
+  Zeitplan liest sie von dort). Nichts davon gehört in eine Migration — die liegt im
+  Repository.
+- **Der Versand-Zeitplan muss beim Testen angehalten werden** (`test-push.mjs` tut das in
+  `try/finally`). Sonst räumt er dem Test die Warteschlange weg und löscht dessen
+  erfundenes Token — der Test schlüge dann mal fehl und mal nicht.
+- iOS-Berechtigung liegt in `App.entitlements` (Debug, `development`) und
+  `AppRelease.entitlements` (Release, `production`), beide im Xcode-Projekt eingetragen.
+- **Die Datenschutzerklärung wurde ergänzt** (Abschnitt „Benachrichtigungen", DE+EN).
+  Gerätetoken sind personenbezogene Daten.
+
+**Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
+erscheint, kann kein Skript prüfen.
 
 ### Offen: M5 Release
 

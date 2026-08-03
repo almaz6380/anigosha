@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Bot, Check, ChevronRight, Swords, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
@@ -16,6 +16,7 @@ import {
 export default function DuelPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { matchId } = useParams();
   const lang = i18n.language.startsWith('en') ? 'en' : 'de';
 
   const [duels, setDuels] = useState<DuelSummary[]>([]);
@@ -39,6 +40,16 @@ export default function DuelPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Über eine Benachrichtigung hereingekommen: die genannte Partie gleich
+  // öffnen. Das gilt auch, wenn die App schon lief — dann ändert sich nur der
+  // Pfad, und ohne diesen Effekt bliebe die Übersicht stehen.
+  useEffect(() => {
+    if (matchId && matchId !== active) openMatch(matchId);
+    // openMatch bewusst nicht in der Liste: Es wird bei jedem Render neu
+    // angelegt und würde den Effekt sonst endlos wiederholen.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchId]);
 
   async function neu() {
     setBusy(true);

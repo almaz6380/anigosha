@@ -131,5 +131,14 @@
   "level": {
     "reached": "Level erreicht",
     "title": "Level {{level}}"
+  },
+  "push": {
+    "titel": "Benachrichtigungen",
+    "text": "Erfahre, wenn du im Duell am Zug bist.",
+    "einschalten": "Einschalten",
+    "aktiv": "Aktiv",
+    "an": "Benachrichtigungen sind aktiv.",
+    "aus": "Benachrichtigungen sind ausgeschaltet.",
+    "homescreen": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren — anders erlaubt Apple im Browser keine Benachrichtigungen."
   }
 }

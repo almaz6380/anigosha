@@ -131,5 +131,14 @@
   "level": {
     "reached": "Level up",
     "title": "Level {{level}}"
+  },
+  "push": {
+    "titel": "Notifications",
+    "text": "Get told when it's your turn in a duel.",
+    "einschalten": "Turn on",
+    "aktiv": "On",
+    "an": "Notifications are on.",
+    "aus": "Notifications are off.",
+    "homescreen": "On iPhone, add the site to your home screen first via Share → Add to Home Screen — Apple allows notifications no other way."
   }
 }

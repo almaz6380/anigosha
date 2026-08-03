@@ -126,7 +126,16 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'Supabase (Auftragsverarbeiter, Serverstandort Frankfurt/EU): Konto, Profil und Spielstände.\n\n' +
             'Vercel: Auslieferung der Web-App, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
+            'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
             'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
+        },
+        {
+          heading: 'Benachrichtigungen',
+          body:
+            'Benachrichtigungen sind freiwillig und standardmäßig ausgeschaltet. Du schaltest sie selbst unter Profil → Benachrichtigungen ein; Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).\n\n' +
+            'Schaltest du sie ein, speichern wir eine Gerätekennung (das sogenannte Push-Token), die Plattform deines Geräts und deine Spracheinstellung. Aus diesen Angaben lässt sich nicht auf deinen Namen oder deinen Standort schließen. Wir verwenden sie ausschließlich, um dich über deine eigenen Duelle zu benachrichtigen — niemals für Werbung.\n\n' +
+            'Die Zustellung übernimmt Google Firebase Cloud Messaging, auf Apple-Geräten zusätzlich der Push-Dienst von Apple. Der Inhalt der Meldung (zum Beispiel „Du bist dran") wird dabei an diese Dienste übermittelt.\n\n' +
+            'Du kannst die Einwilligung jederzeit widerrufen: entweder in der App unter Profil → Benachrichtigungen oder in den Einstellungen deines Geräts. Beim Widerruf und beim Abmelden löschen wir die Gerätekennung sofort. Wird ein Gerät dauerhaft nicht mehr erreicht, entfernen wir die Kennung von uns aus.',
         },
         {
           heading: 'Werbung und deine Einwilligung',
@@ -193,7 +202,16 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'Supabase (processor, servers in Frankfurt/EU): account, profile and game data.\n\n' +
             'Vercel: delivery of the web app; server logs including IP addresses arise for technical reasons.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
+            'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
             'Transfers to third countries (notably the USA) occur with Google and rely on the European Commission’s standard contractual clauses.',
+        },
+        {
+          heading: 'Notifications',
+          body:
+            'Notifications are voluntary and off by default. You turn them on yourself under Profile → Notifications; the legal basis is your consent (Art. 6(1)(a) GDPR).\n\n' +
+            'If you turn them on, we store a device identifier (the push token), your device platform and your language setting. None of this reveals your name or your location. We use it solely to tell you about your own duels — never for advertising.\n\n' +
+            'Delivery is handled by Google Firebase Cloud Messaging, and on Apple devices additionally by Apple’s push service. The content of the message (for example “Your turn”) is passed to those services.\n\n' +
+            'You can withdraw your consent at any time, either in the app under Profile → Notifications or in your device settings. On withdrawal and on sign-out we delete the device identifier immediately. If a device stops being reachable, we remove its identifier on our own initiative.',
         },
         {
           heading: 'Advertising and your consent',

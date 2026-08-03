@@ -1,9 +1,77 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Bell, BellOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
+import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, webPushMoeglich } from '../lib/push';
+
+/**
+ * Schalter für Benachrichtigungen.
+ *
+ * Bewusst hier und nicht beim ersten Start: Der Systemdialog lässt sich nur
+ * einmal zeigen. Wer ihn ungefragt beim Öffnen bekommt, lehnt ihn meist ab —
+ * und dann ist die Erlaubnis dauerhaft weg und nur noch über die
+ * Geräteeinstellungen zurückzuholen.
+ */
+function PushSchalter() {
+  const { t, i18n } = useTranslation();
+  const [an, setAn] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [hinweis, setHinweis] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!istNativ() && webPushMoeglich()) setAn(Notification.permission === 'granted');
+  }, []);
+
+  const moeglich = istNativ() || webPushMoeglich();
+
+  async function umschalten() {
+    setBusy(true);
+    setHinweis(null);
+    try {
+      if (an) {
+        await pushAbmelden();
+        setAn(false);
+        setHinweis(t('push.aus'));
+      } else {
+        const r = await pushAnmelden(i18n.language.startsWith('en') ? 'en' : 'de');
+        setAn(r.ok);
+        setHinweis(r.ok ? t('push.an') : r.text);
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {an ? <Bell size={20} className="text-accent-400" /> : <BellOff size={20} className="text-accent-400/50" />}
+          <div>
+            <div className="text-sm">{t('push.titel')}</div>
+            <div className="text-xs text-accent-400/60">{t('push.text')}</div>
+          </div>
+        </div>
+        <button
+          onClick={umschalten}
+          disabled={busy || !moeglich}
+          className={`shrink-0 px-4 py-2 rounded-xl border transition-colors disabled:opacity-40 ${
+            an ? 'bg-accent-600 border-accent-500' : 'bg-night-800 border-night-700 hover:border-accent-500'
+          }`}
+        >
+          {an ? t('push.aktiv') : t('push.einschalten')}
+        </button>
+      </div>
+
+      {braucht_homescreen() && (
+        <div className="text-xs text-accent-400/60 mt-3">{t('push.homescreen')}</div>
+      )}
+      {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
+    </div>
+  );
+}
 
 const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
@@ -21,6 +89,13 @@ export default function ProfilePage() {
     i18n.changeLanguage(code);
     localStorage.setItem('language', code);
   };
+
+  // Beim Abmelden muss das Gerätetoken weg. Sonst bekäme der Nächste, der sich
+  // an diesem Gerät anmeldet, weiterhin die Duell-Meldungen des Vorbesitzers.
+  async function abmelden() {
+    await pushAbmelden();
+    await signOut();
+  }
 
   const handleDelete = async () => {
     setBusy(true);
@@ -89,8 +164,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      <PushSchalter />
+
       <button
-        onClick={signOut}
+        onClick={abmelden}
         className="w-full rounded-xl bg-night-800 border border-night-700 py-3 mb-3 hover:border-accent-500 transition-colors"
       >
         {t('profile.logout')}

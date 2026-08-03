@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initAds } from './lib/ads';
+import { pushAuffrischen, pushKlicksBehandeln } from './lib/push';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthPage from './pages/auth/AuthPage';
 import UsernamePage from './pages/auth/UsernamePage';
@@ -12,8 +13,28 @@ import DuelPage from './pages/DuelPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import LegalPage from './pages/legal/LegalPage';
 
+/**
+ * Hält die Push-Anmeldung aktuell und öffnet beim Antippen die richtige Partie.
+ *
+ * Wichtig: pushAuffrischen fragt NIE von sich aus nach Erlaubnis. Es meldet nur
+ * ein Token nach, wenn der Nutzer bereits zugestimmt hat. Ein ungefragter
+ * Systemdialog gleich beim Start kostet erfahrungsgemäß die Hälfte der Zusagen —
+ * gefragt wird deshalb erst im Profil, wo der Nutzen danebensteht.
+ */
+function PushBruecke({ sprache }: { sprache: string }) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const lang = sprache === 'en' ? 'en' : 'de';
+    void pushAuffrischen(lang);
+    void pushKlicksBehandeln((pfad) => navigate(pfad));
+  }, [navigate, sprache]);
+
+  return null;
+}
+
 function AppRoutes() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { session, profile, loading } = useAuth();
 
   if (loading) {
@@ -45,16 +66,21 @@ function AppRoutes() {
   if (profile && !profile.username) return <UsernamePage />;
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/solo" element={<SoloPage />} />
-      <Route path="/daily" element={<SoloPage daily />} />
-      <Route path="/duel" element={<DuelPage />} />
-      <Route path="/leaderboard" element={<LeaderboardPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      {legalRoutes}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <PushBruecke sprache={i18n.language} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/solo" element={<SoloPage />} />
+        <Route path="/daily" element={<SoloPage daily />} />
+        <Route path="/duel" element={<DuelPage />} />
+        {/* Ziel der Benachrichtigung: öffnet die Partie direkt statt der Übersicht */}
+        <Route path="/duel/:matchId" element={<DuelPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        {legalRoutes}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 
