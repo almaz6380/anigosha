@@ -92,9 +92,41 @@ alter Stand die Live-Version.
 - [x] `showRewardedAd()` für den Streak-Schutz vorbereitet, `setAdsPremiumStatus()` als Werbefrei-Schalter
 - [x] **Echte AdMob-IDs eingetragen (28.07.)** — Konto `pub-8860791993288062` (dasselbe wie MyPeak):
       App-IDs in Info.plist/AndroidManifest, Anzeigenblöcke unter `PROD` in `src/lib/ads.ts`
-- [ ] **`USE_TEST_ADS = false` erst unmittelbar vor dem Release-Build!** Bis dahin laufen
-      Test-Anzeigen. Eigene Live-Anzeigen anzusehen/anzuklicken kann das Konto sperren —
-      und daran hängen auch MyPeak und WELLbooked.
+- [x] **`USE_TEST_ADS = false` seit 04.08.2026** — nötig für den ersten Release-Build,
+      beide Workflows brechen sonst ab. **Ab jetzt laufen echte Anzeigen: niemals
+      ansehen oder anklicken.** Google wertet das als Betrug und sperrt im Zweifel das
+      ganze Konto — daran hängen auch MyPeak und WELLbooked. Die Web-App auf Vercel ist
+      nicht betroffen, `initAds()` ist im Browser wirkungslos.
+
+### Release-CI — Stand 04.08.2026
+
+**20 von 21 Secrets gesetzt** (`gh secret list -R almaz6380/anigosha`). Es fehlt nur
+`VITE_REVENUECAT_ANDROID_KEY`, der erst nach dem Play-Console-Eintrag existiert.
+
+| Was | Wo es liegt |
+|---|---|
+| Android-Signierschlüssel | `~/AppSigningKeys/anigosha/` — **eigener**, nicht der von MyPeak |
+| iOS-Distributionszertifikat | ebenda als `Zertifikate-dist.p12` + `p12-passwort.txt` |
+| Provisioning-Profil | ebenda, „Anigosha AppStore", enthält `aps-environment: production` |
+| ASC-API-Schlüssel | `~/AppSigningKeys/AuthKey_VGHCB8Z8Q2.p8` |
+
+**Fallen, die hier schon zugeschnappt sind:**
+
+- **Drei ASC-API-Schlüssel im Konto, mit verschiedenen Rollen.** `YDMHU9Q5RK`
+  („Dashboard") hat nur **Finanzen** — der darf Apps lesen, aber weder Profile anlegen
+  noch hochladen. Richtig ist `VGHCB8Z8Q2` („Upload", App-Manager). Die Rolle eines
+  Schlüssels lässt sich **nachträglich nicht ändern**; bei falscher Rolle hilft nur ein
+  neuer Schlüssel.
+- **Die „Apple-ID" auf der Kaufprodukt-Seite ist nicht die App-ID.** Anigosha:
+  App = `6797757350`, Kaufprodukt = `6797759040`. RevenueCat fragt ohnehin nicht danach,
+  es ordnet über die Bundle-ID zu.
+- **Das Provisioning-Profil lässt sich per API erzeugen** (`/v1/profiles`), spart das
+  Klicken im Entwicklerportal. Skriptvorlage siehe Sitzungsverlauf; braucht die
+  Bundle-ID-Resource und alle Distributionszertifikate als Beziehung.
+- **Der Export des Zertifikats aus dem Schlüsselbund braucht einen Dialog** und läuft
+  deshalb nie unbeaufsichtigt durch. `security export -k login.keychain-db -t identities`
+  liefert Development **und** Distribution samt privaten Schlüsseln in einer Datei — das
+  ist für den CI-Import unproblematisch.
 - [x] **DSGVO-Einwilligungsnachricht in AdMob veröffentlicht** (03.08.2026, beide Apps, DE+EN)
 - [x] **„Werbung entfernen" gebaut** (04.08.2026) — `src/lib/purchases.ts`, Schalter im Profil
 
