@@ -376,20 +376,38 @@ hingehört**, statt zu raten oder einen Umweg zu bauen.
 `FAL_KEY` ist der Weg zu: dann sagen, dass die Variable in der Umgebung fehlt.
 
 **Auslösen in diesem Repo:** `Android Release` und `iOS Release` liegen unter
-`.github/workflows/` — **beide bisher ungetestet**, weil Anigosha noch in keinem Store
-ist. Was hier fehlt (Stand 4.8.2026): ein eigener Android-Keystore und ein
-App-Store-Profil für `at.gallab.animequiz`. ⚠ Die vorhandenen Secrets
-`ANDROID_KEYSTORE_*` und `IOS_PROVISIONING_PROFILE_BASE64` haben auf dem Mac **keine
-Entsprechung** — Herkunft ungeklärt, vor dem ersten Release nicht darauf verlassen,
-sondern neu erzeugen. Die Web-App deployt Vercel bei jedem Push auf `main` (deshalb
-vor der Arbeit immer `git fetch`). Vor einem Release-Build `USE_TEST_ADS = false`
-setzen — und niemals die eigenen Live-Anzeigen anklicken, an dem AdMob-Konto hängen
-auch MyPeak und WELLbooked.
+`.github/workflows/`.
 
-⚠ **Falle beim iOS-Export** (4.8.26 zweimal reingelaufen): Bei manueller
-Signierung braucht `ExportOptions.plist` die Zuordnung **Bundle-ID → Profilname**.
-Fehlt sie, läuft der Bau vollständig durch und erst der Export bricht ab —
-`exportArchive "App.app" requires a provisioning profile`. Das liest sich wie ein
-fehlendes Profil, obwohl das Profil längst installiert ist. Der Workflow zieht beides
-jetzt zur Laufzeit aus dem Profil selbst (`security cms -D` + `plutil -extract`),
-damit es auch nach einer Profilerneuerung bei Apple stimmt.
+**iOS ist verifiziert (04.08.2026, 19:37):** Build 1 gebaut, signiert, zu App Store
+Connect hochgeladen (`UPLOAD SUCCEEDED`), Status VALID, der internen Testgruppe
+zugewiesen. Keystore und App-Store-Profil sind **erzeugt** und liegen in
+`~/AppSigningKeys/anigosha/`; 20 von 21 Secrets sind gesetzt (siehe „Release-CI"
+weiter oben). Ein früherer Eintrag hier nannte beide als fehlend und die Secrets als
+„Herkunft ungeklärt" — das ist überholt.
+
+**Android ist weiterhin ungetestet**, weil es noch keinen Play-Console-Eintrag gibt.
+
+Die Web-App deployt Vercel bei jedem Push auf `main` (deshalb vor der Arbeit immer
+`git fetch`). `USE_TEST_ADS` steht seit dem ersten Release-Build auf `false` — niemals
+die eigenen Live-Anzeigen anklicken, an dem AdMob-Konto hängen auch MyPeak und
+WELLbooked.
+
+⚠ **Drei Fallen, in die der erste iOS-Release gelaufen ist:**
+
+1. **Team fehlt.** Ohne `DEVELOPMENT_TEAM` bricht der Archivlauf ab mit „Signing for
+   App requires a development team".
+2. **Signier-Settings auf der Kommandozeile gelten für ALLE Targets** — auch für
+   Firebase, GoogleUtilities, RevenueCat und Promises, die als Swift-Pakete gebaut
+   werden. Die kennen keine Provisioning-Profile und brechen reihenweise ab mit
+   „does not support provisioning profiles". Deshalb stehen Team, Zertifikat und
+   Profil jetzt in der **Release-Konfiguration des App-Targets** im pbxproj; Debug
+   bleibt auf automatischer Signierung.
+3. **`ExportOptions.plist` braucht bei manueller Signierung die Zuordnung
+   Bundle-ID → Profilname.** Fehlt sie, läuft der Bau vollständig durch und erst der
+   Export bricht ab — das liest sich wie ein fehlendes Profil, obwohl es längst
+   installiert ist.
+
+⚠ **Export-Compliance:** Ohne `ITSAppUsesNonExemptEncryption` in der `Info.plist` fragt
+Apple nach jedem Upload erneut, und bis zur Antwort lässt sich der Build **keiner
+Testgruppe zuweisen** — die Meldung lautet nur „Build is not in an internally testable
+state" und nennt den Grund nicht. Steht jetzt fest auf `false` (nur Standard-HTTPS).
