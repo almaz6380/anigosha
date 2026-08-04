@@ -140,5 +140,14 @@
     "an": "Notifications are on.",
     "aus": "Notifications are off.",
     "homescreen": "On iPhone, add the site to your home screen first via Share → Add to Home Screen — Apple allows notifications no other way."
+  },
+  "kauf": {
+    "titel": "Remove ads",
+    "text": "One-time purchase — no more ads.",
+    "aktiv": "Purchased. Thanks for the support!",
+    "kaufen": "Buy",
+    "wiederherstellen": "Restore",
+    "danke": "Ads are off from now on. Thank you!",
+    "nichtsGefunden": "No earlier purchase was found."
   }
 }

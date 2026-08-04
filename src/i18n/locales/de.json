@@ -140,5 +140,14 @@
     "an": "Benachrichtigungen sind aktiv.",
     "aus": "Benachrichtigungen sind ausgeschaltet.",
     "homescreen": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren — anders erlaubt Apple im Browser keine Benachrichtigungen."
+  },
+  "kauf": {
+    "titel": "Werbung entfernen",
+    "text": "Einmalig kaufen — keine Anzeigen mehr.",
+    "aktiv": "Gekauft. Danke für die Unterstützung!",
+    "kaufen": "Kaufen",
+    "wiederherstellen": "Wiederherstellen",
+    "danke": "Werbung ist ab sofort aus. Danke!",
+    "nichtsGefunden": "Es wurde kein früherer Kauf gefunden."
   }
 }

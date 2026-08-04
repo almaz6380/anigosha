@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Bell, BellOff } from 'lucide-react';
+import { ArrowLeft, Bell, BellOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
 import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, webPushMoeglich } from '../lib/push';
+import {
+  kaeufeWiederherstellen,
+  kaufMoeglich,
+  preisHolen,
+  werbefreiPruefen,
+  werbungEntfernenKaufen,
+} from '../lib/purchases';
 
 /**
  * Schalter für Benachrichtigungen.
@@ -77,6 +84,87 @@ const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
   { code: 'en', label: 'English' },
 ];
+
+/**
+ * „Werbung entfernen".
+ *
+ * Erscheint nur in den nativen Apps und nur, wenn Käufe eingerichtet sind — im
+ * Browser gibt es keinen Store, und eine Schaltfläche, die nichts tun kann,
+ * ärgert mehr als sie nützt.
+ *
+ * Die Schaltfläche zum Wiederherstellen ist nicht optional: Apple verlangt sie
+ * ausdrücklich (Richtlinie 3.1.1) und lehnt Apps ohne sie ab.
+ */
+function WerbungEntfernen({ userId }: { userId: string | null }) {
+  const { t } = useTranslation();
+  const [frei, setFrei] = useState(false);
+  const [preis, setPreis] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [hinweis, setHinweis] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId || !kaufMoeglich()) return;
+    void werbefreiPruefen(userId).then(setFrei);
+    void preisHolen(userId).then(setPreis);
+  }, [userId]);
+
+  if (!userId || !kaufMoeglich()) return null;
+
+  async function tun(was: 'kaufen' | 'wiederherstellen') {
+    if (!userId) return;
+    setBusy(true);
+    setHinweis(null);
+    try {
+      const r = was === 'kaufen'
+        ? await werbungEntfernenKaufen(userId)
+        : await kaeufeWiederherstellen(userId);
+
+      if (r.ok) {
+        setFrei(r.werbefrei);
+        setHinweis(r.werbefrei ? t('kauf.danke') : t('kauf.nichtsGefunden'));
+      } else if (r.grund !== 'abgebrochen') {
+        setHinweis(r.text);
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
+      <div className="flex items-center gap-3 mb-3">
+        <Sparkles size={20} className={frei ? 'text-accent-400' : 'text-accent-400/50'} />
+        <div>
+          <div className="text-sm">{t('kauf.titel')}</div>
+          <div className="text-xs text-accent-400/60">
+            {frei ? t('kauf.aktiv') : t('kauf.text')}
+          </div>
+        </div>
+      </div>
+
+      {!frei && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => tun('kaufen')}
+            disabled={busy}
+            className="flex-1 px-4 py-2 rounded-xl bg-accent-600 border border-accent-500 disabled:opacity-40"
+          >
+            {preis ? `${t('kauf.kaufen')} — ${preis}` : t('kauf.kaufen')}
+          </button>
+          <button
+            onClick={() => tun('wiederherstellen')}
+            disabled={busy}
+            className="px-4 py-2 rounded-xl bg-night-800 border border-night-700 hover:border-accent-500 disabled:opacity-40 text-sm"
+          >
+            {t('kauf.wiederherstellen')}
+          </button>
+        </div>
+      )}
+
+      {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -165,6 +253,7 @@ export default function ProfilePage() {
       </div>
 
       <PushSchalter />
+      <WerbungEntfernen userId={profile?.id ?? null} />
 
       <button
         onClick={abmelden}

@@ -95,8 +95,42 @@ alter Stand die Live-Version.
 - [ ] **`USE_TEST_ADS = false` erst unmittelbar vor dem Release-Build!** Bis dahin laufen
       Test-Anzeigen. Eigene Live-Anzeigen anzusehen/anzuklicken kann das Konto sperren —
       und daran hängen auch MyPeak und WELLbooked.
-- [ ] DSGVO-Einwilligungsnachricht in AdMob erstellen **und veröffentlichen** (vor Launch)
-- [ ] RevenueCat „remove_ads"
+- [x] **DSGVO-Einwilligungsnachricht in AdMob veröffentlicht** (03.08.2026, beide Apps, DE+EN)
+- [x] **„Werbung entfernen" gebaut** (04.08.2026) — `src/lib/purchases.ts`, Schalter im Profil
+
+### „Werbung entfernen" (RevenueCat) — iOS fertig, Android offen
+
+| Ort | Wert |
+|---|---|
+| App Store Connect App-ID | `6797759040` |
+| Produkt-ID (beide Stores) | `anigosha_no_ads`, **nicht verbrauchbar** |
+| Preis | 2,99 € (Basisland Österreich), 175 Regionen |
+| RevenueCat-Anspruch | `no_ads` |
+| RevenueCat-Angebot | `default`, Package `$rc_lifetime`, als *Current* markiert |
+| iOS-SDK-Schlüssel | `VITE_REVENUECAT_IOS_KEY` in `.env` (öffentlich) |
+
+- **Bewusst ohne serverseitige Freischaltung**, anders als bei XP und Elo: Werbefreiheit
+  verschafft niemandem einen Vorteil im Spiel. Wer sie sich erschleicht, spart nur sich
+  selbst die Anzeigen. Eine Webhook-Infrastruktur wäre Aufwand ohne Schutzwirkung.
+- **Als Nutzerkennung dient die Supabase-User-ID** — nur so findet der Kauf beim
+  Gerätewechsel zum richtigen Konto zurück.
+- **„Wiederherstellen" ist keine Kür**: App-Store-Richtlinie 3.1.1 verlangt die
+  Schaltfläche ausdrücklich, sonst wird die App abgelehnt.
+- Ohne hinterlegten Schlüssel bleibt der ganze Bereich unsichtbar — im Browser ohnehin,
+  dort gibt es keinen Store.
+- Der Apple-Schlüssel für RevenueCat (`RC387Y8YDU`) ist **teamweit** und wird mit MyPeak
+  geteilt; in RevenueCat über „Select existing key" ausgewählt.
+
+- **Vertrag für gebührenpflichtige Apps ist aktiv** (seit 02.07.2026, alle Länder),
+  Bankkonto N26 und die US-Steuerformulare ebenfalls. Ohne diesen Vertrag könnte
+  niemand kaufen, und der Fehler sähe im Code nach „kein Angebot verfügbar" aus.
+
+**Noch offen:**
+- [ ] Android: Play-Console-Eintrag + Kaufprodukt + `VITE_REVENUECAT_ANDROID_KEY`.
+      **Play gibt In-App-Produkte erst frei, wenn eine signierte Version im internen
+      Test liegt** — braucht also zuerst einen Build.
+- [ ] **Kauf noch nie ausgeführt.** Ein echter Test braucht einen Build auf dem Gerät
+      und ein Sandbox-Konto (App Store Connect → Benutzer und Zugriffsrechte → Sandbox).
 
 ### Push-Benachrichtigungen — FERTIG gebaut (03.08.2026), Gerätetest offen
 
