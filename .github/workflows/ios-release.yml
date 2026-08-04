@@ -54,9 +54,20 @@ jobs:
           echo "V=$V" >> "$GITHUB_ENV"
 
       - name: Web-Bundle + Capacitor-Sync
+        # Fehlt VITE_REVENUECAT_IOS_KEY, bleibt "Werbung entfernen" in der App
+        # unsichtbar — ohne jede Fehlermeldung. Die Firebase-Werte braucht die
+        # native App zwar nicht (dort kommt die Konfiguration aus
+        # GoogleService-Info.plist), sie zu setzen vermeidet aber Grenzfaelle
+        # im gemeinsamen Push-Code.
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_REVENUECAT_IOS_KEY: ${{ secrets.VITE_REVENUECAT_IOS_KEY }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_SENDER_ID: ${{ secrets.VITE_FIREBASE_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
         run: |
           npm run build
           npx cap sync ios

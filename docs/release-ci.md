@@ -54,10 +54,25 @@ New repository secret**:
 
 ### Build-Zeit-Variablen (Vite backt sie ins Bundle)
 
+**Diese acht sind am 04.08.2026 bereits gesetzt** — alle Werte stehen ohnehin im
+ausgelieferten Bundle und sind damit öffentlich. Sie liegen trotzdem als Secrets,
+damit sie an einer Stelle gepflegt werden.
+
 | Name | Wert |
 |---|---|
 | `VITE_SUPABASE_URL` | wie in der lokalen `.env` |
 | `VITE_SUPABASE_ANON_KEY` | der **Anon**-Key, niemals der Service-Role-Key |
+| `VITE_REVENUECAT_IOS_KEY` | öffentlicher SDK-Schlüssel (`appl_…`) |
+| `VITE_REVENUECAT_ANDROID_KEY` | **fehlt noch** — erst nach dem Play-Eintrag (`goog_…`) |
+| `VITE_FIREBASE_API_KEY` | Web-Konfiguration aus Firebase |
+| `VITE_FIREBASE_PROJECT_ID` | `anigosha-9b46f` |
+| `VITE_FIREBASE_SENDER_ID` | `977622396637` |
+| `VITE_FIREBASE_APP_ID` | Web-App-ID |
+| `VITE_FIREBASE_VAPID_KEY` | Web-Push-Zertifikat |
+
+Fehlt der RevenueCat-Schlüssel, bleibt „Werbung entfernen" in der gebauten App
+**unsichtbar — ohne jede Fehlermeldung**. Das ist der unangenehmste Fehler dieser
+Liste, weil er wie eine bewusste Entscheidung aussieht.
 
 ## Eingebaute Bremse
 

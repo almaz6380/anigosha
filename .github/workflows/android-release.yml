@@ -64,9 +64,19 @@ jobs:
           echo "VN=$VN" >> "$GITHUB_ENV"
 
       - name: Web-Bundle + Capacitor-Sync
+        # Alle VITE_-Werte landen im ausgelieferten Bundle und sind damit ohnehin
+        # oeffentlich; sie liegen trotzdem als Secrets, damit sie an einer Stelle
+        # gepflegt werden. Fehlt VITE_REVENUECAT_ANDROID_KEY, bleibt "Werbung
+        # entfernen" in der App unsichtbar — ohne jede Fehlermeldung.
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_REVENUECAT_ANDROID_KEY: ${{ secrets.VITE_REVENUECAT_ANDROID_KEY }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_SENDER_ID: ${{ secrets.VITE_FIREBASE_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
         run: |
           npm run build
           npx cap sync android
