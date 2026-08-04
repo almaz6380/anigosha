@@ -37,18 +37,25 @@ const themeColor = () => page.getAttribute('meta[name="theme-color"]', 'content'
 // Der html-Hintergrund ist der eigentliche Uebeltaeter: Er scheint ueberall
 // dort durch, wo der Himmel nicht hinreicht — etwa im Bereich der Statusleiste.
 const htmlBg = () => page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+// Der Verlauf auf <html> faengt den unteren Rand ab. Stand dort nur die
+// oberste Farbe, klaffte abends ein blauer Streifen unter dem orangen Himmel.
+const htmlBild = () => page.evaluate(() => getComputedStyle(document.documentElement).backgroundImage);
 
 await page.goto(url, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 const home = await themeColor();
 const homeBg = await htmlBg();
+const homeBild = await htmlBild();
 console.log(`Startseite:  theme-color ${home}, html-Hintergrund ${homeBg}`);
+console.log(`             html-Verlauf ${homeBild.slice(0, 70)}${homeBild.length > 70 ? '…' : ''}`);
 
 await page.goto(`${url}/solo`, { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 const solo = await themeColor();
 const soloBg = await htmlBg();
+const soloBild = await htmlBild();
 console.log(`Solo-Quiz:   theme-color ${solo}, html-Hintergrund ${soloBg}`);
+console.log(`             html-Verlauf ${soloBild}`);
 
 // Nachts ist der Himmelston absichtlich derselbe wie die Standardfarbe —
 // dann prüfen wir nur, dass Solo korrekt zurückstellt.
@@ -59,11 +66,16 @@ const ok2 = solo === '#0f0a1e';
 const dunkel = 'rgb(15, 10, 30)';
 const ok3 = nacht ? homeBg === dunkel : homeBg !== dunkel;
 const ok4 = soloBg === dunkel;
+// Der Verlauf muss oben UND unten stimmen — deshalb drei Farbstopps.
+const ok5 = homeBild.startsWith('linear-gradient') && homeBild.split('rgb').length - 1 >= 3;
+const ok6 = soloBild === 'none';
 
 console.log(`\n${ok1 ? '  OK  ' : ' FEHL '} Startseite trägt den Himmelston${nacht ? ' (nachts = Standardfarbe)' : ''}`);
 console.log(`${ok3 ? '  OK  ' : ' FEHL '} html-Hintergrund folgt dem Himmel (sonst schwarzer Balken oben)`);
 console.log(`${ok2 ? '  OK  ' : ' FEHL '} Solo-Quiz stellt theme-color zurück`);
 console.log(`${ok4 ? '  OK  ' : ' FEHL '} Solo-Quiz stellt den html-Hintergrund zurück`);
+console.log(`${ok5 ? '  OK  ' : ' FEHL '} html traegt den ganzen Verlauf (sonst falsche Farbe am unteren Rand)`);
+console.log(`${ok6 ? '  OK  ' : ' FEHL '} Solo-Quiz entfernt den Verlauf wieder`);
 
 await browser.close();
-process.exit(ok1 && ok2 && ok3 && ok4 ? 0 : 1);
+process.exit(ok1 && ok2 && ok3 && ok4 && ok5 && ok6 ? 0 : 1);

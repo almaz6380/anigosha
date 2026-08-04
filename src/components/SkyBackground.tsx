@@ -52,6 +52,18 @@ export function skyTopColor(): string {
   return TOP_COLOR[daytime(new Date().getHours())];
 }
 
+/**
+ * Der komplette Verlauf — für den Hintergrund von `<html>`.
+ *
+ * Warum nicht einfach die oberste Farbe: Die färbt zwar die Statusleiste
+ * richtig, taucht aber auch am unteren Rand und beim Überscrollen auf. Abends
+ * ist der Himmel oben blau und unten orange — dort stand dann ein blauer
+ * Streifen unter dem orangen Himmel.
+ */
+export function skyGradient(): string {
+  return SKIES[daytime(new Date().getHours())];
+}
+
 export default function SkyBackground() {
   const phase = daytime(new Date().getHours());
   const cloud = CLOUD[phase];

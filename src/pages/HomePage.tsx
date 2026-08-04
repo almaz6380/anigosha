@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Swords, Brain, Trophy, User, CalendarDays, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import SkyBackground, { isNightSky, skyTopColor } from '../components/SkyBackground';
+import SkyBackground, { isNightSky, skyGradient, skyTopColor } from '../components/SkyBackground';
 import { useThemeColor } from '../hooks/useThemeColor';
 import { levelProgress } from '../lib/level';
 
@@ -23,7 +23,9 @@ export default function HomePage() {
   const night = isNightSky();
   // Ohne das steht über dem Himmel ein dunkler Balken: iOS färbt die
   // Statusleiste nach theme-color, und die stand fest auf Dunkelviolett.
-  useThemeColor(skyTopColor());
+  // Zwei Werte: die oberste Farbe für die Statusleiste, der ganze Verlauf für
+  // alles, was unter oder neben der Seite sichtbar wird.
+  useThemeColor(skyTopColor(), skyGradient());
   const ink = night ? 'text-violet-50' : 'text-slate-900';
   const inkSoft = night ? 'text-violet-200/80' : 'text-slate-700';
   const inkFaint = night ? 'text-violet-200/60' : 'text-slate-600';
