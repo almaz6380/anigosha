@@ -19,7 +19,11 @@
 // ===========================================================================
 import { Capacitor } from '@capacitor/core';
 
-const USE_TEST_ADS = true;
+// Ab hier laufen ECHTE Anzeigen (04.08.2026, für den ersten Release-Build).
+// Die eigenen Live-Anzeigen niemals ansehen oder anklicken — Google wertet das
+// als Betrug und sperrt im Zweifel das ganze Konto. Daran hängen auch MyPeak
+// und WELLbooked.
+const USE_TEST_ADS = false;
 
 // Offizielle Test-IDs von Google (öffentlich dokumentiert)
 const TEST = {
