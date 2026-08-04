@@ -375,8 +375,21 @@ hingehört**, statt zu raten oder einen Umweg zu bauen.
 → Bild herunterladen, ins Repo legen, committen, im Chat zeigen. Ohne gesetzten
 `FAL_KEY` ist der Weg zu: dann sagen, dass die Variable in der Umgebung fehlt.
 
-**Auslösen in diesem Repo:** Noch **kein** Release-Workflow — Vorlage:
-`mahjong-app/.github/workflows/*` + `store/ci-setup.md`. Die Web-App deployt Vercel
-bei jedem Push auf `main` (deshalb vor der Arbeit immer `git fetch`). Vor einem
-Release-Build `USE_TEST_ADS = false` setzen — und niemals die eigenen Live-Anzeigen
-anklicken, an dem AdMob-Konto hängen auch MyPeak und WELLbooked.
+**Auslösen in diesem Repo:** `Android Release` und `iOS Release` liegen unter
+`.github/workflows/` — **beide bisher ungetestet**, weil Anigosha noch in keinem Store
+ist. Was hier fehlt (Stand 4.8.2026): ein eigener Android-Keystore und ein
+App-Store-Profil für `at.gallab.animequiz`. ⚠ Die vorhandenen Secrets
+`ANDROID_KEYSTORE_*` und `IOS_PROVISIONING_PROFILE_BASE64` haben auf dem Mac **keine
+Entsprechung** — Herkunft ungeklärt, vor dem ersten Release nicht darauf verlassen,
+sondern neu erzeugen. Die Web-App deployt Vercel bei jedem Push auf `main` (deshalb
+vor der Arbeit immer `git fetch`). Vor einem Release-Build `USE_TEST_ADS = false`
+setzen — und niemals die eigenen Live-Anzeigen anklicken, an dem AdMob-Konto hängen
+auch MyPeak und WELLbooked.
+
+⚠ **Falle beim iOS-Export** (4.8.26 zweimal reingelaufen): Bei manueller
+Signierung braucht `ExportOptions.plist` die Zuordnung **Bundle-ID → Profilname**.
+Fehlt sie, läuft der Bau vollständig durch und erst der Export bricht ab —
+`exportArchive "App.app" requires a provisioning profile`. Das liest sich wie ein
+fehlendes Profil, obwohl das Profil längst installiert ist. Der Workflow zieht beides
+jetzt zur Laufzeit aus dem Profil selbst (`security cms -D` + `plutil -extract`),
+damit es auch nach einer Profilerneuerung bei Apple stimmt.
