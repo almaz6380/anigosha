@@ -20,7 +20,7 @@ export const OPERATOR = {
 const opDE = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nE-Mail: ${OPERATOR.email}`;
 const opEN = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nEmail: ${OPERATOR.email}`;
 
-export const LAST_UPDATED = '28.07.2026';
+export const LAST_UPDATED = '04.08.2026';
 
 export interface LegalSection {
   heading: string;
@@ -47,6 +47,16 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
           body: 'Entwicklung und Betrieb von Software und mobilen Anwendungen.',
         },
         {
+          heading: 'Gewerbe und berufsrechtliche Angaben',
+          body:
+            'Freies Gewerbe: „Dienstleistungen in der automatischen Datenverarbeitung und Informationstechnik"\n' +
+            'GISA-Zahl: 39801937\n' +
+            'Mitglied der Wirtschaftskammer Tirol (Bezirksstelle Kitzbühel)\n' +
+            'Aufsichts- und Gewerbebehörde: Bezirkshauptmannschaft Kitzbühel\n' +
+            'Anwendbare Rechtsvorschrift: Gewerbeordnung (GewO), abrufbar unter ris.bka.gv.at\n' +
+            'Umsatzsteuer: Kleinunternehmer gemäß § 6 Abs. 1 Z 27 UStG (keine UID-Nummer, kein Steuerausweis)',
+        },
+        {
           heading: 'Anwendbares Recht',
           body: 'Es gilt österreichisches Recht. Zuständig ist das sachlich zuständige Gericht am Sitz des Betreibers.',
         },
@@ -69,6 +79,16 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
       sections: [
         { heading: 'Provider', body: opEN },
         { heading: 'Business purpose', body: 'Development and operation of software and mobile applications.' },
+        {
+          heading: 'Trade and regulatory information',
+          body:
+            'Licensed trade: services in automatic data processing and information technology\n' +
+            'Austrian trade register (GISA) number: 39801937\n' +
+            'Member of the Austrian Economic Chamber, Tyrol (Kitzbühel district office)\n' +
+            'Supervisory and licensing authority: District Administration Kitzbühel\n' +
+            'Applicable legislation: Austrian Trade Act (GewO), available at ris.bka.gv.at\n' +
+            'VAT: small business under sec. 6(1)(27) of the Austrian VAT Act (no VAT ID, no VAT shown)',
+        },
         {
           heading: 'Applicable law',
           body: 'Austrian law applies. The competent court at the provider’s registered office has jurisdiction.',
@@ -127,7 +147,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'Vercel: Auslieferung der Web-App, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
             'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
-            'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
+            'RevenueCat (Auftragsverarbeiter, USA): Abwicklung und Wiederherstellung des Kaufs „Werbung entfernen", sofern du ihn tätigst.\n\n' +
+            'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google und RevenueCat statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
         },
         {
           heading: 'Benachrichtigungen',
@@ -143,6 +164,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'Die mobilen Apps zeigen Werbung. Vor der ersten Anzeige fragen wir über Googles Einwilligungsdialog (UMP), ob du personalisierte Werbung möchtest.\n\n' +
             'Du kannst diese Entscheidung jederzeit über die Einstellungen in der App ändern. Lehnst du ab, siehst du weiterhin Werbung, aber ohne Personalisierung.\n\n' +
             'Auf iOS fragen wir zusätzlich über Apples Dialog zur App-Tracking-Transparenz.',
+        },
+        {
+          heading: 'In-App-Käufe',
+          body:
+            'In der App kannst du einmalig „Werbung entfernen" kaufen. Der Kauf selbst wird von Apple bzw. Google abgewickelt — Zahlungsdaten wie Kreditkartennummern erhalten wir zu keinem Zeitpunkt und können sie auch nicht einsehen.\n\n' +
+            'Zur Verwaltung des Kaufs setzen wir RevenueCat ein. Dorthin übermitteln wir deine Nutzerkennung sowie die Kaufbestätigung des jeweiligen Stores; RevenueCat verarbeitet zusätzlich technische Angaben zu Gerät und App-Version. Als Nutzerkennung dient bewusst deine App-interne Konto-ID und nicht deine E-Mail-Adresse.\n\n' +
+            'Zweck ist die Erfüllung des Kaufvertrags (Art. 6 Abs. 1 lit. b DSGVO) — ohne diese Übermittlung ließe sich die Werbefreiheit weder freischalten noch auf einem neuen Gerät wiederherstellen.\n\n' +
+            'Löschst du dein Konto, entfällt die Zuordnung des Kaufs zu deiner Kennung. Der Kaufbeleg selbst verbleibt bei Apple bzw. Google; dort gelten deren Aufbewahrungsfristen und Datenschutzbestimmungen.',
         },
         {
           heading: 'Speicherdauer',
@@ -166,7 +195,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         },
         {
           heading: 'Änderungen',
-          body: `Stand dieser Erklärung: ${LAST_UPDATED}. Bei neuen Funktionen — etwa Push-Benachrichtigungen oder In-App-Käufen — aktualisieren wir diese Erklärung und weisen in der App darauf hin.`,
+          body: `Stand dieser Erklärung: ${LAST_UPDATED}. Kommt eine neue Datenverarbeitung dazu, aktualisieren wir diese Erklärung und weisen in der App darauf hin.`,
         },
       ],
     },
@@ -203,7 +232,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'Vercel: delivery of the web app; server logs including IP addresses arise for technical reasons.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
-            'Transfers to third countries (notably the USA) occur with Google and rely on the European Commission’s standard contractual clauses.',
+            'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
+            'Transfers to third countries (notably the USA) occur with Google and RevenueCat and rely on the European Commission’s standard contractual clauses.',
         },
         {
           heading: 'Notifications',
@@ -219,6 +249,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
             'The mobile apps show advertising. Before the first ad we ask via Google’s consent dialog (UMP) whether you want personalised advertising.\n\n' +
             'You can change this decision at any time in the app settings. If you decline, you will still see ads, but without personalisation.\n\n' +
             'On iOS we additionally ask via Apple’s App Tracking Transparency dialog.',
+        },
+        {
+          heading: 'In-app purchases',
+          body:
+            'The app offers a one-off “remove ads” purchase. The transaction itself is handled by Apple or Google — we never receive payment details such as card numbers and cannot access them.\n\n' +
+            'We use RevenueCat to manage the purchase. We transmit your user identifier and the store’s purchase receipt; RevenueCat additionally processes technical details about your device and app version. The identifier used is deliberately your in-app account ID, not your email address.\n\n' +
+            'The purpose is performance of the purchase contract (Art. 6(1)(b) GDPR) — without this transfer, ad-free mode could neither be unlocked nor restored on a new device.\n\n' +
+            'If you delete your account, the link between the purchase and your identifier ceases. The receipt itself remains with Apple or Google under their retention periods and privacy policies.',
         },
         {
           heading: 'Retention',
@@ -242,7 +280,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         },
         {
           heading: 'Changes',
-          body: `Last updated: ${LAST_UPDATED}. When we add features such as push notifications or in-app purchases, we will update this policy and point it out in the app.`,
+          body: `Last updated: ${LAST_UPDATED}. Whenever a new kind of processing is added, we update this policy and point it out in the app.`,
         },
       ],
     },
