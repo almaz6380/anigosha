@@ -91,6 +91,33 @@ export async function preisHolen(userId: string): Promise<string | null> {
   }
 }
 
+/**
+ * Diagnose fuer den Fall "Knopf ohne Preis": beschreibt in einer Zeile, was
+ * das SDK vom Store zurueckbekommt. Wird im Profil klein angezeigt, solange
+ * kein Preis geladen werden konnte — sonst raet man bei einem stummen
+ * `catch { return null }` ins Blaue (05.08.26 genau so passiert).
+ */
+export async function preisDiagnose(userId: string): Promise<string> {
+  if (!Capacitor.isNativePlatform()) return 'web';
+  if (!schluessel()) return 'kein SDK-Schlüssel im Build';
+  try {
+    const Purchases = await bereitmachen(userId);
+    if (!Purchases) return 'SDK nicht initialisiert';
+    const angebote = await Purchases.getOfferings();
+    const anzahl = Object.keys(angebote.all ?? {}).length;
+    const cur = angebote.current;
+    if (!cur) return `kein aktuelles Angebot (${anzahl} Angebote gesamt)`;
+    const pakete = cur.availablePackages ?? [];
+    if (!pakete.length)
+      return `Angebot "${cur.identifier}" ohne Pakete — Store liefert das Produkt (noch) nicht aus`;
+    const p = pakete[0];
+    return `Paket ${p.identifier}: ${p.product?.identifier ?? '?'} → ${p.product?.priceString ?? 'OHNE Preis'}`;
+  } catch (e) {
+    const f = e as { code?: string; message?: string };
+    return `Fehler ${f?.code ?? '?'}: ${f?.message ?? 'unbekannt'}`;
+  }
+}
+
 export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebnis> {
   if (!Capacitor.isNativePlatform()) {
     return {

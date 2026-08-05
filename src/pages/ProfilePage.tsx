@@ -9,6 +9,7 @@ import {
   kaeufeWiederherstellen,
   kaufMoeglich,
   preisHolen,
+  preisDiagnose,
   werbefreiPruefen,
   werbungEntfernenKaufen,
 } from '../lib/purchases';
@@ -101,11 +102,17 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
   const [preis, setPreis] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [hinweis, setHinweis] = useState<string | null>(null);
+  const [diagnose, setDiagnose] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId || !kaufMoeglich()) return;
     void werbefreiPruefen(userId).then(setFrei);
-    void preisHolen(userId).then(setPreis);
+    void preisHolen(userId).then((p) => {
+      setPreis(p);
+      // Nur wenn kein Preis kommt: eine Zeile, die sagt warum — statt eines
+      // Kaufknopfs, der stumm ins Leere fuehrt.
+      if (!p) void preisDiagnose(userId).then(setDiagnose);
+    });
   }, [userId]);
 
   if (!userId || !kaufMoeglich()) return null;
@@ -162,6 +169,9 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
       )}
 
       {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
+      {!preis && diagnose && (
+        <div className="text-[10px] text-accent-400/40 mt-2 break-words">{diagnose}</div>
+      )}
     </div>
   );
 }
