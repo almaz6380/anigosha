@@ -98,10 +98,10 @@ alter Stand die Live-Version.
       ganze Konto — daran hängen auch MyPeak und WELLbooked. Die Web-App auf Vercel ist
       nicht betroffen, `initAds()` ist im Browser wirkungslos.
 
-### Release-CI — Stand 04.08.2026
+### Release-CI — Stand 05.08.2026
 
-**20 von 21 Secrets gesetzt** (`gh secret list -R almaz6380/anigosha`). Es fehlt nur
-`VITE_REVENUECAT_ANDROID_KEY`, der erst nach dem Play-Console-Eintrag existiert.
+**Alle 21 Secrets gesetzt** (`gh secret list -R almaz6380/anigosha`), inkl.
+`VITE_REVENUECAT_ANDROID_KEY` (seit dem Play-Console-Eintrag am 05.08.).
 
 | Was | Wo es liegt |
 |---|---|
@@ -158,11 +158,16 @@ alter Stand die Live-Version.
   niemand kaufen, und der Fehler sähe im Code nach „kein Angebot verfügbar" aus.
 
 **Noch offen:**
-- [ ] Android: Play-Console-Eintrag + Kaufprodukt + `VITE_REVENUECAT_ANDROID_KEY`.
-      **Play gibt In-App-Produkte erst frei, wenn eine signierte Version im internen
-      Test liegt** — braucht also zuerst einen Build.
-- [ ] **Kauf noch nie ausgeführt.** Ein echter Test braucht einen Build auf dem Gerät
-      und ein Sandbox-Konto (App Store Connect → Benutzer und Zugriffsrechte → Sandbox).
+- [x] Android komplett (05.08.): Play-App angelegt, Kaufprodukt `anigosha_no_ads`
+      (Kaufoption `standard`, in RevenueCat als `anigosha_no_ads:standard`) aktiv,
+      `VITE_REVENUECAT_ANDROID_KEY` gesetzt, vc2 mit Schluessel im internen Test.
+- [ ] **Kauf noch nie ausgefuehrt.** iOS zeigt Stand 05.08. abends den Kaufknopf
+      OHNE Preis — RevenueCat-Kette verifiziert korrekt (default → $rc_lifetime →
+      anigosha_no_ads), Produkt bei Apple READY_TO_SUBMIT mit Preis 2,99/AUT,
+      Screenshot COMPLETE. Wahrscheinlichste Ursache: StoreKit-Verteilung nach dem
+      Metadata-Fix braucht Zeit. **Build 3 zeigt eine Diagnosezeile** unter dem
+      Kaufknopf (nur solange kein Preis laedt) — deren Text zuerst lesen, bevor
+      irgendwo gedreht wird. `preisHolen` verschluckte vorher jeden Fehler stumm.
 
 ### Push-Benachrichtigungen — FERTIG gebaut (03.08.2026), Gerätetest offen
 
@@ -217,7 +222,39 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### Offen: M5 Release
+### M5 Release — Stand 05.08.2026 abends
+
+**Beide Stores sind vollstaendig vorbereitet, aber NICHT eingereicht.**
+
+| | App Store | Google Play |
+|---|---|---|
+| Build | Build 3 in TestFlight (Diagnose) | vc2 im internen Test |
+| Store-Eintrag DE+EN | Texte, Untertitel, Keywords, je 4 Screenshots (API) | Texte (API), Bilder von Hand |
+| Formulare | Alterseinstufung 4+ (neuer Fragebogen: userGeneratedContent+advertising=true), Pruefkonto mit Telefon | Datensicherheit, Anmeldedaten, IARC, Zielgruppe 13+, Werbe-ID |
+| Kaufprodukt | READY_TO_SUBMIT | aktiv |
+
+Pruefkonto fuer beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
+(Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
+
+**Zum Einreichen fehlt nur noch:** iOS: Build an Version 1.0 haengen + absenden
+(IAP wird als erster Non-Consumable MIT der Version eingereicht). Play: vc2 in
+Produktion heben. Beides geht per API. **Vorher offene Frage klaeren: warum laedt
+der Preis auf iOS nicht** (Diagnosezeile in Build 3 lesen). Android auf echtem
+Geraet weiterhin ungetestet.
+
+**Werkzeuge aus der Release-Session (alle im Repo):**
+- `tools/store-shots.mjs` — Store-Screenshots beide Formate/Sprachen (`SHOT_LANG=en`)
+- `tools/feature-graphic.mjs` — Play-Vorstellungsgrafik 1024x500 (`SHOT_LANG=en`)
+- Scratch-Skripte der Session (ASC-Listing, IAP-Screenshot-Upload, Build-Zuweisung,
+  Play-Status) liegen im Session-Scratchpad, Muster: JWT mit `exp <= now+1200`
+  (Apple lehnt laengere Tokens ab), Alterseinstufung haengt an appInfos (nicht an
+  der Version) und verlangt seit 2026 auch userGeneratedContent/advertising/
+  messagingAndChat/ageAssurance.
+
+**Rechtstexte (05.08.):** In-App-Kaeufe-Abschnitt + RevenueCat als Empfaenger,
+Impressum um Gewerbe/GISA/WKO ergaenzt, Mindestalter ueberall 12→13 (Play-Formular
+sagt 13+), neue oeffentliche Seite `/legal/konto-loeschen` (Play-Pflichtfeld
+Datensicherheit). Alles live auf anigosha.vercel.app.
 
 ## Umgebung / Werkzeuge
 
@@ -427,7 +464,9 @@ zugewiesen. Keystore und App-Store-Profil sind **erzeugt** und liegen in
 weiter oben). Ein früherer Eintrag hier nannte beide als fehlend und die Secrets als
 „Herkunft ungeklärt" — das ist überholt.
 
-**Android ist weiterhin ungetestet**, weil es noch keinen Play-Console-Eintrag gibt.
+**Android laeuft im internen Play-Test** (vc2, seit 05.08. mit RevenueCat-Schluessel);
+auf echter Hardware weiterhin ungetestet. ⚠ Kein Android-Testgeraete-Hash eingetragen —
+Anzeigen dort sind ECHT, nie antippen.
 
 Die Web-App deployt Vercel bei jedem Push auf `main` (deshalb vor der Arbeit immer
 `git fetch`). `USE_TEST_ADS` steht seit dem ersten Release-Build auf `false` — niemals
