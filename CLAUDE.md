@@ -295,6 +295,15 @@ Passwort: RESEND_API_KEY (derselbe wie bei WELLbooked)
 - **Absender ≠ Anmeldung:** `anigosha@wellbooked.at` ist bei easyname nur eine
   Weiterleitung (das einzige echte Postfach ist `office@`). Für den Versand über Resend
   spielt das keine Rolle; Antworten landen über die Weiterleitung bei Josef.
+- **Zustellbarkeit gemessen: 10/10 bei mail-tester** (05.08.2026, echte Registrierungsmail).
+  SPF, DKIM und DMARC bestehen alle; DMARC steht seit 05.08. auf `p=quarantine`. Beide
+  Sendewege der Domain sind abgesichert — easyname über `cloudpit._domainkey`, Resend
+  über `resend._domainkey` —, ein strengerer DMARC-Wert gefährdet also keine der Apps.
+- **Dass Testmails trotzdem im Spam landeten, lag am Testen selbst:** sieben fast
+  gleichlautende „Passwort zurücksetzen"-Mails in zwei Stunden an dieselbe Adresse, von
+  einem für GMX neuen Absender. Das ist ein Spam-Muster. Beim echten Ablauf (eine
+  angeforderte Mail bei der Registrierung) greift das nicht. **Lehre: Zustellbarkeit an
+  einer Wegwerfadresse messen, nicht durch wiederholtes Senden ans eigene Postfach.**
 - Supabase-Standardversand ist auf wenige Mails pro Stunde begrenzt und wäre zum Launch
   ein echter Blocker gewesen.
 
