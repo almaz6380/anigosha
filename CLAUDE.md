@@ -281,11 +281,13 @@ Passwort: RESEND_API_KEY (derselbe wie bei WELLbooked)
   Bei Resend ist die Domain dagegen längst verifiziert — `resend._domainkey.wellbooked.at`
   existiert, weil WELLbooked denselben Weg nutzt. Josefs Beobachtung („bei WELLbooked
   kommen die Mails doch an") führte direkt zur Lösung.
-- **Der API-Schlüssel wird mit WELLbooked geteilt** (`~/Projects/wellbooked/.env.local`,
-  auch als Vercel-Secret dort). Er hat nur Senderecht — Domains auflisten oder eigene
-  Schlüssel anlegen geht damit nicht (401 `restricted_api_key`). Wird er je erneuert,
-  **müssen beide Apps nachgezogen werden**. Einen eigenen Schlüssel für Anigosha kann
-  Josef in der Resend-Oberfläche anlegen.
+- **Anigosha hat einen eigenen Resend-Schlüssel** (05.08.2026, Name „Anigosha",
+  nur *sending access*). Er liegt ausschließlich als Supabase-SMTP-Passwort — nicht im
+  Repo, nicht in der `.env`. Wird er erneuert, muss nur Supabase nachgezogen werden;
+  WELLbooked bleibt unberührt.
+- Der Schlüssel von WELLbooked hat nur Senderecht: Domains auflisten oder neue Schlüssel
+  anlegen geht damit nicht (401 `restricted_api_key`). Neue Schlüssel entstehen deshalb
+  nur über die Resend-Oberfläche.
 - **Vorlagen** (Bestätigung, Passwort, Adresswechsel) sind zweisprachig und im
   Anigosha-Design hinterlegt — gesetzt über die Management-API, nicht im Dashboard.
   Achtung: Vorlagen ändern geht **nur mit eigenem SMTP**; mit Supabases Standardversand
