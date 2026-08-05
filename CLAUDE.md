@@ -265,6 +265,37 @@ Regeln dazu:
 - **Niemals committen:** `.env`, `.supabase-db-password.txt`, `supabase/.temp/` (enthält `pooler-url`
   mit DB-Passwort) — alle drei stehen in `.gitignore`.
 
+## Anmelde-E-Mails (Registrierung, Passwort) — Stand 05.08.2026
+
+Versand über **Resend**, Absender `Anigosha <anigosha@wellbooked.at>`.
+
+```
+smtp.resend.com : 465
+Benutzer: resend
+Passwort: RESEND_API_KEY (derselbe wie bei WELLbooked)
+```
+
+- **Warum nicht direkt über easyname:** Ging technisch, landete aber bei GMX im
+  **Spam**. Grund: `wellbooked.at` hat SPF und DMARC, aber **kein DKIM** für den
+  easyname-Mailserver, und easyname Mail Basic bietet DKIM nicht im Selbstservice.
+  Bei Resend ist die Domain dagegen längst verifiziert — `resend._domainkey.wellbooked.at`
+  existiert, weil WELLbooked denselben Weg nutzt. Josefs Beobachtung („bei WELLbooked
+  kommen die Mails doch an") führte direkt zur Lösung.
+- **Der API-Schlüssel wird mit WELLbooked geteilt** (`~/Projects/wellbooked/.env.local`,
+  auch als Vercel-Secret dort). Er hat nur Senderecht — Domains auflisten oder eigene
+  Schlüssel anlegen geht damit nicht (401 `restricted_api_key`). Wird er je erneuert,
+  **müssen beide Apps nachgezogen werden**. Einen eigenen Schlüssel für Anigosha kann
+  Josef in der Resend-Oberfläche anlegen.
+- **Vorlagen** (Bestätigung, Passwort, Adresswechsel) sind zweisprachig und im
+  Anigosha-Design hinterlegt — gesetzt über die Management-API, nicht im Dashboard.
+  Achtung: Vorlagen ändern geht **nur mit eigenem SMTP**; mit Supabases Standardversand
+  antwortet die API mit 400 und dem Hinweis auf den Free-Tier.
+- **Absender ≠ Anmeldung:** `anigosha@wellbooked.at` ist bei easyname nur eine
+  Weiterleitung (das einzige echte Postfach ist `office@`). Für den Versand über Resend
+  spielt das keine Rolle; Antworten landen über die Weiterleitung bei Josef.
+- Supabase-Standardversand ist auf wenige Mails pro Stunde begrenzt und wäre zum Launch
+  ein echter Blocker gewesen.
+
 ## Rechtstexte und Routing
 
 - `src/pages/legal/legalContent.ts` — Impressum, Datenschutz, Nutzungsbedingungen (DE+EN).
