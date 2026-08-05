@@ -7,6 +7,7 @@ import { readFileSync, mkdirSync } from 'node:fs';
 
 const outDir = process.argv[2] ?? `${process.env.HOME}/Desktop/Anigosha-Store`;
 const url = process.argv[3] ?? 'https://anigosha.vercel.app';
+const lang = process.env.SHOT_LANG ?? 'de'; // 'de' | 'en'
 
 const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
 const supaUrl = env.match(/^VITE_SUPABASE_URL=(.+)$/m)[1].trim();
@@ -50,17 +51,20 @@ for (const fmt of FORMATS) {
     hasTouch: true,
   });
 
-  // Sitzung setzen, statt das Anmeldeformular auszufuellen
-  await ctx.addInitScript(([u, s]) => {
+  // Sitzung setzen, statt das Anmeldeformular auszufuellen.
+  // Die Sprache liest die App aus localStorage 'language' (nicht aus dem Profil!) —
+  // ohne diese Zeile kommen auch im englischen Lauf deutsche Bildschirme heraus.
+  await ctx.addInitScript(([u, s, lang]) => {
     const ref = u.split('//')[1].split('.')[0];
     localStorage.setItem(`sb-${ref}-auth-token`, JSON.stringify(s));
+    localStorage.setItem('language', lang);
   }, [supaUrl, {
     access_token: login.access_token,
     refresh_token: login.refresh_token,
     expires_at: Math.floor(Date.now() / 1000) + 3600,
     token_type: 'bearer',
     user: login.user,
-  }]);
+  }, lang]);
 
   const page = await ctx.newPage();
 

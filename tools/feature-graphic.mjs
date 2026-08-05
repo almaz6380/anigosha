@@ -7,6 +7,18 @@ import { readFileSync } from 'node:fs';
 const out = process.argv[2] ?? `${process.env.HOME}/Downloads/Anigosha-Store/vorstellungsgrafik-1024x500.png`;
 const icon = readFileSync(new URL('../store-assets/icon/icon-512.png', import.meta.url)).toString('base64');
 
+// Play verlangt die Grafik je Sprache — Aufruf mit SHOT_LANG=en fuer den en-US-Eintrag.
+const T = {
+  de: { sub1: 'Das Quiz für', sub2: 'Anime-Fans',
+        sub3: '804 Fragen &middot; Duelle &middot; Bestenliste',
+        pill1: '12 Kategorien', pill2: 'Täglich neu' },
+  // EN bewusst kuerzer: das Textfeld ist 556 px breit, "leaderboard" faellt
+  // sonst allein in eine dritte Zeile — mit einem verwaisten Trennpunkt davor.
+  en: { sub1: 'The quiz for', sub2: 'anime fans',
+        sub3: '804 questions &middot; duels &middot; ranking',
+        pill1: '12 categories', pill2: 'New daily' },
+}[process.env.SHOT_LANG ?? 'de'];
+
 // Play blendet die Raender je nach Ansicht ab -> alles Wichtige weit nach innen.
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -35,8 +47,8 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
     <img class="icon" src="data:image/png;base64,${icon}" />
     <div class="txt">
       <h1>Anigosha</h1>
-      <div class="sub">Das Quiz für <span class="accent">Anime-Fans</span><br/>804 Fragen &middot; Duelle &middot; Bestenliste</div>
-      <div class="pills"><span class="pill">12 Kategorien</span><span class="pill">Täglich neu</span></div>
+      <div class="sub">${T.sub1} <span class="accent">${T.sub2}</span><br/>${T.sub3}</div>
+      <div class="pills"><span class="pill">${T.pill1}</span><span class="pill">${T.pill2}</span></div>
     </div>
   </div>
 </body></html>`;
