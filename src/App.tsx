@@ -52,6 +52,7 @@ function AppRoutes() {
       <Route path="/legal/impressum" element={<LegalPage doc="imprint" />} />
       <Route path="/legal/datenschutz" element={<LegalPage doc="privacy" />} />
       <Route path="/legal/agb" element={<LegalPage doc="terms" />} />
+      <Route path="/legal/konto-loeschen" element={<LegalPage doc="deletion" />} />
     </>
   );
 

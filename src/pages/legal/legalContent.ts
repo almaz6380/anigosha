@@ -32,7 +32,101 @@ export interface LegalDoc {
   sections: LegalSection[];
 }
 
-export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; en: LegalDoc }> = {
+export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { de: LegalDoc; en: LegalDoc }> = {
+  // -------------------------------------------------------------------------
+  //  Google Play verlangt eine oeffentlich erreichbare Seite, die den Weg zur
+  //  Kontoloeschung zeigt — erreichbar OHNE App und OHNE Anmeldung.
+  deletion: {
+    de: {
+      title: 'Konto und Daten löschen',
+      sections: [
+        {
+          heading: 'In der App löschen',
+          body:
+            'Du kannst dein Anigosha-Konto jederzeit selbst löschen, ohne uns zu kontaktieren:\n\n' +
+            '1. Anigosha öffnen und anmelden\n' +
+            '2. unten rechts auf „Profil" tippen\n' +
+            '3. ganz nach unten scrollen zu „Konto löschen"\n' +
+            '4. die Sicherheitsabfrage bestätigen\n\n' +
+            'Die Löschung wird sofort ausgeführt. Es gibt keine Wartefrist und keine Bestätigungs-E-Mail.',
+        },
+        {
+          heading: 'Ohne App löschen',
+          body:
+            'Du hast die App nicht mehr installiert? Schreib uns von der E-Mail-Adresse deines Kontos an ' + OPERATOR.email + ' mit dem Betreff „Konto löschen".\n\n' +
+            'Wir löschen das Konto dann innerhalb von 30 Tagen und bestätigen dir die Löschung.',
+        },
+        {
+          heading: 'Was gelöscht wird',
+          body:
+            'Vollständig und unwiderruflich gelöscht werden:\n\n' +
+            '• dein Konto samt E-Mail-Adresse und Passwort\n' +
+            '• dein Profil: Spielername, Avatar, Spracheinstellung\n' +
+            '• dein Spielstand: Erfahrungspunkte, Level, Elo-Wertung, Tagesserie\n' +
+            '• alle Solo-Runden und die dabei gegebenen Antworten\n' +
+            '• deine Duelle und Duell-Antworten\n' +
+            '• dein Gerätetoken für Benachrichtigungen\n' +
+            '• von dir gemeldete Fragen samt Meldegrund',
+        },
+        {
+          heading: 'Was bestehen bleibt',
+          body:
+            'Bereits beendete Duelle bleiben beim jeweiligen Gegenüber sichtbar, allerdings ohne Bezug zu dir — dein Spielername wird dort entfernt. Das ist nötig, damit der Spielverlauf der anderen Person schlüssig bleibt.\n\n' +
+            'Belege über getätigte Käufe liegen bei Apple bzw. Google, nicht bei uns. Dort gelten deren gesetzliche Aufbewahrungsfristen; auf diese Daten haben wir keinen Zugriff.\n\n' +
+            'Eine darüber hinausgehende Aufbewahrung bei uns findet nicht statt.',
+        },
+        {
+          heading: 'Kein Zurück',
+          body: 'Die Löschung ist endgültig. Spielstand, Level und Elo-Wertung lassen sich danach nicht wiederherstellen — auch nicht, wenn du dich später mit derselben E-Mail-Adresse neu anmeldest.',
+        },
+      ],
+    },
+    en: {
+      title: 'Delete account and data',
+      sections: [
+        {
+          heading: 'Delete in the app',
+          body:
+            'You can delete your Anigosha account yourself at any time, without contacting us:\n\n' +
+            '1. Open Anigosha and sign in\n' +
+            '2. Tap “Profile” at the bottom right\n' +
+            '3. Scroll all the way down to “Delete account”\n' +
+            '4. Confirm the safety prompt\n\n' +
+            'Deletion happens immediately. There is no waiting period and no confirmation email.',
+        },
+        {
+          heading: 'Delete without the app',
+          body:
+            'No longer have the app installed? Email us from your account’s email address at ' + OPERATOR.email + ' with the subject “Delete account”.\n\n' +
+            'We will delete the account within 30 days and confirm the deletion to you.',
+        },
+        {
+          heading: 'What is deleted',
+          body:
+            'Deleted completely and irreversibly:\n\n' +
+            '• your account including email address and password\n' +
+            '• your profile: player name, avatar, language setting\n' +
+            '• your progress: experience points, level, Elo rating, daily streak\n' +
+            '• all solo rounds and the answers given in them\n' +
+            '• your duels and duel answers\n' +
+            '• your device token for notifications\n' +
+            '• questions you reported, including the reason given',
+        },
+        {
+          heading: 'What remains',
+          body:
+            'Duels that have already finished remain visible to your opponent, but without any reference to you — your player name is removed there. This is necessary so that the other person’s match history stays coherent.\n\n' +
+            'Receipts for purchases are held by Apple or Google, not by us. Their statutory retention periods apply and we have no access to that data.\n\n' +
+            'We do not retain anything beyond this.',
+        },
+        {
+          heading: 'No way back',
+          body: 'Deletion is final. Progress, level and Elo rating cannot be restored afterwards — not even if you sign up again later with the same email address.',
+        },
+      ],
+    },
+  },
+
   // -------------------------------------------------------------------------
   imprint: {
     de: {
@@ -190,7 +284,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         {
           heading: 'Kinder und Jugendliche',
           body:
-            'Die App richtet sich an Personen ab 12 Jahren. Wir erheben wissentlich keine Daten von jüngeren Kindern.\n\n' +
+            'Die App richtet sich an Personen ab 13 Jahren. Wir erheben wissentlich keine Daten von jüngeren Kindern.\n\n' +
             'Erfahren wir, dass ein Konto von einem jüngeren Kind angelegt wurde, löschen wir es. Erziehungsberechtigte können sich dafür jederzeit an uns wenden.',
         },
         {
@@ -275,7 +369,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         {
           heading: 'Children',
           body:
-            'The app is intended for people aged 12 and over. We do not knowingly collect data from younger children.\n\n' +
+            'The app is intended for people aged 13 and over. We do not knowingly collect data from younger children.\n\n' +
             'If we learn that an account belongs to a younger child, we delete it. Parents and guardians may contact us at any time.',
         },
         {
@@ -297,7 +391,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         },
         {
           heading: 'Nutzungsvoraussetzungen',
-          body: 'Die Nutzung ist ab 12 Jahren gestattet. Minderjährige benötigen die Zustimmung ihrer Erziehungsberechtigten. Pro Person ist ein Konto zulässig.',
+          body: 'Die Nutzung ist ab 13 Jahren gestattet. Minderjährige benötigen die Zustimmung ihrer Erziehungsberechtigten. Pro Person ist ein Konto zulässig.',
         },
         {
           heading: 'Faires Spiel',
@@ -337,7 +431,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms', { de: LegalDoc; 
         { heading: 'Scope', body: 'These terms apply to the use of the Anigosha app and its website. Operator:\n\n' + opEN },
         {
           heading: 'Requirements',
-          body: 'Use is permitted from the age of 12. Minors require the consent of their legal guardians. One account per person.',
+          body: 'Use is permitted from the age of 13. Minors require the consent of their legal guardians. One account per person.',
         },
         {
           heading: 'Fair play',

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { legalDocs, LAST_UPDATED } from './legalContent';
 
-type DocKey = 'imprint' | 'privacy' | 'terms';
+type DocKey = 'imprint' | 'privacy' | 'terms' | 'deletion';
 
 /** Rechtstexte sind öffentlich erreichbar — Apple und Google verlangen eine
  *  Datenschutz-URL, die auch ohne Anmeldung aufrufbar ist. */
@@ -39,6 +39,7 @@ export default function LegalPage({ doc }: { doc: DocKey }) {
         <Link to="/legal/impressum">{legalDocs.imprint[lang].title}</Link>
         <Link to="/legal/datenschutz">{legalDocs.privacy[lang].title}</Link>
         <Link to="/legal/agb">{legalDocs.terms[lang].title}</Link>
+        <Link to="/legal/konto-loeschen">{legalDocs.deletion[lang].title}</Link>
       </div>
     </div>
   );
