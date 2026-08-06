@@ -241,37 +241,56 @@ Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 06.08. in BEIDEN Stores und BEIDEN Sprachen entfernt — mit abgeschaltetem Kauf
 waere er eine Falschaussage und bei Apple ein Ablehnungsgrund (3.1.1).
 
-### ⚠ In-App-Kauf: abgeschaltet, Ursache UNGEKLAERT (06.08.2026)
+### In-App-Kauf: URSACHE GEFUNDEN und behoben (07.08.2026), Kauf noch abgeschaltet
 
-`KAUF_AKTIV = false` in `src/lib/purchases.ts` blendet den ganzen Bereich aus.
-Grund: **Der erste native Aufruf in das RevenueCat-Plugin kehrt auf iOS nie
-zurueck.** Kein Fehler, kein Absturz — die Promise loest einfach nie auf.
-Sichtbar war nur ein Kaufknopf ohne Preis und zwei blasse Schaltflaechen.
+`KAUF_AKTIV = false` in `src/lib/purchases.ts` blendet den Bereich weiterhin aus
+(1.0 ist ohne Kauf eingereicht). Der Fehler „erster nativer Aufruf kehrt auf iOS
+nie zurueck" ist aber geklaert — **es war weder das Plugin noch StoreKit noch
+RevenueCat, sondern unser eigener Code:**
 
-**Was BELEGT ausgeschlossen ist** (bitte nicht nochmal pruefen):
-- Apple/StoreKit: Produkt vollstaendig, Preis 2,99 EUR/AUT gesetzt, Pruef-
-  Screenshot COMPLETE, Zustand war READY_TO_SUBMIT bzw. WAITING_FOR_REVIEW.
-- RevenueCat-Konfiguration: Offering `default` → Paket `$rc_lifetime` →
-  Produkt `anigosha_no_ads`, per REST mit dem SDK-Schluessel geprueft.
-- „Fehlt im Binary": NEIN. 575 RevenueCat-Fundstellen, Klasse `PurchasesPlugin`
-  ebenso oft vorhanden wie `AdMobPlugin`. SPM-Paket in `Package.swift` korrekt.
-- „Faellt auf die Web-Attrappe zurueck": NEIN, die wirft (`Promise.reject`).
-- „Nicht registriert": NEIN, `Capacitor.isPluginAvailable('Purchases')` = true.
-- Nebenlaeufigkeit (drei gleichzeitige `configure`): war real und ist behoben
-  (geteilter Init), war aber nicht die Ursache.
-- `setLogLevel` vor `configure`: half nicht.
+**Ursache — ein falsches Thenable.** Das Capacitor-Plugin-Proxy verwandelt
+JEDEN Eigenschaftszugriff in einen Plugin-Aufruf, auch `.then` (der Proxy in
+`@capacitor/core` behandelt nur `$$typeof`, `toJSON`, `addListener`,
+`removeListener` gesondert). `bereitmachen`/`ladePlugin` gaben das
+`Purchases`-Proxy aus einer async-Funktion zurueck; beim Aufloesen prueft
+JavaScript auf `.then`, findet die generierte Plugin-Methode, ruft
+`Purchases.then(resolve, reject)` auf — und dieser Wrapper ruft resolve/reject
+nie auf. **Die Promise loest nie auf, noch BEVOR irgendein nativer Aufruf
+abgesetzt wird.** Daher: keine RevenueCat-Logzeile, kein Verkehr zu
+`api.revenuecat.com`, `isPluginAvailable=true`, AdMob/Firebase im selben Binary
+munter (ads.ts weist das Proxy nur zu, gibt es nie aus async zurueck). Im
+Browser unsichtbar, weil dort `kaufMoeglich()=false` vorher abbricht. Der
+Fehler steckte seit der allerersten Version vom 04.08. drin.
 
-**Der harte Befund:** Geraetemitschnitt ueber 910.000 Zeilen, RevenueCat-
-Protokoll auf VERBOSE — **keine einzige RevenueCat-Zeile**. Die App spricht nie
-mit `api.revenuecat.com`; RevenueCats `last_seen` fuer den Testnutzer steht
-seit dem 04.08. still. Der native Code wird also nie betreten, obwohl das
-Plugin gelinkt und registriert ist. AdMob und Firebase laufen im selben Binary.
+**Fix:** `bereitmachen` gibt jetzt ein Huellenobjekt `{ Purchases }` zurueck
+(kein Thenable). Regel fuers ganze Repo: **Plugin-Proxies nie `await`en und nie
+aus async-Funktionen zurueckgeben.**
 
-**Plan fuer 1.1: RevenueCat ersetzen durch `cordova-plugin-purchase`** — die
-Bibliothek, mit der Mahjong Royale seine vier Produkte verkauft (Vorlage:
-`~/mahjong-app/src/store/iap.ts`). Produkt-ID `anigosha_no_ads` bleibt, bei
-Apple und Google ist alles fertig angelegt. Bei Mahjong haengt der Kauf am
-Geraet; bei anigosha zusaetzlich ans Supabase-Konto haengen.
+**Beweis ohne Geraet:** `tools/test-kauf-bruecke.mjs` faehrt den echten
+Kauf-Code (Produktions-Build) in Chromium gegen eine nachgebildete iOS-Bridge
+(echte `native-bridge.js` aus `@capacitor/ios`, PluginHeaders aus
+`PurchasesPlugin.swift` generiert). Mit dem alten Code reproduziert er exakt
+das Geraetesymptom (Haenger, null native Aufrufe, Seitenfehler
+`"Purchases.then()" is not implemented on ios` — der einzige Ort, wo der Fehler
+je sichtbar war: als unhandled rejection in der WebView-Konsole, die nie
+jemand offen hatte). Mit dem Fix laufen alle Wege in <100 ms durch.
+
+**Zwei Scheinbefunde von damals, damit sie niemand wieder ausgraebt:**
+- „`configure` antwortet nur mit `setLogLevel` davor in 1 ms": `configure` und
+  `setLogLevel` sind `CAPPluginReturnNone` → auf JS-Seite **fire-and-forget**,
+  sie kehren IMMER sofort zurueck und koennen gar nicht haengen. Fehler solcher
+  Aufrufe verschluckt die Bridge zudem stumm. Die Messungen massen den
+  geteilten Init drumherum, nicht die Aufrufe.
+- „RevenueCat-Protokoll auf VERBOSE, keine Zeile": kein committeter Build hat
+  je VERBOSE gesetzt (`wecken` setzte ERROR, Build 6 DEBUG). Die Aussage war
+  wertlos — nativ lief ja ohnehin nie etwas an.
+
+**Naechste Schritte zum Aktivieren (1.1):** RevenueCat BLEIBT (der Wechsel auf
+`cordova-plugin-purchase` ist unnoetig geworden). 1. `KAUF_AKTIV = true`,
+2. TestFlight-Build und den Kauf einmal echt am Geraet ausfuehren,
+3. Kaufprodukt `anigosha_no_ads` bei Apple mit der Version einreichen
+   (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI),
+4. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
@@ -316,7 +335,9 @@ Regeln dazu:
 - `tools/create-test-user.mjs` legt einen Testnutzer über die Admin-API an.
 - `tools/create-bots.mjs` legt die 12 Duell-Bots an (idempotent über die E-Mail).
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
-  `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`).
+  `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`),
+  `test-kauf-bruecke.mjs` (9, braucht Playwright+Chromium; prueft den Kauf-Code
+  gegen eine nachgebildete iOS-Bridge — faengt Haenger, die nur nativ auftreten).
 - **Levelkurve:** `xpForLevel(n) = 50 · (n² − 1)` → Schwellen 150, 400, 750, 1200 …
   Der erste Aufstieg kommt nach ein bis zwei Runden. Bei fester Schrittweite (500)
   dauerte er rund vier Runden — beim Testen hat ihn deshalb nie jemand gesehen.
