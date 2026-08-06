@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '6';
+const APP_BUILD = '7';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -47,19 +47,39 @@ export function kaufMoeglich(): boolean {
 }
 
 let bereitFuer: string | null = null;
-
-async function bereitmachen(userId: string) {
-  if (!kaufMoeglich()) return null;
+let initLauf: Promise<PurchasesPlugin> | null = null;
+type PurchasesPlugin = Awaited<ReturnType<typeof ladePlugin>>;
+async function ladePlugin() {
   const { Purchases } = await import('@revenuecat/purchases-capacitor');
-
-  if (bereitFuer !== userId) {
-    // setLogLevel bewusst NICHT mehr davor: Es ist reine Bequemlichkeit, aber
-    // ein nativer Aufruf mehr, der haengen kann — und genau davor stand die
-    // App am 06.08.26 (Zeitlimit bei SDK-Init). configure ist das Noetige.
-    await Purchases.configure({ apiKey: schluessel(), appUserID: userId });
-    bereitFuer = userId;
-  }
   return Purchases;
+}
+
+/**
+ * Richtet das SDK genau EINMAL ein und gibt allen Aufrufern denselben Vorgang.
+ *
+ * ⚠ Das ist keine Optimierung, sondern die Ursache eines zweitaegigen Fehlers:
+ * Beim Start laufen drei Wege gleichzeitig los (werbefreiPruefen, preisHolen,
+ * Diagnose). Rief jeder `Purchases.configure()` auf, kam genau einer zurueck —
+ * die anderen haben nie aufgeloest. Sichtbar war davon nur ein Kaufknopf ohne
+ * Preis und zwei blasse Schaltflaechen (06.08.26). Ein zweites `configure`
+ * waehrend das erste laeuft, darf es deshalb nie geben.
+ */
+function bereitmachen(userId: string): Promise<PurchasesPlugin> | null {
+  if (!kaufMoeglich()) return null;
+  if (!initLauf || bereitFuer !== userId) {
+    bereitFuer = userId;
+    initLauf = (async () => {
+      const Purchases = await ladePlugin();
+      await Purchases.configure({ apiKey: schluessel(), appUserID: userId });
+      return Purchases;
+    })().catch((e) => {
+      // Fehlschlag nicht einbrennen — der naechste Versuch darf es neu probieren.
+      initLauf = null;
+      bereitFuer = null;
+      throw e;
+    });
+  }
+  return initLauf;
 }
 
 function hatAnspruch(info: { customerInfo?: { entitlements?: { active?: Record<string, unknown> } } }): boolean {
@@ -122,30 +142,14 @@ export async function preisDiagnose(userId: string): Promise<string> {
   const t0 = Date.now();
   const ms = () => `${Date.now() - t0}ms`;
   try {
-    // Jeder Schritt einzeln, damit im Befund steht, WELCHER haengt — "SDK-Init"
-    // umfasste bisher drei Aufrufe auf einmal und war deshalb nicht auswertbar.
-    const { Purchases } = await mitZeitlimit(
-      import('@revenuecat/purchases-capacitor'), 6000, 'import'
-    );
-    const tImport = ms();
-
-    let tLog = '-';
-    try {
-      const { LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
-      await mitZeitlimit(Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG }), 4000, 'setLogLevel');
-      tLog = ms();
-    } catch (e) {
-      tLog = `HAENGT/FEHLER (${(e as Error).message})`;
-    }
-
-    await mitZeitlimit(
-      Purchases.configure({ apiKey: schluessel(), appUserID: userId }), 6000, 'configure'
-    );
-    bereitFuer = userId;
-    const tConf = ms();
+    // Nutzt denselben geteilten Init wie alle anderen — die Diagnose darf
+    // nicht selbst konfigurieren, sonst ist sie der Fehler, den sie sucht.
+    const Purchases = await mitZeitlimit(bereitmachen(userId)!, 8000, 'SDK-Init');
+    if (!Purchases) return 'SDK nicht initialisiert';
+    const tInit = ms();
 
     const angebote = await mitZeitlimit(Purchases.getOfferings(), 8000, 'getOfferings');
-    const zeiten = `[import ${tImport}, log ${tLog}, configure ${tConf}, offerings ${ms()}]`;
+    const zeiten = `[init ${tInit}, offerings ${ms()}]`;
     const anzahl = Object.keys(angebote.all ?? {}).length;
     const cur = angebote.current;
     if (!cur) return `kein aktuelles Angebot (${anzahl} Angebote gesamt) ${zeiten}`;
