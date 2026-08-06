@@ -9,8 +9,6 @@ import {
   kaeufeWiederherstellen,
   kaufMoeglich,
   preisHolen,
-  preisDiagnose,
-  diagnoseMelden,
   werbefreiPruefen,
   werbungEntfernenKaufen,
 } from '../lib/purchases';
@@ -103,7 +101,6 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
   const [preis, setPreis] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [hinweis, setHinweis] = useState<string | null>(null);
-  const [diagnose, setDiagnose] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId || !kaufMoeglich()) return;
@@ -111,10 +108,6 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
     // Die Diagnose laeuft IMMER mit und meldet sich in die Datenbank. Sie an
     // den Fehlerfall zu binden war ein Denkfehler: Haengt der Aufruf, kehrt
     // preisHolen nie zurueck — dann erscheint auch keine Diagnose (06.08.26).
-    void preisDiagnose(userId).then((d) => {
-      setDiagnose(d);
-      void diagnoseMelden(userId, d);
-    });
     void preisHolen(userId).then(setPreis);
   }, [userId]);
 
@@ -172,9 +165,6 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
       )}
 
       {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
-      {diagnose && (
-        <div className="text-[10px] text-accent-400/40 mt-2 break-words">{diagnose}</div>
-      )}
     </div>
   );
 }

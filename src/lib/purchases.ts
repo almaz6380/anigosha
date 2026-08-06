@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '9';
+const APP_BUILD = '10';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -41,9 +41,25 @@ function schluessel(): string {
   return '';
 }
 
+/**
+ * ⚠ Kauf vorübergehend abgeschaltet (06.08.2026).
+ *
+ * Der erste native Aufruf in das RevenueCat-Plugin kehrt auf iOS nie zurück:
+ * Plugin ist gelinkt (`PurchasesPlugin` im Binary), Capacitor meldet es als
+ * registriert (`isPluginAvailable` = true), aber weder `setLogLevel` noch
+ * `configure` werden je betreten — im Gerätemitschnitt steht trotz VERBOSE
+ * keine einzige RevenueCat-Zeile. AdMob und Firebase laufen im selben Binary.
+ *
+ * Ein Kaufknopf, der ins Leere führt, ist schlimmer als keiner: Apple lehnt
+ * dafür ab, und Nutzer halten es für Betrug. Deshalb bleibt der Bereich aus,
+ * bis der Kauf nachweislich funktioniert — geplant für 1.1 über
+ * `cordova-plugin-purchase`, den Weg, der in Mahjong Royale erprobt ist.
+ */
+const KAUF_AKTIV = false;
+
 /** Käufe gibt es nur in den nativen Apps — im Browser fehlt der Store. */
 export function kaufMoeglich(): boolean {
-  return Capacitor.isNativePlatform() && Boolean(schluessel());
+  return KAUF_AKTIV && Capacitor.isNativePlatform() && Boolean(schluessel());
 }
 
 let bereitFuer: string | null = null;
