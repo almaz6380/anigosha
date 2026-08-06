@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '5';
+const APP_BUILD = '6';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -50,10 +50,12 @@ let bereitFuer: string | null = null;
 
 async function bereitmachen(userId: string) {
   if (!kaufMoeglich()) return null;
-  const { Purchases, LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
+  const { Purchases } = await import('@revenuecat/purchases-capacitor');
 
   if (bereitFuer !== userId) {
-    await Purchases.setLogLevel({ level: LOG_LEVEL.ERROR });
+    // setLogLevel bewusst NICHT mehr davor: Es ist reine Bequemlichkeit, aber
+    // ein nativer Aufruf mehr, der haengen kann — und genau davor stand die
+    // App am 06.08.26 (Zeitlimit bei SDK-Init). configure ist das Noetige.
     await Purchases.configure({ apiKey: schluessel(), appUserID: userId });
     bereitFuer = userId;
   }
@@ -117,21 +119,44 @@ function mitZeitlimit<T>(p: Promise<T>, ms: number, was: string): Promise<T> {
 export async function preisDiagnose(userId: string): Promise<string> {
   if (!Capacitor.isNativePlatform()) return 'web';
   if (!schluessel()) return 'kein SDK-Schlüssel im Build';
+  const t0 = Date.now();
+  const ms = () => `${Date.now() - t0}ms`;
   try {
-    const Purchases = await mitZeitlimit(bereitmachen(userId), 8000, 'SDK-Init');
-    if (!Purchases) return 'SDK nicht initialisiert (bereitmachen gab null)';
+    // Jeder Schritt einzeln, damit im Befund steht, WELCHER haengt — "SDK-Init"
+    // umfasste bisher drei Aufrufe auf einmal und war deshalb nicht auswertbar.
+    const { Purchases } = await mitZeitlimit(
+      import('@revenuecat/purchases-capacitor'), 6000, 'import'
+    );
+    const tImport = ms();
+
+    let tLog = '-';
+    try {
+      const { LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
+      await mitZeitlimit(Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG }), 4000, 'setLogLevel');
+      tLog = ms();
+    } catch (e) {
+      tLog = `HAENGT/FEHLER (${(e as Error).message})`;
+    }
+
+    await mitZeitlimit(
+      Purchases.configure({ apiKey: schluessel(), appUserID: userId }), 6000, 'configure'
+    );
+    bereitFuer = userId;
+    const tConf = ms();
+
     const angebote = await mitZeitlimit(Purchases.getOfferings(), 8000, 'getOfferings');
+    const zeiten = `[import ${tImport}, log ${tLog}, configure ${tConf}, offerings ${ms()}]`;
     const anzahl = Object.keys(angebote.all ?? {}).length;
     const cur = angebote.current;
-    if (!cur) return `kein aktuelles Angebot (${anzahl} Angebote gesamt)`;
+    if (!cur) return `kein aktuelles Angebot (${anzahl} Angebote gesamt) ${zeiten}`;
     const pakete = cur.availablePackages ?? [];
     if (!pakete.length)
-      return `Angebot "${cur.identifier}" ohne Pakete — StoreKit liefert ${anzahl} Angebote, aber kein Produkt`;
+      return `Angebot "${cur.identifier}" ohne Pakete — StoreKit liefert kein Produkt ${zeiten}`;
     const p = pakete[0];
-    return `Paket ${p.identifier}: ${p.product?.identifier ?? '?'} → ${p.product?.priceString ?? 'OHNE Preis'}`;
+    return `Paket ${p.identifier}: ${p.product?.identifier ?? '?'} → ${p.product?.priceString ?? 'OHNE Preis'} ${zeiten}`;
   } catch (e) {
     const f = e as { code?: string; message?: string };
-    return `Fehler ${f?.code ?? '?'}: ${f?.message ?? String(e)}`;
+    return `Fehler nach ${ms()} — ${f?.message ?? String(e)}`;
   }
 }
 
