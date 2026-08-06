@@ -27,6 +27,7 @@ if (!login.access_token) {
 const FORMATS = [
   { name: 'ios', width: 440, height: 956, dsf: 3 },   // -> 1320x2868
   { name: 'play', width: 360, height: 720, dsf: 3 },  // -> 1080x2160
+  { name: 'ipad', width: 1024, height: 1366, dsf: 2 }, // -> 2048x2732 (iPad Pro 12,9" — Pflicht, solange TARGETED_DEVICE_FAMILY iPad enthaelt)
 ];
 
 // Bildschirme, die in den Store sollen. `prep` darf klicken/warten.
