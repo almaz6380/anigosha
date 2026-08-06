@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '10';
+const APP_BUILD = '11';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -42,22 +42,23 @@ function schluessel(): string {
 }
 
 /**
- * ⚠ Kauf vorübergehend abgeschaltet (06.08.2026), Version 1.0 ist ohne ihn
- * eingereicht.
+ * Kauf wieder aktiv seit Build 11 (07.08.2026).
  *
- * Die Ursache des "Kauf haengt auf iOS"-Fehlers ist inzwischen GEFUNDEN und
- * behoben (07.08.2026): kein Plugin-, StoreKit- oder RevenueCat-Problem,
- * sondern unser eigener Code — eine async-Funktion gab das Purchases-Proxy
- * zurueck, dessen `.then` die Promise nie aufloesen laesst (Details bei
- * `SdkZugang`). Der Wechsel auf `cordova-plugin-purchase` ist damit NICHT
- * mehr noetig.
+ * Der "Kauf haengt auf iOS"-Fehler der Builds 1-10 ist gefunden und behoben:
+ * kein Plugin-, StoreKit- oder RevenueCat-Problem, sondern unser eigener Code —
+ * eine async-Funktion gab das Purchases-Proxy zurueck, dessen `.then` die
+ * Promise nie aufloesen laesst (Details bei `SdkZugang`). Der frueher geplante
+ * Wechsel auf `cordova-plugin-purchase` ist damit unnoetig.
  *
- * Ein Kaufknopf, der ins Leere führt, ist schlimmer als keiner: Apple lehnt
- * dafür ab, und Nutzer halten es für Betrug. Deshalb bleibt der Bereich aus,
- * bis der Fix einmal auf einem echten Geraet (TestFlight) bestaetigt und das
- * Kaufprodukt bei Apple zur Pruefung eingereicht ist. Dann: auf true setzen.
+ * ⚠ Version 1.0 (Build 10) ist OHNE Kauf bei Apple in der Pruefung — das
+ * bleibt so. Dieser Stand hier gehoert erst in einen Store-Release, wenn
+ * 1. der Kauf einmal per TestFlight am echten Geraet durchgelaufen ist und
+ * 2. das Kaufprodukt `anigosha_no_ads` MIT der naechsten Version (1.1)
+ *    eingereicht wird (Falle "nur eine Einreichung je Plattform", s. CLAUDE.md).
+ * Ein Release mit aktivem Kauf, aber nicht eingereichtem Produkt, waere ein
+ * Ablehnungsgrund (3.1.1).
  */
-const KAUF_AKTIV = false;
+const KAUF_AKTIV = true;
 
 /** Käufe gibt es nur in den nativen Apps — im Browser fehlt der Store. */
 export function kaufMoeglich(): boolean {

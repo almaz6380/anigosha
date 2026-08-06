@@ -285,12 +285,16 @@ jemand offen hatte). Mit dem Fix laufen alle Wege in <100 ms durch.
   je VERBOSE gesetzt (`wecken` setzte ERROR, Build 6 DEBUG). Die Aussage war
   wertlos — nativ lief ja ohnehin nie etwas an.
 
-**Naechste Schritte zum Aktivieren (1.1):** RevenueCat BLEIBT (der Wechsel auf
-`cordova-plugin-purchase` ist unnoetig geworden). 1. `KAUF_AKTIV = true`,
-2. TestFlight-Build und den Kauf einmal echt am Geraet ausfuehren,
-3. Kaufprodukt `anigosha_no_ads` bei Apple mit der Version einreichen
-   (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI),
-4. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen.
+**Stand der Aktivierung:** RevenueCat BLEIBT (der Wechsel auf
+`cordova-plugin-purchase` ist unnoetig geworden). `KAUF_AKTIV = true` seit
+Build 11 (07.08.2026, TestFlight — die Store-Pruefung von 1.0/Build 10 ist
+davon unberuehrt). **Noch offen:**
+1. Kauf einmal echt am Geraet ausfuehren (TestFlight, Build 11) — die
+   Diagnosezeile landet in `client_diagnose`, Build `11`,
+2. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
+   (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
+   vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
+3. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
