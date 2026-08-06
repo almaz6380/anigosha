@@ -222,9 +222,27 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### M5 Release — Stand 05.08.2026 abends
+### M5 Release — EINGEREICHT 06.08.2026
 
-**Beide Stores sind vollstaendig vorbereitet, aber NICHT eingereicht.**
+**Beide Stores sind zur Pruefung eingereicht.**
+- iOS: Version 1.0 (Build 3) + Kauf `anigosha_no_ads` GEMEINSAM in einer
+  reviewSubmission (`WAITING_FOR_REVIEW`), Freigabe automatisch nach Genehmigung.
+  ⚠ Falle: „Zur Pruefung hinzufuegen" auf der IAP-Seite legt einen ZWEITEN
+  Uebermittlungsentwurf an; die API kann IAPs nicht an Einreichungen haengen
+  (kein Relationship-Typ). Loesung war: Version-Einreichung zurueckziehen
+  (canceled=true), Version dem IAP-Entwurf beilegen, gemeinsam absenden.
+- Play: Produktion 1.0 (vc2), voller Rollout, 176 Laender + Rest der Welt,
+  am 06.08. ueber die Console gesendet (Vorabpruefungen liefen an).
+  ⚠ Der allererste Produktions-Send einer neuen App geht NUR ueber die Console;
+  die API darf den Produktions-Track nur als draft befuellen („Only releases
+  with status draft may be created on draft app").
+- Vorher noetig gewesen (Apple, kam erst als Sammel-Fehlerliste beim Einreichen):
+  copyright, primaryCategory (GAMES/GAMES_TRIVIA), contentRightsDeclaration,
+  App-Preis (gratis, Basis AUT, appPriceSchedules-API), iPad-Screenshots
+  (beide Slots, beide Sprachen — TARGETED_DEVICE_FAMILY ist "1,2"),
+  App-Datenschutz-Fragebogen (NUR UI, API-Endpunkte entfernt — alle 404).
+- Play-Dashboard-Rest: Kategorie Quiz, Kontakt anigosha@wellbooked.at,
+  Laender/Regionen fuer Produktion.
 
 | | App Store | Google Play |
 |---|---|---|
