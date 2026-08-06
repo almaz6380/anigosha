@@ -222,57 +222,72 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### M5 Release — EINGEREICHT 06.08.2026
+### M5 Release — EINGEREICHT 06.08.2026 (ohne In-App-Kauf)
 
-**Beide Stores sind zur Pruefung eingereicht.**
-- iOS: Version 1.0 (Build 3) + Kauf `anigosha_no_ads` GEMEINSAM in einer
-  reviewSubmission (`WAITING_FOR_REVIEW`), Freigabe automatisch nach Genehmigung.
-  ⚠ Falle: „Zur Pruefung hinzufuegen" auf der IAP-Seite legt einen ZWEITEN
-  Uebermittlungsentwurf an; die API kann IAPs nicht an Einreichungen haengen
-  (kein Relationship-Typ). Loesung war: Version-Einreichung zurueckziehen
-  (canceled=true), Version dem IAP-Entwurf beilegen, gemeinsam absenden.
-- Play: Produktion 1.0 (vc2), voller Rollout, 176 Laender + Rest der Welt,
-  am 06.08. ueber die Console gesendet (Vorabpruefungen liefen an).
-  ⚠ Der allererste Produktions-Send einer neuen App geht NUR ueber die Console;
-  die API darf den Produktions-Track nur als draft befuellen („Only releases
-  with status draft may be created on draft app").
-- Vorher noetig gewesen (Apple, kam erst als Sammel-Fehlerliste beim Einreichen):
-  copyright, primaryCategory (GAMES/GAMES_TRIVIA), contentRightsDeclaration,
-  App-Preis (gratis, Basis AUT, appPriceSchedules-API), iPad-Screenshots
-  (beide Slots, beide Sprachen — TARGETED_DEVICE_FAMILY ist "1,2"),
-  App-Datenschutz-Fragebogen (NUR UI, API-Endpunkte entfernt — alle 404).
-- Play-Dashboard-Rest: Kategorie Quiz, Kontakt anigosha@wellbooked.at,
-  Laender/Regionen fuer Produktion.
+**Beide Stores in der Pruefung, Kauf bewusst NICHT dabei.**
 
 | | App Store | Google Play |
 |---|---|---|
-| Build | Build 3 in TestFlight (Diagnose) | vc2 im internen Test |
-| Store-Eintrag DE+EN | Texte, Untertitel, Keywords, je 4 Screenshots (API) | Texte (API), Bilder von Hand |
-| Formulare | Alterseinstufung 4+ (neuer Fragebogen: userGeneratedContent+advertising=true), Pruefkonto mit Telefon | Datensicherheit, Anmeldedaten, IARC, Zielgruppe 13+, Werbe-ID |
-| Kaufprodukt | READY_TO_SUBMIT | aktiv |
+| Version | 1.0, Build **10**, WAITING_FOR_REVIEW, Freigabe automatisch | Produktion **vc3**, voller Rollout, 176 Laender |
+| Store-Eintrag | DE+EN, Texte/Screenshots/iPad-Slots per API | DE+EN per API, Bilder von Hand |
+| Formulare | Alterseinstufung 4+, App-Datenschutz veroeffentlicht, Pruefkonto | Datensicherheit, IARC, Zielgruppe 13+, Werbe-ID |
+| Kaufprodukt | `anigosha_no_ads` auf READY_TO_SUBMIT — **nicht eingereicht** | angelegt und aktiv, ungenutzt |
 
-Pruefkonto fuer beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
+Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**Zum Einreichen fehlt nur noch:** iOS: Build an Version 1.0 haengen + absenden
-(IAP wird als erster Non-Consumable MIT der Version eingereicht). Play: vc2 in
-Produktion heben. Beides geht per API. **Vorher offene Frage klaeren: warum laedt
-der Preis auf iOS nicht** (Diagnosezeile in Build 3 lesen). Android auf echtem
-Geraet weiterhin ungetestet.
+**⚠ In den Store-Beschreibungen darf keine Kauf-Zusage stehen.** Der Satz
+„Werbefinanziert, Werbung per Einmalkauf entfernbar" war drin und wurde am
+06.08. in BEIDEN Stores und BEIDEN Sprachen entfernt — mit abgeschaltetem Kauf
+waere er eine Falschaussage und bei Apple ein Ablehnungsgrund (3.1.1).
 
-**Werkzeuge aus der Release-Session (alle im Repo):**
-- `tools/store-shots.mjs` — Store-Screenshots beide Formate/Sprachen (`SHOT_LANG=en`)
-- `tools/feature-graphic.mjs` — Play-Vorstellungsgrafik 1024x500 (`SHOT_LANG=en`)
-- Scratch-Skripte der Session (ASC-Listing, IAP-Screenshot-Upload, Build-Zuweisung,
-  Play-Status) liegen im Session-Scratchpad, Muster: JWT mit `exp <= now+1200`
-  (Apple lehnt laengere Tokens ab), Alterseinstufung haengt an appInfos (nicht an
-  der Version) und verlangt seit 2026 auch userGeneratedContent/advertising/
-  messagingAndChat/ageAssurance.
+### ⚠ In-App-Kauf: abgeschaltet, Ursache UNGEKLAERT (06.08.2026)
 
-**Rechtstexte (05.08.):** In-App-Kaeufe-Abschnitt + RevenueCat als Empfaenger,
-Impressum um Gewerbe/GISA/WKO ergaenzt, Mindestalter ueberall 12→13 (Play-Formular
-sagt 13+), neue oeffentliche Seite `/legal/konto-loeschen` (Play-Pflichtfeld
-Datensicherheit). Alles live auf anigosha.vercel.app.
+`KAUF_AKTIV = false` in `src/lib/purchases.ts` blendet den ganzen Bereich aus.
+Grund: **Der erste native Aufruf in das RevenueCat-Plugin kehrt auf iOS nie
+zurueck.** Kein Fehler, kein Absturz — die Promise loest einfach nie auf.
+Sichtbar war nur ein Kaufknopf ohne Preis und zwei blasse Schaltflaechen.
+
+**Was BELEGT ausgeschlossen ist** (bitte nicht nochmal pruefen):
+- Apple/StoreKit: Produkt vollstaendig, Preis 2,99 EUR/AUT gesetzt, Pruef-
+  Screenshot COMPLETE, Zustand war READY_TO_SUBMIT bzw. WAITING_FOR_REVIEW.
+- RevenueCat-Konfiguration: Offering `default` → Paket `$rc_lifetime` →
+  Produkt `anigosha_no_ads`, per REST mit dem SDK-Schluessel geprueft.
+- „Fehlt im Binary": NEIN. 575 RevenueCat-Fundstellen, Klasse `PurchasesPlugin`
+  ebenso oft vorhanden wie `AdMobPlugin`. SPM-Paket in `Package.swift` korrekt.
+- „Faellt auf die Web-Attrappe zurueck": NEIN, die wirft (`Promise.reject`).
+- „Nicht registriert": NEIN, `Capacitor.isPluginAvailable('Purchases')` = true.
+- Nebenlaeufigkeit (drei gleichzeitige `configure`): war real und ist behoben
+  (geteilter Init), war aber nicht die Ursache.
+- `setLogLevel` vor `configure`: half nicht.
+
+**Der harte Befund:** Geraetemitschnitt ueber 910.000 Zeilen, RevenueCat-
+Protokoll auf VERBOSE — **keine einzige RevenueCat-Zeile**. Die App spricht nie
+mit `api.revenuecat.com`; RevenueCats `last_seen` fuer den Testnutzer steht
+seit dem 04.08. still. Der native Code wird also nie betreten, obwohl das
+Plugin gelinkt und registriert ist. AdMob und Firebase laufen im selben Binary.
+
+**Plan fuer 1.1: RevenueCat ersetzen durch `cordova-plugin-purchase`** — die
+Bibliothek, mit der Mahjong Royale seine vier Produkte verkauft (Vorlage:
+`~/mahjong-app/src/store/iap.ts`). Produkt-ID `anigosha_no_ads` bleibt, bei
+Apple und Google ist alles fertig angelegt. Bei Mahjong haengt der Kauf am
+Geraet; bei anigosha zusaetzlich ans Supabase-Konto haengen.
+
+**Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
+eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
+`client_diagnose` (Migration 0020, RLS: nur die eigene Zeile). Damit ist ein
+Befund vom Geraet von aussen lesbar, ohne dass jemand etwas abtippt.
+
+**Geraetelog lesen (hat die Sache eingegrenzt, als alles andere scheiterte):**
+`brew install libimobiledevice` ist installiert; iPhone per Kabel anschliessen,
+`idevicesyslog > log.txt` im Hintergrund laufen lassen, App starten. Der
+App-Prozess heisst im Log schlicht `App`. `log stream --device-name` gibt es auf
+diesem macOS nicht, `devicectl` hat keinen Konsolen-Befehl.
+
+**Lehre aus zwei Tagen Fehlersuche:** Erst messen, dann erklaeren. Drei
+Hypothesen (Apples Auslieferung, Nebenlaeufigkeit, setLogLevel) wurden als
+Befund praesentiert und waren falsch; jede kostete einen Build von ~25 Minuten.
+Der Geraetemitschnitt haette am ersten Tag dieselbe Eingrenzung geliefert.
 
 ## Umgebung / Werkzeuge
 
