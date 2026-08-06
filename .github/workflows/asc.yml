@@ -28,6 +28,7 @@ on:
         options:
           - status
           - build
+          - testflight
           - screenshots
           - einreichungen
           - aufraeumen
@@ -36,6 +37,10 @@ on:
           - exportfrage
           - einreichen
         default: status
+      nummer:
+        description: 'Build-Nummer (nur fuer build/testflight)'
+        type: string
+        default: ''
       dry_run:
         description: 'Nur zeigen, nichts an Apple senden'
         type: boolean
@@ -60,6 +65,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
           MODE: ${{ inputs.mode }}
+          NUMMER: ${{ inputs.nummer }}
           DRY: ${{ inputs.dry_run }}
           TROTZDEM: ${{ inputs.trotzdem }}
         run: |
@@ -71,10 +77,14 @@ jobs:
           fi
           export ASC_KEY_P8
 
-          # --build braucht eine Nummer, die uebrigen nicht. Der Trockenlauf
-          # gilt nur fuer die schreibenden Befehle; --status kennt ihn nicht.
-          if [ "$MODE" = "build" ]; then
-            ARGS="--build 4"
+          # --build und --testflight brauchen eine Nummer, die uebrigen nicht.
+          # Der Trockenlauf gilt nur fuer die schreibenden Befehle.
+          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ]; then
+            if [ -z "$NUMMER" ]; then
+              echo "::error::Modus $MODE braucht die Eingabe 'nummer'."
+              exit 1
+            fi
+            ARGS="--$MODE $NUMMER"
           else
             ARGS="--$MODE"
           fi

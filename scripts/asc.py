@@ -242,6 +242,48 @@ def setze_build(tok, nummer):
         print('  zugewiesen')
 
 
+
+def testflight_zuweisen(tok, nummer):
+    """Build der/den internen TestFlight-Gruppe(n) zuweisen.
+
+    Ein Build erscheint erst in TestFlight, wenn er einer Testgruppe
+    zugewiesen ist — der Upload allein genuegt nicht (Falle, s. CLAUDE.md).
+    Anders als --build fasst das die Store-Version NICHT an; eine laufende
+    Pruefung bleibt unberuehrt.
+    """
+    aid = app_id(tok)
+    builds = api(tok, f'builds?filter[app]={aid}&limit=20&sort=-version')
+    treffer = [b for b in builds.get('data', [])
+               if b['attributes'].get('version') == str(nummer)]
+    if not treffer:
+        sys.exit(f'  Build {nummer} nicht gefunden — Apple listet ihn erst '
+                 'einige Minuten nach dem Upload.')
+    b = treffer[0]
+    zustand = b['attributes'].get('processingState')
+    print(f'  Build {nummer}: {zustand}')
+    if zustand == 'PROCESSING':
+        sys.exit('  Apple verarbeitet den Build noch — spaeter erneut versuchen.')
+    if zustand != 'VALID':
+        sys.exit(f'  Zustand {zustand} — Zuweisen hilft hier nicht.')
+    gruppen = api(tok, f'betaGroups?filter[app]={aid}&limit=20')
+    intern = [g for g in gruppen.get('data', [])
+              if g['attributes'].get('isInternalGroup')]
+    if not intern:
+        sys.exit('  Keine interne Testgruppe gefunden.')
+    for g in intern:
+        name = g['attributes'].get('name')
+        if TROCKEN:
+            print(f'  [trocken] wuerde Gruppe "{name}" zugewiesen')
+            continue
+        res = api(tok, f'betaGroups/{g["id"]}/relationships/builds', 'POST', {
+            'data': [{'type': 'builds', 'id': b['id']}],
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'  Gruppe "{name}": FEHLER {fehler_text(res)}')
+        else:
+            print(f'  Gruppe "{name}": Build {nummer} zugewiesen')
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
@@ -908,6 +950,8 @@ def main():
                    help='Anzeigename + Untertitel auf FullRep setzen')
     p.add_argument('--build', metavar='NR',
                    help='Diesen Build der offenen Version zuweisen')
+    p.add_argument('--testflight', metavar='NR',
+                   help='Diesen Build der internen TestFlight-Gruppe zuweisen')
     p.add_argument('--screenshots', action='store_true',
                    help='iPhone- und iPad-Screenshots ersetzen')
     p.add_argument('--abo-screenshot', action='store_true',
@@ -942,7 +986,7 @@ def main():
     TROCKEN = a.dry_run
     TROTZDEM = a.trotzdem
 
-    tat = [a.status, a.name, a.build, a.screenshots, a.abo_screenshot,
+    tat = [a.status, a.name, a.build, a.testflight, a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.alles]
@@ -969,6 +1013,8 @@ def main():
         setze_namen(tok)
     if a.build:
         setze_build(tok, a.build)
+    if a.testflight:
+        testflight_zuweisen(tok, a.testflight)
     if a.screenshots:
         setze_screenshots(tok)
     if a.abo_screenshot:
