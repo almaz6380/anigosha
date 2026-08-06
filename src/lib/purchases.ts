@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '8';
+const APP_BUILD = '9';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -156,6 +156,14 @@ export async function preisDiagnose(userId: string): Promise<string> {
   if (!schluessel()) return 'kein SDK-Schlüssel im Build';
   const t0 = Date.now();
   const ms = () => `${Date.now() - t0}ms`;
+
+  // Sieht die Bruecke das native Plugin ueberhaupt? Diese eine Frage ist nie
+  // gemessen worden — sie unterscheidet "Plugin antwortet nicht" von
+  // "Plugin ist fuer JS gar nicht da" (Fallback auf die Web-Attrappe).
+  const verfuegbar = Capacitor.isPluginAvailable('Purchases');
+  const bekannt = Object.keys((Capacitor as unknown as { Plugins?: object }).Plugins ?? {}).join(',');
+  if (!verfuegbar) return `Plugin "Purchases" NICHT registriert — bekannt: ${bekannt}`;
+
   try {
     // Nutzt denselben geteilten Init wie alle anderen — die Diagnose darf
     // nicht selbst konfigurieren, sonst ist sie der Fehler, den sie sucht.
