@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '7';
+const APP_BUILD = '8';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -55,6 +55,20 @@ async function ladePlugin() {
 }
 
 /**
+ * ⚠ `setLogLevel` MUSS vor `configure` stehen — es ist keine Bequemlichkeit.
+ *
+ * Gemessen am Geraet (06.08.26): Mit dieser Reihenfolge antwortet `configure`
+ * in 1 ms, ohne sie kommt es nie zurueck (Zeitlimit 8000 ms, Build 7). Der
+ * erste Aufruf weckt offenbar die native Seite des Plugins. Dasselbe Muster
+ * steht bei Swaply fuer AdMob im Repo: dort setzt erst `initialize()` die
+ * interne Rueckreferenz, alles davor laeuft ins Leere.
+ */
+async function wecken(Purchases: PurchasesPlugin) {
+  const { LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
+  await Purchases.setLogLevel({ level: LOG_LEVEL.ERROR });
+}
+
+/**
  * Richtet das SDK genau EINMAL ein und gibt allen Aufrufern denselben Vorgang.
  *
  * ⚠ Das ist keine Optimierung, sondern die Ursache eines zweitaegigen Fehlers:
@@ -70,6 +84,7 @@ function bereitmachen(userId: string): Promise<PurchasesPlugin> | null {
     bereitFuer = userId;
     initLauf = (async () => {
       const Purchases = await ladePlugin();
+      await wecken(Purchases);
       await Purchases.configure({ apiKey: schluessel(), appUserID: userId });
       return Purchases;
     })().catch((e) => {
