@@ -241,12 +241,11 @@ Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 06.08. in BEIDEN Stores und BEIDEN Sprachen entfernt — mit abgeschaltetem Kauf
 waere er eine Falschaussage und bei Apple ein Ablehnungsgrund (3.1.1).
 
-### In-App-Kauf: URSACHE GEFUNDEN und behoben (07.08.2026), Kauf noch abgeschaltet
+### In-App-Kauf: URSACHE GEFUNDEN und behoben (06.08.2026 abends), Build 11 in TestFlight
 
-`KAUF_AKTIV = false` in `src/lib/purchases.ts` blendet den Bereich weiterhin aus
-(1.0 ist ohne Kauf eingereicht). Der Fehler „erster nativer Aufruf kehrt auf iOS
-nie zurueck" ist aber geklaert — **es war weder das Plugin noch StoreKit noch
-RevenueCat, sondern unser eigener Code:**
+Der Fehler „erster nativer Aufruf kehrt auf iOS nie zurueck" ist geklaert —
+**es war weder das Plugin noch StoreKit noch RevenueCat, sondern unser eigener
+Code:**
 
 **Ursache — ein falsches Thenable.** Das Capacitor-Plugin-Proxy verwandelt
 JEDEN Eigenschaftszugriff in einen Plugin-Aufruf, auch `.then` (der Proxy in
@@ -287,10 +286,22 @@ jemand offen hatte). Mit dem Fix laufen alle Wege in <100 ms durch.
 
 **Stand der Aktivierung:** RevenueCat BLEIBT (der Wechsel auf
 `cordova-plugin-purchase` ist unnoetig geworden). `KAUF_AKTIV = true` seit
-Build 11 (07.08.2026, TestFlight — die Store-Pruefung von 1.0/Build 10 ist
-davon unberuehrt). **Noch offen:**
-1. Kauf einmal echt am Geraet ausfuehren (TestFlight, Build 11) — die
-   Diagnosezeile landet in `client_diagnose`, Build `11`,
+Build 11 (06.08.2026, 21:37 MESZ hochgeladen, `UPLOAD SUCCEEDED`, von Apple als
+VALID verarbeitet). **Die Store-Pruefung von 1.0/Build 10 ist davon unberuehrt**
+— TestFlight und App-Review sind getrennte Wege.
+
+⚠ **Die Zuweisung an die Gruppe „Interner Test" stand beim Schreiben dieser
+Zeilen noch aus** (der GitHub-Lauf hing in der Warteschlange). Ohne sie
+erscheint der Build NICHT in TestFlight. Nachholen mit dem Workflow
+`App Store Connect`, Modus `testflight`, Nummer `11`, Trockenlauf aus.
+
+**Noch offen:**
+1. Kauf einmal echt am Geraet ausfuehren (TestFlight, Build 11). Der Befund
+   landet von selbst in `client_diagnose` mit `app_build = '11'` — nichts
+   abzutippen. Erwartet wird eine Zeile der Form
+   `Paket $rc_lifetime: anigosha_no_ads → € 2,99 [init …, offerings …]`.
+   Steht dort ein Zeitlimit oder „kein aktuelles Angebot", ist der Fix am
+   Geraet NICHT bestaetigt und alles Weitere haelt an.
 2. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
    (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
    vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
