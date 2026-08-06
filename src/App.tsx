@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initAds } from './lib/ads';
+import { preisDiagnose, diagnoseMelden } from './lib/purchases';
 import { pushAuffrischen, pushKlicksBehandeln } from './lib/push';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthPage from './pages/auth/AuthPage';
@@ -30,6 +31,21 @@ function PushBruecke({ sprache }: { sprache: string }) {
     void pushKlicksBehandeln((pfad) => navigate(pfad));
   }, [navigate, sprache]);
 
+  return null;
+}
+
+/**
+ * Meldet den Kauf-Befund beim Start in die Datenbank — nicht erst im Profil.
+ *
+ * Am 06.08.26 blieb die Diagnose aus, weil sie am Rendern des Kaufbereichs
+ * hing. Was nur unter Bedingungen meldet, meldet genau dann nicht, wenn man
+ * es braucht. Hier laeuft sie, sobald jemand angemeldet ist.
+ */
+function DiagnoseBruecke({ userId }: { userId: string | null }) {
+  useEffect(() => {
+    if (!userId) return;
+    void preisDiagnose(userId).then((d) => diagnoseMelden(userId, d));
+  }, [userId]);
   return null;
 }
 
@@ -69,6 +85,7 @@ function AppRoutes() {
   return (
     <>
       <PushBruecke sprache={i18n.language} />
+      <DiagnoseBruecke userId={profile?.id ?? null} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/solo" element={<SoloPage />} />
