@@ -127,6 +127,19 @@ alter Stand die Live-Version.
   deshalb nie unbeaufsichtigt durch. `security export -k login.keychain-db -t identities`
   liefert Development **und** Distribution samt privaten Schlüsseln in einer Datei — das
   ist für den CI-Import unproblematisch.
+- **GitHub-Läufe können ohne Fehlermeldung in der Warteschlange steckenbleiben.**
+  Am 06.08. abends: iOS-Lauf #15 stand 15 Minuten auf `queued` und wurde dann von
+  GitHub gestrichen (kein Läufer, keine Logs, nichts halb hochgeladen); der sofort
+  neu gestartete #16 lief durch. Später traf es dieselbe Sache auf **Linux** — ein
+  ASC-Trockenlauf lief in 20 Sekunden, der 40 Sekunden später gestartete echte Lauf
+  bekam über eine Stunde keinen Läufer, auch nach Abbruch und Neustart nicht.
+  **Erkennen:** `status` bleibt `queued`, `runner_name` leer. **Nicht** den Workflow
+  debuggen — er ist in Ordnung. Das Billing-Kontingent lässt sich aus einer
+  Claude-Sitzung nicht prüfen (die GitHub-API ist dort auf Repo-Endpunkte
+  beschränkt), also im Zweifel unter Settings → Billing nachsehen.
+  **Wichtig: Alles, was der ASC-Workflow tut, geht auch von Hand in App Store
+  Connect** — eine Build-Zuweisung dort ist ein Klick und dauert 30 Sekunden.
+  Bei klemmender CI ist der Handweg schneller als jede Fehlersuche.
 - [x] **DSGVO-Einwilligungsnachricht in AdMob veröffentlicht** (03.08.2026, beide Apps, DE+EN)
 - [x] **„Werbung entfernen" gebaut** (04.08.2026) — `src/lib/purchases.ts`, Schalter im Profil
 
