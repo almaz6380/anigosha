@@ -10,6 +10,7 @@ import {
   kaufMoeglich,
   preisHolen,
   preisDiagnose,
+  diagnoseMelden,
   werbefreiPruefen,
   werbungEntfernenKaufen,
 } from '../lib/purchases';
@@ -107,12 +108,14 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
   useEffect(() => {
     if (!userId || !kaufMoeglich()) return;
     void werbefreiPruefen(userId).then(setFrei);
-    void preisHolen(userId).then((p) => {
-      setPreis(p);
-      // Nur wenn kein Preis kommt: eine Zeile, die sagt warum — statt eines
-      // Kaufknopfs, der stumm ins Leere fuehrt.
-      if (!p) void preisDiagnose(userId).then(setDiagnose);
+    // Die Diagnose laeuft IMMER mit und meldet sich in die Datenbank. Sie an
+    // den Fehlerfall zu binden war ein Denkfehler: Haengt der Aufruf, kehrt
+    // preisHolen nie zurueck — dann erscheint auch keine Diagnose (06.08.26).
+    void preisDiagnose(userId).then((d) => {
+      setDiagnose(d);
+      void diagnoseMelden(userId, d);
     });
+    void preisHolen(userId).then(setPreis);
   }, [userId]);
 
   if (!userId || !kaufMoeglich()) return null;
@@ -169,7 +172,7 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
       )}
 
       {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
-      {!preis && diagnose && (
+      {diagnose && (
         <div className="text-[10px] text-accent-400/40 mt-2 break-words">{diagnose}</div>
       )}
     </div>

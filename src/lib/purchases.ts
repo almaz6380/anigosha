@@ -16,6 +16,10 @@
 
 import { Capacitor } from '@capacitor/core';
 import { setAdsPremiumStatus } from './ads';
+import { supabase } from './supabase';
+
+/** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
+const APP_BUILD = '4';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -92,29 +96,64 @@ export async function preisHolen(userId: string): Promise<string | null> {
 }
 
 /**
+ * Bricht ein Versprechen nach `ms` ab. Ohne das haengt ein nicht antwortender
+ * nativer Aufruf endlos, `busy` bleibt true, der Knopf bleibt blass — und es
+ * erscheint nirgends ein Fehler. Genau so sah es am 06.08.26 auf dem Geraet aus.
+ */
+function mitZeitlimit<T>(p: Promise<T>, ms: number, was: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, ab) =>
+      setTimeout(() => ab(new Error(`Zeitlimit ${ms} ms bei ${was}`)), ms)
+    ),
+  ]);
+}
+
+/**
  * Diagnose fuer den Fall "Knopf ohne Preis": beschreibt in einer Zeile, was
- * das SDK vom Store zurueckbekommt. Wird im Profil klein angezeigt, solange
- * kein Preis geladen werden konnte — sonst raet man bei einem stummen
- * `catch { return null }` ins Blaue (05.08.26 genau so passiert).
+ * das SDK vom Store zurueckbekommt. Jeder Schritt hat ein Zeitlimit, damit
+ * ein haengender Aufruf als Befund sichtbar wird statt als Stille.
  */
 export async function preisDiagnose(userId: string): Promise<string> {
   if (!Capacitor.isNativePlatform()) return 'web';
   if (!schluessel()) return 'kein SDK-Schlüssel im Build';
   try {
-    const Purchases = await bereitmachen(userId);
-    if (!Purchases) return 'SDK nicht initialisiert';
-    const angebote = await Purchases.getOfferings();
+    const Purchases = await mitZeitlimit(bereitmachen(userId), 8000, 'SDK-Init');
+    if (!Purchases) return 'SDK nicht initialisiert (bereitmachen gab null)';
+    const angebote = await mitZeitlimit(Purchases.getOfferings(), 8000, 'getOfferings');
     const anzahl = Object.keys(angebote.all ?? {}).length;
     const cur = angebote.current;
     if (!cur) return `kein aktuelles Angebot (${anzahl} Angebote gesamt)`;
     const pakete = cur.availablePackages ?? [];
     if (!pakete.length)
-      return `Angebot "${cur.identifier}" ohne Pakete — Store liefert das Produkt (noch) nicht aus`;
+      return `Angebot "${cur.identifier}" ohne Pakete — StoreKit liefert ${anzahl} Angebote, aber kein Produkt`;
     const p = pakete[0];
     return `Paket ${p.identifier}: ${p.product?.identifier ?? '?'} → ${p.product?.priceString ?? 'OHNE Preis'}`;
   } catch (e) {
     const f = e as { code?: string; message?: string };
-    return `Fehler ${f?.code ?? '?'}: ${f?.message ?? 'unbekannt'}`;
+    return `Fehler ${f?.code ?? '?'}: ${f?.message ?? String(e)}`;
+  }
+}
+
+/**
+ * Schreibt den Befund in die Datenbank, damit er ohne Abtippen und ohne
+ * Screenshot von aussen lesbar ist. Schlaegt das fehl, ist das egal — die
+ * Diagnose steht zusaetzlich in der Oberflaeche.
+ */
+export async function diagnoseMelden(userId: string, text: string): Promise<void> {
+  try {
+    await supabase.from('client_diagnose').upsert(
+      {
+        user_id: userId,
+        bereich: 'kauf',
+        text: text.slice(0, 500),
+        plattform: Capacitor.getPlatform(),
+        app_build: APP_BUILD,
+      },
+      { onConflict: 'user_id,bereich' }
+    );
+  } catch {
+    /* Diagnose darf niemals die App stoeren */
   }
 }
 
