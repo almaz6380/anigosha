@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '10';
+const APP_BUILD = '11';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -42,20 +42,23 @@ function schluessel(): string {
 }
 
 /**
- * ⚠ Kauf vorübergehend abgeschaltet (06.08.2026).
+ * Kauf wieder aktiv seit Build 11 (07.08.2026).
  *
- * Der erste native Aufruf in das RevenueCat-Plugin kehrt auf iOS nie zurück:
- * Plugin ist gelinkt (`PurchasesPlugin` im Binary), Capacitor meldet es als
- * registriert (`isPluginAvailable` = true), aber weder `setLogLevel` noch
- * `configure` werden je betreten — im Gerätemitschnitt steht trotz VERBOSE
- * keine einzige RevenueCat-Zeile. AdMob und Firebase laufen im selben Binary.
+ * Der "Kauf haengt auf iOS"-Fehler der Builds 1-10 ist gefunden und behoben:
+ * kein Plugin-, StoreKit- oder RevenueCat-Problem, sondern unser eigener Code —
+ * eine async-Funktion gab das Purchases-Proxy zurueck, dessen `.then` die
+ * Promise nie aufloesen laesst (Details bei `SdkZugang`). Der frueher geplante
+ * Wechsel auf `cordova-plugin-purchase` ist damit unnoetig.
  *
- * Ein Kaufknopf, der ins Leere führt, ist schlimmer als keiner: Apple lehnt
- * dafür ab, und Nutzer halten es für Betrug. Deshalb bleibt der Bereich aus,
- * bis der Kauf nachweislich funktioniert — geplant für 1.1 über
- * `cordova-plugin-purchase`, den Weg, der in Mahjong Royale erprobt ist.
+ * ⚠ Version 1.0 (Build 10) ist OHNE Kauf bei Apple in der Pruefung — das
+ * bleibt so. Dieser Stand hier gehoert erst in einen Store-Release, wenn
+ * 1. der Kauf einmal per TestFlight am echten Geraet durchgelaufen ist und
+ * 2. das Kaufprodukt `anigosha_no_ads` MIT der naechsten Version (1.1)
+ *    eingereicht wird (Falle "nur eine Einreichung je Plattform", s. CLAUDE.md).
+ * Ein Release mit aktivem Kauf, aber nicht eingereichtem Produkt, waere ein
+ * Ablehnungsgrund (3.1.1).
  */
-const KAUF_AKTIV = false;
+const KAUF_AKTIV = true;
 
 /** Käufe gibt es nur in den nativen Apps — im Browser fehlt der Store. */
 export function kaufMoeglich(): boolean {
@@ -63,46 +66,39 @@ export function kaufMoeglich(): boolean {
 }
 
 let bereitFuer: string | null = null;
-let initLauf: Promise<PurchasesPlugin> | null = null;
-type PurchasesPlugin = Awaited<ReturnType<typeof ladePlugin>>;
-async function ladePlugin() {
-  const { Purchases } = await import('@revenuecat/purchases-capacitor');
-  return Purchases;
-}
+let initLauf: Promise<SdkZugang> | null = null;
+type PurchasesPlugin = typeof import('@revenuecat/purchases-capacitor')['Purchases'];
 
 /**
- * ⚠ `setLogLevel` MUSS vor `configure` stehen — es ist keine Bequemlichkeit.
+ * ⚠ Das Plugin-Objekt NIEMALS aus einer async-Funktion zurueckgeben und
+ * niemals direkt `await`en — nur in dieser Huelle weiterreichen.
  *
- * Gemessen am Geraet (06.08.26): Mit dieser Reihenfolge antwortet `configure`
- * in 1 ms, ohne sie kommt es nie zurueck (Zeitlimit 8000 ms, Build 7). Der
- * erste Aufruf weckt offenbar die native Seite des Plugins. Dasselbe Muster
- * steht bei Swaply fuer AdMob im Repo: dort setzt erst `initialize()` die
- * interne Rueckreferenz, alles davor laeuft ins Leere.
+ * `Purchases` ist ein Capacitor-Proxy, der JEDEN Eigenschaftszugriff in einen
+ * Plugin-Aufruf verwandelt — auch `.then`. Damit ist das Objekt ein falsches
+ * "Thenable": `await` bzw. `return` aus einer async-Funktion ruft
+ * `Purchases.then(resolve, reject)` auf, der Proxy ruft resolve/reject aber
+ * nie auf, und die Promise loest NIE auf. Genau das war der "Kauf haengt auf
+ * iOS"-Fehler der Builds 1-10 (06.08.26): kein nativer Aufruf wurde je
+ * abgesetzt, darum keine RevenueCat-Logzeile und kein Netzverkehr. Nachgewiesen
+ * und abgesichert durch `tools/test-kauf-bruecke.mjs`.
  */
-async function wecken(Purchases: PurchasesPlugin) {
-  const { LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
-  await Purchases.setLogLevel({ level: LOG_LEVEL.ERROR });
-}
+type SdkZugang = { Purchases: PurchasesPlugin };
 
 /**
- * Richtet das SDK genau EINMAL ein und gibt allen Aufrufern denselben Vorgang.
- *
- * ⚠ Das ist keine Optimierung, sondern die Ursache eines zweitaegigen Fehlers:
- * Beim Start laufen drei Wege gleichzeitig los (werbefreiPruefen, preisHolen,
- * Diagnose). Rief jeder `Purchases.configure()` auf, kam genau einer zurueck —
- * die anderen haben nie aufgeloest. Sichtbar war davon nur ein Kaufknopf ohne
- * Preis und zwei blasse Schaltflaechen (06.08.26). Ein zweites `configure`
- * waehrend das erste laeuft, darf es deshalb nie geben.
+ * Richtet das SDK genau EINMAL ein und gibt allen Aufrufern denselben Vorgang
+ * (drei Wege laufen beim Start gleichzeitig los: werbefreiPruefen, preisHolen,
+ * Diagnose — es darf trotzdem nur ein `configure` geben).
  */
-function bereitmachen(userId: string): Promise<PurchasesPlugin> | null {
+function bereitmachen(userId: string): Promise<SdkZugang> | null {
   if (!kaufMoeglich()) return null;
   if (!initLauf || bereitFuer !== userId) {
     bereitFuer = userId;
     initLauf = (async () => {
-      const Purchases = await ladePlugin();
-      await wecken(Purchases);
+      const modul = await import('@revenuecat/purchases-capacitor');
+      const { Purchases, LOG_LEVEL } = modul;
+      await Purchases.setLogLevel({ level: LOG_LEVEL.ERROR });
       await Purchases.configure({ apiKey: schluessel(), appUserID: userId });
-      return Purchases;
+      return { Purchases };
     })().catch((e) => {
       // Fehlschlag nicht einbrennen — der naechste Versuch darf es neu probieren.
       initLauf = null;
@@ -124,8 +120,9 @@ function hatAnspruch(info: { customerInfo?: { entitlements?: { active?: Record<s
  */
 export async function werbefreiPruefen(userId: string): Promise<boolean> {
   try {
-    const Purchases = await bereitmachen(userId);
-    if (!Purchases) return false;
+    const zugang = await bereitmachen(userId);
+    if (!zugang) return false;
+    const { Purchases } = zugang;
     const info = await Purchases.getCustomerInfo();
     const frei = hatAnspruch(info);
     setAdsPremiumStatus(frei);
@@ -138,8 +135,9 @@ export async function werbefreiPruefen(userId: string): Promise<boolean> {
 /** Preis in der Währung des Nutzers, für die Beschriftung der Schaltfläche. */
 export async function preisHolen(userId: string): Promise<string | null> {
   try {
-    const Purchases = await bereitmachen(userId);
-    if (!Purchases) return null;
+    const zugang = await bereitmachen(userId);
+    if (!zugang) return null;
+    const { Purchases } = zugang;
     const angebote = await Purchases.getOfferings();
     const paket = angebote.current?.availablePackages?.[0];
     return paket?.product?.priceString ?? null;
@@ -183,8 +181,9 @@ export async function preisDiagnose(userId: string): Promise<string> {
   try {
     // Nutzt denselben geteilten Init wie alle anderen — die Diagnose darf
     // nicht selbst konfigurieren, sonst ist sie der Fehler, den sie sucht.
-    const Purchases = await mitZeitlimit(bereitmachen(userId)!, 8000, 'SDK-Init');
-    if (!Purchases) return 'SDK nicht initialisiert';
+    const zugang = await mitZeitlimit(bereitmachen(userId)!, 8000, 'SDK-Init');
+    if (!zugang) return 'SDK nicht initialisiert';
+    const { Purchases } = zugang;
     const tInit = ms();
 
     const angebote = await mitZeitlimit(Purchases.getOfferings(), 8000, 'getOfferings');
@@ -238,8 +237,9 @@ export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebn
   }
 
   try {
-    const Purchases = await bereitmachen(userId);
-    if (!Purchases) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    const zugang = await bereitmachen(userId);
+    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    const { Purchases } = zugang;
 
     const angebote = await Purchases.getOfferings();
     const paket = angebote.current?.availablePackages?.[0];
@@ -271,8 +271,9 @@ export async function kaeufeWiederherstellen(userId: string): Promise<KaufErgebn
     return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
   }
   try {
-    const Purchases = await bereitmachen(userId);
-    if (!Purchases) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    const zugang = await bereitmachen(userId);
+    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    const { Purchases } = zugang;
     const info = await Purchases.restorePurchases();
     const frei = hatAnspruch(info);
     setAdsPremiumStatus(frei);
