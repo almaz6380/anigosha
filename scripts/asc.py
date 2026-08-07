@@ -315,6 +315,21 @@ def sandbox_tester(tok):
         print('    Kaufabbruch mit code 1 trotz eingegebenem Passwort.')
 
 
+
+def kaeufe_lesen(tok, aid):
+    """Nicht-verbrauchbare In-App-Kaeufe der App samt Zustand.
+
+    Getrennt von den Abos: Abos haengen an subscriptionGroups, einmalige
+    Kaeufe an /inAppPurchasesV2. Das Skript kannte bisher nur die Abos —
+    deshalb tauchte `anigosha_no_ads` in keiner Ausgabe auf.
+    """
+    res = api(tok, f'apps/{aid}/inAppPurchasesV2?limit=50', fatal=False)
+    if res.get('_fehler'):
+        print(f'    Kaufprodukte nicht lesbar: {fehler_text(res)}')
+        return []
+    return res.get('data', [])
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
@@ -602,6 +617,32 @@ def einreichen(tok):
 
     anhaengen('appStoreVersion', 'appStoreVersions', v['id'],
               f'Version {v["attributes"]["versionString"]}')
+
+    # Einmalige Kaeufe MUESSEN mit eingereicht werden, sonst zeigt die App
+    # einen Kaufknopf fuer ein nie genehmigtes Produkt — Ablehnungsgrund
+    # 3.1.1. Anders als Abos lassen sie sich anhaengen; die Beziehung heisst
+    # 'inAppPurchaseV2' (Singular) bei Typ 'inAppPurchases' (Plural).
+    kaeufe = kaeufe_lesen(tok, aid)
+    offen_kauf = []
+    if not kaeufe:
+        print('  Kaufprodukte: keine gefunden')
+    for k in kaeufe:
+        a = k['attributes']
+        zustand = a.get('state')
+        print(f'  Kaufprodukt {a.get("productId")}: {zustand}')
+        if zustand in ('APPROVED', 'WAITING_FOR_REVIEW', 'IN_REVIEW'):
+            continue          # schon durch oder schon unterwegs
+        if zustand != 'READY_TO_SUBMIT':
+            offen_kauf.append(f'{a.get("productId")} ({zustand})')
+            continue
+        anhaengen('inAppPurchaseV2', 'inAppPurchases', k['id'],
+                  f'Kauf {a.get("productId")}')
+    if offen_kauf and not TROTZDEM:
+        print(f'\n  ABBRUCH: {", ".join(offen_kauf)} ist nicht einreichbar.')
+        print('  Die Version ginge durch, der Kauf nicht — die App zeigte')
+        print('  dann einen Knopf fuer ein ungenehmigtes Produkt (3.1.1).')
+        print('  Erst klaeren, dann einreichen. Wer es trotzdem will: --trotzdem.')
+        return
 
     # Abos lassen sich NICHT anhaengen — 'subscription' ist keine Beziehung
     # an reviewSubmissionItems (am 31.07. am echten Endpunkt geprueft, Apple
@@ -951,6 +992,11 @@ def zeige_status(tok):
                         fatal=False)
             print(f'      Review-Screenshot: '
                   f'{"vorhanden" if shots.get("data") else "FEHLT"}')
+
+    print('\n── Einmalige Kaeufe ──')
+    for k in kaeufe_lesen(tok, aid):
+        a = k['attributes']
+        print(f'  {a.get("productId")}  {a.get("state")}  id={k["id"]}')
 
     print('\n── Screenshots je Version ──')
     for v in vers.get('data', [])[:1]:
