@@ -125,8 +125,15 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
       if (r.ok) {
         setFrei(r.werbefrei);
         setHinweis(r.werbefrei ? t('kauf.danke') : t('kauf.nichtsGefunden'));
-      } else if (r.grund !== 'abgebrochen') {
-        setHinweis(r.text);
+      } else if (r.grund === 'abgebrochen') {
+        // Bewusst NICHT als Fehler formuliert — der Nutzer hat womoeglich
+        // selbst abgebrochen. Aber schweigen darf die App nicht: In der
+        // Sandbox meldet StoreKit auch echte Fehlschlaege als "cancelled",
+        // und ein Knopf, der nur wieder aufleuchtet, ist von einem
+        // kaputten Kauf nicht zu unterscheiden (06.08.26).
+        setHinweis(`${t('kauf.abgebrochen')}${r.detail ? ` [${r.detail}]` : ''}`);
+      } else {
+        setHinweis(`${r.text}${r.detail ? ` [${r.detail}]` : ''}`);
       }
     } finally {
       setBusy(false);

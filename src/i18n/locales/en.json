@@ -148,6 +148,7 @@
     "kaufen": "Buy",
     "wiederherstellen": "Restore",
     "danke": "Ads are off from now on. Thank you!",
-    "nichtsGefunden": "No earlier purchase was found."
+    "nichtsGefunden": "No earlier purchase was found.",
+    "abgebrochen": "Purchase not completed."
   }
 }

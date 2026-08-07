@@ -148,6 +148,7 @@
     "kaufen": "Kaufen",
     "wiederherstellen": "Wiederherstellen",
     "danke": "Werbung ist ab sofort aus. Danke!",
-    "nichtsGefunden": "Es wurde kein früherer Kauf gefunden."
+    "nichtsGefunden": "Es wurde kein früherer Kauf gefunden.",
+    "abgebrochen": "Kauf nicht abgeschlossen."
   }
 }

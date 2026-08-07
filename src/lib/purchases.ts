@@ -19,7 +19,7 @@ import { setAdsPremiumStatus } from './ads';
 import { supabase } from './supabase';
 
 /** Nur zur Diagnose: erlaubt, einen Befund einem konkreten Build zuzuordnen. */
-const APP_BUILD = '11';
+const APP_BUILD = '12';
 
 /** Name des Anspruchs, wie er in RevenueCat angelegt wird. */
 export const WERBEFREI = 'no_ads';
@@ -32,7 +32,13 @@ const ANDROID_KEY = (import.meta.env.VITE_REVENUECAT_ANDROID_KEY as string) || '
 
 export type KaufErgebnis =
   | { ok: true; werbefrei: boolean }
-  | { ok: false; grund: 'nicht_eingerichtet' | 'nur_app' | 'abgebrochen' | 'fehler'; text: string };
+  | {
+      ok: false;
+      grund: 'nicht_eingerichtet' | 'nur_app' | 'abgebrochen' | 'fehler';
+      text: string;
+      /** Technischer Befund (Fehlercode) — nur zur Diagnose, nicht fuer Nutzer. */
+      detail?: string;
+    };
 
 function schluessel(): string {
   const p = Capacitor.getPlatform();
@@ -42,7 +48,7 @@ function schluessel(): string {
 }
 
 /**
- * Kauf wieder aktiv seit Build 11 (07.08.2026).
+ * Kauf wieder aktiv seit Build 11 (06.08.2026).
  *
  * Der "Kauf haengt auf iOS"-Fehler der Builds 1-10 ist gefunden und behoben:
  * kein Plugin-, StoreKit- oder RevenueCat-Problem, sondern unser eigener Code —
@@ -207,12 +213,16 @@ export async function preisDiagnose(userId: string): Promise<string> {
  * Screenshot von aussen lesbar ist. Schlaegt das fehl, ist das egal — die
  * Diagnose steht zusaetzlich in der Oberflaeche.
  */
-export async function diagnoseMelden(userId: string, text: string): Promise<void> {
+export async function diagnoseMelden(
+  userId: string,
+  text: string,
+  bereich: 'kauf' | 'kauf_versuch' = 'kauf'
+): Promise<void> {
   try {
     await supabase.from('client_diagnose').upsert(
       {
         user_id: userId,
-        bereich: 'kauf',
+        bereich,
         text: text.slice(0, 500),
         plattform: Capacitor.getPlatform(),
         app_build: APP_BUILD,
@@ -248,16 +258,46 @@ export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebn
     const info = await Purchases.purchasePackage({ aPackage: paket });
     const frei = hatAnspruch(info);
     setAdsPremiumStatus(frei);
+    void diagnoseMelden(userId, `Kauf ok, Anspruch ${WERBEFREI}: ${frei}`, 'kauf_versuch');
     return { ok: true, werbefrei: frei };
   } catch (e) {
+    // ⚠ Der Befund wird IMMER gemeldet — auch bei "abgebrochen".
+    //
+    // Grund: StoreKit meldet in der Sandbox auch echte Fehlschlaege als
+    // PURCHASE_CANCELLED (code 1). Wer den Code als "der Nutzer wollte nicht"
+    // liest und daraufhin schweigt, macht aus einem Fehler eine Stille — und
+    // genau daran ist die Suche schon einmal zwei Tage haengengeblieben
+    // (`preisHolen` mit `catch { return null }`, 06.08.26). Der Nutzer sieht
+    // beim Abbruch weiterhin keine Fehlermeldung; die Ursache steht trotzdem
+    // in `client_diagnose`.
+    const f = e as {
+      code?: string;
+      userCancelled?: boolean;
+      message?: string;
+      readableErrorCode?: string;
+      underlyingErrorMessage?: string;
+      userInfo?: { readableErrorCode?: string };
+    };
+    const lesbar = f?.readableErrorCode ?? f?.userInfo?.readableErrorCode ?? '?';
+    void diagnoseMelden(
+      userId,
+      `Kauf FEHLER code=${f?.code ?? '?'} (${lesbar}) cancelled=${f?.userCancelled} ` +
+        `msg=${f?.message ?? '-'} unter=${f?.underlyingErrorMessage ?? '-'}`,
+      'kauf_versuch'
+    );
+
     // Ein Abbruch durch den Nutzer ist kein Fehler und darf nicht wie einer
     // aussehen — sonst steht "Kauf fehlgeschlagen" auf dem Bildschirm, obwohl
     // der Nutzer selbst abgebrochen hat.
-    const fehler = e as { code?: string; userCancelled?: boolean; message?: string };
-    if (fehler?.userCancelled || fehler?.code === '1') {
-      return { ok: false, grund: 'abgebrochen', text: '' };
+    if (f?.userCancelled || f?.code === '1') {
+      return { ok: false, grund: 'abgebrochen', text: '', detail: `code 1 (${lesbar})` };
     }
-    return { ok: false, grund: 'fehler', text: fehler?.message ?? 'Kauf fehlgeschlagen.' };
+    return {
+      ok: false,
+      grund: 'fehler',
+      text: f?.message ?? 'Kauf fehlgeschlagen.',
+      detail: `code ${f?.code ?? '?'} (${lesbar}) ${f?.underlyingErrorMessage ?? ''}`.trim(),
+    };
   }
 }
 
@@ -277,8 +317,15 @@ export async function kaeufeWiederherstellen(userId: string): Promise<KaufErgebn
     const info = await Purchases.restorePurchases();
     const frei = hatAnspruch(info);
     setAdsPremiumStatus(frei);
+    void diagnoseMelden(userId, `Wiederherstellen ok, Anspruch ${WERBEFREI}: ${frei}`, 'kauf_versuch');
     return { ok: true, werbefrei: frei };
   } catch (e) {
+    const f = e as { code?: string; message?: string; readableErrorCode?: string };
+    void diagnoseMelden(
+      userId,
+      `Wiederherstellen FEHLER code=${f?.code ?? '?'} (${f?.readableErrorCode ?? '?'}) msg=${f?.message ?? '-'}`,
+      'kauf_versuch'
+    );
     return { ok: false, grund: 'fehler', text: e instanceof Error ? e.message : 'Wiederherstellen fehlgeschlagen.' };
   }
 }
