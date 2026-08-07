@@ -639,11 +639,24 @@ zweimal geglaubt, zweimal widerlegt.** Am 31.07. galt das fuer Abos
 Typ doch, hat sich am echten Endpunkt nicht bestaetigt. Der Aufruf steht
 weiterhin im Skript — er ist der Test, der den Abbruch ausloest.
 
+**Beide API-Wege am 07.08. durchprobiert, beide gescheitert:**
+
+| Versuch | Apples Antwort |
+|---|---|
+| `reviewSubmissionItems` + Beziehung `inAppPurchaseV2` | *„is not a relationship on the resource"* — den Typ gibt es dort nicht |
+| `inAppPurchaseSubmissions` (eigener Endpunkt, `--kauf-einreichen`) | *„InAppPurchase … has no pending version for submission"* |
+
+Der zweite Endpunkt ist der richtige — er existiert und nimmt die Beziehung an.
+Er verlangt aber eine „pending version" am Kaufprodukt, und **die entsteht erst,
+wenn man das Produkt in der Oberflaeche einer Einreichung zuordnet**. Per API
+laesst sich dieser Zustand nicht herstellen. Beide Aufrufe bleiben im Skript:
+Sie sind die Probe, die sofort auffaellt, falls Apple das nachruestet.
+
 **Der Kauf muss deshalb ueber die Oberflaeche mit eingereicht werden:** In App
-Store Connect auf der Versionsseite das Kaufprodukt zur Einreichung
-hinzufuegen und dort abschicken. `--einreichen` bricht solange ab, statt die
-Version allein loszuschicken — eine App mit sichtbarem Kaufknopf und
-ungenehmigtem Produkt ist Ablehnungsgrund 3.1.1.
+Store Connect das Kaufprodukt zur Einreichung hinzufuegen und dort abschicken.
+`--einreichen` bricht solange ab, statt die Version allein loszuschicken — eine
+App mit sichtbarem Kaufknopf und ungenehmigtem Produkt ist Ablehnungsgrund
+3.1.1.
 
 **iOS ist verifiziert (04.08.2026, 19:37):** Build 1 gebaut, signiert, zu App Store
 Connect hochgeladen (`UPLOAD SUCCEEDED`), Status VALID, der internen Testgruppe
