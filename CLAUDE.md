@@ -149,11 +149,18 @@ alter Stand die Live-Version.
 |---|---|
 | App Store Connect App-ID | `6797759040` |
 | Produkt-ID (beide Stores) | `anigosha_no_ads`, **nicht verbrauchbar** |
-| Preis | 2,99 € (Basisland Österreich), 175 Regionen |
+| Preis | **Apple** 2,99 € brutto · **Google** 2,49 € netto → 2,99 € brutto |
 | RevenueCat-Anspruch | `no_ads` |
 | RevenueCat-Angebot | `default`, Package `$rc_lifetime`, als *Current* markiert |
 | iOS-SDK-Schlüssel | `VITE_REVENUECAT_IOS_KEY` in `.env` (öffentlich) |
 
+- **⚠ Apple und Google meinen mit „Preis" nicht dasselbe** (aufgefallen am 07.08.,
+  als Android 3,59 € statt 2,99 € zeigte). Apple nimmt den eingegebenen Wert als
+  **Endkundenpreis inklusive** Steuer. Google behandelt ihn in EU-Laendern als
+  **Nettopreis** und schlaegt die lokale Steuer drauf — aus 2,99 wurden mit 20 %
+  oesterreichischer USt eben 3,59. Damit in beiden Stores 2,99 € steht, ist der
+  Google-Preis auf **2,49 € netto** gesetzt (2,49 × 1,20 = 2,988). Bei jeder
+  kuenftigen Preisaenderung beide Stores getrennt rechnen.
 - **Bewusst ohne serverseitige Freischaltung**, anders als bei XP und Elo: Werbefreiheit
   verschafft niemandem einen Vorteil im Spiel. Wer sie sich erschleicht, spart nur sich
   selbst die Anzeigen. Eine Webhook-Infrastruktur wäre Aufwand ohne Schutzwirkung.
@@ -235,24 +242,35 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### M5 Release — EINGEREICHT 06.08.2026 (ohne In-App-Kauf)
+### M5 Release — Stand 07.08.2026, 17:00
 
-**Beide Stores in der Pruefung, Kauf bewusst NICHT dabei.**
+⚠ **Die iOS-Einreichung ist ZURUECKGEZOGEN und noch NICHT neu abgeschickt.**
+1.0 steht auf `DEVELOPER_REJECTED` — die App liegt also NICHT bei Apple in der
+Pruefung, auch wenn sie das bis heute Mittag tat. Der letzte Schritt
+(`--einreichen`) fehlt bewusst; er wartete auf die Entscheidung zu den
+Store-Texten. **Ohne diesen Schritt erscheint 1.0 nie im Store.**
 
 | | App Store | Google Play |
 |---|---|---|
-| Version | 1.0, Build **10**, WAITING_FOR_REVIEW, Freigabe automatisch | Produktion **vc3**, voller Rollout, 176 Laender |
+| Version | 1.0, Build **12** zugewiesen, `DEVELOPER_REJECTED` — **nicht eingereicht** | Produktion **vc3** (ohne Kauf), intern **vc4** (mit Kauf) |
 | Store-Eintrag | DE+EN, Texte/Screenshots/iPad-Slots per API | DE+EN per API, Bilder von Hand |
 | Formulare | Alterseinstufung 4+, App-Datenschutz veroeffentlicht, Pruefkonto | Datensicherheit, IARC, Zielgruppe 13+, Werbe-ID |
-| Kaufprodukt | `anigosha_no_ads` auf READY_TO_SUBMIT — **nicht eingereicht** | angelegt und aktiv, ungenutzt |
+| Kaufprodukt | `anigosha_no_ads` READY_TO_SUBMIT — haengt beim naechsten `--einreichen` automatisch mit dran | aktiv, im internen Test bestaetigt |
+
+**Weg dorthin (07.08.):** Josef wollte den Kauf in 1.0 statt erst in 1.1.
+Dafuer wurde die laufende Einreichung mit `--aufraeumen` zurueckgezogen, Build
+12 mit `--build 12` zugewiesen und `asc.py` um das Anhaengen einmaliger Kaeufe
+erweitert. Der Preis dafuer: 1.0 verliert seinen Platz in der Pruefschlange und
+faengt nach dem Einreichen von vorn an (1–3 Tage).
 
 Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**⚠ In den Store-Beschreibungen darf keine Kauf-Zusage stehen.** Der Satz
-„Werbefinanziert, Werbung per Einmalkauf entfernbar" war drin und wurde am
-06.08. in BEIDEN Stores und BEIDEN Sprachen entfernt — mit abgeschaltetem Kauf
-waere er eine Falschaussage und bei Apple ein Ablehnungsgrund (3.1.1).
+**⚠ Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch.** Er wurde am
+06.08. entfernt, weil der Kauf abgeschaltet war. Jetzt funktioniert der Kauf und
+wird mit eingereicht — der Satz darf (und sollte) also zurueck, DE+EN, in beiden
+Stores. **Nach dem Einreichen sind die Texte gesperrt**, also davor erledigen.
+Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
 
 ### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
@@ -588,8 +606,24 @@ hingehört**, statt zu raten oder einen Umweg zu bauen.
 → Bild herunterladen, ins Repo legen, committen, im Chat zeigen. Ohne gesetzten
 `FAL_KEY` ist der Weg zu: dann sagen, dass die Variable in der Umgebung fehlt.
 
-**Auslösen in diesem Repo:** `Android Release` und `iOS Release` liegen unter
-`.github/workflows/`.
+**Auslösen in diesem Repo:** `Android Release`, `iOS Release` und
+`App Store Connect` liegen unter `.github/workflows/`.
+
+**Der Workflow `App Store Connect`** (Modi über die Eingabe `mode`, Build- bzw.
+Produktnummern über `nummer`, Trockenlauf über `dry_run`):
+
+| Modus | Was er tut |
+|---|---|
+| `status` | liest nur: Versionen, Builds, **einmalige Kaeufe**, Screenshots, offene Einreichungen |
+| `build` | weist Build `nummer` der offenen Version zu |
+| `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
+| `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
+| `aufraeumen` | zieht festhaengende Einreichungen zurueck (auch laufende!) |
+| `einreichen` | Version **samt einmaligen Kaeufen** zur Pruefung |
+
+⚠ `aufraeumen` zieht auch eine Einreichung zurueck, die gerade brav auf die
+Pruefung wartet. Danach steht die Version auf `DEVELOPER_REJECTED` und muss
+neu eingereicht werden — sie faengt in der Schlange von vorn an.
 
 **iOS ist verifiziert (04.08.2026, 19:37):** Build 1 gebaut, signiert, zu App Store
 Connect hochgeladen (`UPLOAD SUCCEEDED`), Status VALID, der internen Testgruppe
