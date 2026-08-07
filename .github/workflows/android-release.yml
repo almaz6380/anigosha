@@ -55,6 +55,31 @@ jobs:
           fi
           echo "ok — echte Anzeigen-IDs"
 
+      - name: RevenueCat-Schluessel plausibel?
+        # Ein iOS-Schluessel im Android-Build fuehrt zu CONFIGURATION_ERROR
+        # (RevenueCat-Code 23) — sichtbar erst am Geraet, als Kaufknopf ohne
+        # Preis. Das Praefix verraet die Plattform, ohne den Wert zu zeigen:
+        # goog_ = Android, appl_ = iOS. Nur die ersten fuenf Zeichen werden
+        # ausgegeben, der Rest bleibt geheim.
+        env:
+          RC_KEY: ${{ secrets.VITE_REVENUECAT_ANDROID_KEY }}
+        run: |
+          if [ -z "$RC_KEY" ]; then
+            echo "ABBRUCH: VITE_REVENUECAT_ANDROID_KEY ist leer — der Kaufbereich"
+            echo "bliebe in der App unsichtbar, ohne jede Fehlermeldung."
+            exit 1
+          fi
+          PRAEFIX="$(printf '%s' "$RC_KEY" | cut -c1-5)"
+          echo "Schluessel beginnt mit: $PRAEFIX"
+          case "$PRAEFIX" in
+            goog_) echo "ok — Android-Schluessel" ;;
+            appl_) echo "ABBRUCH: Das ist ein iOS-Schluessel. Auf Android meldet"
+                   echo "RevenueCat damit CONFIGURATION_ERROR (Code 23)."
+                   exit 1 ;;
+            *)     echo "ABBRUCH: Unbekanntes Praefix. Android-Schluessel beginnen mit goog_."
+                   exit 1 ;;
+          esac
+
       - name: Versionsnummer anzeigen
         run: |
           VC=$(grep -m1 versionCode android/app/build.gradle | tr -dc '0-9')
