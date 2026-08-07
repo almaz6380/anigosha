@@ -599,10 +599,10 @@ def einreichen(tok):
         # Apple mit "unknown relationship".
         if ident in hab:
             print(f'    {label}: schon enthalten')
-            return
+            return True
         if TROCKEN:
             print(f'    [trocken] {label} anhaengen')
-            return
+            return True
         res = api(tok, 'reviewSubmissionItems', 'POST', {
             'data': {'type': 'reviewSubmissionItems',
                      'relationships': {
@@ -612,8 +612,9 @@ def einreichen(tok):
         }, fatal=False)
         if res.get('_fehler'):
             print(f'    {label} NICHT angenommen: {fehler_text(res)}')
-        else:
-            print(f'    {label} angehaengt')
+            return False
+        print(f'    {label} angehaengt')
+        return True
 
     anhaengen('appStoreVersion', 'appStoreVersions', v['id'],
               f'Version {v["attributes"]["versionString"]}')
@@ -635,8 +636,15 @@ def einreichen(tok):
         if zustand != 'READY_TO_SUBMIT':
             offen_kauf.append(f'{a.get("productId")} ({zustand})')
             continue
-        anhaengen('inAppPurchaseV2', 'inAppPurchases', k['id'],
-                  f'Kauf {a.get("productId")}')
+        if not anhaengen('inAppPurchaseV2', 'inAppPurchases', k['id'],
+                         f'Kauf {a.get("productId")}'):
+            # Lieber gar nicht einreichen als ohne den Kauf: Die Version ginge
+            # sonst mit sichtbarem Kaufknopf durch, das Produkt aber nicht —
+            # Ablehnungsgrund 3.1.1.
+            print(f'\n  ABBRUCH: {a.get("productId")} liess sich nicht anhaengen.')
+            print('  Ohne den Kauf einzureichen waere schlimmer als gar nicht:')
+            print('  Die App zeigte einen Knopf fuer ein ungenehmigtes Produkt.')
+            return
     if offen_kauf and not TROTZDEM:
         print(f'\n  ABBRUCH: {", ".join(offen_kauf)} ist nicht einreichbar.')
         print('  Die Version ginge durch, der Kauf nicht — die App zeigte')
