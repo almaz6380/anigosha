@@ -244,21 +244,25 @@ erscheint, kann kein Skript prüfen.
 
 ### M5 Release — Stand 07.08.2026, 17:00
 
-⚠ **Die iOS-Einreichung ist ZURUECKGEZOGEN und noch NICHT neu abgeschickt.**
-1.0 steht auf `PREPARE_FOR_SUBMISSION`, Build 12 ist zugewiesen — die App liegt
-also NICHT bei Apple in der Pruefung, auch wenn sie das bis 07.08. mittags tat.
-**Ohne den letzten Schritt erscheint 1.0 nie im Store.**
-
-**Warum er noch aussteht:** Der Kauf soll mit hinein (Josefs Entscheidung vom
-07.08.), und genau das kann die API nicht — `--einreichen` bricht deshalb ab
-(s. „Kaufprodukte lassen sich per API NICHT anhaengen" weiter unten). Es
-existiert bereits ein Einreichungs-Entwurf mit der Version darin, unabgeschickt.
-**Der letzte Schritt geht nur von Hand in App Store Connect:** Kaufprodukt zur
-Einreichung hinzufuegen, dann abschicken.
+✅ **Beide Stores sind draussen — MIT funktionierendem Kauf (07.08.2026 abends).**
 
 | | App Store | Google Play |
 |---|---|---|
-| Version | 1.0, Build **12** zugewiesen, `DEVELOPER_REJECTED` — **nicht eingereicht** | Produktion **vc3** (ohne Kauf), intern **vc4** (mit Kauf) |
+| Stand | 1.0 / Build **12** + Kaufprodukt **zur Pruefung eingereicht** | **vc4 in Produktion**, alle Nutzer, live |
+| Kauf | `anigosha_no_ads` faehrt in derselben Einreichung mit | funktioniert, am Geraet bestaetigt |
+| Naechstes | Freigabe abwarten (1–3 Tage), dann automatisch live | erledigt |
+
+**Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
+nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
+Connect auf der Kaufprodukt-Seite „Zur Pruefung hinzufuegen" — das Produkt
+landet dann im BESTEHENDEN Uebermittlungsentwurf, den `--einreichen` zuvor mit
+der Version angelegt hat. Beide Elemente stehen dort untereinander, ein Klick
+auf „Zur Pruefung uebermitteln" schickt sie gemeinsam los. Ein zweiter Entwurf
+entsteht dabei NICHT — die alte Befuerchtung hat sich nicht bestaetigt.
+
+| | App Store | Google Play |
+|---|---|---|
+| Version | 1.0, Build **12** + Kaufprodukt eingereicht, wartet auf Pruefung | **vc4 in Produktion** (mit Kauf), live |
 | Store-Eintrag | DE+EN, Texte/Screenshots/iPad-Slots per API | DE+EN per API, Bilder von Hand |
 | Formulare | Alterseinstufung 4+, App-Datenschutz veroeffentlicht, Pruefkonto | Datensicherheit, IARC, Zielgruppe 13+, Werbe-ID |
 | Kaufprodukt | `anigosha_no_ads` READY_TO_SUBMIT — haengt beim naechsten `--einreichen` automatisch mit dran | aktiv, im internen Test bestaetigt |
@@ -393,8 +397,8 @@ das Paket fuer beide Apps gefuellt ist.
    (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
    vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
 2. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
-3. Android-Kauf am Geraet bestaetigen (vc4 liegt im internen Test;
-   Play-Lizenztester noetig, sonst kostet der Kauf echtes Geld).
+3. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
+   und Anspruch liefen komplett durch.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
