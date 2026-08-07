@@ -1,0 +1,70 @@
+# Einen bereits hochgeladenen Build in einen anderen Play-Track heben —
+# ohne ihn neu zu bauen.
+#
+# Warum getrennt von "Android Release": Dort wird immer gebaut, und ein
+# neuer Build braucht einen neuen versionCode. Fuer den Weg vom internen
+# Test in die Produktion ist das falsch — dort soll GENAU der Build live
+# gehen, der getestet wurde, mit derselben Nummer.
+name: Play Promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_code:
+        description: 'versionCode, der gehoben werden soll (z. B. 4)'
+        type: string
+        required: true
+      track:
+        description: 'Zieltrack'
+        type: choice
+        default: 'internal'
+        options: ['internal', 'alpha', 'beta', 'production']
+      notes:
+        description: 'Was-ist-neu-Text (de-DE)'
+        type: string
+        default: 'Fehlerkorrekturen und Verbesserungen.'
+      dry_run:
+        description: 'Nur zeigen, nichts an Google senden'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Abhaengigkeiten
+        run: |
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install --quiet pyjwt cryptography
+
+      - name: Stand vorher
+        env:
+          PLAY_KEY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          TRACK: ${{ inputs.track }}
+        run: |
+          printf '%s' "$PLAY_KEY_JSON" > /tmp/play-key.json
+          PLAY_KEY=/tmp/play-key.json /tmp/venv/bin/python scripts/play-upload.py \
+            --status --track "$TRACK"
+          rm -f /tmp/play-key.json
+
+      - name: Hochstufen
+        if: ${{ !inputs.dry_run }}
+        env:
+          PLAY_KEY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          VC: ${{ inputs.version_code }}
+          TRACK: ${{ inputs.track }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          printf '%s' "$PLAY_KEY_JSON" > /tmp/play-key.json
+          PLAY_KEY=/tmp/play-key.json /tmp/venv/bin/python scripts/play-upload.py \
+            --promote "$VC" --track "$TRACK" --complete --notes "$NOTES"
+          rm -f /tmp/play-key.json
+
+      - name: Aufraeumen
+        if: always()
+        run: rm -f /tmp/play-key.json
