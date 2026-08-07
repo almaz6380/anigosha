@@ -330,6 +330,44 @@ def kaeufe_lesen(tok, aid):
     return res.get('data', [])
 
 
+
+def kauf_einreichen(tok):
+    """Einmalige Kaeufe ueber IHREN EIGENEN Endpunkt zur Pruefung schicken.
+
+    Der Umweg, der am 07.08. zweimal gescheitert ist: Kaeufe an
+    `reviewSubmissionItems` haengen zu wollen. Apple hat dafuer einen
+    separaten Endpunkt — `inAppPurchaseSubmissions` — mit der Beziehung
+    `inAppPurchaseV2`. Der Kauf faehrt dann mit der naechsten Version mit.
+    """
+    aid = app_id(tok)
+    kaeufe = kaeufe_lesen(tok, aid)
+    if not kaeufe:
+        print('  Keine Kaufprodukte gefunden.')
+        return
+    for k in kaeufe:
+        a = k['attributes']
+        zustand = a.get('state')
+        print(f'  {a.get("productId")}: {zustand}')
+        if zustand in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'APPROVED'):
+            print('    schon unterwegs oder durch — nichts zu tun')
+            continue
+        if zustand != 'READY_TO_SUBMIT':
+            print(f'    nicht einreichbar (Zustand {zustand})')
+            continue
+        if TROCKEN:
+            print('    [trocken] wuerde zur Pruefung schicken')
+            continue
+        res = api(tok, 'inAppPurchaseSubmissions', 'POST', {
+            'data': {'type': 'inAppPurchaseSubmissions',
+                     'relationships': {'inAppPurchaseV2': {
+                         'data': {'type': 'inAppPurchases', 'id': k['id']}}}},
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'    FEHLER: {fehler_text(res)}')
+        else:
+            print('    zur Pruefung geschickt')
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
@@ -1046,6 +1084,8 @@ def main():
                    help='Diesen Build der internen TestFlight-Gruppe zuweisen')
     p.add_argument('--sandbox', action='store_true',
                    help='Sandbox-Testkonten auflisten (liest nur)')
+    p.add_argument('--kauf-einreichen', action='store_true',
+                   help='Einmalige Kaeufe ueber ihren eigenen Endpunkt einreichen')
     p.add_argument('--screenshots', action='store_true',
                    help='iPhone- und iPad-Screenshots ersetzen')
     p.add_argument('--abo-screenshot', action='store_true',
@@ -1080,7 +1120,8 @@ def main():
     TROCKEN = a.dry_run
     TROTZDEM = a.trotzdem
 
-    tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.screenshots, a.abo_screenshot,
+    tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
+           a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.alles]
@@ -1111,6 +1152,8 @@ def main():
         testflight_zuweisen(tok, a.testflight)
     if a.sandbox:
         sandbox_tester(tok)
+    if a.kauf_einreichen:
+        kauf_einreichen(tok)
     if a.screenshots:
         setze_screenshots(tok)
     if a.abo_screenshot:

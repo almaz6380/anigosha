@@ -30,6 +30,7 @@ on:
           - build
           - testflight
           - sandbox
+          - kauf-einreichen
           - screenshots
           - einreichungen
           - aufraeumen
