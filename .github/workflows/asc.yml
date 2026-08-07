@@ -29,6 +29,7 @@ on:
           - status
           - build
           - testflight
+          - sandbox
           - screenshots
           - einreichungen
           - aufraeumen
@@ -89,7 +90,7 @@ jobs:
             ARGS="--$MODE"
           fi
           # warum liest nur, kennt --dry-run also nicht.
-          if [ "$MODE" != "status" ] && [ "$MODE" != "warum" ] && [ "$MODE" != "einreichungen" ] && [ "$DRY" = "true" ]; then
+          if [ "$MODE" != "status" ] && [ "$MODE" != "warum" ] && [ "$MODE" != "einreichungen" ] && [ "$MODE" != "sandbox" ] && [ "$DRY" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
           # Nur beim Einreichen sinnvoll; ueberall sonst waere er wirkungslos

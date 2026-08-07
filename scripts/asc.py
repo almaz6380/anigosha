@@ -284,6 +284,37 @@ def testflight_zuweisen(tok, nummer):
             print(f'  Gruppe "{name}": Build {nummer} zugewiesen')
 
 
+
+def sandbox_tester(tok):
+    """Listet die Sandbox-Testkonten des Kontos (liest nur).
+
+    Warum das zaehlt: Ein TestFlight-Kauf laeuft immer gegen Apples Sandbox.
+    Meldet StoreKit beim Kauf code 1 (PURCHASE_CANCELLED), obwohl der Nutzer
+    sein Passwort eingegeben hat, ist die haeufigste Ursache, dass der
+    verwendete Apple-Account gar kein Sandbox-Tester ist. Dann bricht der
+    Kauf ab, ohne dass irgendwo ein sprechender Fehler auftaucht.
+    """
+    res = api(tok, 'sandboxTesters?limit=100', fatal=False)
+    if res.get('_fehler'):
+        # v2 ist der neuere Pfad; je nach Kontostand antwortet nur einer.
+        res = api(tok, 'v2/sandboxTesters?limit=100', fatal=False)
+    if res.get('_fehler'):
+        print(f'  Abfrage nicht moeglich ({res["_fehler"]}): {fehler_text(res)}')
+        print('  → Dann in App Store Connect nachsehen:')
+        print('    Benutzer und Zugriffsrechte → Sandbox → Testkonten')
+        return
+    daten = res.get('data', [])
+    print(f'  {len(daten)} Sandbox-Testkonto/-konten')
+    for t in daten:
+        a = t.get('attributes', {})
+        kennung = a.get('appleId') or a.get('email') or '?'
+        print(f'    {kennung}  ({a.get("territory", "?")}, '
+              f'{a.get("firstName", "")} {a.get("lastName", "")})'.rstrip())
+    if not daten:
+        print('  ⚠ KEIN Sandbox-Tester angelegt — genau das erklaert einen')
+        print('    Kaufabbruch mit code 1 trotz eingegebenem Passwort.')
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
@@ -952,6 +983,8 @@ def main():
                    help='Diesen Build der offenen Version zuweisen')
     p.add_argument('--testflight', metavar='NR',
                    help='Diesen Build der internen TestFlight-Gruppe zuweisen')
+    p.add_argument('--sandbox', action='store_true',
+                   help='Sandbox-Testkonten auflisten (liest nur)')
     p.add_argument('--screenshots', action='store_true',
                    help='iPhone- und iPad-Screenshots ersetzen')
     p.add_argument('--abo-screenshot', action='store_true',
@@ -986,7 +1019,7 @@ def main():
     TROCKEN = a.dry_run
     TROTZDEM = a.trotzdem
 
-    tat = [a.status, a.name, a.build, a.testflight, a.screenshots, a.abo_screenshot,
+    tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.alles]
@@ -1015,6 +1048,8 @@ def main():
         setze_build(tok, a.build)
     if a.testflight:
         testflight_zuweisen(tok, a.testflight)
+    if a.sandbox:
+        sandbox_tester(tok)
     if a.screenshots:
         setze_screenshots(tok)
     if a.abo_screenshot:
