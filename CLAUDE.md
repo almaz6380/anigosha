@@ -245,10 +245,16 @@ erscheint, kann kein Skript prüfen.
 ### M5 Release — Stand 07.08.2026, 17:00
 
 ⚠ **Die iOS-Einreichung ist ZURUECKGEZOGEN und noch NICHT neu abgeschickt.**
-1.0 steht auf `DEVELOPER_REJECTED` — die App liegt also NICHT bei Apple in der
-Pruefung, auch wenn sie das bis heute Mittag tat. Der letzte Schritt
-(`--einreichen`) fehlt bewusst; er wartete auf die Entscheidung zu den
-Store-Texten. **Ohne diesen Schritt erscheint 1.0 nie im Store.**
+1.0 steht auf `PREPARE_FOR_SUBMISSION`, Build 12 ist zugewiesen — die App liegt
+also NICHT bei Apple in der Pruefung, auch wenn sie das bis 07.08. mittags tat.
+**Ohne den letzten Schritt erscheint 1.0 nie im Store.**
+
+**Warum er noch aussteht:** Der Kauf soll mit hinein (Josefs Entscheidung vom
+07.08.), und genau das kann die API nicht — `--einreichen` bricht deshalb ab
+(s. „Kaufprodukte lassen sich per API NICHT anhaengen" weiter unten). Es
+existiert bereits ein Einreichungs-Entwurf mit der Version darin, unabgeschickt.
+**Der letzte Schritt geht nur von Hand in App Store Connect:** Kaufprodukt zur
+Einreichung hinzufuegen, dann abschicken.
 
 | | App Store | Google Play |
 |---|---|---|
@@ -619,11 +625,25 @@ Produktnummern über `nummer`, Trockenlauf über `dry_run`):
 | `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
 | `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
 | `aufraeumen` | zieht festhaengende Einreichungen zurueck (auch laufende!) |
-| `einreichen` | Version **samt einmaligen Kaeufen** zur Pruefung |
+| `einreichen` | Version zur Pruefung — **bricht ab, wenn ein Kaufprodukt einreichbar waere**, denn anhaengen kann die API es nicht (s. u.) |
 
 ⚠ `aufraeumen` zieht auch eine Einreichung zurueck, die gerade brav auf die
 Pruefung wartet. Danach steht die Version auf `DEVELOPER_REJECTED` und muss
 neu eingereicht werden — sie faengt in der Schlange von vorn an.
+
+⚠ **Kaufprodukte lassen sich per API NICHT an eine Einreichung haengen —
+zweimal geglaubt, zweimal widerlegt.** Am 31.07. galt das fuer Abos
+(`subscription`), am **07.08. auch fuer einmalige Kaeufe**: Auf
+`inAppPurchaseV2` antwortet Apple mit *„is not a relationship on the resource
+'reviewSubmissionItems'"*. Die Vermutung, fuer einmalige Kaeufe gaebe es den
+Typ doch, hat sich am echten Endpunkt nicht bestaetigt. Der Aufruf steht
+weiterhin im Skript — er ist der Test, der den Abbruch ausloest.
+
+**Der Kauf muss deshalb ueber die Oberflaeche mit eingereicht werden:** In App
+Store Connect auf der Versionsseite das Kaufprodukt zur Einreichung
+hinzufuegen und dort abschicken. `--einreichen` bricht solange ab, statt die
+Version allein loszuschicken — eine App mit sichtbarem Kaufknopf und
+ungenehmigtem Produkt ist Ablehnungsgrund 3.1.1.
 
 **iOS ist verifiziert (04.08.2026, 19:37):** Build 1 gebaut, signiert, zu App Store
 Connect hochgeladen (`UPLOAD SUCCEEDED`), Status VALID, der internen Testgruppe

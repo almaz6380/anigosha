@@ -619,10 +619,17 @@ def einreichen(tok):
     anhaengen('appStoreVersion', 'appStoreVersions', v['id'],
               f'Version {v["attributes"]["versionString"]}')
 
-    # Einmalige Kaeufe MUESSEN mit eingereicht werden, sonst zeigt die App
-    # einen Kaufknopf fuer ein nie genehmigtes Produkt — Ablehnungsgrund
-    # 3.1.1. Anders als Abos lassen sie sich anhaengen; die Beziehung heisst
-    # 'inAppPurchaseV2' (Singular) bei Typ 'inAppPurchases' (Plural).
+    # ⚠ Einmalige Kaeufe lassen sich per API NICHT anhaengen. Am 07.08.2026
+    # am echten Endpunkt geprueft: Apple antwortet auf 'inAppPurchaseV2'
+    # mit "is not a relationship on the resource 'reviewSubmissionItems'" —
+    # genauso wie bei Abos ('subscription'). Der Aufruf bleibt trotzdem
+    # stehen: Er ist der Test, der den Abbruch ausloest, und faellt sofort
+    # auf, sollte Apple die Beziehung eines Tages nachruesten.
+    #
+    # Der Weg fuehrt deshalb ueber die Oberflaeche: In App Store Connect auf
+    # der Versionsseite den Kauf zur Einreichung hinzufuegen und dort
+    # abschicken. Mit eingereicht werden MUSS er, sonst zeigt die App einen
+    # Kaufknopf fuer ein nie genehmigtes Produkt (3.1.1).
     kaeufe = kaeufe_lesen(tok, aid)
     offen_kauf = []
     if not kaeufe:
