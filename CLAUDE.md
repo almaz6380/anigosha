@@ -254,7 +254,7 @@ Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 06.08. in BEIDEN Stores und BEIDEN Sprachen entfernt — mit abgeschaltetem Kauf
 waere er eine Falschaussage und bei Apple ein Ablehnungsgrund (3.1.1).
 
-### In-App-Kauf: URSACHE GEFUNDEN und behoben (06.08.2026 abends), Build 11 in TestFlight
+### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
 Der Fehler „erster nativer Aufruf kehrt auf iOS nie zurueck" ist geklaert —
 **es war weder das Plugin noch StoreKit noch RevenueCat, sondern unser eigener
@@ -299,26 +299,50 @@ jemand offen hatte). Mit dem Fix laufen alle Wege in <100 ms durch.
 
 **Stand der Aktivierung:** RevenueCat BLEIBT (der Wechsel auf
 `cordova-plugin-purchase` ist unnoetig geworden). `KAUF_AKTIV = true` seit
-Build 11 (06.08.2026, 21:37 MESZ hochgeladen, `UPLOAD SUCCEEDED`, von Apple als
-VALID verarbeitet). **Die Store-Pruefung von 1.0/Build 10 ist davon unberuehrt**
-— TestFlight und App-Review sind getrennte Wege.
+Build 11. **Die Store-Pruefung von 1.0/Build 10 ist davon unberuehrt** —
+TestFlight und App-Review sind getrennte Wege.
 
-⚠ **Die Zuweisung an die Gruppe „Interner Test" stand beim Schreiben dieser
-Zeilen noch aus** (der GitHub-Lauf hing in der Warteschlange). Ohne sie
-erscheint der Build NICHT in TestFlight. Nachholen mit dem Workflow
-`App Store Connect`, Modus `testflight`, Nummer `11`, Trockenlauf aus.
+### ✅ KAUF AM GERAET BESTAETIGT (07.08.2026, ~12:30, Build 12)
+
+Der Kauf ist auf dem iPhone einmal vollstaendig durchgelaufen: Preis geladen,
+Apple-Kaufdialog, Transaktion abgeschlossen, Anspruch `no_ads` erteilt. Damit
+ist der Thenable-Fix nicht nur im Pruefstand, sondern am echten Geraet belegt.
+
+**Der Weg dorthin — und die Falle, die zwei Stunden gekostet hat:**
+
+Nach dem Fix meldete StoreKit `code 1` (PURCHASE_CANCELLED), obwohl das
+Passwort eingegeben wurde; der Preis stand in **$** statt €. Ursache: Unter
+*Einstellungen → Entwickler → Sandbox-Apple Account* war ein **altes,
+projektfremdes Konto** eingetragen (`mediawellbooked@gmail.com`), das zu dem
+Zeitpunkt in App Store Connect gar nicht als Sandbox-Tester existierte. Jeder
+Kaufversuch lief also gegen ein ungueltiges Konto — der Dollar-Preis war das
+sichtbare Zeichen (Sandbox faellt ohne gueltiges Konto auf die US-Storefront
+zurueck).
+
+**Merksaetze fuer das naechste Mal:**
+- **Ein Sandbox-Konto NIE unter „Medien & Kaeufe" anmelden.** Dort ist es kein
+  gueltiges Konto; Apple antwortet mit „Es darf kein iTunes-Account erstellt
+  werden", und das Konto kann dabei unbrauchbar werden.
+- **Der Sandbox-Account liegt seit iOS 16+ NICHT mehr unter Einstellungen →
+  App Store**, sondern unter **Einstellungen → Entwickler** (ganz unten). Das
+  Menue „Entwickler" erscheint erst, wenn der Entwicklermodus aktiv ist, und
+  der wiederum erst, nachdem Xcode das Geraet einmal gesehen hat
+  (Window → Devices and Simulators, Kabel, „Diesem Computer vertrauen").
+- **Preis in Dollar = Warnzeichen.** Bei Basisland Oesterreich muessen 2,99 €
+  erscheinen. Dollar heisst: kein gueltiges Sandbox-Konto aktiv. Der Preis
+  wird beim Oeffnen des Profils einmal geladen und bleibt bis zum
+  App-Neustart stehen — nach dem Wechsel des Sandbox-Kontos also neu starten.
+- Die Sandbox-Testkonten stehen in App Store Connect unter **Benutzer und
+  Zugriffsrechte → Reiter „Sandbox"** (oben, nicht in der linken Spalte). Per
+  API sind sie NICHT abfragbar (`/sandboxTesters` antwortet 404, geprueft am
+  07.08.) — `scripts/asc.py --sandbox` sagt das jetzt sauber statt zu raten.
 
 **Noch offen:**
-1. Kauf einmal echt am Geraet ausfuehren (TestFlight, Build 11). Der Befund
-   landet von selbst in `client_diagnose` mit `app_build = '11'` — nichts
-   abzutippen. Erwartet wird eine Zeile der Form
-   `Paket $rc_lifetime: anigosha_no_ads → € 2,99 [init …, offerings …]`.
-   Steht dort ein Zeitlimit oder „kein aktuelles Angebot", ist der Fix am
-   Geraet NICHT bestaetigt und alles Weitere haelt an.
-2. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
+1. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
    (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
    vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
-3. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen.
+2. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
+3. Android-Kauf ist weiterhin ungetestet (Play-Lizenztester noetig).
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
