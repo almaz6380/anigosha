@@ -337,12 +337,40 @@ zurueck).
   API sind sie NICHT abfragbar (`/sandboxTesters` antwortet 404, geprueft am
   07.08.) — `scripts/asc.py --sandbox` sagt das jetzt sauber statt zu raten.
 
+### Android-Kauf: CONFIGURATION_ERROR (Code 23) — Ursache gefunden (07.08.2026)
+
+Erster Test von vc4 am Geraet: kein Preis am Knopf, darunter die Zeile
+„There is an issue with your configuration … [code 23 (?)]". Code 23 ist
+`CONFIGURATION_ERROR`.
+
+**Ursache: Das Android-Produkt war in RevenueCat keinem Offering zugeordnet.**
+Im Offering `default`, Paket `$rc_lifetime`, stand bei *Anigosha (Android)*
+schlicht **„No product"** — nur die iOS-Zeile war gefuellt. Damit findet das
+SDK auf Android nichts und meldet Code 23. Behoben: Offerings → `default` →
+**Edit** (Knopf oben rechts; der Paketname selbst ist NICHT anklickbar) →
+beim Paket in der Android-Zeile das Produkt waehlen → Save.
+
+**Zwei Fehlspuren, die dabei ausgeschlossen wurden — nicht nochmal pruefen:**
+- *Play-Service-Account in RevenueCat*: steht auf „Valid credentials".
+- *Falscher SDK-Schluessel im Build*: Der Android-Workflow prueft jetzt selbst
+  das Praefix (`goog_` = Android, `appl_` = iOS) und bricht sonst ab. Lief
+  gruen, der Schluessel stimmt.
+- Auch die Produkt-ID war in Ordnung: `anigosha_no_ads` (Store Status
+  „Published"), NICHT `anigosha_no_ads:standard` — die aeltere Notiz dazu
+  hat sich am Dashboard nicht bestaetigt.
+
+**Merksatz:** Ein Produkt kann bei Google „Published" sein, den richtigen
+Anspruch tragen und trotzdem unbrauchbar bleiben, solange es in keinem
+Offering haengt. Nach dem Anlegen einer zweiten Plattform IMMER pruefen, ob
+das Paket fuer beide Apps gefuellt ist.
+
 **Noch offen:**
 1. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
    (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
    vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
 2. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
-3. Android-Kauf ist weiterhin ungetestet (Play-Lizenztester noetig).
+3. Android-Kauf am Geraet bestaetigen (vc4 liegt im internen Test;
+   Play-Lizenztester noetig, sonst kostet der Kauf echtes Geld).
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
