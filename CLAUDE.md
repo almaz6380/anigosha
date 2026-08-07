@@ -276,11 +276,11 @@ faengt nach dem Einreichen von vorn an (1–3 Tage).
 Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**⚠ Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch.** Er wurde am
-06.08. entfernt, weil der Kauf abgeschaltet war. Jetzt funktioniert der Kauf und
-wird mit eingereicht — der Satz darf (und sollte) also zurueck, DE+EN, in beiden
-Stores. **Nach dem Einreichen sind die Texte gesperrt**, also davor erledigen.
-Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
+**Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch — kommt mit 1.1**
+(Josefs Entscheidung vom 07.08.). Er wurde am 06.08. entfernt, weil der Kauf
+abgeschaltet war; jetzt funktioniert er und darf zurueck, DE+EN, in beiden
+Stores. Bei Apple sind die Texte bis zur Freigabe gesperrt, bei Google jederzeit
+aenderbar. Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
 
 ### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
