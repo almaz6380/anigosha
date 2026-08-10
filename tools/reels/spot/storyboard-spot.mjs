@@ -56,7 +56,11 @@ export const EINSTELLUNGEN = [
 // Die App-Einstellung kommt aus dem eigenen Renderer, nicht aus einem Videomodell:
 // Ein Modell malt an dieser Stelle eine unleserliche Fantasie-App.
 export const APP_DAUER = 4;   // Sekunden
-export const OUTRO_DAUER = 3;
+// Fünf statt drei Sekunden: Die Schlusszeile des Sprechers endet bei 22,7 s.
+// Bei drei Sekunden Abspann blieben danach nur 0,3 s, und der Spot brach
+// mitten im Nachhall ab. Jetzt stehen gut zwei Sekunden Ruhe am Ende — die
+// Zeit, in der jemand auf den Namen schaut und ihn sich merkt.
+export const OUTRO_DAUER = 5;
 
 // Reihenfolge des fertigen Spots
 export const SCHNITT = [
@@ -128,7 +132,9 @@ export const TEXTE = {
   de: {
     outroTitel: 'Schaffst du\nden Rest?',
     outroSub: '804 Fragen · 12 Serien · Duelle gegen echte Gegner',
-    outroCta: 'Anigosha — gratis im Store',
+    // „kostenlos", nicht „gratis" — muss zum Sprechertext passen, sonst liest
+    // man etwas anderes, als man hört.
+    outroCta: 'Anigosha — kostenlos im Store',
     kommentar: 'Wen forderst du heraus? 👇',
     // Sprechtext, sobald die Stimme feststeht. Die eckigen Klammern sind
     // Regieanweisungen für ElevenLabs v3, kein Text zum Vorlesen.
