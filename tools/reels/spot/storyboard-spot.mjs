@@ -30,10 +30,18 @@ export const EINSTELLUNGEN = [
   {
     id: '3-handys',
     dauer: 4,
+    // ⚠ Die Ziehbewegung war das Problem: Beim Herausziehen drehte sich das
+    // Gerät und zeigte kurz die Rückseite. Deshalb KEIN Ziehen mehr, nur ein
+    // Anheben — und ausdrücklich, dass die Bildschirmseite zur Kamera bleibt.
+    // Zweite Lehre: Auch ein geschärfter Prompt half nicht, solange das
+    // Startbild die Handys beim Herausziehen zeigte — das Modell drehte sie
+    // trotzdem. Erst ein Startbild mit bereits hochgehaltenen Geräten plus
+    // fast bewegungsloser Anweisung löst es.
     prompt:
-      'Both hands pull the glowing smartphones out of the jacket pockets in sync and raise them slightly, '
-      + 'the violet and pink screen glow brightening, warm bokeh shimmering behind. Almost static camera. '
-      + 'Smooth 2D anime cel animation.',
+      'The two phones stay perfectly still, held upright with their screens facing the camera. Nothing '
+      + 'rotates, nothing tilts, the phones are never turned around. Only the violet and pink screen glow '
+      + 'pulses gently, the warm bokeh in the background shimmers, and the hands breathe with tiny natural '
+      + 'movement. Locked-off camera. Smooth 2D anime cel animation.',
   },
   {
     id: '4-triumph',
@@ -69,14 +77,20 @@ export const SPRECHER = {
   de: [
     { id: 1, abSek: 1.0,  text: '[excited] Du glaubst, du bist ein Anime-Ass?' },
     { id: 2, abSek: 8.3,  text: '[confident] Dann beweis es.' },
-    { id: 3, abSek: 12.4, text: '804 Fragen. Zwölf Serien.' },
-    { id: 4, abSek: 17.2, text: '[excited] Duelle gegen echte Gegner. Anigosha — gratis im Store!' },
+    // Zahl ausgeschrieben: als Ziffern las das Modell "102" statt "804".
+    // "kostenlos" statt "gratis" — letzteres sprach es verquer aus.
+    // ⚠ Bewusst NICHT "täglich kommen neue Fragen dazu": Die 804 liegen fest
+    // in den Migrationen, es kommt keine automatisch hinzu. Die tägliche
+    // Challenge (5 Fragen aus dem Bestand, Migration 0016) gibt es dagegen
+    // wirklich — eine falsche Zusage im Spot landet in den Bewertungen.
+    { id: 3, abSek: 11.9, text: 'Achthundertvier Fragen, zwölf Serien — und täglich eine neue Challenge.' },
+    { id: 4, abSek: 17.4, text: '[excited] Duelle gegen echte Gegner. Anigosha — kostenlos im Store!' },
   ],
   en: [
     { id: 1, abSek: 1.0,  text: '[excited] You think you are an anime expert?' },
     { id: 2, abSek: 8.3,  text: '[confident] Then prove it.' },
-    { id: 3, abSek: 12.4, text: '804 questions. Twelve series.' },
-    { id: 4, abSek: 17.2, text: '[excited] Duels against real opponents. Anigosha — free on the store!' },
+    { id: 3, abSek: 11.9, text: 'Eight hundred four questions, twelve series — and a new challenge every day.' },
+    { id: 4, abSek: 17.4, text: '[excited] Duels against real opponents. Anigosha — free on the store!' },
   ],
 };
 
