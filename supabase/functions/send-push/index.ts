@@ -15,7 +15,7 @@ const APP_URL = Deno.env.get('APP_URL') ?? 'https://anigosha.vercel.app';
 type Outbox = {
   id: number;
   user_id: string;
-  kind: 'your_turn' | 'match_found' | 'match_finished';
+  kind: 'your_turn' | 'match_found' | 'match_finished' | 'challenge';
   match_id: string | null;
   payload: Record<string, unknown>;
 };
@@ -105,6 +105,14 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
       return de
         ? { title: 'Gegner gefunden!', body: `Dein Duell gegen ${gegner} kann losgehen.` }
         : { title: 'Opponent found!', body: `Your duel against ${gegner} is ready.` };
+    case 'challenge': {
+      // Der Name kommt aus der Nutzlast, nicht aus `gegner`: Beim Anlegen ist
+      // der Empfänger player_b, der Herausfordernde also die Gegenseite.
+      const von = String(extra.from ?? '').trim() || gegner;
+      return de
+        ? { title: `${von} fordert dich heraus!`, body: 'Freundschaftsduell — ohne Wertung. Zeig, was du kannst.' }
+        : { title: `${von} challenges you!`, body: 'Friendly duel — unranked. Show what you know.' };
+    }
     case 'match_finished': {
       const mein = Number(extra.mein ?? 0);
       const sein = Number(extra.sein ?? 0);
