@@ -3,7 +3,9 @@
 //
 //   node tools/reels/spot/make-spot.mjs                  # nur schneiden, was schon da ist
 //   node tools/reels/spot/make-spot.mjs --erzeugen       # fehlende Einstellungen bei fal erzeugen (KOSTET)
-//   node tools/reels/spot/make-spot.mjs --dialog <datei> --sprecher <datei>
+//
+// Die Sprechersegmente kommen aus spot/stimme/ und werden vorher mit
+// stimme-erzeugen.mjs angelegt; ihre Zeiten stehen im Storyboard.
 //
 // ⚠ Ohne --erzeugen wird NICHTS bei fal bestellt. Fehlende Einstellungen
 // führen dann zu einem sauberen Abbruch statt zu einer stillen Rechnung.
@@ -22,7 +24,8 @@ import { baueHtml as quizHtml } from '../template.mjs';
 import { baueHtml as duellHtml, BREITE as D_BREITE, HOEHE as D_HOEHE, DSF as D_DSF } from './template-duell.mjs';
 import { klaengeSicherstellen, fehlendeKlaenge } from '../audio.mjs';
 import {
-  FPS, EINSTELLUNGEN, SCHNITT, APP_DAUER, TEXTE, TEXTKARTEN, outroStoryboard, klangEreignisse,
+  FPS, EINSTELLUNGEN, SCHNITT, APP_DAUER, TEXTE, TEXTKARTEN, SPRECHER,
+  outroStoryboard, klangEreignisse,
 } from './storyboard-spot.mjs';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -43,8 +46,6 @@ const arg = (name, standard = null) => {
 };
 const lang = arg('lang', 'de');
 const erzeugen = process.argv.includes('--erzeugen');
-const dialogDatei = arg('dialog', null);
-const sprecherDatei = arg('sprecher', null);
 
 // Länge einer Audiodatei. ffprobe ist in diesem Container nicht dabei —
 // ffmpeg schreibt die Angabe aber ohnehin nach stderr.
@@ -211,25 +212,26 @@ async function main() {
     .map((e) => ({ ...e, datei: join(sfxDir, `${e.id}.aac`) }))
     .filter((e) => existsSync(e.datei));
 
-  // Der Wortwechsel sitzt auf Einstellung 2, wo die Herausforderung fällt.
-  if (dialogDatei && existsSync(dialogDatei)) {
-    mitDatei.push({ id: 'dialog', datei: dialogDatei, frameStart: 4 * FPS, lautstaerke: 1.0 });
-    console.log(`  Wortwechsel: ${dialogDatei} ab 4,0 s`);
+  // Der Erzähler läuft in Segmenten über den ganzen Spot. Die Zeiten stehen
+  // im Storyboard; erzeugt werden die Dateien mit stimme-erzeugen.mjs.
+  const stimmDir = join(HIER, 'stimme');
+  let gesprochen = 0;
+  for (const s of SPRECHER[lang] ?? []) {
+    const datei = join(stimmDir, `sprecher-${lang}-${s.id}.mp3`);
+    if (!existsSync(datei)) continue;
+    const d = await dauerSek(datei);
+    const ende = s.abSek + d;
+    // Ein Segment, das über das Videoende hinausliefe, würde abgeschnitten —
+    // lieber laut melden als still halbe Sätze ausliefern.
+    if (ende > gesamtFrames / FPS) {
+      console.log(`  ⚠ Segment ${s.id} endet bei ${ende.toFixed(1)}s, Video ist ${(gesamtFrames / FPS).toFixed(1)}s lang`);
+    }
+    mitDatei.push({ id: `sprecher${s.id}`, datei, frameStart: Math.round(s.abSek * FPS), lautstaerke: 1.0 });
+    gesprochen++;
   }
-
-  // Der Sprecher wird ans ENDE ausgerichtet, nicht an den Anfang des Outros:
-  // Die Schlusszeile ist länger als die drei Sekunden Outro und liefe sonst
-  // über das Videoende hinaus ins Leere.
-  if (sprecherDatei && existsSync(sprecherDatei)) {
-    const d = await dauerSek(sprecherDatei);
-    const start = Math.max(0, Math.round(gesamtFrames - (d + 0.4) * FPS));
-    mitDatei.push({ id: 'sprecher', datei: sprecherDatei, frameStart: start, lautstaerke: 1.0 });
-    console.log(`  Sprecher: ${sprecherDatei} (${d.toFixed(1)} s) ab ${(start / FPS).toFixed(1)} s`);
-  }
-
-  if (!dialogDatei && !sprecherDatei) {
-    console.log('  (noch ohne Stimmen — mit --dialog <datei> und --sprecher <datei> nachreichen)');
-  }
+  console.log(gesprochen
+    ? `  Sprecher: ${gesprochen} Segmente über den ganzen Spot`
+    : '  (ohne Sprecher — erst node tools/reels/spot/stimme-erzeugen.mjs laufen lassen)');
 
   const ton = join(AUS, 'ton.m4a');
   await tonspurBauen({ ereignisse: mitDatei, fps: FPS, dauerFrames: gesamtFrames, ziel: ton });
@@ -242,8 +244,7 @@ async function main() {
   }
   if (karten.length) console.log(`  ${karten.length} Textkarten`);
 
-  const mitStimme = Boolean(dialogDatei || sprecherDatei);
-  const ziel = join(AUS, `anigosha-spot-${lang}${mitStimme ? '' : '-ohne-stimme'}.mp4`);
+  const ziel = join(AUS, `anigosha-spot-${lang}${gesprochen ? '' : '-ohne-stimme'}.mp4`);
 
   const gesamtSek = (gesamtFrames / FPS).toFixed(3);
   const args = ['-y', '-i', stumm, '-i', ton];

@@ -60,7 +60,31 @@ export const SCHNITT = [
   { art: 'outro' },
 ];
 
-// Eingeblendete Zeilen statt gesprochener Figurenrede.
+// Der Erzähler trägt jetzt den ganzen Spot, nicht nur die Schlusszeile.
+//
+// Bewusst in Segmenten statt als ein Stück: Ein durchgehender Take hat Pausen,
+// die nicht zum Schnitt passen — hier sitzt jeder Satz an seiner Stelle.
+// Erzeugt mit tools/reels/spot/stimme-erzeugen.mjs, Dateien in stimme/.
+export const SPRECHER = {
+  de: [
+    { id: 1, abSek: 1.0,  text: '[excited] Du glaubst, du bist ein Anime-Ass?' },
+    { id: 2, abSek: 8.3,  text: '[confident] Dann beweis es.' },
+    { id: 3, abSek: 12.4, text: '804 Fragen. Zwölf Serien.' },
+    { id: 4, abSek: 17.2, text: '[excited] Duelle gegen echte Gegner. Anigosha — gratis im Store!' },
+  ],
+  en: [
+    { id: 1, abSek: 1.0,  text: '[excited] You think you are an anime expert?' },
+    { id: 2, abSek: 8.3,  text: '[confident] Then prove it.' },
+    { id: 3, abSek: 12.4, text: '804 questions. Twelve series.' },
+    { id: 4, abSek: 17.2, text: '[excited] Duels against real opponents. Anigosha — free on the store!' },
+  ],
+};
+
+// Stimme des Erzählers (Haunting-Hector aus Josefs ElevenLabs-Bibliothek).
+export const SPRECHER_ID = 'DUAKkudcC2PI6KEqJ60K';
+
+// Eingeblendete Zeilen — sie doppeln den Sprecher bewusst, weil im Feed
+// der größte Teil ohne Ton läuft.
 //
 // Drei Runden Stimmensuche über zwei Anbieter haben keine überzeugende junge
 // Anime-Stimme auf Deutsch geliefert. Das ist kein Verlust: Im Feed läuft der
@@ -68,12 +92,12 @@ export const SCHNITT = [
 // Der Erzähler am Schluss bleibt gesprochen.
 export const TEXTKARTEN = {
   de: [
-    { text: 'Du glaubst,\ndu kennst Anime?', von: 4.4, bis: 7.7 },
-    { text: 'Beweis es.',                    von: 8.3, bis: 11.6 },
+    { text: 'Du glaubst, du bist\nein Anime-Ass?', von: 4.4, bis: 7.7 },
+    { text: 'Beweis es.',                          von: 8.6, bis: 11.6 },
   ],
   en: [
-    { text: 'You think\nyou know anime?', von: 4.4, bis: 7.7 },
-    { text: 'Prove it.',                 von: 8.3, bis: 11.6 },
+    { text: 'You think you are\nan anime expert?', von: 4.4, bis: 7.7 },
+    { text: 'Prove it.',                           von: 8.6, bis: 11.6 },
   ],
 };
 
