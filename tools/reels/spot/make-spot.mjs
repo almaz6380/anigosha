@@ -3,13 +3,15 @@
 //
 //   node tools/reels/spot/make-spot.mjs                  # nur schneiden, was schon da ist
 //   node tools/reels/spot/make-spot.mjs --erzeugen       # fehlende Einstellungen bei fal erzeugen (KOSTET)
-//   node tools/reels/spot/make-spot.mjs --stimme out/stimme.mp3
+//   node tools/reels/spot/make-spot.mjs --dialog <datei> --sprecher <datei>
 //
 // ⚠ Ohne --erzeugen wird NICHTS bei fal bestellt. Fehlende Einstellungen
 // führen dann zu einem sauberen Abbruch statt zu einer stillen Rechnung.
-// Einmal erzeugte Clips liegen in out/spot/clips/ und werden wiederverwendet.
+// Einmal erzeugte Clips liegen in tools/reels/spot/clips/ und werden
+// wiederverwendet — sie sind bezahlt und deshalb im Repo, nicht unter out/.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, statSync } from 'node:fs';
+import { spawn } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,7 +28,12 @@ const HIER = dirname(fileURLToPath(import.meta.url));
 const WURZEL = join(HIER, '..', '..', '..');
 const REFERENZ = join(HIER, 'referenz');
 const AUS = join(WURZEL, 'out', 'spot');
-const CLIPS = join(AUS, 'clips');
+// ⚠ Der Zwischenspeicher liegt BEWUSST im Repo, nicht unter out/.
+// Jeder Clip hier hat echtes Geld gekostet, und der Container einer
+// Cloud-Sitzung ist flüchtig — am 10.08. fiel der Dateibaum auf einen
+// älteren Stand zurück und ein bereits bezahlter Clip war weg, weil er
+// unter dem gitignorierten out/ lag. Was Geld gekostet hat, wird committet.
+const CLIPS = join(HIER, 'clips');
 const MODELL = 'bytedance/seedance-2.0/mini/image-to-video';
 
 const arg = (name, standard = null) => {
@@ -35,9 +42,25 @@ const arg = (name, standard = null) => {
 };
 const lang = arg('lang', 'de');
 const erzeugen = process.argv.includes('--erzeugen');
-const stimmeDatei = arg('stimme', null);
+const dialogDatei = arg('dialog', null);
+const sprecherDatei = arg('sprecher', null);
+
+// Länge einer Audiodatei. ffprobe ist in diesem Container nicht dabei —
+// ffmpeg schreibt die Angabe aber ohnehin nach stderr.
+function dauerSek(datei) {
+  return new Promise((res) => {
+    const p = spawn(FFMPEG, ['-hide_banner', '-i', datei]);
+    let err = '';
+    p.stderr.on('data', (d) => { err += d; });
+    p.on('close', () => {
+      const m = err.match(/Duration: (\d+):(\d+):(\d+\.?\d*)/);
+      res(m ? Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]) : 0);
+    });
+  });
+}
 
 mkdirSync(CLIPS, { recursive: true });
+mkdirSync(AUS, { recursive: true });
 
 // --- 1. Anime-Einstellungen -------------------------------------------------
 async function einstellungHolen(e) {
@@ -76,7 +99,7 @@ async function einstellungHolen(e) {
 
 // --- 2. Eigene Einstellungen (App, Outro) -----------------------------------
 async function appSegment() {
-  const ziel = join(CLIPS, 'app.mp4');
+  const ziel = join(AUS, 'app.mp4');
   const bank = JSON.parse(readFileSync(join(HIER, '..', 'data', 'fragen.json'), 'utf8'));
   // Kurze Frage mit kurzen Antworten — sie muss in vier Sekunden lesbar sein.
   const pool = bank.fragen.filter((f) =>
@@ -105,7 +128,7 @@ async function appSegment() {
 }
 
 async function outroSegment() {
-  const ziel = join(CLIPS, 'outro.mp4');
+  const ziel = join(AUS, 'outro.mp4');
   const sb = outroStoryboard(lang);
   const senke = videoSenke({ fps: FPS, ziel });
   await frames(sb, senke.stdin, { baueHtml: quizHtml, breite: 1080, hoehe: 1920, dsf: 1 });
@@ -142,12 +165,12 @@ async function main() {
   console.log('\nVereinheitlichen …');
   const norm = [];
   for (let i = 0; i < teile.length; i++) {
-    norm.push(await vereinheitlichen(teile[i], join(CLIPS, `norm-${i}.mp4`)));
+    norm.push(await vereinheitlichen(teile[i], join(AUS, `norm-${i}.mp4`)));
   }
 
-  const liste = join(CLIPS, 'liste.txt');
+  const liste = join(AUS, 'liste.txt');
   writeFileSync(liste, norm.map((p) => `file '${p}'`).join('\n'));
-  const stumm = join(CLIPS, 'stumm.mp4');
+  const stumm = join(AUS, 'stumm.mp4');
   await lauf(['-y', '-f', 'concat', '-safe', '0', '-i', liste, '-c', 'copy', stumm]);
 
   // --- Ton ---
@@ -159,15 +182,27 @@ async function main() {
     .map((e) => ({ ...e, datei: join(sfxDir, `${e.id}.aac`) }))
     .filter((e) => existsSync(e.datei));
 
-  if (stimmeDatei && existsSync(stimmeDatei)) {
-    // Sprecher setzt bei Einstellung 2 ein, wo die Herausforderung fällt.
-    mitDatei.push({ id: 'stimme', datei: stimmeDatei, frameStart: 4 * FPS, lautstaerke: 1.0 });
-    console.log(`  Stimme: ${stimmeDatei}`);
-  } else {
-    console.log('  (noch ohne Sprecher — mit --stimme <datei> nachreichen)');
+  // Der Wortwechsel sitzt auf Einstellung 2, wo die Herausforderung fällt.
+  if (dialogDatei && existsSync(dialogDatei)) {
+    mitDatei.push({ id: 'dialog', datei: dialogDatei, frameStart: 4 * FPS, lautstaerke: 1.0 });
+    console.log(`  Wortwechsel: ${dialogDatei} ab 4,0 s`);
   }
 
-  const ton = join(CLIPS, 'ton.m4a');
+  // Der Sprecher wird ans ENDE ausgerichtet, nicht an den Anfang des Outros:
+  // Die Schlusszeile ist länger als die drei Sekunden Outro und liefe sonst
+  // über das Videoende hinaus ins Leere.
+  if (sprecherDatei && existsSync(sprecherDatei)) {
+    const d = await dauerSek(sprecherDatei);
+    const start = Math.max(0, Math.round(gesamtFrames - (d + 0.4) * FPS));
+    mitDatei.push({ id: 'sprecher', datei: sprecherDatei, frameStart: start, lautstaerke: 1.0 });
+    console.log(`  Sprecher: ${sprecherDatei} (${d.toFixed(1)} s) ab ${(start / FPS).toFixed(1)} s`);
+  }
+
+  if (!dialogDatei && !sprecherDatei) {
+    console.log('  (noch ohne Stimmen — mit --dialog <datei> und --sprecher <datei> nachreichen)');
+  }
+
+  const ton = join(AUS, 'ton.m4a');
   await tonspurBauen({ ereignisse: mitDatei, fps: FPS, dauerFrames: gesamtFrames, ziel: ton });
 
   const ziel = join(AUS, `anigosha-spot-${lang}${stimmeDatei ? '' : '-ohne-stimme'}.mp4`);
