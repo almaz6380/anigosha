@@ -64,6 +64,31 @@ Passt die Playwright-Version nicht zum installierten Chromium (Meldung
 export CHROMIUM_PFAD=/opt/pw-browsers/chromium
 ```
 
+## Der animierte Werbespot — `spot/`
+
+Zweites Format neben den Quiz-Reels: ein ~23-Sekunden-Spot im Anime-Stil (zwei
+Figuren treffen sich im Park, Herausforderung, beide spielen Anigosha).
+
+```bash
+node tools/reels/spot/make-spot.mjs                 # nur schneiden, was schon da ist
+node tools/reels/spot/make-spot.mjs --erzeugen      # fehlende Einstellungen bei fal bestellen (KOSTET)
+node tools/reels/spot/make-spot.mjs --stimme out/stimme.mp3
+```
+
+**Ohne `--erzeugen` wird nichts bestellt** — fehlende Einstellungen brechen sauber
+ab, statt still eine Rechnung zu erzeugen. Einmal erzeugte Clips liegen in
+`out/spot/clips/` und werden wiederverwendet; zum Neuerzeugen die Datei löschen.
+
+Die Startbilder liegen in `spot/referenz/` (in Gemini erzeugt, auf 1080×1920
+normalisiert). `spot/template-duell.mjs` baut die App-Einstellung nach
+`src/pages/DuelPage.tsx` nach — ein Videomodell malt dort sonst eine unleserliche
+Fantasie-App, und ein echter Duell-Screenshot ist ohne laufende Partie nicht zu
+bekommen. **Ändert sich `DuelPage.tsx` spürbar, gehört der Nachbau nachgezogen.**
+
+Ein Videomodell hält Figuren nur zusammen, wenn jede Einstellung aus einem
+Startbild kommt. Reine Text-zu-Video-Prompts liefern in Einstellung 3 zwei andere
+Leute — deshalb der Umweg über `referenz/`.
+
 ## Assets
 
 - `assets/outfit.woff2` — Schrift **Outfit**, SIL Open Font License 1.1
