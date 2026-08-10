@@ -44,3 +44,9 @@ android/local.properties
 
 # Vom Icon-Werkzeug erzeugte Zwischenstände
 assets/
+# ...aber die Assets des Reel-Generators gehören ins Repo (Schrift + Klänge).
+# Ohne diese Ausnahme greift das „assets/" oben auch auf tools/reels/assets/.
+!tools/reels/assets/
+
+# Fertige Reels, Frames und Kontaktbögen — Videos gehören nicht ins Repo
+out/
