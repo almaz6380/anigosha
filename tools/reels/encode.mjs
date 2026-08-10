@@ -62,16 +62,28 @@ export async function tonspurBauen({ ereignisse, fps, dauerFrames, ziel }) {
 
   const ketten = ereignisse.map((e, i) => {
     const ms = Math.round((e.frameStart / fps) * 1000);
-    return `[${i}:a]adelay=${ms}|${ms},volume=${e.lautstaerke ?? 1}[a${i}]`;
+    // `ausblenden` weicht ein hart endendes Stück auf. Der Umweg über
+    // areverse blendet das ENDE aus, ohne dessen Länge zu kennen —
+    // afade=t=out bräuchte dafür einen Startzeitpunkt.
+    const weich = e.ausblenden
+      ? `areverse,afade=t=in:d=${e.ausblenden},areverse,`
+      : '';
+    return `[${i}:a]${weich}adelay=${ms}|${ms},volume=${e.lautstaerke ?? 1}[a${i}]`;
   });
   const eingaenge = ereignisse.map((_, i) => `[a${i}]`).join('');
   // `amix` mit normalize=0 addiert die Spuren einfach auf. Fallen Stimme,
   // Effekt und Musikteppich zusammen, steht die Summe über Vollausschlag und
   // es knackt. Gemessen am ersten Spot: max_volume 0,0 dB — also am Anschlag.
   // Der Limiter fängt genau diese Spitzen ab und lässt den Rest unberührt.
+  // Ausblende am Schluss: Der Musikteppich ist länger als das Video und würde
+  // sonst mitten im Ton hart abgeschnitten — das klingt wie ein Aussetzer.
+  const dauer = dauerFrames / fps;
+  const ausSt = Math.max(0, dauer - 1.0).toFixed(3);
+
   const filter = `${ketten.join(';')};${eingaenge}`
     + `amix=inputs=${ereignisse.length}:normalize=0:dropout_transition=0,`
-    + `alimiter=limit=0.89:level=disabled[mix]`;
+    + `alimiter=limit=0.89:level=disabled,`
+    + `afade=t=out:st=${ausSt}:d=1.0[mix]`;
 
   args.push(
     '-filter_complex', filter,

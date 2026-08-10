@@ -228,7 +228,13 @@ async function main() {
     if (ende > gesamtFrames / FPS) {
       console.log(`  ⚠ Segment ${s.id} endet bei ${ende.toFixed(1)}s, Video ist ${(gesamtFrames / FPS).toFixed(1)}s lang`);
     }
-    mitDatei.push({ id: `sprecher${s.id}`, datei, frameStart: Math.round(s.abSek * FPS), lautstaerke: 1.0 });
+    // Kurzes Ausklingen: Die Aufnahmen enden hart am letzten Laut — bei
+    // Segment 1 liegen in den letzten 0,25 s noch −5 dB Spitze. Ohne das
+    // klingt der Satz wie abgeschnitten statt zu Ende gesprochen.
+    mitDatei.push({
+      id: `sprecher${s.id}`, datei, frameStart: Math.round(s.abSek * FPS),
+      lautstaerke: 1.0, ausblenden: 0.12,
+    });
     gesprochen++;
   }
   console.log(gesprochen
