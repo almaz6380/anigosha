@@ -15,13 +15,14 @@ import { spawn } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { chromium } from 'playwright';
 import { frames } from '../render.mjs';
 import { videoSenke, tonspurBauen, lauf, FFMPEG } from '../encode.mjs';
 import { baueHtml as quizHtml } from '../template.mjs';
 import { baueHtml as duellHtml, BREITE as D_BREITE, HOEHE as D_HOEHE, DSF as D_DSF } from './template-duell.mjs';
 import { klaengeSicherstellen, fehlendeKlaenge } from '../audio.mjs';
 import {
-  FPS, EINSTELLUNGEN, SCHNITT, APP_DAUER, TEXTE, outroStoryboard, klangEreignisse,
+  FPS, EINSTELLUNGEN, SCHNITT, APP_DAUER, TEXTE, TEXTKARTEN, outroStoryboard, klangEreignisse,
 } from './storyboard-spot.mjs';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -138,6 +139,34 @@ async function outroSegment() {
   return ziel;
 }
 
+// --- 2b. Textkarten als transparente PNG ------------------------------------
+// ffmpeg-drawtext scheidet aus: libfreetype kann kein woff2, und die Marke
+// hängt an Outfit. Also dieselbe Maschinerie wie überall — Chromium rendert,
+// mit omitBackground für den Alphakanal.
+async function textkartePng(karte, ziel) {
+  const font = readFileSync(join(HIER, '..', 'assets', 'outfit.woff2')).toString('base64');
+  const html = `<!doctype html><meta charset="utf-8"><style>
+@font-face{font-family:'Outfit';src:url(data:font/woff2;base64,${font}) format('woff2');font-weight:100 900}
+html,body{margin:0;width:1080px;height:1920px;background:transparent}
+#k{position:absolute;left:70px;top:1180px;width:940px;text-align:center;
+  font-family:'Outfit',sans-serif;font-size:96px;font-weight:800;line-height:1.1;
+  letter-spacing:-.02em;color:#fff;
+  /* Kontur, damit die Zeile über jedem Bild lesbar bleibt */
+  text-shadow:0 0 24px rgba(15,10,30,.95), 0 6px 0 rgba(15,10,30,.55),
+              -3px -3px 0 #0f0a1e, 3px -3px 0 #0f0a1e, -3px 3px 0 #0f0a1e, 3px 3px 0 #0f0a1e}
+</style><div id="k">${karte.text.replace(/</g, '&lt;').split('\n').join('<br>')}</div>`;
+
+  const browser = await chromium.launch(
+    process.env.CHROMIUM_PFAD ? { executablePath: process.env.CHROMIUM_PFAD } : {},
+  );
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
+  await page.setContent(html, { waitUntil: 'load' });
+  await page.evaluate(() => document.fonts.ready);
+  writeFileSync(ziel, await page.screenshot({ type: 'png', omitBackground: true }));
+  await browser.close();
+  return ziel;
+}
+
 // --- 3. Zusammenschneiden ---------------------------------------------------
 // Die fal-Clips kommen als 720x1280 mit 24 fps. Alles wird auf 1080x1920 / 30 fps
 // vereinheitlicht, sonst stolpert der Concat-Demuxer über wechselnde Parameter.
@@ -205,13 +234,46 @@ async function main() {
   const ton = join(AUS, 'ton.m4a');
   await tonspurBauen({ ereignisse: mitDatei, fps: FPS, dauerFrames: gesamtFrames, ziel: ton });
 
+  // --- Textkarten einblenden ---
+  const karten = TEXTKARTEN[lang] ?? [];
+  const kartenPng = [];
+  for (let i = 0; i < karten.length; i++) {
+    kartenPng.push(await textkartePng(karten[i], join(AUS, `karte-${i}.png`)));
+  }
+  if (karten.length) console.log(`  ${karten.length} Textkarten`);
+
   const mitStimme = Boolean(dialogDatei || sprecherDatei);
   const ziel = join(AUS, `anigosha-spot-${lang}${mitStimme ? '' : '-ohne-stimme'}.mp4`);
-  await lauf([
-    '-y', '-i', stumm, '-i', ton,
-    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-shortest',
-    '-movflags', '+faststart', ziel,
-  ]);
+
+  const gesamtSek = (gesamtFrames / FPS).toFixed(3);
+  const args = ['-y', '-i', stumm, '-i', ton];
+  // ⚠ `-loop 1` ist Pflicht: Ohne das ist ein PNG EIN Bild bei t=0 ohne
+  // Zeitachse. `fade` hätte dann nichts zu blenden und `enable=between(t,…)`
+  // träfe nie zu — das Ergebnis wäre ein Video ganz ohne Karten.
+  for (const p of kartenPng) args.push('-loop', '1', '-t', gesamtSek, '-i', p);
+
+  if (karten.length) {
+    // Jede Karte blendet über 0,25 s auf und wieder ab. Der Alphakanal wird
+    // dafür eigens angefasst — ein reines `enable` würde hart schneiden.
+    const ketten = karten.map((k, i) => {
+      const ein = k.von.toFixed(2);
+      const quelle = i === 0 ? '[0:v]' : `[v${i - 1}]`;
+      return `[${i + 2}:v]format=rgba,fade=t=in:st=${ein}:d=0.25:alpha=1,`
+           + `fade=t=out:st=${(k.bis - 0.25).toFixed(2)}:d=0.25:alpha=1[k${i}];`
+           + `${quelle}[k${i}]overlay=0:0:enable='between(t,${ein},${k.bis.toFixed(2)})'[v${i}]`;
+    });
+    args.push('-filter_complex', ketten.join(';'),
+              '-map', `[v${karten.length - 1}]`, '-map', '1:a',
+              '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'medium', '-crf', '19',
+              '-pix_fmt', 'yuv420p');
+  } else {
+    args.push('-c:v', 'copy');
+  }
+
+  args.push('-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-shortest',
+            '-movflags', '+faststart', ziel);
+  await lauf(args);
+  for (const p of kartenPng) rmSync(p, { force: true });
 
   for (const p of norm) rmSync(p, { force: true });
   rmSync(liste, { force: true });

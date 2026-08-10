@@ -60,6 +60,23 @@ export const SCHNITT = [
   { art: 'outro' },
 ];
 
+// Eingeblendete Zeilen statt gesprochener Figurenrede.
+//
+// Drei Runden Stimmensuche über zwei Anbieter haben keine überzeugende junge
+// Anime-Stimme auf Deutsch geliefert. Das ist kein Verlust: Im Feed läuft der
+// größte Teil ohne Ton, und Textkarten sind im Anime ein eigenes Stilmittel.
+// Der Erzähler am Schluss bleibt gesprochen.
+export const TEXTKARTEN = {
+  de: [
+    { text: 'Du glaubst,\ndu kennst Anime?', von: 4.4, bis: 7.7 },
+    { text: 'Beweis es.',                    von: 8.3, bis: 11.6 },
+  ],
+  en: [
+    { text: 'You think\nyou know anime?', von: 4.4, bis: 7.7 },
+    { text: 'Prove it.',                 von: 8.3, bis: 11.6 },
+  ],
+};
+
 export const TEXTE = {
   de: {
     outroTitel: 'Schaffst du\nden Rest?',
