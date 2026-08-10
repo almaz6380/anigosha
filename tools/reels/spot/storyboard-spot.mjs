@@ -78,7 +78,12 @@ export const SPRECHER = {
     { id: 1, abSek: 1.0,  text: '[excited] Du glaubst, du bist ein Anime-Ass?' },
     // Sitzt auf der Zeigegeste (Einstellung 2 beginnt bei 4,0 s), nicht erst
     // bei den Handys: Vorher klaffte über eine Sekunde Leerlauf zu viel.
-    { id: 2, abSek: 4.0,  text: '[confident] Dann beweis es.' },
+    //
+    // Gesprochen von Lola (Rins Stimme), nicht vom Erzähler: Die Betonung des
+    // Erzählers saß nicht, und ein weiblicher Konter passt zur Szene — Rin
+    // gewinnt am Ende. Die Aufnahme stammt aus der alten Dialogdatei und ist
+    // dort herausgeschnitten; `datei` übergeht deshalb die Namenskonvention.
+    { id: 2, abSek: 4.0, text: 'Beweis es.', datei: 'rin-beweis-es.mp3', stimme: 'Lola (Rin)' },
     // Zahl ausgeschrieben: als Ziffern las das Modell "102" statt "804".
     // "kostenlos" statt "gratis" — letzteres sprach es verquer aus.
     // ⚠ Bewusst NICHT "täglich kommen neue Fragen dazu": Die 804 liegen fest

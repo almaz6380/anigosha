@@ -217,7 +217,9 @@ async function main() {
   const stimmDir = join(HIER, 'stimme');
   let gesprochen = 0;
   for (const s of SPRECHER[lang] ?? []) {
-    const datei = join(stimmDir, `sprecher-${lang}-${s.id}.mp3`);
+    // `datei` erlaubt eine Aufnahme außerhalb der Namenskonvention —
+    // etwa eine Figurenstimme statt des Erzählers.
+    const datei = join(stimmDir, s.datei ?? `sprecher-${lang}-${s.id}.mp3`);
     if (!existsSync(datei)) continue;
     const d = await dauerSek(datei);
     const ende = s.abSek + d;
