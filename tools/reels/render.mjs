@@ -6,8 +6,13 @@
 import { chromium } from 'playwright';
 import { baueHtml, BREITE, HOEHE } from './template.mjs';
 
+// Voreinstellung = Quiz-Reel. Der Werbespot reicht über `opt` sein eigenes
+// Template und seine eigenen Maße herein (siehe tools/reels/spot/).
+const STANDARD = { baueHtml, breite: BREITE, hoehe: HOEHE, dsf: 1, format: 'jpeg', quality: 96 };
+
 // Öffnet die Seite und gibt page + Aufräumfunktion zurück.
-export async function seiteOeffnen(storyboard) {
+export async function seiteOeffnen(storyboard, opt = {}) {
+  const o = { ...STANDARD, ...opt };
   // CHROMIUM_PFAD erlaubt einen bereits vorhandenen Chromium (z. B. in der
   // Cloud-Sitzung: /opt/pw-browsers/chromium). Ohne die Variable nimmt
   // Playwright seinen eigenen — so läuft es auf Josefs Mac unverändert weiter.
@@ -15,26 +20,29 @@ export async function seiteOeffnen(storyboard) {
     process.env.CHROMIUM_PFAD ? { executablePath: process.env.CHROMIUM_PFAD } : {},
   );
   const ctx = await browser.newContext({
-    viewport: { width: BREITE, height: HOEHE },
-    deviceScaleFactor: 1,
+    viewport: { width: o.breite, height: o.hoehe },
+    deviceScaleFactor: o.dsf,
     reducedMotion: 'no-preference',
   });
   const page = await ctx.newPage();
-  await page.setContent(baueHtml(storyboard), { waitUntil: 'load' });
+  await page.setContent(o.baueHtml(storyboard), { waitUntil: 'load' });
   // Auf die eingebettete Schrift warten — sonst rendern die ersten Frames in DejaVu.
   await page.waitForFunction('window.__bereit === true', null, { timeout: 15000 });
   return { page, schliessen: () => browser.close() };
 }
 
 // Rendert alle Frames und schiebt sie in den übergebenen Stream.
-export async function frames(storyboard, senke, { onFortschritt } = {}) {
-  const { page, schliessen } = await seiteOeffnen(storyboard);
+export async function frames(storyboard, senke, { onFortschritt, ...opt } = {}) {
+  const { page, schliessen } = await seiteOeffnen(storyboard, opt);
   const gesamt = storyboard.gesamtFrames;
+  const bildOpt = opt.format === 'png'
+    ? { type: 'png' }
+    : { type: 'jpeg', quality: opt.quality ?? 96 };
 
   try {
     for (let n = 0; n < gesamt; n++) {
       await page.evaluate((i) => window.setFrame(i), n);
-      const bild = await page.screenshot({ type: 'jpeg', quality: 96 });
+      const bild = await page.screenshot(bildOpt);
 
       if (!senke.write(bild)) {
         await new Promise((res) => senke.once('drain', res));
@@ -48,8 +56,8 @@ export async function frames(storyboard, senke, { onFortschritt } = {}) {
 
 // Kontaktbogen: je ein Standbild pro Phase, als PNG-Reihe. Dauert Sekunden
 // statt Minuten und beantwortet die einzige wirklich offene Frage — sieht es gut aus?
-export async function kontaktbogen(storyboard) {
-  const { page, schliessen } = await seiteOeffnen(storyboard);
+export async function kontaktbogen(storyboard, opt = {}) {
+  const { page, schliessen } = await seiteOeffnen(storyboard, opt);
   const P = storyboard.phasen;
   const bilder = [];
 
