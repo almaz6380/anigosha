@@ -76,7 +76,9 @@ export const SCHNITT = [
 export const SPRECHER = {
   de: [
     { id: 1, abSek: 1.0,  text: '[excited] Du glaubst, du bist ein Anime-Ass?' },
-    { id: 2, abSek: 8.3,  text: '[confident] Dann beweis es.' },
+    // Sitzt auf der Zeigegeste (Einstellung 2 beginnt bei 4,0 s), nicht erst
+    // bei den Handys: Vorher klaffte über eine Sekunde Leerlauf zu viel.
+    { id: 2, abSek: 4.0,  text: '[confident] Dann beweis es.' },
     // Zahl ausgeschrieben: als Ziffern las das Modell "102" statt "804".
     // "kostenlos" statt "gratis" — letzteres sprach es verquer aus.
     // ⚠ Bewusst NICHT "täglich kommen neue Fragen dazu": Die 804 liegen fest
@@ -88,7 +90,7 @@ export const SPRECHER = {
   ],
   en: [
     { id: 1, abSek: 1.0,  text: '[excited] You think you are an anime expert?' },
-    { id: 2, abSek: 8.3,  text: '[confident] Then prove it.' },
+    { id: 2, abSek: 4.0,  text: '[confident] Then prove it.' },
     { id: 3, abSek: 11.9, text: 'Eight hundred four questions, twelve series — and a new challenge every day.' },
     { id: 4, abSek: 17.4, text: '[excited] Duels against real opponents. Anigosha — free on the store!' },
   ],
@@ -105,13 +107,15 @@ export const SPRECHER_ID = 'DUAKkudcC2PI6KEqJ60K';
 // größte Teil ohne Ton, und Textkarten sind im Anime ein eigenes Stilmittel.
 // Der Erzähler am Schluss bleibt gesprochen.
 export const TEXTKARTEN = {
+  // Die Karten liegen auf denselben Zeiten wie die Sprechersegmente — Bild
+  // und Ton sollen zusammenfallen, sonst liest man etwas anderes, als man hört.
   de: [
-    { text: 'Du glaubst, du bist\nein Anime-Ass?', von: 4.4, bis: 7.7 },
-    { text: 'Beweis es.',                          von: 8.6, bis: 11.6 },
+    { text: 'Du glaubst, du bist\nein Anime-Ass?', von: 1.1, bis: 3.9 },
+    { text: 'Beweis es.',                          von: 4.1, bis: 7.6 },
   ],
   en: [
-    { text: 'You think you are\nan anime expert?', von: 4.4, bis: 7.7 },
-    { text: 'Prove it.',                           von: 8.6, bis: 11.6 },
+    { text: 'You think you are\nan anime expert?', von: 1.1, bis: 3.9 },
+    { text: 'Prove it.',                           von: 4.1, bis: 7.6 },
   ],
 };
 
