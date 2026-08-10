@@ -205,7 +205,8 @@ async function main() {
   const ton = join(AUS, 'ton.m4a');
   await tonspurBauen({ ereignisse: mitDatei, fps: FPS, dauerFrames: gesamtFrames, ziel: ton });
 
-  const ziel = join(AUS, `anigosha-spot-${lang}${stimmeDatei ? '' : '-ohne-stimme'}.mp4`);
+  const mitStimme = Boolean(dialogDatei || sprecherDatei);
+  const ziel = join(AUS, `anigosha-spot-${lang}${mitStimme ? '' : '-ohne-stimme'}.mp4`);
   await lauf([
     '-y', '-i', stumm, '-i', ton,
     '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-shortest',

@@ -65,7 +65,13 @@ export async function tonspurBauen({ ereignisse, fps, dauerFrames, ziel }) {
     return `[${i}:a]adelay=${ms}|${ms},volume=${e.lautstaerke ?? 1}[a${i}]`;
   });
   const eingaenge = ereignisse.map((_, i) => `[a${i}]`).join('');
-  const filter = `${ketten.join(';')};${eingaenge}amix=inputs=${ereignisse.length}:normalize=0:dropout_transition=0[mix]`;
+  // `amix` mit normalize=0 addiert die Spuren einfach auf. Fallen Stimme,
+  // Effekt und Musikteppich zusammen, steht die Summe über Vollausschlag und
+  // es knackt. Gemessen am ersten Spot: max_volume 0,0 dB — also am Anschlag.
+  // Der Limiter fängt genau diese Spitzen ab und lässt den Rest unberührt.
+  const filter = `${ketten.join(';')};${eingaenge}`
+    + `amix=inputs=${ereignisse.length}:normalize=0:dropout_transition=0,`
+    + `alimiter=limit=0.89:level=disabled[mix]`;
 
   args.push(
     '-filter_complex', filter,
