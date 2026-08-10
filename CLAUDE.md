@@ -89,6 +89,17 @@ alter Stand die Live-Version.
 - [x] `@capacitor-community/admob@8`, `src/lib/ads.ts` mit **Googles Test-IDs** (`USE_TEST_ADS = true`)
 - [x] UMP-Einwilligung + iOS-ATT, Test-App-IDs in Info.plist und AndroidManifest, `cap sync` gelaufen
 - [x] Interstitial nach Solo-Runde mit Bremse: jede 2. Runde, mind. 90 s Abstand
+- [x] **Interstitial auch am Duell-Ende (10.08.2026)** — `maybeShowInterstitialOnce('duel:<match_id>')`,
+      ausgelöst vom Übergang auf `finished` in `DuelPage`, 1,2 s verzögert.
+      **Bewusst am Partie-Ende, nicht am Rundenende:** Eine Duellrunde sind nur drei
+      Fragen, danach wartet man auf den Gegner — vier Anzeigen je Partie statt einer.
+      **Und bewusst einmal je `match_id`:** `finished` ist ein Zustand, kein Ereignis;
+      eine fertige Partie bleibt in der Übersicht stehen und lässt sich morgen wieder
+      öffnen. Der Merker liegt in `localStorage` (`anigosha.ads.seen`, letzte 200),
+      denn der Rundenzähler in `ads.ts` überlebt keinen App-Neustart. Er wird **vor**
+      der Anzeige gesetzt — beendet iOS die App während des Interstitials, käme es
+      sonst beim nächsten Öffnen gleich noch einmal. Solo und Duell teilen sich den
+      Zähler, sonst verdoppeln sich die Einblendungen beim Moduswechsel.
 - [x] `showRewardedAd()` für den Streak-Schutz vorbereitet, `setAdsPremiumStatus()` als Werbefrei-Schalter
 - [x] **Echte AdMob-IDs eingetragen (28.07.)** — Konto `pub-8860791993288062` (dasselbe wie MyPeak):
       App-IDs in Info.plist/AndroidManifest, Anzeigenblöcke unter `PROD` in `src/lib/ads.ts`
@@ -445,7 +456,11 @@ Regeln dazu:
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
   `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`),
   `test-kauf-bruecke.mjs` (9, braucht Playwright+Chromium; prueft den Kauf-Code
-  gegen eine nachgebildete iOS-Bridge — faengt Haenger, die nur nativ auftreten).
+  gegen eine nachgebildete iOS-Bridge — faengt Haenger, die nur nativ auftreten),
+  `test-werbung.mjs` (22, braucht weder Netz noch AdMob-Konto: Ein Modul-Hook
+  schiebt `src/lib/ads.ts` die beiden Capacitor-Module unter — Stub in
+  `werbung-stub.mjs`, Umleitung in `werbung-hooks.mjs` — und `Date.now` wird
+  vorgestellt, um die 90-Sekunden-Sperre zu prüfen, ohne zu warten).
 - **Levelkurve:** `xpForLevel(n) = 50 · (n² − 1)` → Schwellen 150, 400, 750, 1200 …
   Der erste Aufstieg kommt nach ein bis zwei Runden. Bei fester Schrittweite (500)
   dauerte er rund vier Runden — beim Testen hat ihn deshalb nie jemand gesehen.

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Bot, Check, ChevronRight, Swords, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
+import { maybeShowInterstitialOnce } from '../lib/ads';
 import {
   answerDuel,
   duelState,
@@ -50,6 +51,23 @@ export default function DuelPage() {
     // angelegt und würde den Effekt sonst endlos wiederholen.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId]);
+
+  // Werbung nur am Ende einer Partie, nicht am Ende einer Runde: Eine Runde
+  // sind drei Fragen, danach wartet man auf den Gegner und öffnet meist gleich
+  // die nächste Partie — dort eine Anzeige zu setzen träfe viermal je Partie.
+  //
+  // `finished` ist ein Zustand, kein Ereignis: Eine fertige Partie bleibt in
+  // der Übersicht stehen und lässt sich beliebig oft wieder aufmachen. Deshalb
+  // der Merker je match_id in `maybeShowInterstitialOnce`.
+  //
+  // Die kurze Verzögerung lässt den Endstand erst ankommen. Wer sofort
+  // zurückgeht, sieht gar keine — der Timer wird beim Verlassen abgeräumt.
+  const finished = state?.status === 'finished';
+  useEffect(() => {
+    if (!active || !finished) return;
+    const timer = window.setTimeout(() => maybeShowInterstitialOnce(`duel:${active}`), 1200);
+    return () => window.clearTimeout(timer);
+  }, [active, finished]);
 
   async function neu() {
     setBusy(true);
@@ -229,7 +247,7 @@ export default function DuelPage() {
         </div>
       )}
 
-      {state?.status === 'finished' ? (
+      {finished ? (
         <div className="mt-10 text-center">
           <div className="text-5xl font-extrabold bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent">
             {state.my_score}:{state.opp_score}
