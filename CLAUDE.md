@@ -580,6 +580,18 @@ node tools/reels/make-reel.mjs --format ladder --lang en --seed 7
 node tools/reels/make-reel.mjs --format fandom --category naruto --dry-run   # nur Standbilder
 ```
 
+**Fertige Videos liegen in `tools/reels/fertig/`** — drei Quiz-Reels (2× DE, 1× EN)
+und der animierte Werbespot (DE mit Sprecher, EN ohne). Sprachen stehen im Dateinamen,
+Einzelheiten und Neu-Erzeugung in `tools/reels/fertig/README.md`. Bewusst im Repo und
+nicht unter `out/`: Letzteres ist gitignored, und der Container einer Cloud-Sitzung ist
+flüchtig — am 10.08. fiel der Dateibaum zurück und nahm alles unter `out/` mit.
+
+⚠ **Vor dem Posten Store-Status prüfen.** Alle Videos enden mit „Anigosha — kostenlos
+im Store". Josef hat am 10.08. gemeldet, dass Anigosha **noch nicht im App Store** ist
+und bisher nur Swaply und Mahjong Royale in beiden Stores stehen — das widerspricht dem
+Abschnitt „M5 Release" oben. Ein Aufruf, der ins Leere führt, verbrennt die Reichweite
+der ersten Videos, und genau die bekommen die meiste Auslieferung.
+
 **Warum das im Repo liegt:** Josef arbeitet vom Handy, Videoschnitt geht dort nicht.
 Die Fragen tragen bereits richtige Antwort **und** Erklärung, zweisprachig — damit ist
 ein Quiz-Reel reine Formatierungsarbeit. Die „Wusstest du?"-Zeile ist der Trumpf
