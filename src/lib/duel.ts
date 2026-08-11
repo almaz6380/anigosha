@@ -62,6 +62,31 @@ export async function answerDuel(
   return data as AnswerResult & { round_done: boolean };
 }
 
+/**
+ * Einladungscode fuer ein Duell gegen jemand Bestimmten.
+ *
+ * `neu = false` heisst: Es gab schon einen offenen Code, der wird
+ * weiterverwendet. Absicht — sonst entwertet jedes erneute Antippen den Link,
+ * den der Freund vielleicht gerade erst bekommen hat.
+ */
+export async function createChallenge(): Promise<{ code: string; neu: boolean }> {
+  const { data, error } = await supabase.rpc('create_challenge');
+  if (error) throw error;
+  return data as { code: string; neu: boolean };
+}
+
+/**
+ * Loest einen Einladungscode ein und liefert die Partie.
+ *
+ * `bereits = true` heisst: Die Partie lief schon (zweiter Klick auf denselben
+ * Link). Das ist kein Fehler, sondern der haeufigste Normalfall.
+ */
+export async function acceptChallenge(code: string): Promise<{ match_id: string; bereits: boolean }> {
+  const { data, error } = await supabase.rpc('accept_challenge', { p_code: code });
+  if (error) throw error;
+  return data as { match_id: string; bereits: boolean };
+}
+
 export interface GlobalRow {
   username: string;
   avatar_id: string | null;

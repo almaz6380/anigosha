@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Bot, Check, ChevronRight, Swords, X } from 'lucide-react';
+import { ArrowLeft, Bot, Check, ChevronRight, Swords, UserPlus, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
 import { maybeShowInterstitialOnce } from '../lib/ads';
+import { ereignis } from '../lib/messung';
 import {
+  acceptChallenge,
   answerDuel,
+  createChallenge,
   duelState,
   getDuelRound,
   listDuels,
@@ -13,11 +16,13 @@ import {
   type DuelState,
   type DuelSummary,
 } from '../lib/duel';
+import { challengeUrl, einladungHolen } from '../lib/links';
 
 export default function DuelPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { matchId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lang = i18n.language.startsWith('en') ? 'en' : 'de';
 
   const [duels, setDuels] = useState<DuelSummary[]>([]);
@@ -29,6 +34,7 @@ export default function DuelPage() {
   const [feedback, setFeedback] = useState<(AnswerResult & { round_done: boolean }) | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hinweis, setHinweis] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -52,6 +58,57 @@ export default function DuelPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId]);
 
+  // Einladung eines Freundes einlösen — entweder aus `?c=` in der Adresse oder
+  // aus dem Zwischenspeicher, den App.tsx vor dem Anmelde-Gate gefüllt hat.
+  //
+  // Läuft nur einmal beim Aufbau: Der Code wird dabei aus der Adresse entfernt,
+  // damit ein Neuladen nicht versucht, dieselbe Einladung ein zweites Mal
+  // einzulösen.
+  useEffect(() => {
+    // Kommt jemand über eine Benachrichtigung direkt in eine Partie, hat die
+    // Vorrang. Der Code bleibt liegen und wird beim nächsten Öffnen der
+    // Übersicht eingelöst.
+    if (matchId) return;
+
+    // einladungHolen raeumt den Merker in jedem Fall weg — auch wenn die
+    // Adresse ihn ohnehin mitbringt. Sonst bliebe er liegen und wuerde beim
+    // naechsten Oeffnen der Uebersicht ein zweites Mal eingeloest.
+    const ausAdresse = searchParams.get('c');
+    const gemerkt = einladungHolen();
+    const code = ausAdresse ?? gemerkt;
+    if (!code) return;
+
+    if (ausAdresse) setSearchParams({}, { replace: true });
+
+    void (async () => {
+      setBusy(true);
+      setError(null);
+      try {
+        const r = await acceptChallenge(code);
+        ereignis('einladung_eingeloest', { bereits: r.bereits });
+        await load();
+        openMatch(r.match_id);
+      } catch (e) {
+        const msg = (e as { message?: string })?.message ?? '';
+        setError(
+          msg.includes('expired')
+            ? t('duel.inviteExpired')
+            : msg.includes('your own')
+              ? t('duel.inviteOwn')
+              : msg.includes('already used')
+                ? t('duel.inviteUsed')
+                : msg.includes('not found')
+                  ? t('duel.inviteInvalid')
+                  : t('common.error')
+        );
+      } finally {
+        setBusy(false);
+      }
+    })();
+    // Absichtlich nur beim Aufbau — siehe Kommentar oben.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Werbung nur am Ende einer Partie, nicht am Ende einer Runde: Eine Runde
   // sind drei Fragen, danach wartet man auf den Gegner und öffnet meist gleich
   // die nächste Partie — dort eine Anzeige zu setzen träfe viermal je Partie.
@@ -69,11 +126,40 @@ export default function DuelPage() {
     return () => window.clearTimeout(timer);
   }, [active, finished]);
 
+  /**
+   * Einladungscode erzeugen und teilen.
+   *
+   * Der Link zeigt auf die Web-App, nicht in den Store: Der Freund soll ohne
+   * Installieren spielen koennen — jede Huerde davor kostet die Haelfte.
+   */
+  async function herausfordern() {
+    setBusy(true);
+    setError(null);
+    setHinweis(null);
+    try {
+      const { code } = await createChallenge();
+      const url = challengeUrl(code);
+      const text = t('duel.inviteText');
+      if (navigator.share) {
+        await navigator.share({ text, url }).catch(() => {});
+      } else {
+        await navigator.clipboard?.writeText(`${text} ${url}`);
+        setHinweis(t('duel.inviteCopied'));
+      }
+      ereignis('einladung_erstellt');
+    } catch {
+      setError(t('common.error'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function neu() {
     setBusy(true);
     setError(null);
     try {
       const r = await startDuel(lang);
+      ereignis('duell_gestartet', { sofort: Boolean(r.match_id) });
       if (r.match_id) {
         await load();
         openMatch(r.match_id);
@@ -163,6 +249,12 @@ export default function DuelPage() {
           </div>
         )}
 
+        {hinweis && (
+          <div className="mt-6 rounded-2xl border border-accent-500/40 bg-night-900 p-4 text-sm text-accent-400">
+            {hinweis}
+          </div>
+        )}
+
         <button
           onClick={neu}
           disabled={busy}
@@ -170,6 +262,17 @@ export default function DuelPage() {
         >
           <Swords className="w-5 h-5" />
           {t('duel.new')}
+        </button>
+
+        {/* Zweitrangig gestaltet: Der Zufallsgegner ist der schnellste Weg ins
+            Spiel. Wer jemanden im Kopf hat, sucht den Knopf ohnehin. */}
+        <button
+          onClick={herausfordern}
+          disabled={busy}
+          className="w-full rounded-2xl border border-night-700 bg-night-900 p-4 font-semibold text-accent-400 mt-3 flex items-center justify-center gap-2 disabled:opacity-50 hover:border-accent-500 transition-colors"
+        >
+          <UserPlus className="w-5 h-5" />
+          {t('duel.invite')}
         </button>
 
         <div className="mt-6 flex flex-col gap-3">

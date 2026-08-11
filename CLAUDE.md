@@ -427,6 +427,57 @@ Hypothesen (Apples Auslieferung, Nebenlaeufigkeit, setLogLevel) wurden als
 Befund praesentiert und waren falsch; jede kostete einen Build von ~25 Minuten.
 Der Geraetemitschnitt haette am ersten Tag dieselbe Eingrenzung geliefert.
 
+### M6 Wachstum — Fundament gebaut (11.08.2026), Migrationen NOCH NICHT eingespielt
+
+Grundlage: Marketingkonzept in `~/.claude/plans/gib-mir-ein-marketingkonzept-purrfect-leaf.md`
+(Ziel: aktive Spieler statt Installationszahlen, 0 € Budget, DE+EN parallel).
+
+Ausgangsbefund: Die App verlor jede Reichweite, die sie bekam. Der Teilen-Knopf
+verschickte Text **ohne Link**, geteilte Links hatten **keine Vorschau**, und es
+gab **keine Messung** — Wirkung war nicht feststellbar.
+
+**Fertig und geprüft (Build + Typprüfung grün):**
+- [x] Teilen mit Adresse: `navigator.share({ text, url })`, Texte in DE+EN auf
+      Neugier statt Prahlerei umgeschrieben (`src/lib/links.ts`, `SoloPage`)
+- [x] Open-Graph- und Twitter-Tags in `index.html`; Vorschaubild `public/og.png`
+      (1200×630) aus `tools/og-image.mjs` — Aufbau und Farben bewusst gleich wie
+      `tools/feature-graphic.mjs`, damit Store und Link-Vorschau zusammenpassen
+- [x] **Messung nur im Browser**: Vercel Web Analytics (`src/lib/messung.ts`),
+      cookiefrei, deshalb ohne Einwilligungsbanner. Datenschutzerklärung DE+EN
+      ergänzt. **Nativ bewusst NICHT eingebaut** — ein Analyse-SDK in der
+      veröffentlichten App ändert die Store-Datenschutzangaben (App-Datenschutz
+      bei Apple, Datensicherheit bei Google), die müssten zuerst nachgezogen
+      werden. Bei laufender Prüfung von 1.0 wäre das ein unnötiges Risiko.
+- [x] Freund-Duell im Client: Knopf in `DuelPage`, `create_challenge` /
+      `accept_challenge` in `src/lib/duel.ts`, Link `…/duel?c=<CODE>`
+- [x] `tools/test-einladung.mts` (16 Prüfungen, braucht kein Netz)
+
+**⚠ Zwei Migrationen liegen im Repo, sind aber NICHT eingespielt** — in der
+Claude-Web-Sitzung fehlt die `.env` (Service-Role-Schlüssel), also war weder der
+Pflicht-Trockenlauf noch das Einspielen möglich. Beide sind mit dem echten
+Postgres-Parser syntaktisch geprüft, mehr ging nicht:
+
+| Migration | Was sie tut |
+|---|---|
+| `0021_duelle_sprachuebergreifend.sql` | Hebt die Sprachtrennung im Matchmaking auf |
+| `0022_duell_einladung.sql` | Tabelle `duel_invites` + die beiden RPCs |
+
+**Zur Sprachtrennung, weil die Begründung nicht offensichtlich ist:** `start_duel`
+suchte den Gegner mit `lang = p_lang`, und `get_duel_round` lieferte die Fragen in
+der Sprache DER PARTIE. Damit spielten Deutsche nur gegen Deutsche — der ohnehin
+kleine Pool war halbiert und beide Hälften landeten bei den Bots. Nötig war die
+Trennung nie: Die Partie merkt sich nur Fragen-IDs, und alle 804 Fragen liegen in
+DE **und** EN vor. Ab 0021 sieht jeder dieselbe Partie in seiner Sprache.
+`matches.lang` bleibt als Rückfallebene für Altpartien.
+
+**Vor dem Einspielen auf Josefs Rechner:** Trockenlauf (`begin;` … `rollback;`),
+dann einspielen, dann `test-duel-flow.mjs` (19) laufen lassen — der prüft das
+Matchmaking und könnte auf der alten Sprachannahme sitzen.
+
+**Noch offen aus dem Konzept:** Bewertungsdialog nach dem dritten Sieg,
+Maskottchen (für Videos, Avatare und das OG-Bild), Fragekarten als tägliches
+Format.
+
 ## Umgebung / Werkzeuge
 
 ### Migrationen — Ablauf (Stand 28.07.2026)
@@ -460,7 +511,9 @@ Regeln dazu:
   `test-werbung.mjs` (22, braucht weder Netz noch AdMob-Konto: Ein Modul-Hook
   schiebt `src/lib/ads.ts` die beiden Capacitor-Module unter — Stub in
   `werbung-stub.mjs`, Umleitung in `werbung-hooks.mjs` — und `Date.now` wird
-  vorgestellt, um die 90-Sekunden-Sperre zu prüfen, ohne zu warten).
+  vorgestellt, um die 90-Sekunden-Sperre zu prüfen, ohne zu warten),
+  `test-einladung.mts` (16, via `npx tsx`, braucht kein Netz: prüft Einladungslink
+  und die Zwei-Stunden-Frist des gemerkten Codes; `Date.now` wird vorgestellt).
 - **Levelkurve:** `xpForLevel(n) = 50 · (n² − 1)` → Schwellen 150, 400, 750, 1200 …
   Der erste Aufstieg kommt nach ein bis zwei Runden. Bei fester Schrittweite (500)
   dauerte er rund vier Runden — beim Testen hat ihn deshalb nie jemand gesehen.

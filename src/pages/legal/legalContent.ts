@@ -245,6 +245,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google und RevenueCat statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
         },
         {
+          heading: 'Reichweitenmessung der Web-App',
+          body:
+            'Auf der Web-App unter anigosha.vercel.app setzen wir Vercel Web Analytics ein, um zu sehen, welche Seiten aufgerufen werden und wie oft eine Quizrunde oder ein Duell gestartet wird.\n\n' +
+            'Dabei werden keine Cookies gesetzt und keine geräteübergreifende Kennung vergeben. Es entstehen ausschließlich zusammengefasste Zahlen; einzelne Personen lassen sich daraus nicht erkennen. Deinen Spielernamen, deine Konto-Kennung und deine E-Mail-Adresse übermitteln wir dabei nicht.\n\n' +
+            'Rechtsgrundlage ist unser berechtigtes Interesse an einer bedarfsgerechten Gestaltung des Angebots (Art. 6 Abs. 1 lit. f DSGVO).\n\n' +
+            'Diese Messung findet nur im Browser statt. Die Apps für iOS und Android enthalten sie nicht.',
+        },
+        {
           heading: 'Benachrichtigungen',
           body:
             'Benachrichtigungen sind freiwillig und standardmäßig ausgeschaltet. Du schaltest sie selbst unter Profil → Benachrichtigungen ein; Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).\n\n' +
@@ -328,6 +336,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
             'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
             'Transfers to third countries (notably the USA) occur with Google and RevenueCat and rely on the European Commission’s standard contractual clauses.',
+        },
+        {
+          heading: 'Audience measurement on the web app',
+          body:
+            'On the web app at anigosha.vercel.app we use Vercel Web Analytics to see which pages are opened and how often a quiz round or a duel is started.\n\n' +
+            'No cookies are set and no cross-device identifier is assigned. Only aggregated figures arise; individuals cannot be identified from them. We do not transmit your player name, your account identifier or your email address.\n\n' +
+            'The legal basis is our legitimate interest in designing our offering to meet demand (Art. 6(1)(f) GDPR).\n\n' +
+            'This measurement happens in the browser only. The iOS and Android apps do not contain it.',
         },
         {
           heading: 'Notifications',

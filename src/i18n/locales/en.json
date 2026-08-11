@@ -96,7 +96,7 @@
     "noXpAgain": "This round has already been scored.",
     "again": "Play again",
     "share": "Share result",
-    "shareText": "I got {{correct}} out of {{total}} questions right on {{category}}! Can you beat that?",
+    "shareText": "{{correct}} out of {{total}} on {{category}} — can you beat that? Play right in your browser, no install:",
     "fiftyFifty": "50:50 — remove two answers",
     "streakDays_one": "{{count}} day in a row",
     "streakDays_other": "{{count}} days in a row"
@@ -106,7 +106,7 @@
     "sub": "5 questions — the same for everyone",
     "alreadyDone": "You have already played today's challenge. Five new questions tomorrow!",
     "leaderboard": "Today's leaderboard",
-    "shareText": "I got {{correct}} out of {{total}} in today's Anigosha challenge!"
+    "shareText": "{{correct}} out of {{total}} in today's Anigosha challenge. Five questions, the same for everyone — your turn:"
   },
   "duel": {
     "new": "Start a new duel",
@@ -120,7 +120,14 @@
     "draw": "Draw",
     "endRound": "Hand over the round",
     "queued": "No opponent free right now. We keep looking — try again shortly.",
-    "botHint": "Opponents with this mark are computer-controlled."
+    "botHint": "Opponents with this mark are computer-controlled.",
+    "invite": "Challenge a friend",
+    "inviteText": "I challenge you to an anime duel! Four rounds, the same questions for both of us — right in your browser, no install:",
+    "inviteCopied": "Link copied! Send it to your friend — your duel starts as soon as they open it.",
+    "inviteInvalid": "This invite link does not exist. Ask for a new one.",
+    "inviteExpired": "This invite link has expired. Ask for a new one.",
+    "inviteUsed": "Someone else has already used this invite.",
+    "inviteOwn": "That is your own invite link — send it to someone you want to play against."
   },
   "legal": {
     "imprint": "Legal Notice",

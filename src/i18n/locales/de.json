@@ -96,7 +96,7 @@
     "noXpAgain": "Diese Runde wurde bereits gewertet.",
     "again": "Nochmal spielen",
     "share": "Ergebnis teilen",
-    "shareText": "Ich habe {{correct}} von {{total}} Fragen zu {{category}} richtig beantwortet! Schaffst du mehr?",
+    "shareText": "{{correct}} von {{total}} Fragen zu {{category}} — schaffst du mehr? Direkt im Browser spielen, ohne Installieren:",
     "fiftyFifty": "50:50 — zwei Antworten entfernen",
     "streakDays_one": "{{count}} Tag in Folge",
     "streakDays_other": "{{count}} Tage in Folge"
@@ -106,7 +106,7 @@
     "sub": "5 Fragen — für alle gleich",
     "alreadyDone": "Du hast die heutige Challenge schon gespielt. Morgen gibt es fünf neue Fragen!",
     "leaderboard": "Tagesbestenliste",
-    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Anigosha-Challenge geschafft!"
+    "shareText": "{{correct}} von {{total}} in der heutigen Anigosha-Challenge. Fünf Fragen, für alle dieselben — deine Runde:"
   },
   "duel": {
     "new": "Neues Duell starten",
@@ -120,7 +120,14 @@
     "draw": "Unentschieden",
     "endRound": "Runde abgeben",
     "queued": "Gerade ist kein Gegner frei. Wir suchen weiter — versuch es gleich nochmal.",
-    "botHint": "Gegner mit diesem Zeichen sind computergesteuert."
+    "botHint": "Gegner mit diesem Zeichen sind computergesteuert.",
+    "invite": "Freund herausfordern",
+    "inviteText": "Ich fordere dich zu einem Anime-Duell heraus! Vier Runden, dieselben Fragen für uns beide — direkt im Browser, ohne Installieren:",
+    "inviteCopied": "Link kopiert! Schick ihn deinem Freund — sobald er ihn öffnet, startet euer Duell.",
+    "inviteInvalid": "Diesen Einladungslink gibt es nicht. Lass dir einen neuen schicken.",
+    "inviteExpired": "Dieser Einladungslink ist abgelaufen. Lass dir einen neuen schicken.",
+    "inviteUsed": "Diese Einladung wurde schon von jemand anderem eingelöst.",
+    "inviteOwn": "Das ist dein eigener Einladungslink — schick ihn jemandem, gegen den du spielen willst."
   },
   "legal": {
     "imprint": "Impressum",

@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initAds } from './lib/ads';
+import { messungStarten } from './lib/messung';
+import { einladungMerken } from './lib/links';
 import { preisDiagnose, diagnoseMelden } from './lib/purchases';
 import { pushAuffrischen, pushKlicksBehandeln } from './lib/push';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -52,6 +54,22 @@ function DiagnoseBruecke({ userId }: { userId: string | null }) {
 function AppRoutes() {
   const { t, i18n } = useTranslation();
   const { session, profile, loading } = useAuth();
+
+  // Einladungscode aus der Adresse sichern, BEVOR das Anmelde-Gate greift.
+  //
+  // Der Normalfall geht ohne das gut: Ohne Sitzung rendert unten nur AuthPage,
+  // die Adresse bleibt stehen, und nach dem Anmelden greift die Route erneut.
+  // Wer sich aber neu registriert, verlaesst die Seite zur Bestaetigungsmail
+  // und kommt ueber deren Link auf der Startseite wieder heraus — ohne `?c=`.
+  // Genau das ist der Fall, auf den es ankommt: der eingeladene Freund, der
+  // Anigosha noch gar nicht hat.
+  //
+  // Muss vor jedem bedingten Rueckgabewert stehen — Hooks duerfen nicht
+  // uebersprungen werden.
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get('c');
+    if (c) einladungMerken(c);
+  }, []);
 
   if (loading) {
     return (
@@ -104,8 +122,10 @@ function AppRoutes() {
 
 export default function App() {
   // Nur nativ wirksam; im Browser ist initAds bewusst ein No-Op.
+  // messungStarten ist das Gegenstueck: nur im Browser wirksam, nativ ein No-Op.
   useEffect(() => {
     initAds();
+    messungStarten();
   }, []);
 
   return (

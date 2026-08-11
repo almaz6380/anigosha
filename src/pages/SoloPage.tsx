@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitial } from '../lib/ads';
 import LevelUpClouds from '../components/LevelUpClouds';
 import { levelUpFrom } from '../lib/level';
+import { APP_URL, withAppUrl } from '../lib/links';
+import { ereignis } from '../lib/messung';
 import {
   answerSolo,
   dailyLeaderboard,
@@ -95,6 +97,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       setJokerUsed(false);
       resetQuestionState();
       setStep('quiz');
+      ereignis(daily ? 'daily_gestartet' : 'solo_gestartet', { schwierigkeit: difficulty });
     } catch (e) {
       const msg = (e as { message?: string })?.message ?? '';
       setError(msg.includes('no questions') ? t('solo.noQuestions') : t('common.error'));
@@ -139,6 +142,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       await refreshProfile();
       if (daily) await dailyLeaderboard().then(setBoard).catch(() => {});
       setStep('result');
+      ereignis('solo_beendet', { modus: daily ? 'daily' : 'solo', richtig: res.correct });
 
       // Levelaufstieg? Dann erst die Wolken, Werbung danach — sonst schiebt
       // sich eine Anzeige über den Glücksmoment.
@@ -171,8 +175,14 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
           total: result.total,
           category: lang === 'en' ? category?.name_en : category?.name_de,
         });
-    if (navigator.share) navigator.share({ text }).catch(() => {});
-    else navigator.clipboard?.writeText(text);
+    // Ohne `url` ist jedes Teilen eine Sackgasse: Der Empfaenger liest ein
+    // Ergebnis und hat keinen Weg zur App. Die Zwischenablage kennt kein
+    // eigenes Adressfeld, dort muss die Adresse in den Text.
+    if (navigator.share) navigator.share({ text, url: APP_URL }).catch(() => {});
+    else navigator.clipboard?.writeText(withAppUrl(text));
+    // Gemessen wird der Klick, nicht der Abschluss: Ob der Nutzer im
+    // System-Dialog dann wirklich abschickt, gibt navigator.share nicht preis.
+    ereignis('ergebnis_geteilt', { modus: daily ? 'daily' : 'solo' });
   }
 
   const shell = 'min-h-dvh bg-night-950 px-5 pt-8 pb-10 max-w-md mx-auto';
