@@ -114,24 +114,41 @@ export function setAdsPremiumStatus(premium: boolean) {
 async function runConsentFlow() {
   try {
     const info = await AdMob.requestConsentInfo();
-
-    if (Capacitor.getPlatform() === 'ios') {
-      try {
-        const tracking = await AdMob.trackingAuthorizationStatus();
-        if (tracking.status === 'notDetermined') {
-          await AdMob.requestTrackingAuthorization();
-        }
-      } catch (e) {
-        console.warn('ATT-Abfrage fehlgeschlagen:', e);
-      }
-    }
-
     if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
       await AdMob.showConsentForm();
     }
   } catch (e) {
     console.warn('Einwilligung fehlgeschlagen:', e);
   }
+}
+
+/**
+ * Wartet auf die Antwort zum ATT-Dialog — fragt aber selbst NICHT.
+ *
+ * Gefragt wird nativ im AppDelegate (`frageNachTracking`). Von hier aus ging
+ * es nicht: Capacitor führt Plugin-Aufrufe auf einer Hintergrund-Warteschlange
+ * aus, und `ATTrackingManager` zeigt dort nichts an. Genau daran ist 1.0
+ * (Build 12) am 12.08.2026 an Richtlinie 2.1 gescheitert — der Dialog kam nie.
+ * Die ausführliche Begründung steht im AppDelegate.
+ *
+ * Gewartet wird trotzdem, denn Google verlangt die ATT-Antwort VOR dem Start
+ * des Anzeigen-SDK; sonst gilt die Sitzung als nicht personalisierbar. Nach
+ * spätestens sechs Sekunden geht es ohnehin weiter — eine hängende Abfrage
+ * darf die Werbung nicht dauerhaft blockieren.
+ */
+async function warteAufTrackingAntwort() {
+  if (Capacitor.getPlatform() !== 'ios') return;
+  for (let versuch = 0; versuch < 20; versuch += 1) {
+    try {
+      const { status } = await AdMob.trackingAuthorizationStatus();
+      if (status !== 'notDetermined') return;
+    } catch (e) {
+      console.warn('ATT-Status nicht lesbar:', e);
+      return;
+    }
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  console.warn('ATT blieb unbeantwortet — Werbung startet ohne Personalisierung.');
 }
 
 /** Für die Einstellungen: Einwilligung nachträglich ändern (DSGVO-Pflicht). */
@@ -155,6 +172,7 @@ export async function initAds() {
   try {
     const mod = await import('@capacitor-community/admob');
     AdMob = mod.AdMob;
+    await warteAufTrackingAntwort();
     await AdMob.initialize({ initializeForTesting: USE_TEST_ADS });
     await runConsentFlow();
     ready = true;

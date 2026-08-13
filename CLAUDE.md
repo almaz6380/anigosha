@@ -253,15 +253,74 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### M5 Release — Stand 07.08.2026, 17:00
+### iOS 1.0 (Build 12) von Apple ABGELEHNT — Richtlinie 2.1, ATT (12.08.2026)
 
-✅ **Beide Stores sind draussen — MIT funktionierendem Kauf (07.08.2026 abends).**
+Pruefung am 12.08. auf einem iPhone 17 Pro Max mit iOS 26.6, Uebermittlung
+`26268de2-8932-4506-a3c1-652fe4cdfc64`. Apples Wortlaut:
+
+> The app uses the AppTrackingTransparency framework, but we are unable to
+> locate the App Tracking Transparency permission request when reviewed on
+> iOS 26.6.
+
+**Nicht der Kauf.** Das Kaufprodukt „Werbung entfernen" stand in derselben
+Uebermittlung auf *Bereit zur Pruefung* und wurde nur mitblockiert, weil eine
+abgelehnte App-Version alle anderen Elemente aufhaelt. Es ist unveraendert
+angehaengt und faehrt beim erneuten Uebermitteln mit.
+
+**Ursache (13.08.): Der Dialog kam wirklich nie — zwei Fehler auf einmal.**
+
+1. **Falscher Thread.** `AdMob.requestTrackingAuthorization()` aus
+   `@capacitor-community/admob` ruft `ATTrackingManager` direkt in der
+   Plugin-Methode auf. Capacitor fuehrt Plugin-Aufrufe aber auf einer eigenen
+   Hintergrund-Warteschlange aus (`DispatchQueue(label: "bridge")` in
+   `CapacitorBridge.swift`) — ein UIKit-Dialog gehoert auf den Hauptthread.
+   Dass es ein Versehen im Plugin ist, zeigt die Nachbarmethode:
+   `trackingAuthorizationStatus` springt ausdruecklich mit
+   `DispatchQueue.main.async` zurueck, die Anfrage selbst nicht. Sie ist dort
+   zusaetzlich als „DEPRECATED" markiert.
+2. **Zu frueh.** Die Abfrage lief im `useEffect` von `App.tsx`, also waehrend
+   die WebView noch aufbaut. Solange die App nicht `.active` ist, beantwortet
+   iOS `requestTrackingAuthorization` stillschweigend, ohne etwas zu zeigen.
+
+Dazu kam eine Verkettung, die den Fehler verdeckt haette: Die ATT-Abfrage stand
+im selben `try` **hinter** `AdMob.requestConsentInfo()`. Haette der UMP-Aufruf
+geworfen, waere ATT ohne eine Zeile Protokoll ausgefallen.
+
+**Behoben:** Die Abfrage liegt jetzt **nativ im `AppDelegate`**
+(`frageNachTracking`, ausgeloest von `applicationDidBecomeActive`) — damit ist
+sie zwangslaeufig auf dem Hauptthread und die App zwangslaeufig aktiv.
+`src/lib/ads.ts` fragt nicht mehr selbst, sondern **wartet** nur noch auf die
+Antwort (max. 6 s), bevor es das AdMob-SDK startet; so verlangt es Google.
+Kam kein Dialog (Status bleibt `notDetermined`), versucht es der naechste
+Vordergrund-Wechsel erneut.
+
+**Regel fuers ganze Repo:** Systemdialoge nie ueber die Capacitor-Bruecke
+anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
+`AppDelegate` ist der kuerzere und pruefsichere Weg.
+
+**Erneut einreichen — Reihenfolge beachten:**
+1. `iOS Release` mit `upload = true` bauen (Build 13; falls 13 in ASC schon
+   existiert, vorher `CURRENT_PROJECT_VERSION` erhoehen).
+2. Build der Version 1.0 zuweisen (`App Store Connect` → `build`, `nummer 13`).
+3. In App Store Connect auf der Uebermittlungsseite **„Erneut zur App-Pruefung
+   uebermitteln"**. ⚠ **NICHT `aufraeumen` laufen lassen** — das zoege die
+   Uebermittlung zurueck und mit ihr das bereits angehaengte Kaufprodukt, das
+   sich per API nicht wieder anhaengen laesst.
+4. Apple verlangt in der Antwort im Resolution Center eine **Bildschirmaufnahme
+   vom echten Geraet**: frische Installation, ATT-Dialog vor jeder
+   Datenerhebung, danach der weitere Ablauf. Das kann kein Skript liefern.
+
+**Der Gegenweg, falls Apple erneut mauert:** In der App-Datenschutzangabe kein
+Tracking mehr erklaeren und ATT ganz weglassen. Kostet personalisierte Werbung
+(spuerbar weniger Erloes), macht die Richtlinie aber gegenstandslos.
+
+### M5 Release — Stand 07.08.2026, 17:00
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **12** + Kaufprodukt **zur Pruefung eingereicht** | **vc4 in Produktion**, alle Nutzer, live |
-| Kauf | `anigosha_no_ads` faehrt in derselben Einreichung mit | funktioniert, am Geraet bestaetigt |
-| Naechstes | Freigabe abwarten (1–3 Tage), dann automatisch live | erledigt |
+| Stand | 1.0 / Build **12** — **12.08. abgelehnt** (Richtlinie 2.1, ATT) | **vc4 in Produktion**, alle Nutzer, live |
+| Kauf | `anigosha_no_ads` haengt an der Uebermittlung, *Bereit zur Pruefung* | funktioniert, am Geraet bestaetigt |
+| Naechstes | Fix bauen, Build zuweisen, erneut uebermitteln | erledigt |
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -404,12 +463,22 @@ Offering haengt. Nach dem Anlegen einer zweiten Plattform IMMER pruefen, ob
 das Paket fuer beide Apps gefuellt ist.
 
 **Noch offen:**
-1. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
-   (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
-   vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
-2. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
-3. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
+1. **ATT-Fix ausliefern und 1.0 erneut einreichen** (s. Abschnitt zur
+   Ablehnung vom 12.08.) — das Kaufprodukt haengt bereits mit dran,
+2. **Bildschirmaufnahme des ATT-Dialogs** vom Geraet an Apple senden
+   (Resolution Center), sonst fragen sie erneut,
+3. **Altersfreigabe-Fragebogen ergaenzen** — App Store Connect verlangt bis
+   **07.09.2026** Antworten zu den neuen Fragen zu Funktionen sozialer Medien
+   (unter „App-Informationen"). Laeuft die Frist ab, blockiert das kuenftige
+   Einreichungen,
+4. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
+5. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
    und Anspruch liefen komplett durch.
+
+⚠ **`PRUEFNOTIZ` in `scripts/asc.py` ist noch FullRep-Text** (aus der Vorlage
+uebernommen: Blutwerte, Peptide, Abos). Aus den Workflow-Modi ist sie nicht
+erreichbar, `--pruefnotiz` und `--alles` wuerden sie aber nach Anigosha
+schreiben. Vor der ersten Nutzung ersetzen.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle

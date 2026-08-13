@@ -1,10 +1,16 @@
 import UIKit
 import Capacitor
+import AppTrackingTransparency
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+
+    /// Merker, damit zwei Vordergrund-Wechsel kurz hintereinander nicht zwei
+    /// Dialoge anfordern. Wird in der Rückmeldung wieder gelöscht: Kam kein
+    /// Dialog, soll der nächste Wechsel es erneut versuchen dürfen.
+    private var trackingAbfrageLaeuft = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -27,6 +33,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        frageNachTracking()
+    }
+
+    // MARK: - App Tracking Transparency
+    //
+    //  Der ATT-Dialog wird bewusst NATIV angefordert und nicht mehr aus
+    //  src/lib/ads.ts. Grund ist Apples Ablehnung von 1.0 (Build 12) am
+    //  12.08.2026, Richtlinie 2.1: „The app uses the AppTrackingTransparency
+    //  framework, but we are unable to locate the App Tracking Transparency
+    //  permission request." Der Dialog erschien tatsächlich nie — aus zwei
+    //  Gründen, die sich beide nur hier abstellen lassen:
+    //
+    //  1. FALSCHER THREAD. `AdMob.requestTrackingAuthorization()` aus
+    //     @capacitor-community/admob ruft `ATTrackingManager` direkt in der
+    //     Plugin-Methode auf. Capacitor führt Plugin-Aufrufe aber auf einer
+    //     eigenen Hintergrund-Warteschlange aus (`DispatchQueue(label:
+    //     "bridge")` in CapacitorBridge.swift) — der Dialog ist UIKit und
+    //     gehört auf den Hauptthread. Dass es ein Versehen im Plugin ist,
+    //     sieht man an der Nachbarmethode: `trackingAuthorizationStatus`
+    //     springt ausdrücklich mit `DispatchQueue.main.async` zurück, die
+    //     Anfrage selbst nicht. Sie ist dort zudem als „DEPRECATED" markiert.
+    //  2. ZU FRÜH. Die Abfrage lief im useEffect von App.tsx, also während
+    //     die WebView noch aufbaut. Solange die App nicht `.active` ist,
+    //     beantwortet iOS die Anfrage stillschweigend, ohne etwas zu zeigen.
+    //
+    //  Beides ist hier ausgeschlossen: `applicationDidBecomeActive` bedeutet
+    //  aktiv, `DispatchQueue.main` bedeutet Hauptthread.
+    //
+    //  Erst fragen, dann Werbung laden: `initAds()` wartet in ads.ts auf die
+    //  Antwort, bevor es das AdMob-SDK startet — so verlangt es Google.
+    private func frageNachTracking() {
+        guard !trackingAbfrageLaeuft else { return }
+        // Schon beantwortet (auch „abgelehnt") — iOS zeigt den Dialog dann
+        // ohnehin kein zweites Mal, die Antwort ändert man nur in den
+        // Einstellungen.
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
+        trackingAbfrageLaeuft = true
+
+        // Kleiner Abstand: Beim Kaltstart kommt didBecomeActive, während das
+        // Fenster noch aufgebaut wird. Ein Dialog in genau diesem Moment hat
+        // niemanden, der ihn zeigen könnte.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard UIApplication.shared.applicationState == .active else {
+                self?.trackingAbfrageLaeuft = false
+                return
+            }
+            ATTrackingManager.requestTrackingAuthorization { _ in
+                self?.trackingAbfrageLaeuft = false
+            }
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
