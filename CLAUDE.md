@@ -344,9 +344,40 @@ es fehl, ist der Zustand unveraendert. Er bleibt im Skript: Sollte Apple das
 eines Tages zulassen, faellt es sofort auf. Bis dahin ist er die Probe, die
 in Sekunden sagt, ob der Klick noetig ist.
 
-**Der Gegenweg, falls Apple erneut mauert:** In der App-Datenschutzangabe kein
-Tracking mehr erklaeren und ATT ganz weglassen. Kostet personalisierte Werbung
-(spuerbar weniger Erloes), macht die Richtlinie aber gegenstandslos.
+### Kehrtwende am 13.08.: ATT komplett raus (Build 15)
+
+Josefs Entscheidung, getroffen waehrend 1.0 (Build 14) bereits in der
+Warteschlange stand: **nicht auf Apples Antwort warten, sondern ATT ganz
+aufgeben.** Statt den Dialog zu reparieren, faellt die Grundlage der
+Richtlinie weg — wo kein Tracking erklaert wird, verlangt Apple keinen
+ATT-Dialog.
+
+Der Einwand dagegen ist im Chat festgehalten und wurde bewusst ueberstimmt:
+Der Fix in Build 14 behebt genau das Bemaengelte, und das Zurueckziehen kostet
+den Platz in der Pruefschlange sowie die Verbindung zum Kaufprodukt.
+
+**Was sich im Code geaendert hat:**
+
+| Datei | Aenderung |
+|---|---|
+| `ios/App/App/AppDelegate.swift` | `frageNachTracking` und der Import wieder raus — die Datei ist zurueck auf Capacitors Vorlage |
+| `ios/App/App/Info.plist` | `NSUserTrackingUsageDescription` entfernt. `SKAdNetworkItems` BLEIBT — SKAdNetwork ist Zuordnung ohne Einwilligung und gilt Apple nicht als Tracking |
+| `src/lib/ads.ts` | `warteAufTrackingAntwort` raus, neue Konstante `NPA = true` an jeder Anzeigenanfrage (`npa: 1` an Google) |
+| `project.pbxproj` | Build **15** |
+
+**Der Preis:** nur noch nicht-personalisierte Werbung, spuerbar weniger Erloes.
+
+**Wer sie zurueckholen will, braucht dreierlei gleichzeitig** — einzeln fuehrt
+jedes zur selben Ablehnung: die Info.plist-Zeile, die ATT-Abfrage nativ im
+AppDelegate (Fassung in Commit `b534db5`, NICHT ueber die Capacitor-Bruecke)
+und die Datenschutzangabe in ASC wieder auf Tracking.
+
+⚠ **Ohne die Aenderung der App-Datenschutzangabe ist die ganze Umstellung
+wirkungslos.** Erklaert ASC weiter Tracking, waehrend die App nicht mehr
+fragt, kommt exakt dieselbe Ablehnung zurueck. Die Angabe ist **per API nicht
+erreichbar** — sie muss in App Store Connect unter „App-Datenschutz" von Hand
+auf *kein Tracking* gestellt werden, und zwar VOR dem erneuten Einreichen.
+Dafuer braucht es die Rolle Account Holder oder Admin.
 
 ### M5 Release — Stand 07.08.2026, 17:00
 
