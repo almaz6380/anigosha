@@ -39,6 +39,7 @@ on:
           - warum
           - exportfrage
           - einreichen
+          - erneut
         default: status
       nummer:
         description: 'Build-Nummer (nur fuer build/testflight)'
