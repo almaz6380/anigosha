@@ -298,7 +298,7 @@ Vordergrund-Wechsel erneut.
 anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
 `AppDelegate` ist der kuerzere und pruefsichere Weg.
 
-**Stand 13.08., 11:45 — Build 14 haengt an der Version, Absenden fehlt.**
+**Stand 13.08., 12:00 — 1.0 (Build 14) ist erneut IN PRUEFUNG.**
 
 1. ✅ `iOS Release` gebaut und hochgeladen. ⚠ **Build 13 war schon vergeben:**
    Der Lauf vom 10.08. (Commit `86aad6a`) hat ihn nicht nur gebaut, sondern
@@ -307,7 +307,17 @@ anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
    traegt deshalb die **14**.
 2. ✅ Build 14 der Version 1.0 zugewiesen. Damit wechselte die Version von
    `REJECTED` auf `PREPARE_FOR_SUBMISSION`.
-3. ❌ **Absenden geht per API nicht.** `--erneut` (neuer Modus, s. u.) meldet:
+3. ✅ **Absendet — aber nur von Hand, und NICHT ueber den Knopf, den man
+   erwartet.** Auf der Uebermittlungsseite bleibt „Erneut zur App-Pruefung
+   uebermitteln" **grau**, solange das Element auf *Abgelehnt* steht; der
+   rote Kasten dort sagt es sogar: „Du kannst unten Aenderungen an deiner
+   App-Version vornehmen." Der richtige Knopf sitzt auf der **Versionsseite**
+   oben rechts und heisst **„Pruefung aktualisieren"** (blau, neben dem grauen
+   „Sichern"). Er schiebt die geaenderte Version zurueck in die bestehende
+   Uebermittlung; das Element wechselt auf *Bereit zur Pruefung*, und beide
+   Elemente gehen gemeinsam los. ⚠ Finger weg von „Uebermittlung abbrechen"
+   ganz unten — das ist `aufraeumen` von Hand.
+   **Per API ging es nicht.** `--erneut` (neuer Modus, s. u.) meldete:
    *„appStoreVersions … is not in valid state.: This resource cannot be
    reviewed, please check associated errors to see why."* `--warum` findet
    nichts: Inhaberrechte gesetzt, Build VALID, `usesNonExemptEncryption`
@@ -315,10 +325,8 @@ anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
    `promotionalText` leer (bei 1.0 beides optional). Es liegt also nicht an
    den Metadaten, sondern an der Uebermittlung selbst: Sie steht auf
    `UNRESOLVED_ISSUES` und enthaelt ein `REJECTED`-Element. Dieses Element
-   zurueckzusetzen kann nur die Oberflaeche.
-   **→ In App Store Connect auf der Uebermittlungsseite „Erneut zur
-   App-Pruefung uebermitteln" klicken.** Ein Klick, beide Elemente bleiben
-   beisammen.
+   zurueckzusetzen kann nur die Oberflaeche. Der Aufruf bleibt im Skript:
+   Sollte Apple es eines Tages zulassen, faellt es sofort auf.
 4. Apple verlangt in der Antwort im Resolution Center eine **Bildschirmaufnahme
    vom echten Geraet**: frische Installation, ATT-Dialog vor jeder
    Datenerhebung, danach der weitere Ablauf. Das kann kein Skript liefern.
@@ -344,9 +352,9 @@ Tracking mehr erklaeren und ATT ganz weglassen. Kostet personalisierte Werbung
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **12** — **12.08. abgelehnt** (Richtlinie 2.1, ATT) | **vc4 in Produktion**, alle Nutzer, live |
-| Kauf | `anigosha_no_ads` haengt an der Uebermittlung, *Bereit zur Pruefung* | funktioniert, am Geraet bestaetigt |
-| Naechstes | Fix bauen, Build zuweisen, erneut uebermitteln | erledigt |
+| Stand | 1.0 / Build **14** mit ATT-Fix — **13.08. erneut in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
+| Kauf | `anigosha_no_ads` faehrt in derselben Uebermittlung mit | funktioniert, am Geraet bestaetigt |
+| Naechstes | Bildschirmaufnahme des ATT-Dialogs nachreichen | erledigt |
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -489,8 +497,8 @@ Offering haengt. Nach dem Anlegen einer zweiten Plattform IMMER pruefen, ob
 das Paket fuer beide Apps gefuellt ist.
 
 **Noch offen:**
-1. **ATT-Fix ausliefern und 1.0 erneut einreichen** (s. Abschnitt zur
-   Ablehnung vom 12.08.) — das Kaufprodukt haengt bereits mit dran,
+1. ✅ ATT-Fix ausgeliefert, 1.0 (Build 14) am 13.08. erneut eingereicht —
+   das Kaufprodukt faehrt mit,
 2. **Bildschirmaufnahme des ATT-Dialogs** vom Geraet an Apple senden
    (Resolution Center), sonst fragen sie erneut,
 3. **Altersfreigabe-Fragebogen ergaenzen** — App Store Connect verlangt bis
