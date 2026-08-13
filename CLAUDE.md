@@ -557,18 +557,29 @@ das Paket fuer beide Apps gefuellt ist.
    Apples Antwort abwarten,
 2. ~~Bildschirmaufnahme des ATT-Dialogs~~ entfaellt: Es gibt keinen Dialog
    mehr, und ohne erklaertes Tracking verlangt Apple auch keinen,
-3. **Altersfreigabe-Fragebogen ergaenzen** — App Store Connect verlangt bis
-   **07.09.2026** Antworten zu den neuen Fragen zu Funktionen sozialer Medien
-   (unter „App-Informationen"). Laeuft die Frist ab, blockiert das kuenftige
-   Einreichungen,
-4. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
+3. ✅ **Altersfreigabe beantwortet** (13.08.) — von den drei offenen Feldern
+   war nur eines eine echte Frage: `socialMediaAgeRestricted`, jetzt `False`.
+   Das folgt aus `socialMedia=False` (kein Chat, keine Nachrichten, keine
+   Beitraege, keine Bilder — sichtbar ist nur der Spielername in der
+   Bestenliste, daher `userGeneratedContent=True`). `kidsAgeBand` bleibt
+   leer, weil die App nicht in die Kids-Kategorie soll,
+   `developerAgeRatingInfoUrl` ist optional. **Apple nimmt diesen Schreib-
+   zugriff auch waehrend `WAITING_FOR_REVIEW` an** — anders als das
+   Einreichen selbst. Werkzeuge: `--alter` (liest) und `--alter-setzen`,
+4. ✅ **Werbefrei-Satz in den Play-Texten** (13.08., DE+EN, live). Bei Apple
+   bleibt er offen: Store-Texte sind gesperrt, solange eine Version in
+   Pruefung ist — kommt nach der Freigabe oder mit 1.1.
+   ⚠ **Die Store-Texte liegen jetzt im Repo**
+   (`store-assets/play-listing.<lang>.json`, ueber `--listing-lesen`
+   ausgelesen). Wer sie in der Play Console aendert, muss die Datei
+   nachziehen, sonst rollt der naechste `texte`-Lauf die Aenderung zurueck,
 5. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
    und Anspruch liefen komplett durch.
 
-⚠ **`PRUEFNOTIZ` in `scripts/asc.py` ist noch FullRep-Text** (aus der Vorlage
-uebernommen: Blutwerte, Peptide, Abos). Aus den Workflow-Modi ist sie nicht
-erreichbar, `--pruefnotiz` und `--alles` wuerden sie aber nach Anigosha
-schreiben. Vor der ersten Nutzung ersetzen.
+`PRUEFNOTIZ` in `scripts/asc.py` traegt seit 13.08. Anigosha-Text und ist
+inhaltsgleich mit dem, was in ASC steht. `--alles` bleibt gesperrt: Es ruft
+`setze_namen`, `abo_namen` und `abo_notiz` direkt auf und umgeht damit deren
+Einzelsperren; deren Texte stammen weiter aus FullRep.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
