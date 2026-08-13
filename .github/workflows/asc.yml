@@ -20,6 +20,7 @@ name: App Store Connect
 #   einreichen      Version samt Abos zur Pruefung
 #   erneut          abgelehnte Uebermittlung erneut absenden (behaelt den Kauf)
 #   alter           liest nur: alle Felder der Alterseinstufung
+#   alter-setzen    offene Felder der Alterseinstufung beantworten
 #   alles           die sechs schreibenden der Reihe nach
 on:
   workflow_dispatch:
@@ -42,6 +43,7 @@ on:
           - einreichen
           - erneut
           - alter
+          - alter-setzen
           - pruefnotiz
         default: status
       nummer:

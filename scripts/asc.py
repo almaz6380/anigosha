@@ -582,6 +582,60 @@ def alterseinstufung(tok):
         print(f'    → {len(offen)} von {len(attr)} unbeantwortet')
 
 
+# Antworten, die --alter-setzen ergaenzt. Nur Felder, die noch auf None
+# stehen, werden geschrieben — was schon beantwortet ist, bleibt unberuehrt.
+#
+# socialMediaAgeRestricted=False ist keine Ermessensfrage, sondern folgt aus
+# socialMedia=False, das seit der ersten Einreichung so erklaert ist:
+# Anigosha hat keinen Chat, keine Nachrichten, keine Beitraege und keine
+# Bilder. Duelle laufen ohne jede Kommunikation, sichtbar ist nur der
+# selbstgewaehlte Spielername in der Bestenliste (deshalb steht
+# userGeneratedContent auf True). Was es nicht gibt, kann nicht
+# altersbeschraenkt sein.
+ALTER_ANTWORTEN = {'socialMediaAgeRestricted': False}
+
+
+def alter_setzen(tok):
+    """Offene Felder der Alterseinstufung beantworten.
+
+    ASC mahnt die neuen Fragen zu „Funktionen fuer soziale Medien" bis zum
+    07.09.2026 an; laeuft die Frist ab, blockiert das kuenftige
+    Einreichungen. Geschrieben wird nur am bearbeitbaren appInfo und nur,
+    was dort None ist — ein bereits gesetzter Wert wird nie ueberschrieben.
+    """
+    aid = app_id(tok)
+    for info in api(tok, f'apps/{aid}/appInfos').get('data', []):
+        zustand = (info['attributes'].get('appStoreState')
+                   or info['attributes'].get('state') or '?')
+        ar = api(tok, f'appInfos/{info["id"]}/ageRatingDeclaration', fatal=False)
+        if not ar.get('data'):
+            continue
+        attr = ar['data']['attributes']
+        offen = {k: w for k, w in ALTER_ANTWORTEN.items() if attr.get(k) is None}
+        print(f'\n  appInfo {info["id"][:8]} ({zustand})')
+        for k, w in ALTER_ANTWORTEN.items():
+            if k in offen:
+                print(f'    {k}: None -> {w}')
+            else:
+                print(f'    {k}: schon {attr.get(k)!r} — bleibt')
+        if not offen:
+            continue
+        if TROCKEN:
+            print(f'    [trocken] wuerde {len(offen)} Feld(er) setzen')
+            continue
+        res = api(tok, f'ageRatingDeclarations/{ar["data"]["id"]}', 'PATCH', {
+            'data': {'type': 'ageRatingDeclarations', 'id': ar['data']['id'],
+                     'attributes': offen},
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'    FEHLER: {fehler_text(res)}')
+            print('    Nichts veraendert. Steht die Version in Pruefung, sperrt'
+                  ' Apple\n    den Schreibzugriff — dann nach der Freigabe'
+                  ' erneut.')
+        else:
+            print(f'    gesetzt: {", ".join(offen)}')
+
+
 def erneut_einreichen(tok):
     """Eine abgelehnte Uebermittlung erneut abschicken — ohne sie anzufassen.
 
@@ -1199,6 +1253,8 @@ def main():
                    help='App-Review-Notiz: was sich seit der Ablehnung aendert')
     p.add_argument('--einreichen', action='store_true',
                    help='Version samt Abos zur Pruefung schicken')
+    p.add_argument('--alter-setzen', action='store_true',
+                   help='offene Felder der Alterseinstufung beantworten')
     p.add_argument('--alter', action='store_true',
                    help='Alterseinstufung: alle Felder zeigen (liest nur)')
     p.add_argument('--erneut', action='store_true',
@@ -1220,7 +1276,7 @@ def main():
            a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
-           a.einreichen, a.erneut, a.alter, a.alles]
+           a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
         p.error('Einen Befehl angeben, z. B. --status')
 
@@ -1272,6 +1328,8 @@ def main():
         setze_pruefnotiz(tok)
     if a.alter:
         alterseinstufung(tok)
+    if a.alter_setzen:
+        alter_setzen(tok)
     if a.erneut:
         erneut_einreichen(tok)
     if a.einreichen:
