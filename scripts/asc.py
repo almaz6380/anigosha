@@ -50,7 +50,8 @@ BILDER = [
 # Prueferhinweise, Abo-Bezeichnungen). Sie hier blind auszufuehren wuerde die
 # Texte EINER ANDEREN App in diese schreiben. Wer sie braucht, traegt zuerst
 # die eigenen Werte im Skript ein und entfernt den Namen aus dieser Liste.
-NICHT_KONFIGURIERT = ['name', 'pruefnotiz', 'abo_screenshot', 'abo_namen', 'abo_notiz']
+NICHT_KONFIGURIERT = ['name', 'pruefnotiz', 'abo_screenshot', 'abo_namen',
+                      'abo_notiz', 'alles']
 
 
 def _sperre_pruefen(a):
@@ -568,6 +569,85 @@ def aufraeumen(tok):
                   f'{res["data"]["attributes"].get("state")}')
     if not getan:
         print('  Keine blockierende Einreichung gefunden.')
+
+
+def erneut_einreichen(tok):
+    """Eine abgelehnte Uebermittlung erneut abschicken — ohne sie anzufassen.
+
+    Nach einer Ablehnung steht die Uebermittlung auf UNRESOLVED_ISSUES. Der
+    normale --einreichen-Weg bricht dort ab und verlangt --aufraeumen. Genau
+    das waere hier falsch: Zurueckziehen loest auch das angehaengte
+    Kaufprodukt, und wieder anhaengen kann die API es nicht (am 07.08.2026
+    zweimal am echten Endpunkt geprueft). In der Oberflaeche heisst dieser
+    Weg „Erneut zur App-Pruefung uebermitteln" und behaelt beide Elemente.
+
+    Deshalb wird hier NICHTS zurueckgezogen und nichts angelegt — nur
+    submitted=true an die bestehende Uebermittlung. Schlaegt das fehl, ist
+    der Zustand unveraendert und der Klick in ASC bleibt uebrig.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    va = v['attributes']
+    print(f'  Version {va["versionString"]} ({va.get("appStoreState")})')
+
+    # Ohne neuen Build waere die Wiedervorlage sinnlos: Apple bekaeme
+    # denselben Stand noch einmal und lehnte aus demselben Grund ab.
+    b = api(tok, f'appStoreVersions/{v["id"]}/build', fatal=False)
+    if not b.get('data'):
+        sys.exit('  ABBRUCH: der Version ist kein Build zugewiesen '
+                 '— erst --build NR.')
+    ba = b['data']['attributes']
+    print(f'  Build {ba.get("version")} ({ba.get("processingState")})')
+
+    subm = api(tok, f'apps/{aid}/reviewSubmissions?limit=20')
+    lauf = [s for s in subm.get('data', [])
+            if s['attributes'].get('state') in ('WAITING_FOR_REVIEW', 'IN_REVIEW')]
+    if lauf:
+        print(f'  Laeuft bereits ({lauf[0]["attributes"]["state"]}) '
+              f'— nichts zu tun.')
+        return
+    offen = [s for s in subm.get('data', [])
+             if s['attributes'].get('state') in ('UNRESOLVED_ISSUES',
+                                                 'READY_FOR_REVIEW')]
+    if not offen:
+        sys.exit('  ABBRUCH: keine offene Uebermittlung. Mit --einreichungen '
+                 'nachsehen; ist wirklich keine da, ist --einreichen richtig.')
+    if len(offen) > 1:
+        sys.exit(f'  ABBRUCH: {len(offen)} offene Uebermittlungen — welche '
+                 f'gemeint ist, entscheidet niemand blind. --einreichungen.')
+
+    sub = offen[0]
+    print(f'  Uebermittlung {sub["id"]} ({sub["attributes"].get("state")})')
+    items = api(tok, f'reviewSubmissions/{sub["id"]}/items', fatal=False)
+    for i in items.get('data', []):
+        ziele = [f'{n}={bz["data"]["id"]}'
+                 for n, bz in (i.get('relationships') or {}).items()
+                 if (bz or {}).get('data')]
+        print(f'    Element {i["attributes"].get("state")}: '
+              f'{", ".join(ziele) or "—"}')
+    if len(items.get('data', [])) < 2:
+        # Kein harter Abbruch: Welche Beziehungen die Leseansicht fuer
+        # einmalige Kaeufe ausgibt, ist nicht dokumentiert — ein fehlendes
+        # Element kann auch nur heissen, dass die API es nicht zeigt.
+        print('  ⚠ weniger als zwei Elemente. Faehrt der Kauf nicht mit, '
+              'zeigt die App einen Knopf fuer ein ungenehmigtes Produkt '
+              '(3.1.1). Vor dem Absenden in ASC nachsehen.')
+
+    if TROCKEN:
+        print('  [trocken] wuerde submitted=true setzen')
+        return
+    res = api(tok, f'reviewSubmissions/{sub["id"]}', 'PATCH', {
+        'data': {'type': 'reviewSubmissions', 'id': sub['id'],
+                 'attributes': {'submitted': True}},
+    }, fatal=False)
+    if res.get('_fehler'):
+        print(f'  ABSENDEN FEHLGESCHLAGEN: {fehler_text(res)}')
+        print('  Nichts wurde veraendert. In App Store Connect auf der')
+        print('  Uebermittlungsseite „Erneut zur App-Pruefung uebermitteln" —')
+        print('  ein Klick, und beide Elemente bleiben beisammen.')
+        return
+    print(f'  abgesendet — Zustand jetzt '
+          f'{res["data"]["attributes"].get("state")}')
 
 
 def einreichen(tok):
@@ -1108,6 +1188,9 @@ def main():
                    help='App-Review-Notiz: was sich seit der Ablehnung aendert')
     p.add_argument('--einreichen', action='store_true',
                    help='Version samt Abos zur Pruefung schicken')
+    p.add_argument('--erneut', action='store_true',
+                   help='abgelehnte Uebermittlung erneut absenden '
+                        '(zieht nichts zurueck, behaelt den Kauf)')
     p.add_argument('--alles', action='store_true',
                    help='name, build 4, screenshots, abo-screenshot, '
                         'pruefnotiz, einreichen')
@@ -1124,7 +1207,7 @@ def main():
            a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
-           a.einreichen, a.alles]
+           a.einreichen, a.erneut, a.alles]
     if not any(tat):
         p.error('Einen Befehl angeben, z. B. --status')
 
@@ -1174,6 +1257,8 @@ def main():
         exportfrage(tok)
     if a.pruefnotiz:
         setze_pruefnotiz(tok)
+    if a.erneut:
+        erneut_einreichen(tok)
     if a.einreichen:
         einreichen(tok)
 

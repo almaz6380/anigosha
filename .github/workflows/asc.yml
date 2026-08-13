@@ -18,6 +18,7 @@ name: App Store Connect
 #   exportfrage     usesNonExemptEncryption am Build beantworten
 #   pruefnotiz      App-Review-Notiz: was sich seit der Ablehnung aendert
 #   einreichen      Version samt Abos zur Pruefung
+#   erneut          abgelehnte Uebermittlung erneut absenden (behaelt den Kauf)
 #   alles           die sechs schreibenden der Reihe nach
 on:
   workflow_dispatch:
