@@ -237,6 +237,30 @@ def lade_screenshots(tok, verzeichnis, lang, dry_run=False, image_type='phoneScr
 LISTING_LIMITS = {'title': 30, 'shortDescription': 80, 'fullDescription': 4000}
 
 
+def lies_listing(tok, lang, ziel=None):
+    """Den aktuellen Store-Eintrag lesen und als JSON ausgeben.
+
+    Gegenstueck zu setze_listing. Noetig, weil die Texte bisher NUR in der
+    Play Console standen: Wer einen Satz ergaenzen wollte, musste die vollen
+    4000 Zeichen von Hand abtippen. Der Edit wird sofort wieder verworfen,
+    am Eintrag aendert sich nichts.
+    """
+    eid = call(tok, 'POST', f'{API}/applications/{PKG}/edits')['id']
+    alt = call(tok, 'GET', f'{API}/applications/{PKG}/edits/{eid}/listings/{lang}')
+    call(tok, 'DELETE', f'{API}/applications/{PKG}/edits/{eid}')
+
+    raus = {f: alt.get(f, '') for f in LISTING_LIMITS}
+    text = json.dumps(raus, indent=2, ensure_ascii=False) + '\n'
+    if ziel:
+        with open(ziel, 'w', encoding='utf-8') as fh:
+            fh.write(text)
+        print(f'{lang} nach {ziel} geschrieben')
+    else:
+        print(text)
+    for feld, grenze in LISTING_LIMITS.items():
+        print(f'  {feld}: {len(raus[feld])}/{grenze} Zeichen', file=sys.stderr)
+
+
 def setze_listing(tok, datei, lang, dry_run=False):
     """Titel, Kurz- und Volltext des Store-Eintrags setzen.
 
@@ -310,6 +334,8 @@ def main():
     p.add_argument('--status', action='store_true', help='nur den Track anzeigen')
     p.add_argument('--screenshots', metavar='VERZEICHNIS',
                    help='Store-Eintrag-Screenshots ersetzen (z. B. store-assets/android)')
+    p.add_argument('--listing-lesen', nargs='?', const='-', metavar='JSON',
+                   help='Store-Eintrag lesen und als JSON ausgeben/speichern')
     p.add_argument('--listing', metavar='JSON',
                    help='Titel/Beschreibung setzen (z. B. store-assets/play-listing.de-DE.json)')
     p.add_argument('--icon', metavar='PNG',
@@ -324,7 +350,8 @@ def main():
                    help='Play-Track (Standard: production)')
     a = p.parse_args()
 
-    if not (a.aab or a.promote or a.status or a.screenshots or a.listing
+    if not (a.aab or a.promote or a.status or a.screenshots or a.listing_lesen
+            or a.listing
             or a.icon or a.feature):
         p.error('--aab, --promote, --status, --screenshots, --listing, '
                 '--icon oder --feature angeben')
@@ -336,6 +363,9 @@ def main():
         return zeige_status(tok, a.track)
     if a.screenshots:
         return lade_screenshots(tok, a.screenshots, a.lang, a.dry_run)
+    if a.listing_lesen:
+        ziel = None if a.listing_lesen == '-' else a.listing_lesen
+        return lies_listing(tok, a.lang, ziel)
     if a.listing:
         return setze_listing(tok, a.listing, a.lang, a.dry_run)
     if a.icon:
