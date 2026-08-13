@@ -298,17 +298,43 @@ Vordergrund-Wechsel erneut.
 anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
 `AppDelegate` ist der kuerzere und pruefsichere Weg.
 
-**Erneut einreichen — Reihenfolge beachten:**
-1. `iOS Release` mit `upload = true` bauen (Build 13; falls 13 in ASC schon
-   existiert, vorher `CURRENT_PROJECT_VERSION` erhoehen).
-2. Build der Version 1.0 zuweisen (`App Store Connect` → `build`, `nummer 13`).
-3. In App Store Connect auf der Uebermittlungsseite **„Erneut zur App-Pruefung
-   uebermitteln"**. ⚠ **NICHT `aufraeumen` laufen lassen** — das zoege die
-   Uebermittlung zurueck und mit ihr das bereits angehaengte Kaufprodukt, das
-   sich per API nicht wieder anhaengen laesst.
+**Stand 13.08., 11:45 — Build 14 haengt an der Version, Absenden fehlt.**
+
+1. ✅ `iOS Release` gebaut und hochgeladen. ⚠ **Build 13 war schon vergeben:**
+   Der Lauf vom 10.08. (Commit `86aad6a`) hat ihn nicht nur gebaut, sondern
+   auch hochgeladen — zur Pruefung ging danach trotzdem Build 12. Vor jedem
+   Release erst `status` lesen, sonst weist Apple den Upload ab. Der ATT-Fix
+   traegt deshalb die **14**.
+2. ✅ Build 14 der Version 1.0 zugewiesen. Damit wechselte die Version von
+   `REJECTED` auf `PREPARE_FOR_SUBMISSION`.
+3. ❌ **Absenden geht per API nicht.** `--erneut` (neuer Modus, s. u.) meldet:
+   *„appStoreVersions … is not in valid state.: This resource cannot be
+   reviewed, please check associated errors to see why."* `--warum` findet
+   nichts: Inhaberrechte gesetzt, Build VALID, `usesNonExemptEncryption`
+   beantwortet, Alterseinstufung am appInfo gesetzt, nur `whatsNew` und
+   `promotionalText` leer (bei 1.0 beides optional). Es liegt also nicht an
+   den Metadaten, sondern an der Uebermittlung selbst: Sie steht auf
+   `UNRESOLVED_ISSUES` und enthaelt ein `REJECTED`-Element. Dieses Element
+   zurueckzusetzen kann nur die Oberflaeche.
+   **→ In App Store Connect auf der Uebermittlungsseite „Erneut zur
+   App-Pruefung uebermitteln" klicken.** Ein Klick, beide Elemente bleiben
+   beisammen.
 4. Apple verlangt in der Antwort im Resolution Center eine **Bildschirmaufnahme
    vom echten Geraet**: frische Installation, ATT-Dialog vor jeder
    Datenerhebung, danach der weitere Ablauf. Das kann kein Skript liefern.
+
+⚠ **NICHT `aufraeumen` laufen lassen** — das zoege die Uebermittlung zurueck
+und mit ihr das angehaengte Kaufprodukt, das sich per API nicht wieder
+anhaengen laesst. Der Trockenlauf von `--erneut` hat bestaetigt, dass beide
+Elemente dranhaengen: eines `REJECTED` (die Version), eines
+`READY_FOR_REVIEW` (der Kauf).
+
+**Neuer Modus `erneut`** (`scripts/asc.py --erneut`): prueft, ob der Version
+ein Build zugewiesen ist, zeigt die Elemente der Uebermittlung und setzt
+`submitted=true` — ohne irgendetwas zurueckzuziehen oder anzulegen. Schlaegt
+es fehl, ist der Zustand unveraendert. Er bleibt im Skript: Sollte Apple das
+eines Tages zulassen, faellt es sofort auf. Bis dahin ist er die Probe, die
+in Sekunden sagt, ob der Klick noetig ist.
 
 **Der Gegenweg, falls Apple erneut mauert:** In der App-Datenschutzangabe kein
 Tracking mehr erklaeren und ATT ganz weglassen. Kostet personalisierte Werbung
