@@ -375,17 +375,42 @@ und die Datenschutzangabe in ASC wieder auf Tracking.
 ⚠ **Ohne die Aenderung der App-Datenschutzangabe ist die ganze Umstellung
 wirkungslos.** Erklaert ASC weiter Tracking, waehrend die App nicht mehr
 fragt, kommt exakt dieselbe Ablehnung zurueck. Die Angabe ist **per API nicht
-erreichbar** — sie muss in App Store Connect unter „App-Datenschutz" von Hand
-auf *kein Tracking* gestellt werden, und zwar VOR dem erneuten Einreichen.
-Dafuer braucht es die Rolle Account Holder oder Admin.
+erreichbar**: App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
+Bearbeiten → „Nein, wir verwenden keine Geraete-IDs fuer Tracking-Zwecke".
+Die beiden anderen Haken (Drittanbieter-Werbung, mit der Identitaet
+verknuepft) bleiben — nur „Tracking" haengt an der ATT-Pflicht. Dafuer
+braucht es die Rolle Account Holder oder Admin.
+
+**⚠ Henne und Ei — die Reihenfolge ist zwingend, und zwar diese:**
+
+ASC laesst „kein Tracking" NICHT veroeffentlichen, solange an der Version ein
+Build haengt, der `NSUserTrackingUsageDescription` enthaelt. Der Dialog bricht
+dann rot ab: *„Deine App enthaelt NSUserTrackingUsageDescription … aktualisiere
+deine Antwort … ODER aktualisiere die Binaerdatei deiner App und lade ein neues
+Build hoch."* Ein Build laesst sich aber nur zuweisen, wenn die Version nicht in
+Pruefung ist. Also:
+
+1. Laufende Uebermittlung zurueckziehen (`aufraeumen`) — Version geht auf
+   `DEVELOPER_REJECTED`,
+2. Build ohne die Info.plist-Zeile zuweisen (`build`, `nummer 15`),
+3. **erst jetzt** App-Datenschutz auf kein Tracking veroeffentlichen,
+4. Kaufprodukt in ASC wieder „Zur Pruefung hinzufuegen" — beim Zurueckziehen
+   loest es sich mit, und anhaengen kann die API es nicht,
+5. „Zur Pruefung uebermitteln". Im Uebermittlungsentwurf muessen **zwei**
+   Elemente stehen; steht dort nur die App-Version, ginge sie mit sichtbarem
+   Kaufknopf fuer ein ungenehmigtes Produkt durch (3.1.1).
+
+**Ergebnis 13.08., 14:57:** Uebermittlung `2784e1a7-e7fc-4f6f-8196-5b57de8c838e`
+auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
+`26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
 ### M5 Release — Stand 07.08.2026, 17:00
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **14** mit ATT-Fix — **13.08. erneut in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
+| Stand | 1.0 / Build **15** ohne ATT — **13.08., 14:57 in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
 | Kauf | `anigosha_no_ads` faehrt in derselben Uebermittlung mit | funktioniert, am Geraet bestaetigt |
-| Naechstes | Bildschirmaufnahme des ATT-Dialogs nachreichen | erledigt |
+| Naechstes | Apples Antwort abwarten | erledigt |
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -528,10 +553,10 @@ Offering haengt. Nach dem Anlegen einer zweiten Plattform IMMER pruefen, ob
 das Paket fuer beide Apps gefuellt ist.
 
 **Noch offen:**
-1. ✅ ATT-Fix ausgeliefert, 1.0 (Build 14) am 13.08. erneut eingereicht —
-   das Kaufprodukt faehrt mit,
-2. **Bildschirmaufnahme des ATT-Dialogs** vom Geraet an Apple senden
-   (Resolution Center), sonst fragen sie erneut,
+1. ✅ 1.0 (Build 15) am 13.08. um 14:57 eingereicht, ohne ATT, mit Kauf —
+   Apples Antwort abwarten,
+2. ~~Bildschirmaufnahme des ATT-Dialogs~~ entfaellt: Es gibt keinen Dialog
+   mehr, und ohne erklaertes Tracking verlangt Apple auch keinen,
 3. **Altersfreigabe-Fragebogen ergaenzen** — App Store Connect verlangt bis
    **07.09.2026** Antworten zu den neuen Fragen zu Funktionen sozialer Medien
    (unter „App-Informationen"). Laeuft die Frist ab, blockiert das kuenftige
