@@ -152,8 +152,24 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
         </div>
       </div>
 
-      {!frei && (
-        <div className="flex gap-2">
+      {/*
+        „Wiederherstellen" bleibt sichtbar, auch wenn der Kauf schon gehoert —
+        nur „Kaufen" verschwindet dann.
+
+        Grund ist die Ablehnung vom 15.08.26: Der Pruefer hatte das Produkt in
+        der vorigen Runde selbst gekauft. `anigosha_no_ads` ist nicht
+        verbrauchbar, der Anspruch blieb an seiner App-User-ID haengen, `frei`
+        war beim naechsten Oeffnen true — und damit verschwand die GANZE
+        Knopfreihe. Er stand vor einer Karte ohne eine einzige Schaltflaeche und
+        meldete „not able to access the purchase of the In-App product".
+
+        Ein Wiederherstellen-Knopf ist an dieser Stelle nie falsch: Apple
+        verlangt ihn ohnehin (Richtlinie 3.1.1), er faehrt denselben
+        StoreKit-Weg, und wer den Kauf besitzt, braucht ihn nach einem
+        Geraetewechsel als Erstes.
+      */}
+      <div className="flex gap-2">
+        {!frei && (
           <button
             onClick={() => tun('kaufen')}
             disabled={busy}
@@ -161,15 +177,15 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
           >
             {preis ? `${t('kauf.kaufen')} — ${preis}` : t('kauf.kaufen')}
           </button>
-          <button
-            onClick={() => tun('wiederherstellen')}
-            disabled={busy}
-            className="px-4 py-2 rounded-xl bg-night-800 border border-night-700 hover:border-accent-500 disabled:opacity-40 text-sm"
-          >
-            {t('kauf.wiederherstellen')}
-          </button>
-        </div>
-      )}
+        )}
+        <button
+          onClick={() => tun('wiederherstellen')}
+          disabled={busy}
+          className={`px-4 py-2 rounded-xl bg-night-800 border border-night-700 hover:border-accent-500 disabled:opacity-40 text-sm ${frei ? 'flex-1' : ''}`}
+        >
+          {t('kauf.wiederherstellen')}
+        </button>
+      </div>
 
       {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
     </div>

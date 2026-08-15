@@ -449,9 +449,11 @@ mit derselben Apple-ID erneut, kann der Anspruch wiederkommen. Der Hebel ist
 deshalb die Antwort im Resolution Center (am 15.08. abgeschickt): Sie erklaert
 den Sachverhalt und bittet um eine frische Sandbox-Apple-ID.
 
-**Fuer 1.1 vorgemerkt:** „Wiederherstellen" auch dann sichtbar lassen, wenn
-der Kauf schon gehoert. Dann steht nie wieder jemand vor einer Karte ganz ohne
-Knopf. Kein neuer Build nur dafuer — 15 bleibt in der Pruefung.
+**Behoben fuer 1.1 (15.08.):** „Wiederherstellen" bleibt jetzt sichtbar, auch
+wenn der Kauf schon gehoert — nur „Kaufen" verschwindet dann. Damit steht nie
+wieder jemand vor einer Karte ganz ohne Schaltflaeche. **Kein neuer Build nur
+dafuer**: Build 15 bleibt unberuehrt in der Pruefung, die Aenderung faehrt mit
+dem naechsten Release mit.
 
 ### M5 Release — Stand 07.08.2026, 17:00
 
