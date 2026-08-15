@@ -453,8 +453,24 @@ def setze_abo_screenshot(tok):
 # Fremdem. Bei jeder Aenderung in ASC hier nachziehen (oder umgekehrt).
 PRUEFNOTIZ = """Sign in with the demo account (already verified, no
 registration needed). All areas are then accessible: solo quiz, duels against
-bots and humans, leaderboards, profile. The "Remove Ads" purchase is optional
-and not required for review. The demo account is set to English.
+bots and humans, leaderboards, profile. The demo account is set to English.
+
+In-app purchase - where to find it
+This app has NO subscription. The only in-app product is "anigosha_no_ads"
+("Remove ads"): a single NON-CONSUMABLE one-time purchase that turns off the
+ads. Nothing about it can expire, and no account state unlocks it, so a demo
+account "with an expired subscription" does not exist here - the demo account
+below is all that is needed.
+
+How to reach it, after signing in:
+1. Tap "Profile" in the tab bar at the bottom of the screen.
+2. The first card on that page is "Remove ads".
+3. Tap the button "Buy - EUR 2.99". "Restore" is the button next to it.
+
+The card shows "Purchased. Thanks for the support!" once the signed-in account
+owns the product. If you see that text instead of the two buttons, please let
+us know in the Resolution Center - we will reset the demo account so the
+purchase flow can be reviewed again.
 
 Privacy / advertising
 Anigosha does not track users. The app privacy information declares no

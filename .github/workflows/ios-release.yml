@@ -45,6 +45,30 @@ jobs:
           fi
           echo "ok — echte Anzeigen-IDs"
 
+      - name: RevenueCat-Schluessel plausibel?
+        # Gegenstueck zur gleichnamigen Pruefung im Android-Workflow. Fehlt der
+        # Schluessel, gibt `kaufMoeglich()` false zurueck und die ganze Karte
+        # "Werbung entfernen" verschwindet aus dem Profil — ohne Fehlermeldung,
+        # ohne leeren Knopf, ohne Spur im Build-Log. Genau so sieht es von
+        # aussen aus wie Apples Ablehnung vom 15.08.26 ("not able to access the
+        # purchase of the In-App product"). Das Praefix verraet die Plattform,
+        # ohne den Wert zu zeigen: appl_ = iOS, goog_ = Android.
+        env:
+          RC_KEY: ${{ secrets.VITE_REVENUECAT_IOS_KEY }}
+        run: |
+          if [ -z "$RC_KEY" ]; then
+            echo "ABBRUCH: VITE_REVENUECAT_IOS_KEY ist leer — der Kaufbereich"
+            echo "bliebe in der App unsichtbar, ohne jede Fehlermeldung."
+            exit 1
+          fi
+          PRAEFIX="$(printf '%s' "$RC_KEY" | cut -c1-5)"
+          echo "Schluessel beginnt mit: $PRAEFIX"
+          case "$PRAEFIX" in
+            appl_) echo "ok — iOS-Schluessel" ;;
+            goog_) echo "ABBRUCH: das ist der Android-Schluessel."; exit 1 ;;
+            *)     echo "ABBRUCH: unbekanntes Praefix."; exit 1 ;;
+          esac
+
       - name: Build-Nummer anzeigen
         run: |
           B=$(grep -m1 CURRENT_PROJECT_VERSION ios/App/App.xcodeproj/project.pbxproj | tr -dc '0-9')
@@ -70,6 +94,13 @@ jobs:
           VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
         run: |
           npm run build
+          # Der Schluessel ist gesetzt (Schritt davor) — steht er auch wirklich
+          # im Bundle? Ein Tippfehler im Variablennamen faellt sonst erst am
+          # Geraet auf, als fehlende Karte im Profil.
+          if ! grep -rqs 'appl_' dist/assets; then
+            echo "ABBRUCH: der RevenueCat-Schluessel steht nicht im Web-Bundle."
+            exit 1
+          fi
           npx cap sync ios
 
       - name: Signierung einrichten
