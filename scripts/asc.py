@@ -510,6 +510,85 @@ def setze_pruefnotiz(tok):
         print(f'  Notiz gesetzt ({len(PRUEFNOTIZ)} Zeichen)')
 
 
+# ── Store-Texte ────────────────────────────────────────────────────────────
+# Die Beschreibungen lagen lange nur in App Store Connect. Das raecht sich in
+# dem Moment, in dem jemand einen Satz aendert: Es gibt keine zweite Fassung,
+# gegen die man vergleichen koennte, und keine Historie. Seit 15.08.26 liegen
+# sie deshalb wie die Play-Texte im Repo — gelesen mit --texte-lesen,
+# zurueckgeschrieben mit --texte.
+#
+# ⚠ Wer die Texte in ASC von Hand aendert, muss die Datei nachziehen. Sonst
+# rollt der naechste --texte-Lauf die Aenderung wieder zurueck. Genau dieselbe
+# Warnung steht bei den Play-Texten.
+#
+# Apple sperrt diese Felder, solange die Version in der Pruefung steht
+# (WAITING_FOR_REVIEW / IN_REVIEW). Bei einer abgelehnten Version sind sie
+# offen — das ist der Sinn der Ablehnung.
+
+TEXTDATEI = 'store-assets/appstore-listing.json'
+
+TEXTFELDER = ('description', 'keywords', 'promotionalText', 'whatsNew',
+              'supportUrl', 'marketingUrl')
+
+
+def lies_texte(tok, ziel=None):
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    print(f'  Version {v["attributes"]["versionString"]} '
+          f'({v["attributes"].get("appStoreState")})')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    raus = {loc['attributes']['locale']:
+            {f: loc['attributes'].get(f) for f in TEXTFELDER}
+            for loc in locs.get('data', [])}
+    text = json.dumps(raus, ensure_ascii=False, indent=1)
+    if ziel and ziel != '-':
+        with open(ziel, 'w', encoding='utf-8') as fh:
+            fh.write(text + '\n')
+        print(f'  {len(raus)} Sprache(n) nach {ziel} geschrieben')
+    else:
+        print(text)
+
+
+def setze_texte(tok, pfad):
+    """Texte aus der Datei zurueckschreiben — nur Felder, die dort stehen.
+
+    `null` in der Datei heisst „nicht anfassen", nicht „leeren". Sonst
+    loeschte ein unvollstaendig ausgefuelltes JSON stillschweigend Felder,
+    die in ASC gepflegt sind.
+    """
+    with open(pfad, encoding='utf-8') as fh:
+        soll = json.load(fh)
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    zustand = v['attributes'].get('appStoreState')
+    print(f'  Version {v["attributes"]["versionString"]} ({zustand})')
+    if zustand in ('WAITING_FOR_REVIEW', 'IN_REVIEW'):
+        print('  ⚠ Apple sperrt die Texte waehrend der Pruefung. Der Versuch '
+              'laeuft trotzdem — die Fehlermeldung steht dann unten.')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        wunsch = soll.get(a['locale'])
+        if wunsch is None:
+            print(f'  {a["locale"]:8} steht nicht in der Datei — uebersprungen')
+            continue
+        aendern = {f: w for f, w in wunsch.items()
+                   if f in TEXTFELDER and w is not None and w != a.get(f)}
+        if not aendern:
+            print(f'  {a["locale"]:8} steht schon richtig')
+            continue
+        for f, w in aendern.items():
+            print(f'  {a["locale"]:8} {f}: {len(a.get(f) or "")} -> {len(w)} Zeichen')
+        if TROCKEN:
+            continue
+        res = api(tok, f'appStoreVersionLocalizations/{loc["id"]}', 'PATCH', {
+            'data': {'type': 'appStoreVersionLocalizations', 'id': loc['id'],
+                     'attributes': aendern},
+        }, fatal=False)
+        print('    gesetzt' if not res.get('_fehler')
+              else f'    FEHLER: {fehler_text(res)}')
+
+
 # Zustaende, in denen eine Einreichung die Version blockiert. UNRESOLVED_ISSUES
 # ist der entscheidende: die Einreichung vom 18.07. steckt dort fest, haelt die
 # Version besetzt, und Apple meldet beim naechsten Versuch nur
@@ -1265,6 +1344,10 @@ def main():
                    help='contentRightsDeclaration setzen (app-weites Pflichtfeld)')
     p.add_argument('--exportfrage', action='store_true',
                    help='usesNonExemptEncryption am Build auf false setzen')
+    p.add_argument('--texte-lesen', nargs='?', const='-', metavar='JSON',
+                   help='Store-Texte aller Sprachen lesen (Datei oder Ausgabe)')
+    p.add_argument('--texte', metavar='JSON',
+                   help=f'Store-Texte zurueckschreiben (z. B. {TEXTDATEI})')
     p.add_argument('--pruefnotiz', action='store_true',
                    help='App-Review-Notiz: was sich seit der Ablehnung aendert')
     p.add_argument('--einreichen', action='store_true',
@@ -1292,6 +1375,7 @@ def main():
            a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
+           a.texte_lesen, a.texte,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
         p.error('Einen Befehl angeben, z. B. --status')
@@ -1342,6 +1426,10 @@ def main():
         exportfrage(tok)
     if a.pruefnotiz:
         setze_pruefnotiz(tok)
+    if a.texte_lesen:
+        lies_texte(tok, a.texte_lesen)
+    if a.texte:
+        setze_texte(tok, a.texte)
     if a.alter:
         alterseinstufung(tok)
     if a.alter_setzen:
