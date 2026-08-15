@@ -404,6 +404,55 @@ Pruefung ist. Also:
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
+### iOS 1.0 (Build 15) ABGELEHNT — Richtlinie 2.1, „Kauf nicht erreichbar" (15.08.2026)
+
+> We are not able to continue our review because we need access to a demo
+> account with an expired subscription … Specifically, we are currently not
+> able to access the purchase of the In-App product.
+
+**Der erste Satz ist ein Textbaustein** (ein Abo gibt es hier nicht), der
+zweite die eigentliche Aussage.
+
+**Ursache — der Pruefer hatte den Kauf selbst schon getaetigt.** RevenueCat,
+Kunde `28be…` (= Supabase-ID des Pruefkontos), Sandbox-Daten:
+
+| Zeitpunkt | Ereignis |
+|---|---|
+| 12.08., 21:44 UTC | *Made a purchase of Werbung entfernen (`anigosha_no_ads`) for USD 2.99 from offering `default`* — die Pruefrunde von Build 12 (ATT-Ablehnung) |
+| 14.08., 20:42 UTC | *Last opened the app*, Land USA — die Pruefrunde von Build 15 |
+| 15.08. | Ablehnung |
+
+`anigosha_no_ads` ist **nicht verbrauchbar**. Der Anspruch blieb an der
+App-User-ID haengen; beim naechsten Oeffnen meldete RevenueCat „gehoert
+schon", `frei` wurde `true`, und `ProfilePage.tsx` blendet mit `{!frei && …}`
+**beide** Knoepfe aus. Der Pruefer sah nur „Purchased. Thanks for the
+support!" und hatte nichts mehr zu druecken.
+
+**Die Ablehnung ist damit der Beleg, dass der Kauf einwandfrei laeuft** — er
+ist in der Sandbox vollstaendig durchgelaufen, ueber unser Angebot `default`.
+
+**Zweiter Fehler, hausgemacht:** Die Pruefnotiz sagte woertlich *„The Remove
+Ads purchase is optional and not required for review"* — bei einem Kauf, der
+als Element derselben Uebermittlung zur Pruefung anstand. Sie nennt jetzt
+stattdessen den Klickweg (Profile-Tab → erste Karte → „Buy") und dass es kein
+Abo gibt.
+
+**⚠ Regel vor JEDER Einreichung:** In RevenueCat den Kunden des Pruefkontos
+loeschen (Customers → `28be…` → Delete customer). Sonst wiederholt sich das
+bei jedem Update: Pruefer kauft → Anspruch bleibt → naechste Runde kein
+Kaufknopf. Der Datensatz taucht danach wieder auf, sobald ein Geraet die App
+oeffnet — dann aber ohne Kaufhistorie.
+
+**Was das Loeschen NICHT behebt:** Die Sandbox-Apple-ID des Pruefers besitzt
+das nicht verbrauchbare Produkt bei Apple weiterhin. Oeffnet derselbe Pruefer
+mit derselben Apple-ID erneut, kann der Anspruch wiederkommen. Der Hebel ist
+deshalb die Antwort im Resolution Center (am 15.08. abgeschickt): Sie erklaert
+den Sachverhalt und bittet um eine frische Sandbox-Apple-ID.
+
+**Fuer 1.1 vorgemerkt:** „Wiederherstellen" auch dann sichtbar lassen, wenn
+der Kauf schon gehoert. Dann steht nie wieder jemand vor einer Karte ganz ohne
+Knopf. Kein neuer Build nur dafuer — 15 bleibt in der Pruefung.
+
 ### M5 Release — Stand 07.08.2026, 17:00
 
 | | App Store | Google Play |
