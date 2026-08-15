@@ -1,0 +1,18 @@
+{
+ "en-US": {
+  "description": "How well do you really know your series?\n\nAnigosha is a quiz for anime fans: 804 hand-picked questions across 12 categories, each in three difficulty levels. From beginner knowledge to details that trip up even seasoned viewers.\n\nPLAY SOLO\nPick a category, pick a difficulty, start guessing. After every answer you find out why it was right, so you take something away from each round, including the ones you get wrong.\n\nDUELS\nTurn-based against others: four rounds of three questions, both players get the same questions. You play when you have time, your opponent plays when they do. A notification tells you when it is your turn. While things are still quiet, computer opponents fill the gap. They are marked as such in the app, and human players always take priority.\n\nDAILY CHALLENGE\nFive questions, new every day, the same for everyone. Plus its own daily leaderboard, and a streak that grows as long as you keep at it.\n\nLEVELS AND LEADERBOARD\nExperience points for every round, an Elo rating for every duel, and a global ranking for everyone. The 50:50 joker helps when you are torn between two answers.\n\nALSO\n- English and German, switch any time\n- Report incorrect questions, we fix them\n- Share your results\n- Ad-supported - a single one-time purchase removes the ads for good\n\nNo subscription. No hidden costs.",
+  "keywords": "manga,otaku,japan,series,trivia,questions,guess,puzzle,knowledge,shonen,isekai,quiz",
+  "promotionalText": null,
+  "whatsNew": null,
+  "supportUrl": "https://anigosha.vercel.app/legal/impressum",
+  "marketingUrl": "https://anigosha.vercel.app"
+ },
+ "de-DE": {
+  "description": "Wie gut kennst du deine Serien wirklich?\n\nAnigosha ist ein Quiz für Anime-Fans: 804 handverlesene Fragen in 12 Kategorien, jede in drei Schwierigkeitsstufen. Von Einsteigerwissen bis zu Details, an denen auch Vielseher scheitern.\n\nSOLO SPIELEN\nKategorie wählen, Schwierigkeit wählen, losraten. Nach jeder Antwort erfährst du, warum sie richtig war – so nimmst du aus jeder Runde etwas mit, auch aus den falschen.\n\nDUELLE\nRundenbasiert gegen andere: vier Runden zu je drei Fragen, beide bekommen dieselben Fragen. Du ziehst, wenn du Zeit hast – der andere, wenn er Zeit hat. Eine Benachrichtigung sagt dir, wann du dran bist. Solange noch wenig los ist, füllen Computergegner die Lücke. Sie sind in der App gekennzeichnet, und Menschen haben immer Vorrang.\n\nTÄGLICHE CHALLENGE\nFünf Fragen, jeden Tag neu, für alle gleich. Dazu eine eigene Tagesbestenliste – und eine Serie, die wächst, solange du dranbleibst.\n\nLEVEL UND BESTENLISTE\nErfahrungspunkte für jede Runde, Elo-Wertung für jedes Duell, eine globale Rangliste für alle. Der 50:50-Joker hilft, wenn du zwischen zwei Antworten hängst.\n\nAUSSERDEM\n• Deutsch und Englisch, jederzeit umschaltbar\n• Fehlerhafte Fragen melden – wir bessern nach\n• Ergebnisse teilen\n• Werbefinanziert – die Werbung lässt sich mit einem einmaligen Kauf dauerhaft entfernen\n\nKein Abo. Keine versteckten Kosten.",
+  "keywords": "manga,otaku,japan,serien,trivia,fragen,raten,rätsel,wissen,shonen,isekai,quizduell",
+  "promotionalText": null,
+  "whatsNew": null,
+  "supportUrl": "https://anigosha.vercel.app/legal/impressum",
+  "marketingUrl": "https://anigosha.vercel.app"
+ }
+}
