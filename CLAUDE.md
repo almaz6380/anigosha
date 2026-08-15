@@ -487,11 +487,27 @@ faengt nach dem Einreichen von vorn an (1–3 Tage).
 Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch — kommt mit 1.1**
-(Josefs Entscheidung vom 07.08.). Er wurde am 06.08. entfernt, weil der Kauf
-abgeschaltet war; jetzt funktioniert er und darf zurueck, DE+EN, in beiden
-Stores. Bei Apple sind die Texte bis zur Freigabe gesperrt, bei Google jederzeit
-aenderbar. Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
+**Der Werbefrei-Satz steht seit 15.08. in beiden Stores** (Play seit 13.08.,
+Apple seit 15.08., je DE+EN). Er war am 06.08. entfernt worden, weil der Kauf
+abgeschaltet war.
+
+**Die Beschreibungen liegen jetzt im Repo — beide Stores:**
+
+| Store | Datei | lesen | schreiben |
+|---|---|---|---|
+| Apple | `store-assets/appstore-listing.json` (alle Sprachen in einer Datei) | `asc.py --texte-lesen` | `--texte <datei>` |
+| Google | `store-assets/play-listing.<lang>.json` | `play-upload.py --listing-lesen` | `--listing <datei>` |
+
+⚠ Wer die Texte in einer Store-Konsole von Hand aendert, muss die Datei
+nachziehen — sonst rollt der naechste Schreiblauf die Aenderung zurueck.
+
+**Apple sperrt die Textfelder nur, solange die Version in der Pruefung steht**
+(`WAITING_FOR_REVIEW` / `IN_REVIEW`). Bei `REJECTED` sind sie offen — das ist
+der Sinn der Ablehnung, und so ging der Satz am 15.08. noch rein. `--texte`
+schreibt nur Felder, die in der Datei stehen und sich vom Ist unterscheiden;
+`null` heisst „nicht anfassen", nicht „leeren". Der Trockenlauf zeigt Feld und
+Zeichenzahl vorher/nachher — taucht dort mehr auf als erwartet, stimmt die
+Datei nicht mit dem Live-Stand ueberein.
 
 ### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
@@ -617,13 +633,12 @@ das Paket fuer beide Apps gefuellt ist.
    `developerAgeRatingInfoUrl` ist optional. **Apple nimmt diesen Schreib-
    zugriff auch waehrend `WAITING_FOR_REVIEW` an** — anders als das
    Einreichen selbst. Werkzeuge: `--alter` (liest) und `--alter-setzen`,
-4. ✅ **Werbefrei-Satz in den Play-Texten** (13.08., DE+EN, live). Bei Apple
-   bleibt er offen: Store-Texte sind gesperrt, solange eine Version in
-   Pruefung ist — kommt nach der Freigabe oder mit 1.1.
-   ⚠ **Die Store-Texte liegen jetzt im Repo**
-   (`store-assets/play-listing.<lang>.json`, ueber `--listing-lesen`
-   ausgelesen). Wer sie in der Play Console aendert, muss die Datei
-   nachziehen, sonst rollt der naechste `texte`-Lauf die Aenderung zurueck,
+4. ✅ **Werbefrei-Satz in beiden Stores** — Play am 13.08., Apple am 15.08.,
+   je DE+EN. Bei Apple ging es, weil 1.0 auf `REJECTED` stand; in Pruefung
+   waeren die Felder gesperrt gewesen.
+   ⚠ **Die Store-Texte beider Stores liegen jetzt im Repo** (`store-assets/`,
+   s. Tabelle oben). Wer sie in einer Konsole aendert, muss die Datei
+   nachziehen, sonst rollt der naechste Schreiblauf die Aenderung zurueck,
 5. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
    und Anspruch liefen komplett durch.
 
@@ -864,6 +879,9 @@ Produktnummern über `nummer`, Trockenlauf über `dry_run`):
 | `build` | weist Build `nummer` der offenen Version zu |
 | `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
 | `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
+| `texte-lesen` | liest nur: Beschreibung, Keywords und URLs aller Sprachen als JSON |
+| `texte` | schreibt sie aus `store-assets/appstore-listing.json` zurueck (nur bei `REJECTED`/`PREPARE_FOR_SUBMISSION`, s. o.) |
+| `pruefnotiz` | setzt den Prueferhinweis der Version (Text steht in `asc.py`) |
 | `aufraeumen` | zieht festhaengende Einreichungen zurueck (auch laufende!) |
 | `einreichen` | Version zur Pruefung — **bricht ab, wenn ein Kaufprodukt einreichbar waere**, denn anhaengen kann die API es nicht (s. u.) |
 
