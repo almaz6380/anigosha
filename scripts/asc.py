@@ -16,6 +16,7 @@ zu — deshalb kurz halten, nicht zwischenspeichern.
     python3 scripts/asc.py --build 4       # Build der offenen Version zuweisen
     python3 scripts/asc.py --screenshots   # iPhone- + iPad-Bilder ersetzen
     python3 scripts/asc.py --abo-screenshot
+    python3 scripts/asc.py --verfuegbarkeit  # warum ist die App nicht im Store?
     python3 scripts/asc.py --einreichen
 
 Schreibende Befehle nehmen --dry-run: dann steht im Protokoll, was passieren
@@ -884,6 +885,144 @@ def einreichen(tok):
               f'{res["data"]["attributes"].get("state")}')
 
 
+# Was Apple je Land in `contentStatuses` melden kann, auf Deutsch. Die Liste
+# ist absichtlich unvollstaendig — unbekannte Werte werden roh ausgegeben
+# statt stillschweigend verschluckt. Alles mit CANNOT_SELL_ zeigt auf
+# „Geschaeftliches", nicht auf die App.
+STATUS_KLARTEXT = {
+    'AVAILABLE': 'im Store',
+    'AVAILABLE_FOR_PREORDER': 'als Vorbestellung',
+    'PROCESSING_TO_AVAILABLE': 'wird gerade freigeschaltet',
+    'PROCESSING_TO_NOT_AVAILABLE': 'wird gerade entfernt',
+    'PROCESSING_TO_PREORDER': 'wird auf Vorbestellung umgestellt',
+    'NOT_AVAILABLE': 'nicht verfuegbar',
+    'MISSING_RATING': 'Alterseinstufung fehlt',
+    'CANNOT_SELL_MISSING_CONTRACT': 'Vertrag fehlt oder ist abgelaufen',
+    'CANNOT_SELL_MISSING_TAX_AGREEMENTS': 'Steuervereinbarungen fehlen',
+    'CANNOT_SELL_MISSING_TAX_INFO': 'Steuerangaben fehlen',
+    'CANNOT_SELL_TAX_CATEGORY': 'Steuerkategorie nicht gesetzt',
+    'CANNOT_SELL_MISSING_BANKING': 'Bankverbindung fehlt',
+}
+
+
+def _alle_seiten(tok, pfad):
+    """Apple liefert hoechstens 200 Zeilen je Anfrage — hier alle holen.
+
+    Bei 175 Laendern passt es fast immer in eine Seite; „fast immer" ist
+    aber genau die Sorte Annahme, an der eine Diagnose spaeter still
+    danebenliegt.
+    """
+    daten, gesehen = [], 0
+    while pfad and gesehen < 20:
+        res = api(tok, pfad, fatal=False)
+        if res.get('_fehler'):
+            return daten, res
+        daten.extend(res.get('data', []))
+        pfad = (res.get('links') or {}).get('next')
+        gesehen += 1
+    return daten, {}
+
+
+def verfuegbarkeit(tok):
+    """Warum steht die App nicht im Store? — liest nur.
+
+    ASC fuehrt zwei Zustaende, die man leicht verwechselt: Die *Version*
+    kann genehmigt sein („Bereit fuer Vertrieb", gruener Haken) und die
+    *App* trotzdem in keinem einzigen Land verkaeuflich. Der blaue Kasten
+    „Diese App wurde aus dem Verkauf im App Store entfernt" meint immer
+    das Zweite. Ein gruener Haken ist deshalb kein Beleg dafuer, dass die
+    App ladbar ist.
+
+    Der Befund steckt in `contentStatuses` je Land: Apple sagt dort selbst,
+    ob schlicht keine Laender eingetragen sind oder ob es an Vertrag,
+    Steuern oder Bankverbindung haengt. Das Zweite nimmt Apple ohne jedes
+    Zutun vor und es trifft jede App mit Kaufprodukt — auch eine kosten-
+    lose wie diese, denn `anigosha_no_ads` faellt unter den Vertrag fuer
+    gebuehrenpflichtige Apps.
+
+    Was hier NICHT steht: der Vertrag selbst. Vereinbarungen, Steuer- und
+    Bankdaten gibt die App-Store-Connect-API nicht heraus, die stehen nur
+    unter „Geschaeftliches". Diese Funktion sagt, ob man dort nachsehen
+    muss — nicht, was dort steht.
+    """
+    aid = app_id(tok)
+
+    print('\n── App-weit ──')
+    app = api(tok, f'apps/{aid}', fatal=False)
+    aa = (app.get('data') or {}).get('attributes', {})
+    for feld in ('availableInNewTerritories', 'contentRightsDeclaration',
+                 'primaryLocale'):
+        print(f'  {feld}: {aa.get(feld)!r}')
+
+    print('\n── Versionen ──')
+    vers = api(tok, f'apps/{aid}/appStoreVersions?limit=10', fatal=False)
+    for v in vers.get('data', []):
+        va = v['attributes']
+        b = api(tok, f'appStoreVersions/{v["id"]}/build', fatal=False)
+        bn = ((b.get('data') or {}).get('attributes') or {}).get('version', '—')
+        print(f'  {va.get("versionString"):8} {va.get("appStoreState")}'
+              f'  Build {bn}  releaseType={va.get("releaseType")}')
+
+    print('\n── Verfuegbarkeit je Land ──')
+    av = api(tok, f'apps/{aid}/appAvailabilityV2', fatal=False)
+    if av.get('_fehler'):
+        print(f'  Nicht lesbar ({av["_fehler"]}): {fehler_text(av)}')
+        print('  → Dann in ASC nachsehen: Preise und Verfuegbarkeit.')
+        return
+    ava = (av.get('data') or {}).get('attributes', {})
+    print(f'  availableInNewTerritories: '
+          f'{ava.get("availableInNewTerritories")!r}')
+
+    ter, fehler = _alle_seiten(
+        tok, f'appAvailabilities/{av["data"]["id"]}/territoryAvailabilities'
+             f'?limit=200&include=territory')
+    if fehler:
+        print(f'  Laender nicht lesbar ({fehler["_fehler"]}): '
+              f'{fehler_text(fehler)}')
+        return
+
+    frei, gesperrt, staende = [], [], {}
+    for t in ter:
+        ta = t.get('attributes', {})
+        code = (((t.get('relationships') or {}).get('territory') or {})
+                .get('data') or {}).get('id', '?')
+        (frei if ta.get('available') else gesperrt).append(code)
+        for s in ta.get('contentStatuses') or ['(kein Status)']:
+            staende.setdefault(s, []).append(code)
+
+    print(f'  {len(ter)} Laender insgesamt — '
+          f'{len(frei)} verfuegbar, {len(gesperrt)} nicht')
+    for s in sorted(staende):
+        codes = staende[s]
+        klar = STATUS_KLARTEXT.get(s, '(unbekannter Wert — roh von Apple)')
+        beispiel = ', '.join(sorted(codes)[:6])
+        mehr = f' … +{len(codes) - 6}' if len(codes) > 6 else ''
+        print(f'    {s}: {len(codes)}×  — {klar}')
+        print(f'      {beispiel}{mehr}')
+
+    print('\n── Befund ──')
+    sperren = [s for s in staende if s.startswith('CANNOT_SELL')]
+    if sperren:
+        print('  Apple meldet eine kaufmaennische Sperre, nicht ein '
+              'Problem der App:')
+        for s in sperren:
+            print(f'    {s} — {STATUS_KLARTEXT.get(s, "unbekannt")}')
+        print('  → App Store Connect → Geschaeftliches → Vereinbarungen,')
+        print('    Steuern und Bankverbindung. Solange dort etwas offen ist,')
+        print('    nimmt Apple jede App mit Kaufprodukt aus dem Verkauf.')
+        print('  → Die genehmigte Version bleibt genehmigt. Kein neuer')
+        print('    Build, keine neue Pruefung.')
+    elif not frei:
+        print('  Kein Land freigeschaltet, aber auch keine Sperre von Apple.')
+        print('  → Das ist die Handschaltung: Preise und Verfuegbarkeit →')
+        print('    Laender wieder aktivieren. Ein Klick, sofort wirksam.')
+    else:
+        print(f'  {len(frei)} Laender sind freigeschaltet — die App ist aus')
+        print('  Sicht der Verfuegbarkeit in Ordnung. Steht der Kasten')
+        print('  „aus dem Verkauf entfernt" trotzdem noch da, ist er alt:')
+        print('  Seite neu laden, Apples Anzeige laeuft der API nach.')
+
+
 def diagnose(tok):
     """Warum laesst sich die Version nicht einreichen?
 
@@ -1237,6 +1376,8 @@ def main():
                    help='Paywall-Bild als Review-Screenshot an alle Abos')
     p.add_argument('--warum', action='store_true',
                    help='Was blockiert die Einreichung? (liest nur)')
+    p.add_argument('--verfuegbarkeit', action='store_true',
+                   help='Warum steht die App nicht im Store? (liest nur)')
     p.add_argument('--abo-namen', action='store_true',
                    help='Abo-Anzeigenamen von MyPeak auf FullRep ziehen')
     p.add_argument('--einreichungen', action='store_true',
@@ -1274,7 +1415,8 @@ def main():
 
     tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
-           a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
+           a.warum, a.verfuegbarkeit,
+           a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
@@ -1312,6 +1454,8 @@ def main():
         setze_abo_screenshot(tok)
     if a.warum:
         diagnose(tok)
+    if a.verfuegbarkeit:
+        verfuegbarkeit(tok)
     if a.abo_namen:
         abo_namen(tok)
     if a.einreichungen:
