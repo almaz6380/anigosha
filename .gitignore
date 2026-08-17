@@ -44,3 +44,8 @@ android/local.properties
 
 # Vom Icon-Werkzeug erzeugte Zwischenstände
 assets/
+
+# Python-Bytecode der Skripte in scripts/ (entsteht, sobald asc.py
+# importiert statt aufgerufen wird — etwa in einem Stub-Test)
+__pycache__/
+*.pyc
