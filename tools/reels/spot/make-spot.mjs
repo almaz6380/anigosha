@@ -66,6 +66,17 @@ mkdirSync(AUS, { recursive: true });
 
 // --- 1. Anime-Einstellungen -------------------------------------------------
 async function einstellungHolen(e) {
+  // Nachbearbeitete Fassung hat Vorrang: Bei „3-handys" sitzt die echte
+  // Duell-Oberfläche auf den beiden Bildschirmen, eingesetzt von
+  // handy-displays.py. Fehlt die Datei, läuft der Spot mit den leeren,
+  // farbig leuchtenden Bildschirmen weiter — die Kette bricht also nie,
+  // sie zeigt dann nur weniger.
+  const bearbeitet = join(CLIPS, `${e.id}-display.mp4`);
+  if (existsSync(bearbeitet) && statSync(bearbeitet).size > 10000) {
+    console.log(`  ✓ ${e.id} (mit App auf den Displays)`);
+    return bearbeitet;
+  }
+
   const ziel = join(CLIPS, `${e.id}.mp4`);
   if (existsSync(ziel) && statSync(ziel).size > 10000) {
     console.log(`  ✓ ${e.id} liegt schon vor`);

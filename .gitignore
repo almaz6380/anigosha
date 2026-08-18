@@ -50,3 +50,6 @@ assets/
 
 # Fertige Reels, Frames und Kontaktbögen — Videos gehören nicht ins Repo
 out/
+
+# Python-Zwischenstand der Bildwerkzeuge
+__pycache__/
