@@ -46,6 +46,12 @@ const arg = (name, standard = null) => {
 };
 const lang = arg('lang', 'de');
 const erzeugen = process.argv.includes('--erzeugen');
+// ⚠ OHNE Sprecher ist die Voreinstellung (Josefs Entscheidung vom 18.08.):
+// Im Feed läuft der größte Teil ohne Ton, die Textkarten tragen die Aussage
+// ohnehin, und die englische Fassung hatte nie eine Stimme — mit Sprecher
+// liefen die beiden Sprachen inhaltlich auseinander. Die deutschen Aufnahmen
+// bleiben in stimme/ liegen und kommen mit --mit-stimme zurück.
+const mitStimme = process.argv.includes('--mit-stimme');
 
 // Länge einer Audiodatei. ffprobe ist in diesem Container nicht dabei —
 // ffmpeg schreibt die Angabe aber ohnehin nach stderr.
@@ -231,7 +237,7 @@ async function main() {
   // im Storyboard; erzeugt werden die Dateien mit stimme-erzeugen.mjs.
   const stimmDir = join(HIER, 'stimme');
   let gesprochen = 0;
-  for (const s of SPRECHER[lang] ?? []) {
+  for (const s of (mitStimme ? SPRECHER[lang] ?? [] : [])) {
     // `datei` erlaubt eine Aufnahme außerhalb der Namenskonvention —
     // etwa eine Figurenstimme statt des Erzählers.
     const datei = join(stimmDir, s.datei ?? `sprecher-${lang}-${s.id}.mp3`);

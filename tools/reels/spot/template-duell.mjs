@@ -36,13 +36,20 @@ const einbetten = (obj) => JSON.stringify(obj).replace(/</g, '\\u003c');
 
 export function baueHtml(sb) {
   const font = readFileSync(join(HIER, '..', 'assets', 'outfit.woff2')).toString('base64');
+  // Maße dürfen aus dem Storyboard kommen: Die Handy-Bildschirme in der
+  // Anime-Einstellung sind SCHMALER als ein echtes 9:16-Display (gemessen
+  // 0,480 und 0,445 statt 0,562). Eine 9:16-Vorlage hineinzuwarpen staucht die
+  // Oberfläche um 15 bzw. 21 % — sichtbar an gequetschter Schrift. Statt zu
+  // stauchen wird die Oberfläche gleich im Zielformat gesetzt und fließt neu um.
+  const B = sb.breite ?? BREITE;
+  const H = sb.hoehe ?? HOEHE;
 
   return `<!doctype html>
 <meta charset="utf-8">
 <style>
 @font-face { font-family:'Outfit'; src:url(data:font/woff2;base64,${font}) format('woff2'); font-weight:100 900; }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:${BREITE}px;height:${HOEHE}px;overflow:hidden;background:${F.night950};
+html,body{width:${B}px;height:${H}px;overflow:hidden;background:${F.night950};
   color:${F.text};font-family:'Outfit',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 
 /* Layout wie der echte shell: px-5 pt-8 pb-10, max-w-md zentriert */

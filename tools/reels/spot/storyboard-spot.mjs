@@ -132,10 +132,14 @@ export const TEXTE = {
   de: {
     outroTitel: 'Schaffst du\nden Rest?',
     outroSub: '804 Fragen · 12 Serien · Duelle gegen echte Gegner',
-    // „kostenlos", nicht „gratis" — muss zum Sprechertext passen, sonst liest
-    // man etwas anderes, als man hört.
-    outroCta: 'Anigosha — kostenlos im Store',
-    kommentar: 'Wen forderst du heraus? 👇',
+    // ⚠ Die Store-Zeile steht in BEIDEN Sprachfassungen auf Englisch (Josefs
+    // Entscheidung vom 18.08.): „App Store" und „Google Play" sind ohnehin
+    // Eigennamen, und die Zeile soll in jedem Markt gleich lesbar sein.
+    outroCta: 'Now on the App Store and Google Play',
+    // Darunter die Sprachen, die die App wirklich kann — jede in sich selbst
+    // benannt, das versteht man ohne Übersetzung. Kommen weitere Sprachpakete
+    // dazu, gehört diese Zeile nachgezogen.
+    kommentar: 'English · Deutsch',
     // Sprechtext, sobald die Stimme feststeht. Die eckigen Klammern sind
     // Regieanweisungen für ElevenLabs v3, kein Text zum Vorlesen.
     sprecher: '[excited] Du glaubst, du kennst Anime? [shouting] Dann beweis es! '
@@ -144,8 +148,8 @@ export const TEXTE = {
   en: {
     outroTitel: 'Can you\nhandle the rest?',
     outroSub: '804 questions · 12 series · duel real opponents',
-    outroCta: 'Anigosha — free on the store',
-    kommentar: 'Who are you challenging? 👇',
+    outroCta: 'Now on the App Store and Google Play',
+    kommentar: 'English · Deutsch',
     sprecher: '[excited] You think you know anime? [shouting] Then prove it! '
             + '[excited] Anigosha — 804 questions, twelve series, and duels against real opponents!',
   },

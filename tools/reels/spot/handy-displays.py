@@ -50,8 +50,14 @@ if not os.path.exists(FFMPEG):
 # das Doppelte und die eingepasste Fläche wanderte 78 px. Bei 18 ist beides
 # stabil, und der Hintergrund kommt dieser Schwelle nirgends nahe.
 SCHWELLE = 18
-MIN_HELL = 120      # Bildschirme leuchten; dunkle violette Schatten fallen raus
-MIN_FLAECHE = 8000  # kleiner = Streulicht, kein Bildschirm
+MIN_HELL = 120       # Bildschirme leuchten; dunkle violette Schatten fallen raus
+MIN_FLAECHE = 18000  # kleiner = Streulicht, kein Bildschirm (bei 1080×1920)
+
+# ⚠ Zusammengesetzt wird in ZIELAUFLÖSUNG 1080×1920, nicht in den 720×1280 des
+# Clips. Sonst wird die eingesetzte Oberfläche zweimal weichgezeichnet: einmal
+# beim Warpen, einmal beim späteren Hochskalieren des ganzen Spots. Die
+# Fenstergrößen der Morphologie sind Pixelmaße und deshalb mitskaliert (×1,5).
+BREITE, HOEHE = 1080, 1920
 
 
 def maske(bild: np.ndarray) -> np.ndarray:
@@ -68,22 +74,36 @@ def saeubern(m: np.ndarray) -> np.ndarray:
     warum die App später hinter den Fingern liegt.
     """
     img = Image.fromarray((m * 255).astype(np.uint8), 'L')
-    img = img.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(5))
-    img = img.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(5))
+    img = img.filter(ImageFilter.MinFilter(5)).filter(ImageFilter.MaxFilter(7))
+    img = img.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(7))
     return np.asarray(img) > 127
 
 
+# Das Einpassen rechnet auf einer VERKLEINERTEN Maske. Der Grund ist reine
+# Rechenzeit: Ein 31×31-Rangfilter auf 1080×1920 braucht pro Bild und Seite
+# mehrere Sekunden, bei 97 Bildern × 2 Seiten × 2 Sprachen läuft das aus dem
+# Ruder. Für Achsen und Ausdehnung genügt ein Drittel der Auflösung völlig —
+# gesucht sind vier Eckpunkte, keine Kante auf den Pixel. Die ALPHA-Maske
+# bleibt in voller Auflösung, dort zählt jeder Pixel.
+EINPASS_TEILER = 3
+
+
+def klein(m: np.ndarray) -> Image.Image:
+    img = Image.fromarray((m * 255).astype(np.uint8), 'L')
+    return img.resize((img.width // EINPASS_TEILER, img.height // EINPASS_TEILER), Image.BOX)
+
+
 def fuellen(m: np.ndarray) -> np.ndarray:
-    """Löcher schließen — nur für das EINPASSEN des Rechtecks.
+    """Löcher schließen — nur für das EINPASSEN des Rechtecks, verkleinert.
 
     Die Finger liegen als große Löcher mitten im Bildschirm. Zum Einpassen muss
     die Fläche geschlossen sein, sonst zieht ein Loch am Rand die Hauptachse
     schief und die Oberfläche verkantet gegen den Rahmen. Fürs Einblenden wird
-    weiterhin die ungefüllte Maske genommen.
+    weiterhin die ungefüllte Maske in voller Auflösung genommen.
     """
-    img = Image.fromarray((m * 255).astype(np.uint8), 'L')
-    return np.asarray(
-        img.filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.MinFilter(21))) > 127
+    img = klein(m)
+    zu = img.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(11))
+    return np.asarray(zu) > 127
 
 
 def rechteck(punkte: np.ndarray):
@@ -161,6 +181,7 @@ def main():
     FPS = m.group(1) if m else '24'
 
     subprocess.run([FFMPEG, '-loglevel', 'error', '-i', a.clip,
+                    '-vf', f'scale={BREITE}:{HOEHE}:flags=lanczos',
                     os.path.join(roh, '%04d.png')], check=True)
     namen = sorted(os.listdir(roh))
     print(f'{len(namen)} Bilder, {FPS} fps')
@@ -204,17 +225,19 @@ def main():
             #
             # Also: Achsen aus der weiten Maske (aufrecht und stabil), Ausdehnung
             # entlang dieser Achsen aus der strengen (ohne Lichtschein).
+            # Beides auf der verkleinerten Maske; die Ecken werden am Ende
+            # wieder hochgerechnet.
             voll = fuellen(m)
             ys, xs = np.where(voll)
             mitte, al, aq, _, _ = rechteck(np.stack([xs, ys], axis=1).astype(np.float64))
 
-            streng = saeubern(m & (key_wert > np.percentile(key_wert[m], 35)))
-            if streng.sum() < MIN_FLAECHE // 2:
+            streng = np.asarray(klein(m & (key_wert > np.percentile(key_wert[m], 35)))) > 127
+            if streng.sum() < voll.sum() // 4:
                 streng = voll              # Rückfall, falls die Seite zu dunkel ist
             sy, sx = np.where(streng)
             p = np.stack([sx, sy], axis=1).astype(np.float64) - mitte
             pl, pq = p @ al, p @ aq
-            e = ecken(mitte, al, aq, (pl.min(), pl.max()), (pq.min(), pq.max()))
+            e = ecken(mitte, al, aq, (pl.min(), pl.max()), (pq.min(), pq.max())) * EINPASS_TEILER
 
             # Die App wird in das gemessene Rechteck gewarpt …
             koeff = perspektive(e, schirm.size)
@@ -231,14 +254,17 @@ def main():
             alpha = np.asarray(
                 Image.fromarray((m * 255).astype(np.uint8), 'L')
                 .filter(ImageFilter.MinFilter(5))
-                .filter(ImageFilter.GaussianBlur(1.6))
+                .filter(ImageFilter.GaussianBlur(2.0))
             ).astype(np.float32) / 255.0
             alpha = alpha[:, :, None]
 
             # Etwas vom ursprünglichen Leuchten bleibt darüber liegen — sonst
             # wirkt der Bildschirm wie aufgeklebt statt wie beleuchtet.
             glanz = arr.astype(np.float32)
-            gemischt = gewarpt * 0.86 + glanz * 0.14
+            # Weniger Originalleuchten als zuvor (0,14): Der Schleier hat die
+            # ohnehin kleine Schrift zusätzlich aufgehellt. 0,08 reicht, damit
+            # der Bildschirm beleuchtet statt aufgeklebt wirkt.
+            gemischt = gewarpt * 0.92 + glanz * 0.08
             ergebnis = ergebnis * (1 - alpha) + gemischt * alpha
             bericht.append((i, seite, int(m.sum()), e))
 

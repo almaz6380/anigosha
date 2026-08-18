@@ -42,26 +42,44 @@ const sb = {
   phasen, gesamtFrames: gesamt,
 };
 
+// ⚠ Jede Seite bekommt ihr EIGENES Format. Die Bildschirme in der
+// Anime-Einstellung sind schmaler als ein echtes 9:16-Display — gemessen
+// 0,480 links und 0,445 rechts gegen 0,562 der Vorlage. Wird eine 9:16-Vorlage
+// hineingewarpt, staucht sie um 15 bzw. 21 %, und die Schrift sieht gequetscht
+// aus. Deshalb wird gleich im Zielformat gesetzt; die Oberfläche fließt um.
+// Nachmessen: python3 tools/reels/spot/handy-displays.py --pruefen
+const SEITENVERHAELTNIS = { links: 0.480, rechts: 0.445 };
+
+// 320 statt 360 CSS-Pixel Breite: Die festen Schriftgrößen des Templates
+// werden dadurch relativ zum Bildschirm rund 12 % größer. Auf einem Display
+// von ~225 px im fertigen Bild zählt jedes Prozent Lesbarkeit.
+const BREITE_CSS = 320;
+
 // Frame 30: Frage steht, noch nichts angetippt.
 // Frame 62: die richtige Antwort ist grün markiert (nach einblenden+lesen+tippen).
 const BILDER = [
-  { datei: 'links.png', frame: 30 },
-  { datei: 'rechts.png', frame: 62 },
+  { datei: 'links.png', frame: 30, seite: 'links' },
+  { datei: 'rechts.png', frame: 62, seite: 'rechts' },
 ];
 
 mkdirSync(AUS, { recursive: true });
-// dsf 2 statt 3: Auf dem Handy im Bild ist der Bildschirm nur ~180 px breit,
-// 720 px Vorlage sind reichlich. Das spart die Hälfte an Speicher beim Warpen.
-const { page, schliessen } = await seiteOeffnen(sb, {
-  baueHtml: duellHtml, breite: BREITE, hoehe: HOEHE, dsf: 2, format: 'png',
-});
-try {
-  for (const b of BILDER) {
+// Je Seite eine eigene Seite im Browser — die Maße unterscheiden sich, und die
+// Oberfläche muss für jedes Format neu umbrechen.
+for (const b of BILDER) {
+  const breite = BREITE_CSS;
+  const hoehe = Math.round(BREITE_CSS / SEITENVERHAELTNIS[b.seite]);
+  // dsf 3: Zusammengesetzt wird bei 1080×1920, das Display ist dort ~225 px
+  // breit. Mit 960 px Vorlage bleibt beim Verkleinern Zeichnung übrig.
+  const { page, schliessen } = await seiteOeffnen({ ...sb, breite, hoehe }, {
+    baueHtml: duellHtml, breite, hoehe, dsf: 3, format: 'png',
+  });
+  try {
     await page.evaluate((i) => window.setFrame(i), b.frame);
     writeFileSync(join(AUS, b.datei), await page.screenshot({ type: 'png' }));
-    console.log(`  ${b.datei}  (Frame ${b.frame})`);
+    console.log(`  ${b.datei}  (Frame ${b.frame}, ${breite}×${hoehe} CSS `
+      + `→ ${breite * 3}×${hoehe * 3}, Seitenverhältnis ${SEITENVERHAELTNIS[b.seite]})`);
+  } finally {
+    await schliessen();
   }
-} finally {
-  await schliessen();
 }
 console.log(`\nFrage: ${f[lang].prompt}`);
