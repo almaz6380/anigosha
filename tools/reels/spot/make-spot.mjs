@@ -52,6 +52,14 @@ const erzeugen = process.argv.includes('--erzeugen');
 // liefen die beiden Sprachen inhaltlich auseinander. Die deutschen Aufnahmen
 // bleiben in stimme/ liegen und kommen mit --mit-stimme zurück.
 const mitStimme = process.argv.includes('--mit-stimme');
+// ⚠ Die App auf den Handy-Displays ist AUS (Josefs Entscheidung vom 18.08.).
+// Technisch lief es sauber — Finger davor, unverzerrt, in Zielaufloesung —,
+// aber auf einem Display von rund 225 px im fertigen Bild bleibt die
+// Oberflaeche eine graue Flaeche mit unlesbarer Schrift und wirkt eingeklebt.
+// Die leeren, farbig leuchtenden Bildschirme des Originals sind ruhiger, und
+// die App zeigt zwei Sekunden spaeter ohnehin bildfuellend, was sie kann.
+// Der ganze Weg dorthin steht in handy-displays.py; --displays holt ihn zurueck.
+const mitDisplays = process.argv.includes('--displays');
 
 // Länge einer Audiodatei. ffprobe ist in diesem Container nicht dabei —
 // ffmpeg schreibt die Angabe aber ohnehin nach stderr.
@@ -82,7 +90,7 @@ async function einstellungHolen(e) {
   // Oberfläche auf den Handys, und die App-Einstellung nimmt je Sprache
   // ohnehin eine andere Frage.
   const bearbeitet = join(CLIPS, `${e.id}-display-${lang}.mp4`);
-  if (existsSync(bearbeitet) && statSync(bearbeitet).size > 10000) {
+  if (mitDisplays && existsSync(bearbeitet) && statSync(bearbeitet).size > 10000) {
     console.log(`  ✓ ${e.id} (mit App auf den Displays, ${lang})`);
     return bearbeitet;
   }

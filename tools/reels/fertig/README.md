@@ -40,10 +40,14 @@ englische Fassung hatte nie eine Stimme — mit Sprecher liefen die beiden Sprac
 inhaltlich auseinander. Die deutschen Aufnahmen liegen weiter in `spot/stimme/`;
 `make-spot.mjs --mit-stimme` holt sie zurück.
 
-**Auf den Handys der dritten Einstellung liegt die echte Duell-Oberfläche** —
-links die Frage, rechts dieselbe Frage mit der richtigen Antwort. Es ist die
-Frage, die gleich danach bildfüllend läuft. Erzeugt von `handy-displays.py`, je
-Sprache eine eigene Fassung.
+**Die Handys in der dritten Einstellung zeigen bewusst leere, farbig leuchtende
+Bildschirme.** Es gab drei Anläufe, die echte Duell-Oberfläche hineinzusetzen
+(`handy-displays.py`, mit `--displays` weiter aufrufbar). Technisch lief das am
+Ende sauber — Finger davor, unverzerrt, in Zielauflösung. Es sah trotzdem nicht
+gut aus: Auf einem Display von rund 225 px im fertigen Bild bleibt die
+Oberfläche eine graue Fläche mit unlesbarer Schrift und wirkt eingeklebt. Die
+leeren Bildschirme sind ruhiger, und zwei Sekunden später zeigt die
+App-Einstellung bildfüllend, was die App kann.
 
 **Der Abspann nennt beide Stores auf Englisch** („Now on the App Store and Google
 Play") und darunter die Sprachen der App („English · Deutsch"). Kommen
