@@ -34,6 +34,12 @@ umso mehr, weil sie den App Store beim Namen nennen. Zu ändern in
 | `spot-01-anime-duell-DE.mp4` | **Deutsch** | 25 s | Werbespot, Anime-Animation |
 | `spot-02-anime-duell-EN.mp4` | **Englisch** | 25 s | derselbe Spot auf Englisch |
 
+**Beide Spots tragen seit 18.08.2026 den eigenen Anisong** (Suno V5, Fassung 4 —
+Josefs Wahl aus vier Fassungen). Das volle 55-s-Stück liegt als
+`tools/reels/assets/sfx/anisong.aac` im Repo; der Spot nutzt die ersten 25 s mit
+Ausblende. Die drei verworfenen Fassungen existieren nur noch als kie.ai-URLs
+(verfallen 14 Tage nach dem 18.08.). Neu würfeln: `node tools/reels/musik.mjs`.
+
 **Beide Spots laufen seit 18.08.2026 ohne Sprecher** (Josefs Entscheidung). Im Feed
 läuft der größte Teil ohnehin ohne Ton, die Textkarten tragen die Aussage, und die
 englische Fassung hatte nie eine Stimme — mit Sprecher liefen die beiden Sprachen

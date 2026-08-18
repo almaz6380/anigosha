@@ -190,6 +190,9 @@ export function klangEreignisse() {
     f += sek * FPS;
   }
 
-  ev.unshift({ id: 'bett', frameStart: 0, lautstaerke: 0.1 });
+  // Eigener Anisong (Suno-Fassung 4, 18.08.) statt des leisen Betts: Der Spot
+  // hat keinen Sprecher mehr, die Musik darf tragen. tonspurBauen schneidet
+  // das 55-s-Stück auf die Spotlänge und blendet die letzte Sekunde aus.
+  ev.unshift({ id: 'anisong', frameStart: 0, lautstaerke: 0.45 });
   return { ereignisse: ev, gesamtFrames: f };
 }
