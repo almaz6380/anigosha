@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { appSprache } from '../../i18n';
 import { ArrowLeft } from 'lucide-react';
 import { legalDocs, LAST_UPDATED } from './legalContent';
 
@@ -8,9 +9,10 @@ type DocKey = 'imprint' | 'privacy' | 'terms' | 'deletion';
 /** Rechtstexte sind öffentlich erreichbar — Apple und Google verlangen eine
  *  Datenschutz-URL, die auch ohne Anmeldung aufrufbar ist. */
 export default function LegalPage({ doc }: { doc: DocKey }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const lang = i18n.language.startsWith('en') ? 'en' : 'de';
+  // Rechtstexte gibt es nur DE/EN — alle weiteren Sprachen sehen Englisch.
+  const lang = appSprache() === 'de' ? 'de' : 'en';
   const content = legalDocs[doc][lang];
 
   return (

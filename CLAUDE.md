@@ -25,7 +25,7 @@ Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Sp
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
-**Sprachen:** DE + EN zum Launch; weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen)
+**Sprachen:** DE + EN zum Launch; **ES seit 18.08.2026 im Repo fertig** (Migrationen 0022–0035 + `es.json`), weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen). ⚠ ES ist erst live, wenn die Migrationen 0022–0035 eingespielt sind — diese Cloud-Sitzung hatte keine DB-Schlüssel. Ablauf: erst 0022 (Constraints + RPCs + `seed_uebersetzung`), dann 0023–0035 (804 Fragen), je mit Trockenlauf. Sprachweiche zentral in `appSprache()` (`src/i18n/index.ts`); Rechtstexte bleiben DE/EN, Spanisch sieht Englisch. Store-Texte und E-Mail-Vorlagen für ES stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 

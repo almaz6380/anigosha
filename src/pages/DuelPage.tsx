@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { appSprache } from '../i18n';
 import { ArrowLeft, Bot, Check, ChevronRight, Heart, Swords, UserPlus, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
 import {
@@ -15,10 +16,10 @@ import {
 } from '../lib/duel';
 
 export default function DuelPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { matchId } = useParams();
-  const lang = i18n.language.startsWith('en') ? 'en' : 'de';
+  const lang = appSprache();
 
   const [duels, setDuels] = useState<DuelSummary[]>([]);
   const [active, setActive] = useState<string | null>(null);
