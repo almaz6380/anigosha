@@ -586,11 +586,28 @@ Einzelheiten und Neu-Erzeugung in `tools/reels/fertig/README.md`. Bewusst im Rep
 nicht unter `out/`: Letzteres ist gitignored, und der Container einer Cloud-Sitzung ist
 flüchtig — am 10.08. fiel der Dateibaum zurück und nahm alles unter `out/` mit.
 
-⚠ **Vor dem Posten Store-Status prüfen.** Alle Videos enden mit „Anigosha — kostenlos
-im Store". Josef hat am 10.08. gemeldet, dass Anigosha **noch nicht im App Store** ist
-und bisher nur Swaply und Mahjong Royale in beiden Stores stehen — das widerspricht dem
-Abschnitt „M5 Release" oben. Ein Aufruf, der ins Leere führt, verbrennt die Reichweite
-der ersten Videos, und genau die bekommen die meiste Auslieferung.
+✅ **Store-Status geklärt (18.08.2026): beide Stores sind live.** Josef hat den App
+Store bestätigt, Google Play läuft seit vc4. Die Videos enden mit „kostenlos im Store"
+bzw. „Now on the App Store and Google Play" — das trifft jetzt zu, die frühere Sperre
+(Stand 10.08.: „noch nicht im App Store") ist erledigt.
+
+**Ein Link für beide Stores: `anigosha.vercel.app/get`** (auch `/app`, `/download`) —
+`public/get.html`, eine statische Seite ohne Fremddienst. Sie erkennt die Plattform und
+leitet weiter: iOS → App Store, Android → Play, alles andere → Web-App; auf dem Rechner
+bleibt sie stehen und zeigt die Knöpfe (das ist zugleich der Rückfall, falls ein
+In-App-Browser die Weiterleitung unterbindet). Gedacht für die Profile auf TikTok,
+Instagram und Facebook, wo nur EIN Link hineinpasst.
+- **Pflegestelle sind die beiden Schalter `IOS_LIVE`/`ANDROID_LIVE`** oben in der Datei.
+  Steht einer auf `false`, sieht diese Plattform den Knopf nicht und landet in der
+  Web-App — lieber eine Runde im Browser als eine 404 im Store.
+- Die Rewrite-Regel in `vercel.json` muss **vor** der SPA-Regel stehen, sonst verschluckt
+  die den Pfad. ⚠ Und **keine Kommentar-Schlüssel in `vercel.json`**: Vercel prüft gegen
+  ein Schema und bricht bei unbekannten Feldern den ganzen Deploy ab.
+- Die Sprachzeile nennt bewusst nur DE und EN, solange die ES-Migrationen 0022–0035
+  nicht eingespielt sind (Oberfläche wäre spanisch, die 804 Fragen nicht).
+- ⚠ Store-Hosts sind aus der Claude-Sitzung gesperrt (403 vom Proxy) — ob eine App
+  wirklich im Store steht, lässt sich hier **nicht** nachsehen. Das muss Josef sagen
+  oder der ASC-Workflow (`mode: status`).
 
 **Warum das im Repo liegt:** Josef arbeitet vom Handy, Videoschnitt geht dort nicht.
 Die Fragen tragen bereits richtige Antwort **und** Erklärung, zweisprachig — damit ist
