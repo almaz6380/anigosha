@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/(get|app|download)",
+      "destination": "/get.html"
+    },
+    {
       "source": "/((?!assets/|favicon|icons|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
