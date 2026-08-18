@@ -5,7 +5,9 @@ so nehmen TikTok und Instagram sie ohne Nachkodierung an.
 
 ## ⚠ Vor dem Posten: Store-Status prüfen
 
-Alle Videos enden mit dem Aufruf **„Anigosha — kostenlos im Store"**.
+Die Quiz-Reels enden mit **„Anigosha — kostenlos im Store"**, die beiden Spots seit
+18.08.2026 mit **„Now on the App Store and Google Play"** — die Spots nennen die
+Stores also ausdrücklich beim Namen.
 
 Stand **10.08.2026** hat Josef gemeldet: **Anigosha ist noch NICHT im App Store**;
 im App Store *und* Google Play stehen bisher nur **Swaply** und **Mahjong Royale**.
@@ -17,7 +19,8 @@ aus dem die Zuschauer kommen.** Ein Aufruf, der ins Leere führt, verbrennt die
 Reichweite genau einmal — und die ersten Videos eines neuen Kanals sind die, die
 am meisten Auslieferung bekommen.
 
-Liegt die App nur bei Google Play, muss der Abspanntext das sagen. Zu ändern in
+Liegt die App nur bei Google Play, muss der Abspanntext das sagen — bei den Spots
+umso mehr, weil sie den App Store beim Namen nennen. Zu ändern in
 `tools/reels/spot/storyboard-spot.mjs` (`TEXTE.<lang>.outroCta`) bzw.
 `tools/reels/storyboard.mjs` (`outroCta`), danach neu bauen — kostet nichts.
 
@@ -28,12 +31,23 @@ Liegt die App nur bei Google Play, muss der Abspanntext das sagen. Zu ändern in
 | `reel-01-fandom-one-piece-DE.mp4` | **Deutsch** | 32 s | Quiz, 3 Fragen aus One Piece |
 | `reel-02-fandom-one-piece-EN.mp4` | **Englisch** | 32 s | dieselben Fragen auf Englisch |
 | `reel-03-ladder-gemischt-DE.mp4` | **Deutsch** | 32 s | Quiz, leicht → mittel → schwer, drei Serien |
-| `spot-01-anime-duell-DE.mp4` | **Deutsch** | 25 s | Werbespot, Anime-Animation, mit Sprecher |
-<!-- Seit 18.08.2026 tragen beide Spots die echte Duell-Oberfläche auf den
-     Handy-Bildschirmen der dritten Einstellung — vorher leuchteten die leer.
-     Erzeugt von handy-displays.py, je Sprache eine eigene Fassung. -->
+| `spot-01-anime-duell-DE.mp4` | **Deutsch** | 25 s | Werbespot, Anime-Animation |
+| `spot-02-anime-duell-EN.mp4` | **Englisch** | 25 s | derselbe Spot auf Englisch |
 
-| `spot-02-anime-duell-EN-ohne-sprecher.mp4` | **Englisch** | 25 s | derselbe Spot, **ohne Sprecher** (s. u.) |
+**Beide Spots laufen seit 18.08.2026 ohne Sprecher** (Josefs Entscheidung). Im Feed
+läuft der größte Teil ohnehin ohne Ton, die Textkarten tragen die Aussage, und die
+englische Fassung hatte nie eine Stimme — mit Sprecher liefen die beiden Sprachen
+inhaltlich auseinander. Die deutschen Aufnahmen liegen weiter in `spot/stimme/`;
+`make-spot.mjs --mit-stimme` holt sie zurück.
+
+**Auf den Handys der dritten Einstellung liegt die echte Duell-Oberfläche** —
+links die Frage, rechts dieselbe Frage mit der richtigen Antwort. Es ist die
+Frage, die gleich danach bildfüllend läuft. Erzeugt von `handy-displays.py`, je
+Sprache eine eigene Fassung.
+
+**Der Abspann nennt beide Stores auf Englisch** („Now on the App Store and Google
+Play") und darunter die Sprachen der App („English · Deutsch"). Kommen
+Sprachpakete dazu, gehört die Zeile in `storyboard-spot.mjs` nachgezogen.
 
 Zu jedem Quiz-Reel liegt eine `.txt` daneben: Caption zum Kopieren, Hashtags,
 Posting-Hinweise und die enthaltenen Fragen zum Faktencheck.
@@ -52,19 +66,16 @@ Posting-Hinweise und die enthaltenen Fragen zum Faktencheck.
 
 Alle sechs sind gegen das rohe SQL der Migrationen gegengeprüft.
 
-### Zur englischen Spot-Fassung
+### Zum Unterschied der beiden Sprachfassungen
 
-Textkarten, App-Ansicht und Abspann sind auf Englisch, **gesprochen wird nichts**.
-Die englischen Sprechertexte stehen in `spot/storyboard-spot.mjs`, sind aber nie
-erzeugt worden — dafür fehlte fal-Guthaben.
+Textkarten, App-Ansicht auf den Handys, App-Einstellung und Abspann-Untertitel
+richten sich nach der Sprache; **die Store-Zeile steht in beiden auf Englisch**.
+Gesprochen wird in keiner Fassung.
 
-Nachholen (Cent-Beträge, kein Videolauf):
-```bash
-node tools/reels/spot/stimme-erzeugen.mjs --lang en
-node tools/reels/spot/make-spot.mjs --lang en
-```
-⚠ Vorher in `storyboard-spot.mjs` eine **englische** Stimme eintragen. `SPRECHER_ID`
-zeigt auf Haunting-Hector, eine deutsche Stimme — ihr Akzent fiele auf Englisch sofort auf.
+⚠ Wer den Sprecher je zurückholt (`--mit-stimme`), braucht für Englisch **erst eine
+englische Stimme** in `storyboard-spot.mjs`: `SPRECHER_ID` zeigt auf
+Haunting-Hector, eine deutsche Stimme — ihr Akzent fiele auf Englisch sofort auf.
+Deutsche Aufnahmen liegen dagegen fertig in `spot/stimme/`.
 
 ## Neu erzeugen
 

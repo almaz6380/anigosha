@@ -26,7 +26,7 @@ import sys
 import tempfile
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 HIER = os.path.dirname(os.path.abspath(__file__))
 CLIPS = os.path.join(HIER, 'clips')
@@ -104,6 +104,54 @@ def fuellen(m: np.ndarray) -> np.ndarray:
     img = klein(m)
     zu = img.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(11))
     return np.asarray(zu) > 127
+
+
+def flaeche_im_rechteck(ecken_px, groesse, einzug=4):
+    """Rasterbild des eingepassten Rechtecks, leicht nach innen versetzt."""
+    mitte = ecken_px.mean(axis=0)
+    innen = [tuple(mitte + (p - mitte) * (1 - einzug / np.linalg.norm(p - mitte)))
+             for p in ecken_px]
+    bild = Image.new('L', groesse, 0)
+    ImageDraw.Draw(bild).polygon(innen, fill=255)
+    return np.asarray(bild) > 127
+
+
+def finger(loch: np.ndarray, im_rechteck: np.ndarray, teiler=3, schritte=60):
+    """Welche NICHT leuchtenden Stellen im Rechteck sind Finger?
+
+    Unterscheidungsmerkmal ist die Lage, nicht die Farbe: Finger ragen von
+    AUSSEN in den Bildschirm und beruehren deshalb den Rand des Rechtecks. Der
+    weissliche Glanzfleck in der Bildschirmmitte beruehrt ihn nicht.
+
+    Ohne diese Trennung passiert beides Mal etwas Falsches: Faellt der
+    Glanzfleck aus der Maske, scheint das Originalbild als heller Block mitten
+    durch die Oberflaeche; nimmt man ihn per Helligkeit dazu, kommen die
+    ebenso hellen Fingerkuppen mit.
+
+    Umgesetzt als morphologische Rekonstruktion vom Rand her, auf gedrittelter
+    Aufloesung — in voller waere das je Bild und Seite sekundenlang.
+    """
+    klein_img = Image.fromarray((loch * 255).astype(np.uint8), 'L')
+    kl = klein_img.resize((klein_img.width // teiler, klein_img.height // teiler), Image.BOX)
+    k = np.asarray(kl) > 127
+
+    # ⚠ Der Startpunkt ist der Rand des RECHTECKS, nicht der des Bildes. Vom
+    # Bildrand aus erreicht die Rekonstruktion die Löcher nie — sie liegen
+    # mitten im Bild, und die Erkennung meldete 0 % Finger.
+    r_klein = Image.fromarray((im_rechteck * 255).astype(np.uint8), 'L').resize(kl.size, Image.BOX)
+    r = np.asarray(r_klein) > 127
+    innen = np.asarray(r_klein.filter(ImageFilter.MinFilter(5))) > 127
+    marke = k & (r & ~innen)
+    for _ in range(schritte):
+        gewachsen = np.asarray(
+            Image.fromarray((marke * 255).astype(np.uint8), 'L').filter(ImageFilter.MaxFilter(3))) > 127
+        neu = gewachsen & k
+        if neu.sum() == marke.sum():
+            break
+        marke = neu
+    zurueck = Image.fromarray((marke * 255).astype(np.uint8), 'L').resize(
+        klein_img.size, Image.BILINEAR)
+    return np.asarray(zurueck) > 100
 
 
 def rechteck(punkte: np.ndarray):
@@ -247,12 +295,28 @@ def main():
 
             # … und NUR dort eingeblendet, wo das Original leuchtet. Weiche
             # Kante, damit der Übergang zum Rahmen nicht schneidet.
+            # ⚠ Die Maske haengt NICHT allein am Farbschluessel. Zwei Fehler
+            # entstanden dadurch, und beide waren erst in Zielaufloesung zu
+            # sehen — in der weichgezeichneten 720er-Fassung gingen sie unter:
+            #
+            #  · Der Lichtschein AUSSERHALB des Bildschirms kommt ueber die
+            #    Schwelle. Die Oberflaeche griff dadurch auf Rahmen und Finger.
+            #  · Der weissliche Glanzfleck IN der Bildschirmmitte faellt
+            #    darunter (weiss hat R≈G≈B, der Schluessel geht gegen null).
+            #    Dort schien das Originalbild als heller Block durch.
+            #
+            # Also: Grundflaeche ist das gemessene Rechteck, abzueglich der
+            # Finger. Der Farbschluessel entscheidet nur noch innerhalb.
+            im_rechteck = flaeche_im_rechteck(e, (w, h))
+            loch = im_rechteck & ~m
+            schirm_flaeche = im_rechteck & ~finger(loch, im_rechteck)
+
             # Vor dem Weichzeichnen einmal schrumpfen: Die Fingerkanten fangen
             # das Bildschirmlicht auf und liegen dadurch knapp über der
             # Schwelle. Ohne dieses Schrumpfen legt sich ein schmaler Streifen
             # App über die Fingerränder.
             alpha = np.asarray(
-                Image.fromarray((m * 255).astype(np.uint8), 'L')
+                Image.fromarray((schirm_flaeche * 255).astype(np.uint8), 'L')
                 .filter(ImageFilter.MinFilter(5))
                 .filter(ImageFilter.GaussianBlur(2.0))
             ).astype(np.float32) / 255.0
