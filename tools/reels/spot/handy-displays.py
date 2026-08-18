@@ -15,8 +15,8 @@ Der Farbschlüssel `min(R,B) − G` ist derselbe wie beim Freistellen der
 Gemini-Motive: Violett und Pink liegen dort hoch, Haut und Herbstlaub tief.
 
 Voraussetzung: Python mit Pillow + numpy.
-Aufruf:  python3 tools/reels/spot/handy-displays.py [--clip PFAD] [--pruefen]
-Ergebnis: clips/3-handys-display.mp4 (gleiche Länge und Bildrate wie die Quelle)
+Aufruf:  python3 tools/reels/spot/handy-displays.py --lang de [--pruefen]
+Ergebnis: clips/3-handys-display-<lang>.mp4 (gleiche Länge und Bildrate wie die Quelle)
 """
 import argparse
 import os
@@ -137,10 +137,13 @@ def perspektive(ziel_ecken, quell_groesse):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--clip', default=os.path.join(CLIPS, '3-handys.mp4'))
-    p.add_argument('--ziel', default=os.path.join(CLIPS, '3-handys-display.mp4'))
+    p.add_argument('--lang', default='de', help='Sprache der Oberflaeche auf den Displays')
+    p.add_argument('--ziel', default=None)
     p.add_argument('--pruefen', action='store_true',
                    help='nur messen und berichten, nichts schreiben')
     a = p.parse_args()
+    if a.ziel is None:
+        a.ziel = os.path.join(CLIPS, f'3-handys-display-{a.lang}.mp4')
 
     tmp = tempfile.mkdtemp(prefix='handys-')
     roh = os.path.join(tmp, 'roh')
@@ -162,8 +165,12 @@ def main():
     namen = sorted(os.listdir(roh))
     print(f'{len(namen)} Bilder, {FPS} fps')
 
-    links = Image.open(os.path.join(DISPLAYS, 'links.png')).convert('RGB')
-    rechts = Image.open(os.path.join(DISPLAYS, 'rechts.png')).convert('RGB')
+    ordner = os.path.join(DISPLAYS, a.lang)
+    if not os.path.isdir(ordner):
+        sys.exit(f'Keine Standbilder fuer "{a.lang}". Erst laufen lassen:\n'
+                 f'  node tools/reels/spot/display-bilder.mjs --lang {a.lang}')
+    links = Image.open(os.path.join(ordner, 'links.png')).convert('RGB')
+    rechts = Image.open(os.path.join(ordner, 'rechts.png')).convert('RGB')
 
     bericht = []
     for i, name in enumerate(namen):

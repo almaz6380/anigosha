@@ -29,6 +29,10 @@ Liegt die App nur bei Google Play, muss der Abspanntext das sagen. Zu ändern in
 | `reel-02-fandom-one-piece-EN.mp4` | **Englisch** | 32 s | dieselben Fragen auf Englisch |
 | `reel-03-ladder-gemischt-DE.mp4` | **Deutsch** | 32 s | Quiz, leicht → mittel → schwer, drei Serien |
 | `spot-01-anime-duell-DE.mp4` | **Deutsch** | 25 s | Werbespot, Anime-Animation, mit Sprecher |
+<!-- Seit 18.08.2026 tragen beide Spots die echte Duell-Oberfläche auf den
+     Handy-Bildschirmen der dritten Einstellung — vorher leuchteten die leer.
+     Erzeugt von handy-displays.py, je Sprache eine eigene Fassung. -->
+
 | `spot-02-anime-duell-EN-ohne-sprecher.mp4` | **Englisch** | 25 s | derselbe Spot, **ohne Sprecher** (s. u.) |
 
 Zu jedem Quiz-Reel liegt eine `.txt` daneben: Caption zum Kopieren, Hashtags,

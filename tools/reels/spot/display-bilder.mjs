@@ -9,7 +9,9 @@
 // Bildschirm schon vorweg.
 //
 // Aufruf: node tools/reels/spot/display-bilder.mjs [--lang de|en]
-// Ergebnis: spot/displays/links.png und rechts.png (720×1280)
+// Ergebnis: spot/displays/<lang>/links.png und rechts.png (720×1280)
+// Je Sprache getrennt: Der englische Spot darf keine deutsche Oberflaeche
+// auf den Handys zeigen, und die Fragenauswahl unterscheidet sich ohnehin.
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +22,7 @@ import { FPS, APP_DAUER } from './storyboard-spot.mjs';
 const HIER = dirname(fileURLToPath(import.meta.url));
 const lang = (process.argv.includes('--lang')
   ? process.argv[process.argv.indexOf('--lang') + 1] : 'de');
-const AUS = join(HIER, 'displays');
+const AUS = join(HIER, 'displays', lang);
 
 // Dieselbe Auswahl wie appSegment() in make-spot.mjs — kurze Frage, kurze
 // Antworten. Weicht sie ab, zeigen Display und App-Einstellung Verschiedenes.
