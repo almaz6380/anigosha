@@ -186,7 +186,9 @@ export function klangEreignisse() {
     if (teil.art === 'anime' && teil.id === '2-herausforderung') dazu('hook-hit', 0.85);
     if (teil.art === 'anime' && teil.id === '3-handys') dazu('whoosh', 0.6);
     if (teil.art === 'app') { dazu('tick', 0.4); ev.push({ id: 'correct', frameStart: f + Math.round(2.6 * FPS), lautstaerke: 0.75 }); }
-    if (teil.art === 'outro') dazu('outro', 0.7);
+    // Im Abspann bewusst KEIN App-Klang mehr (Josef, 18.08.): Dort soll allein
+    // der Song stehen. Der alte 'outro'-Jingle lag genau auf dem Schlussakkord
+    // und hat ihn zugedeckt — der einzige Moment, in dem die Musik frei trägt.
 
     const sek = teil.art === 'app' ? APP_DAUER
               : teil.art === 'outro' ? OUTRO_DAUER
