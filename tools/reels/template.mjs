@@ -91,7 +91,18 @@ html, body {
 #outroCta { position: absolute; left: 140px; top: 1080px; width: 800px; padding: 34px 0;
   border-radius: 999px; text-align: center; font-size: 44px; font-weight: 700; color: #17102c;
   background: linear-gradient(100deg, #a78bfa, #f472b6); }
+/* Store-Badges statt der Textpille. Sie stehen UNTEREINANDER (Josefs Wunsch,
+   18.08.) und mittig; die Höhe ist fest, die Breite ergibt sich aus dem Bild —
+   so bleibt jedes Badge in seinem eigenen Seitenverhältnis. Apple und Google
+   verbieten in ihren Richtlinien beides: verzerren und nachzeichnen. */
+#outroBadges { position: absolute; left: 0; top: 1060px; width: 1080px;
+  display: none; flex-direction: column; align-items: center; gap: 26px; }
+#outroBadges img { height: 128px; width: auto; display: block; }
+#outroBadges.an { display: flex; }
+#outroCta.aus { display: none; }
 #outroKommentar { top: 1260px; font-size: 38px; font-weight: 600; color: #f9a8d4; }
+/* Mit Badges rutscht die Sprachzeile unter den zweiten Knopf. */
+#outroKommentar.tiefer { top: 1400px; }
 #outroLogo { position: absolute; left: 430px; top: 270px; width: 220px; height: 220px; }
 
 /* --- Fragenebene --- */
@@ -167,6 +178,7 @@ html, body {
     <div class="mitte" id="outroTitel"></div>
     <div class="mitte" id="outroSub"></div>
     <div id="outroCta"></div>
+    <div id="outroBadges"><img id="badgeApple"><img id="badgePlay"></div>
     <div class="mitte" id="outroKommentar"></div>
   </div>
 
@@ -211,6 +223,16 @@ function blockSetzen(idx) {
     $('outroTitel').innerHTML = zeilen(b.titel);
     $('outroSub').innerHTML = zeilen(b.sub);
     $('outroCta').textContent = b.cta;
+    // Liegen Badges an, ersetzen sie die Textpille — sonst bleibt alles wie
+    // bisher. Deshalb funktionieren die Quiz-Reels unveraendert weiter, die
+    // dieses Outro mitbenutzen und keine Badges mitgeben.
+    if (b.badges && b.badges.apple && b.badges.play) {
+      $('badgeApple').src = b.badges.apple;
+      $('badgePlay').src = b.badges.play;
+      $('outroBadges').classList.add('an');
+      $('outroCta').classList.add('aus');
+      $('outroKommentar').classList.add('tiefer');
+    }
     $('outroKommentar').textContent = b.kommentar;
   } else {
     $('chipSerie').textContent = b.serie;
@@ -262,6 +284,12 @@ window.setFrame = function (n) {
     // sanftes Pochen auf dem Knopf, damit das Auge dort landet
     const puls = 1 + .022 * Math.sin((f - 18) / 4.5);
     if (f > 34) $('outroCta').style.transform = 'scale(' + puls + ')';
+    // Die Badges blenden gleich ein, pochen aber NICHT: Apple und Google
+    // untersagen jede Veraenderung ihrer Badges, und eine laufende Skalierung
+    // ist genau das. Das zweite kommt vier Bilder spaeter, damit sie nacheinander
+    // stehen statt als ein Block aufzuploppen.
+    $('badgeApple').style.opacity = e4;
+    $('badgePlay').style.opacity = easeOut((f - 22) / 16);
     $('outroKommentar').style.opacity = easeOut((f - 30) / 16) * .95;
     return;
   }

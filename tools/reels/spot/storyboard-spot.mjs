@@ -4,6 +4,10 @@
 // eine Szene, die Reels zeigen Fragen. Gemeinsam sind nur Renderer, Encoder
 // und die Klänge.
 
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 export const FPS = 30;
 
 // Die Bewegungs-Prompts beschreiben BEWEGUNG, nicht Inhalt — der steckt schon
@@ -161,6 +165,24 @@ export const TEXTE = {
 
 // Storyboard-Objekt in der Form, die tools/reels/template.mjs erwartet —
 // so lässt sich das Outro der Quiz-Reels unverändert wiederverwenden.
+// Store-Badges als data:-URI. Die Vorlage wird über page.setContent() gerendert
+// und hat deshalb keinen Origin — file:// laedt dort nicht (gleiche Regel wie
+// bei Schrift und Logo). Fehlt eine Datei, bleibt es bei der Textpille; der
+// Spot ist also nie kaputt, nur schlichter.
+function badges(lang) {
+  const ordner = join(dirname(fileURLToPath(import.meta.url)), 'badges');
+  const laden = (name) => {
+    for (const kandidat of [`${name}-${lang}.png`, `${name}-en.png`]) {
+      const pfad = join(ordner, kandidat);
+      if (existsSync(pfad)) return `data:image/png;base64,${readFileSync(pfad).toString('base64')}`;
+    }
+    return null;
+  };
+  const apple = laden('appstore');
+  const play = laden('googleplay');
+  return apple && play ? { apple, play } : null;
+}
+
 export function outroStoryboard(lang = 'de') {
   const t = TEXTE[lang];
   const dauer = OUTRO_DAUER * FPS;
@@ -172,6 +194,7 @@ export function outroStoryboard(lang = 'de') {
     bloecke: [{
       typ: 'outro', start: 0, dauer, ende: dauer,
       titel: t.outroTitel, sub: t.outroSub, cta: t.outroCta, kommentar: t.kommentar,
+      badges: badges(lang),
     }],
   };
 }
