@@ -1,0 +1,168 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue. Réessaie.",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "comingSoon": "Bientôt disponible",
+    "bot": "Bot"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "passwordMin": "8 caractères minimum",
+    "noAccount": "Pas encore de compte ? Inscris-toi",
+    "haveAccount": "Déjà un compte ? Connecte-toi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetSent": "E-mail de réinitialisation envoyé.",
+    "confirmSent": "E-mail de confirmation envoyé — vérifie ta boîte de réception.",
+    "errors": {
+      "invalid_credentials": "E-mail ou mot de passe incorrect.",
+      "email_not_confirmed": "Confirme d'abord ton adresse e-mail.",
+      "user_already_exists": "Cet e-mail est déjà enregistré.",
+      "weak_password": "Mot de passe trop faible (8 caractères minimum).",
+      "generic": "Échec de la connexion. Réessaie."
+    }
+  },
+  "username": {
+    "title": "Choisis ton nom de joueur",
+    "subtitle": "C'est ainsi que les autres te verront dans les duels et le classement.",
+    "placeholder": "p. ex. MaitreOtaku",
+    "rules": "3 à 16 caractères, lettres, chiffres et _ uniquement",
+    "taken": "Ce nom est déjà pris.",
+    "invalid": "3 à 16 caractères, lettres, chiffres et _ uniquement"
+  },
+  "nav": {
+    "home": "Accueil",
+    "solo": "Solo",
+    "duel": "Duel",
+    "leaderboard": "Classement",
+    "profile": "Profil",
+    "daily": "Défi du jour"
+  },
+  "home": {
+    "greeting": "Salut {{name}} !",
+    "solo": "Quiz solo",
+    "soloSub": "Catégories, difficulté, XP",
+    "duel": "Duel",
+    "duelSub": "Au tour par tour contre d'autres",
+    "leaderboard": "Classement",
+    "leaderboardSub": "Les meilleurs otakus du monde",
+    "profile": "Profil",
+    "profileSub": "Statistiques et réglages",
+    "daily": "Défi du jour",
+    "dailySub": "5 questions, chaque jour"
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Langue",
+    "stats": "Statistiques",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Niveau",
+    "logout": "Se déconnecter",
+    "deleteAccount": "Supprimer le compte",
+    "deleteConfirmTitle": "Vraiment supprimer ton compte ?",
+    "deleteConfirmText": "Toutes tes données (profil, duels, statistiques) seront définitivement supprimées. C'est irréversible.",
+    "deleteConfirmButton": "Oui, supprimer définitivement",
+    "deleteError": "La suppression a échoué. Réessaie plus tard.",
+    "streak": "Série de jours",
+    "streakBest": "Record"
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Facile",
+      "2": "Moyen",
+      "3": "Difficile"
+    },
+    "difficultyHint": {
+      "1": "Pour qui connaît la série",
+      "2": "Pour les spectateurs attentifs",
+      "3": "Pour les vrais connaisseurs"
+    },
+    "noQuestions": "Il n'y a pas encore de questions dans cette catégorie. Essaie-en une autre !",
+    "didYouKnow": "Le savais-tu ?",
+    "nextHint": "Indice suivant",
+    "report": "Signaler la question",
+    "reported": "Merci, c'est signalé !",
+    "finish": "Terminer la manche",
+    "resultTitle": "Résultat",
+    "xpEarned": "+{{xp}} XP gagnés",
+    "noXpAgain": "Cette manche a déjà été comptabilisée.",
+    "again": "Rejouer",
+    "share": "Partager le résultat",
+    "shareText": "J'ai trouvé {{correct}} bonnes réponses sur {{total}} en {{category}} ! Tu fais mieux ?",
+    "fiftyFifty": "50:50 — retirer deux réponses",
+    "streakDays_one": "{{count}} jour d'affilée",
+    "streakDays_other": "{{count}} jours d'affilée"
+  },
+  "daily": {
+    "title": "Défi du jour",
+    "sub": "5 questions — les mêmes pour tous",
+    "alreadyDone": "Tu as déjà joué le défi du jour. Cinq nouvelles questions demain !",
+    "leaderboard": "Classement du jour",
+    "shareText": "J'ai trouvé {{correct}} bonnes réponses sur {{total}} au défi Anigosha du jour !"
+  },
+  "duel": {
+    "new": "Lancer un nouveau duel",
+    "empty": "Aucun duel pour l'instant. Lance le premier !",
+    "yourTurn": "À toi de jouer",
+    "waiting": "Au tour de l'adversaire",
+    "waitingLong": "{{name}} est en train de jouer. Reviens plus tard !",
+    "round": "Manche {{n}}/4",
+    "won": "Gagné",
+    "lost": "Perdu",
+    "draw": "Égalité",
+    "endRound": "Passer la main",
+    "queued": "Aucun adversaire libre pour le moment. On continue de chercher — réessaie dans un instant.",
+    "botHint": "Les adversaires portant ce signe sont pilotés par l'ordinateur.",
+    "challengeFriend": "Défier un ami",
+    "challengeHint": "Nom de joueur de ton ami",
+    "challengePlaceholder": "p. ex. AnimeFan42",
+    "challengeGo": "C'est parti",
+    "friendly": "Duel amical",
+    "friendlyNote": "Duel amical — ne compte pas pour le classement.",
+    "challengeError": {
+      "notFound": "Personne ne joue sous « {{name}} ». Vérifie l'orthographe exacte.",
+      "self": "Tu ne peux pas te défier toi-même.",
+      "bot": "C'est un adversaire piloté par l'ordinateur — choisis un humain.",
+      "running": "Un duel contre {{name}} est déjà en cours. Termine-le d'abord.",
+      "tooMany": "Ça fait beaucoup de défis d'un coup. Réessaie dans une heure.",
+      "unknown": "Ça n'a pas marché. Réessaie."
+    }
+  },
+  "legal": {
+    "imprint": "Mentions légales",
+    "privacy": "Confidentialité",
+    "terms": "Conditions d'utilisation",
+    "legal": "Informations légales"
+  },
+  "level": {
+    "reached": "Niveau atteint",
+    "title": "Niveau {{level}}"
+  },
+  "push": {
+    "titel": "Notifications",
+    "text": "Sois prévenu quand c'est à toi de jouer.",
+    "einschalten": "Activer",
+    "aktiv": "Activées",
+    "an": "Les notifications sont activées.",
+    "aus": "Les notifications sont désactivées.",
+    "homescreen": "Sur iPhone, ajoute d'abord le site à ton écran d'accueil via « Partager → Sur l'écran d'accueil » — Apple n'autorise pas les notifications autrement."
+  },
+  "kauf": {
+    "titel": "Supprimer la publicité",
+    "text": "Achat unique — plus aucune publicité.",
+    "aktiv": "Acheté. Merci pour ton soutien !",
+    "kaufen": "Acheter",
+    "wiederherstellen": "Restaurer",
+    "danke": "La publicité est désactivée dès maintenant. Merci !",
+    "nichtsGefunden": "Aucun achat antérieur n'a été trouvé.",
+    "abgebrochen": "Achat non finalisé."
+  }
+}
