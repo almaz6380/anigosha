@@ -136,10 +136,14 @@ export const TEXTE = {
     // Entscheidung vom 18.08.): „App Store" und „Google Play" sind ohnehin
     // Eigennamen, und die Zeile soll in jedem Markt gleich lesbar sein.
     outroCta: 'Now on the App Store and Google Play',
-    // Darunter die Sprachen, die die App wirklich kann — jede in sich selbst
-    // benannt, das versteht man ohne Übersetzung. Kommen weitere Sprachpakete
-    // dazu, gehört diese Zeile nachgezogen.
-    kommentar: 'English · Deutsch',
+    // Darunter die Sprachen, die die App wirklich kann — anders als die
+    // Store-Zeile darüber IN DER SPRACHE DER FASSUNG, und die eigene zuerst.
+    // Ein deutscher Spot, der „English · Deutsch" sagt, stellt die fremde
+    // Sprache voran und liest sich wie eine Übersetzung.
+    // ⚠ Spanisch fehlt hier bewusst: Die Oberfläche kann es, die 804 Fragen
+    // noch nicht (Migrationen 0022–0035 nicht eingespielt). Sobald die drin
+    // sind, hier UND in public/get.html nachziehen.
+    kommentar: 'Deutsch · Englisch',
     // Sprechtext, sobald die Stimme feststeht. Die eckigen Klammern sind
     // Regieanweisungen für ElevenLabs v3, kein Text zum Vorlesen.
     sprecher: '[excited] Du glaubst, du kennst Anime? [shouting] Dann beweis es! '
@@ -149,7 +153,7 @@ export const TEXTE = {
     outroTitel: 'Can you\nhandle the rest?',
     outroSub: '804 questions · 12 series · duel real opponents',
     outroCta: 'Now on the App Store and Google Play',
-    kommentar: 'English · Deutsch',
+    kommentar: 'English · German',
     sprecher: '[excited] You think you know anime? [shouting] Then prove it! '
             + '[excited] Anigosha — 804 questions, twelve series, and duels against real opponents!',
   },
