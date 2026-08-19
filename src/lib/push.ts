@@ -80,7 +80,7 @@ async function firebaseBereit(): Promise<void> {
  * Fragt die Erlaubnis ab, holt ein Token und meldet es am Konto an.
  * Ohne angemeldetes Konto passiert nichts — ein Token ohne Zuordnung wäre wertlos.
  */
-export async function pushAnmelden(sprache: 'de' | 'en' = 'de'): Promise<PushErgebnis> {
+export async function pushAnmelden(sprache: 'de' | 'en' | 'es' = 'de'): Promise<PushErgebnis> {
   if (!istNativ()) {
     if (!webPushMoeglich()) {
       return {
@@ -133,7 +133,7 @@ export async function pushAnmelden(sprache: 'de' | 'en' = 'de'): Promise<PushErg
  * Zusagen, und abgelehnt ist er nur noch über die Geräteeinstellungen
  * zurückzuholen.
  */
-export async function pushAuffrischen(sprache: 'de' | 'en' = 'de'): Promise<void> {
+export async function pushAuffrischen(sprache: 'de' | 'en' | 'es' = 'de'): Promise<void> {
   try {
     if (!istNativ() && (!webPushMoeglich() || !konfiguriert() || Notification.permission !== 'granted')) {
       return;

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Bot, Check, ChevronRight, Swords, X } from 'lucide-react';
+import { appSprache } from '../i18n';
+import { ArrowLeft, Bot, Check, ChevronRight, Heart, Swords, UserPlus, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
 import { maybeShowInterstitialOnce } from '../lib/ads';
 import {
   answerDuel,
+  challengeFriend,
   duelState,
   getDuelRound,
   listDuels,
@@ -15,10 +17,10 @@ import {
 } from '../lib/duel';
 
 export default function DuelPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { matchId } = useParams();
-  const lang = i18n.language.startsWith('en') ? 'en' : 'de';
+  const lang = appSprache();
 
   const [duels, setDuels] = useState<DuelSummary[]>([]);
   const [active, setActive] = useState<string | null>(null);
@@ -29,6 +31,10 @@ export default function DuelPage() {
   const [feedback, setFeedback] = useState<(AnswerResult & { round_done: boolean }) | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Freund herausfordern: Eingabefeld erscheint erst auf Tippen, damit die
+  // Übersicht nicht mit einem Formular startet.
+  const [fordernOffen, setFordernOffen] = useState(false);
+  const [fordernName, setFordernName] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -82,6 +88,27 @@ export default function DuelPage() {
       }
     } catch {
       setError(t('common.error'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function fordern() {
+    const name = fordernName.trim();
+    if (!name) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await challengeFriend(name, lang);
+      setFordernOffen(false);
+      setFordernName('');
+      await load();
+      openMatch(r.match_id);
+    } catch (e) {
+      // Die RPC meldet den Grund über eigene Fehlercodes — so steht hier ein
+      // verständlicher Satz statt einer englischen Postgres-Meldung.
+      const grund = (e as { grund?: string }).grund ?? 'unknown';
+      setError(t(`duel.challengeError.${grund}`, { name }));
     } finally {
       setBusy(false);
     }
@@ -172,6 +199,45 @@ export default function DuelPage() {
           {t('duel.new')}
         </button>
 
+        {!fordernOffen ? (
+          <button
+            onClick={() => setFordernOffen(true)}
+            disabled={busy}
+            className="w-full rounded-2xl border border-night-700 bg-night-900 p-4 font-semibold text-accent-400 mt-3 flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <UserPlus className="w-5 h-5" />
+            {t('duel.challengeFriend')}
+          </button>
+        ) : (
+          <div className="mt-3 rounded-2xl border border-night-700 bg-night-900 p-4">
+            <label htmlFor="freundName" className="text-xs text-accent-400/60">
+              {t('duel.challengeHint')}
+            </label>
+            <div className="flex gap-2 mt-2">
+              <input
+                id="freundName"
+                value={fordernName}
+                onChange={(e) => setFordernName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && fordern()}
+                placeholder={t('duel.challengePlaceholder')}
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                maxLength={16}
+                className="flex-1 min-w-0 rounded-xl bg-night-950 border border-night-700 px-3 py-2.5 text-sm outline-none focus:border-accent-500"
+              />
+              <button
+                onClick={fordern}
+                disabled={busy || !fordernName.trim()}
+                className="rounded-xl bg-accent-500 px-4 py-2.5 text-sm font-semibold text-night-950 disabled:opacity-40"
+              >
+                {t('duel.challengeGo')}
+              </button>
+            </div>
+            <p className="text-[11px] text-accent-400/40 mt-2">{t('duel.friendlyNote')}</p>
+          </div>
+        )}
+
         <div className="mt-6 flex flex-col gap-3">
           {duels.length === 0 && (
             <p className="text-sm text-accent-400/50 text-center py-6">{t('duel.empty')}</p>
@@ -186,6 +252,12 @@ export default function DuelPage() {
                 <div className="font-semibold truncate flex items-center gap-1.5">
                   {d.opponent?.username ?? '—'}
                   {d.opponent?.is_bot && <Bot className="w-3.5 h-3.5 text-accent-400/40 shrink-0" />}
+                  {d.is_friendly && (
+                    <Heart
+                      className="w-3.5 h-3.5 text-pink-400/70 shrink-0"
+                      aria-label={t('duel.friendly')}
+                    />
+                  )}
                 </div>
                 <div className="text-xs text-accent-400/60 mt-0.5">
                   {d.status === 'finished'
@@ -244,6 +316,13 @@ export default function DuelPage() {
         <div className="mt-2 text-[11px] text-accent-400/40 flex items-center gap-1">
           <Bot className="w-3 h-3" />
           {t('duel.botHint')}
+        </div>
+      )}
+
+      {state?.is_friendly && (
+        <div className="flex items-center gap-1.5 text-[11px] text-pink-400/60 mt-1">
+          <Heart className="w-3 h-3" />
+          {t('duel.friendlyNote')}
         </div>
       )}
 

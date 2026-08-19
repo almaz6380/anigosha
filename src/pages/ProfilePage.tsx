@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { appSprache } from '../i18n';
 import { ArrowLeft, Bell, BellOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
@@ -22,7 +23,7 @@ import {
  * Geräteeinstellungen zurückzuholen.
  */
 function PushSchalter() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [an, setAn] = useState(false);
   const [busy, setBusy] = useState(false);
   const [hinweis, setHinweis] = useState<string | null>(null);
@@ -42,7 +43,7 @@ function PushSchalter() {
         setAn(false);
         setHinweis(t('push.aus'));
       } else {
-        const r = await pushAnmelden(i18n.language.startsWith('en') ? 'en' : 'de');
+        const r = await pushAnmelden(appSprache());
         setAn(r.ok);
         setHinweis(r.ok ? t('push.an') : r.text);
       }
@@ -83,6 +84,7 @@ function PushSchalter() {
 const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
   { code: 'en', label: 'English' },
+  { code: 'es', label: 'Español' },
 ];
 
 /**

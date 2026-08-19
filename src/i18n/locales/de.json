@@ -120,7 +120,21 @@
     "draw": "Unentschieden",
     "endRound": "Runde abgeben",
     "queued": "Gerade ist kein Gegner frei. Wir suchen weiter — versuch es gleich nochmal.",
-    "botHint": "Gegner mit diesem Zeichen sind computergesteuert."
+    "botHint": "Gegner mit diesem Zeichen sind computergesteuert.",
+    "challengeFriend": "Freund herausfordern",
+    "challengeHint": "Spielername deines Freundes",
+    "challengePlaceholder": "z. B. AnimeFan42",
+    "challengeGo": "Los",
+    "friendly": "Freundschaftsduell",
+    "friendlyNote": "Freundschaftsduell — zählt nicht für die Bestenliste.",
+    "challengeError": {
+      "notFound": "Niemand spielt unter „{{name}}“. Achte auf die genaue Schreibweise.",
+      "self": "Gegen dich selbst geht es leider nicht.",
+      "bot": "Das ist ein computergesteuerter Gegner — such dir einen Menschen.",
+      "running": "Gegen {{name}} läuft schon ein Duell. Spiel es erst zu Ende.",
+      "tooMany": "Das waren viele Herausforderungen auf einmal. Versuch es in einer Stunde nochmal.",
+      "unknown": "Das hat nicht geklappt. Versuch es nochmal."
+    }
   },
   "legal": {
     "imprint": "Impressum",

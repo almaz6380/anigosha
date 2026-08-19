@@ -120,7 +120,21 @@
     "draw": "Draw",
     "endRound": "Hand over the round",
     "queued": "No opponent free right now. We keep looking — try again shortly.",
-    "botHint": "Opponents with this mark are computer-controlled."
+    "botHint": "Opponents with this mark are computer-controlled.",
+    "challengeFriend": "Challenge a friend",
+    "challengeHint": "Your friend's player name",
+    "challengePlaceholder": "e.g. AnimeFan42",
+    "challengeGo": "Go",
+    "friendly": "Friendly duel",
+    "friendlyNote": "Friendly duel — does not count towards the leaderboard.",
+    "challengeError": {
+      "notFound": "Nobody plays as “{{name}}”. Check the exact spelling.",
+      "self": "You can't challenge yourself.",
+      "bot": "That's a computer opponent — pick a human.",
+      "running": "A duel against {{name}} is already running. Finish it first.",
+      "tooMany": "That's a lot of challenges at once. Try again in an hour.",
+      "unknown": "That didn't work. Please try again."
+    }
   },
   "legal": {
     "imprint": "Legal Notice",

@@ -25,7 +25,7 @@ Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Sp
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
-**Sprachen:** DE + EN zum Launch; weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen)
+**Sprachen:** DE + EN zum Launch; **ES seit 18.08.2026 im Repo fertig** (Migrationen 0022–0035 + `es.json`), weitere Sprachen = reine Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen). ⚠ ES ist erst live, wenn die Migrationen 0022–0035 eingespielt sind — diese Cloud-Sitzung hatte keine DB-Schlüssel. Ablauf: erst 0022 (Constraints + RPCs + `seed_uebersetzung`), dann 0023–0035 (804 Fragen), je mit Trockenlauf. Sprachweiche zentral in `appSprache()` (`src/i18n/index.ts`); Rechtstexte bleiben DE/EN, Spanisch sieht Englisch. Store-Texte und E-Mail-Vorlagen für ES stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 
@@ -753,6 +753,82 @@ Zum Deployen nicht nötig (Push auf `main` genügt), nur für CLI-Befehle.
 **Vor jeder Arbeitssitzung `git fetch`** — Vercel deployt bei jedem Push auf `main`
 automatisch. Wer auf einem alten Stand aufsetzt, rollt mit seinem Push die
 Live-Version zurück.
+
+## Reel-Generator für Instagram/TikTok — `tools/reels/` (10.08.2026)
+
+Baut aus den 804 Quizfragen fertige Hochkant-Videos (1080×1920, H.264, 32 s, mit Ton)
+plus Caption/Hashtag-Datei. Anleitung: `tools/reels/README.md`.
+
+```bash
+node tools/reels/make-reel.mjs --format fandom --category one_piece --lang de
+node tools/reels/make-reel.mjs --format ladder --lang en --seed 7
+node tools/reels/make-reel.mjs --format fandom --category naruto --dry-run   # nur Standbilder
+```
+
+**Fertige Videos liegen in `tools/reels/fertig/`** — drei Quiz-Reels (2× DE, 1× EN)
+und der animierte Werbespot (DE mit Sprecher, EN ohne). Sprachen stehen im Dateinamen,
+Einzelheiten und Neu-Erzeugung in `tools/reels/fertig/README.md`. Bewusst im Repo und
+nicht unter `out/`: Letzteres ist gitignored, und der Container einer Cloud-Sitzung ist
+flüchtig — am 10.08. fiel der Dateibaum zurück und nahm alles unter `out/` mit.
+
+✅ **Store-Status geklärt (18.08.2026): beide Stores sind live.** Josef hat den App
+Store bestätigt, Google Play läuft seit vc4. Die Videos enden mit „kostenlos im Store"
+bzw. „Now on the App Store and Google Play" — das trifft jetzt zu, die frühere Sperre
+(Stand 10.08.: „noch nicht im App Store") ist erledigt.
+
+**Ein Link für beide Stores: `anigosha.vercel.app/get`** (auch `/app`, `/download`) —
+`public/get.html`, eine statische Seite ohne Fremddienst. Sie erkennt die Plattform und
+leitet weiter: iOS → App Store, Android → Play, alles andere → Web-App; auf dem Rechner
+bleibt sie stehen und zeigt die Knöpfe (das ist zugleich der Rückfall, falls ein
+In-App-Browser die Weiterleitung unterbindet). Gedacht für die Profile auf TikTok,
+Instagram und Facebook, wo nur EIN Link hineinpasst.
+- **Pflegestelle sind die beiden Schalter `IOS_LIVE`/`ANDROID_LIVE`** oben in der Datei.
+  Steht einer auf `false`, sieht diese Plattform den Knopf nicht und landet in der
+  Web-App — lieber eine Runde im Browser als eine 404 im Store.
+- Die Rewrite-Regel in `vercel.json` muss **vor** der SPA-Regel stehen, sonst verschluckt
+  die den Pfad. ⚠ Und **keine Kommentar-Schlüssel in `vercel.json`**: Vercel prüft gegen
+  ein Schema und bricht bei unbekannten Feldern den ganzen Deploy ab.
+- Die Sprachzeile nennt bewusst nur DE und EN, solange die ES-Migrationen 0022–0035
+  nicht eingespielt sind (Oberfläche wäre spanisch, die 804 Fragen nicht).
+- ⚠ Store-Hosts sind aus der Claude-Sitzung gesperrt (403 vom Proxy) — ob eine App
+  wirklich im Store steht, lässt sich hier **nicht** nachsehen. Das muss Josef sagen
+  oder der ASC-Workflow (`mode: status`).
+
+**Warum das im Repo liegt:** Josef arbeitet vom Handy, Videoschnitt geht dort nicht.
+Die Fragen tragen bereits richtige Antwort **und** Erklärung, zweisprachig — damit ist
+ein Quiz-Reel reine Formatierungsarbeit. Die „Wusstest du?"-Zeile ist der Trumpf
+gegenüber der Konkurrenz: Andere Quizvideos zeigen nur die Antwort, das hier gibt einen
+Grund, bis zum Ende zu schauen (Watchtime = Ranking-Faktor).
+
+**Social-Strategie dahinter:** kein Sammelaccount über alle vier Apps. TikTok und
+Instagram ranken nach Interesse, nicht nach Account — ein Kanal mit Anime-Quiz,
+Mahjong, Fitness und Sucht-Recovery lernt der Algorithmus nie zuzuordnen, und die vier
+Zielgruppen überlappen sich nicht. Deshalb **erst ein Kanal für Anigosha**
+(Quiz ist das nativste Kurzvideoformat, Zielgruppe 14–25 sitzt auf TikTok), Rest später.
+
+**Vier Dinge, die hier Zeit gekostet haben oder kosten würden:**
+
+1. **Kein CSS-`animation`, kein `setTimeout` im Template.** Alles hängt an
+   `window.setFrame(n)` und muss reine Funktion des Frame-Index sein — sonst verrutschen
+   Frames und nichts ist reproduzierbar.
+2. **Playwrights mitgelieferter ffmpeg kann kein MP4.** Er ist auf VP8/WebM abgespeckt
+   (`-disable-everything`, nur `libvpx_vp8`). Deshalb `ffmpeg-static`.
+3. **`page.setContent()`-Seiten haben keinen Origin** → Schrift und Logo als
+   `data:`-URI; `file://` lädt dort nicht. Gleiche Regel wie in `tools/make-icon.mjs`.
+4. **`assets/` steht global in `.gitignore`** (vom Icon-Werkzeug). Ohne die Ausnahme
+   `!tools/reels/assets/` verschwinden Schrift und Klänge lautlos aus dem Commit.
+
+Passt die Playwright-Version nicht zum vorhandenen Chromium: `CHROMIUM_PFAD` setzen
+statt 150 MB nachzuladen (in der Cloud-Sitzung `/opt/pw-browsers/chromium`).
+
+Die sechs Klänge in `tools/reels/assets/sfx/` sind **einmalig** über fal.ai
+(`sonilo/v1.1/text-to-sound-effects`, ~$0,08) erzeugt und liegen im Repo — jeder
+weitere Reel ist gratis. Der Musikteppich läuft bewusst bei ~10 %, damit in der App
+noch ein Trending-Sound darüberpasst.
+
+⚠ **Reels sind reine Typografie** — nie Bilder erkennbarer Anime-Figuren, auch keine
+KI-generierten (dieselbe Regel wie für die App). Anime-Titel als Text sind in Reels und
+Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keywords.
 
 ## Konventionen
 

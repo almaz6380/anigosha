@@ -12,6 +12,8 @@ export interface DuelSummary {
   match_id: string;
   status: 'waiting' | 'active' | 'finished';
   round_no: number;
+  /** Freundschaftsduell: gezielt herausgefordert, zählt nicht für Elo. */
+  is_friendly?: boolean;
   my_turn: boolean;
   my_score: number;
   opp_score: number;
@@ -28,6 +30,37 @@ export async function startDuel(lang: string): Promise<{ match_id: string | null
   const { data, error } = await supabase.rpc('start_duel', { p_lang: lang });
   if (error) throw error;
   return data as { match_id: string | null; opponent_is_bot?: boolean; queued?: boolean };
+}
+
+/**
+ * Fehlergründe von `challenge_friend`. Die RPC meldet sie über eigene
+ * SQLSTATE-Codes, damit der Client sie übersetzen kann, statt eine englische
+ * Postgres-Meldung anzuzeigen.
+ */
+export type HerausforderungFehler =
+  | 'notFound' | 'self' | 'bot' | 'running' | 'tooMany' | 'unknown';
+
+const FEHLER_CODES: Record<string, HerausforderungFehler> = {
+  P0002: 'notFound',
+  P0003: 'self',
+  P0004: 'bot',
+  P0005: 'running',
+  P0006: 'tooMany',
+};
+
+export async function challengeFriend(
+  username: string,
+  lang: string,
+): Promise<{ match_id: string; opponent: Opponent | null }> {
+  const { data, error } = await supabase.rpc('challenge_friend', {
+    p_username: username,
+    p_lang: lang,
+  });
+  if (error) {
+    const grund = FEHLER_CODES[error.code ?? ''] ?? 'unknown';
+    throw Object.assign(new Error(grund), { grund });
+  }
+  return data as { match_id: string; opponent: Opponent | null };
 }
 
 export async function listDuels(): Promise<DuelSummary[]> {
