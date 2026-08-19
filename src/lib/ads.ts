@@ -25,6 +25,27 @@ import { Capacitor } from '@capacitor/core';
 // und WELLbooked.
 const USE_TEST_ADS = false;
 
+// ── Kein Tracking, nur nicht-personalisierte Werbung (13.08.2026) ──────────
+//  Anigosha erklaert in der App-Datenschutzangabe KEIN Tracking und fragt
+//  deshalb auch nicht per App Tracking Transparency. Damit ist Apples
+//  Richtlinie 2.1 gegenstandslos, an der 1.0 (Build 12) am 12.08. gescheitert
+//  ist — wo kein Tracking erklaert wird, verlangt Apple keinen ATT-Dialog.
+//
+//  Das ist eine bewusste Entscheidung mit Preis: personalisierte Werbung
+//  bringt spuerbar mehr Erloes. Wer sie zurueckholen will, braucht dreierlei
+//  gleichzeitig, sonst kommt dieselbe Ablehnung wieder:
+//    1. NSUserTrackingUsageDescription zurueck in ios/App/App/Info.plist,
+//    2. die ATT-Abfrage nativ im AppDelegate (NICHT ueber die Capacitor-
+//       Bruecke — das Plugin ruft ATTrackingManager auf einer Hintergrund-
+//       Warteschlange auf, dort erscheint kein Dialog; Fassung siehe
+//       Commit b534db5),
+//    3. in App Store Connect die Datenschutzangabe wieder auf Tracking.
+//
+//  `npa: 1` geht an jede Anzeigenanfrage. Es ist die Zusage an Google, die
+//  Daten nicht zur Personalisierung zu nutzen — genau das, was die
+//  Datenschutzangabe „kein Tracking" behauptet. Beides muss zusammenpassen.
+const NPA = true;
+
 // Offizielle Test-IDs von Google (öffentlich dokumentiert)
 const TEST = {
   ios: {
@@ -67,11 +88,45 @@ let isPremium = false;
 // Eine Anzeige nach jeder zweiten beendeten Runde und frühestens 90 Sekunden
 // nach der letzten. Ein Quiz, das nach jeder Runde Werbung zeigt, verliert
 // seine Spieler schneller, als die Einblendungen einbringen.
+//
+// Solo und Duell teilen sich diesen Zähler bewusst. Zwei getrennte Zähler
+// würden die Einblendungen verdoppeln, sobald jemand zwischen beiden Modi
+// wechselt — und genau das tun Spieler ständig.
 const EVERY_NTH_ROUND = 2;
 const MIN_GAP_MS = 90_000;
 
 let roundCounter = 0;
 let lastShownAt = 0;
+
+// --- Einmalige Gelegenheiten ------------------------------------------------
+// Manche Abschlüsse gibt es nur einmal, ihr Bildschirm aber beliebig oft: Eine
+// beendete Duellpartie bleibt in der Übersicht stehen und lässt sich morgen
+// wieder öffnen. Der Zähler oben reicht dafür nicht — er lebt nur im Speicher,
+// und der Mindestabstand fängt bloß das schnelle Hin und Her ab.
+const SEEN_KEY = 'anigosha.ads.seen';
+const SEEN_MAX = 200; // ältere Einträge fallen hinten raus, sonst wächst der Eintrag ewig
+
+function seenKeys(): string[] {
+  try {
+    const raw = localStorage.getItem(SEEN_KEY);
+    const list: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list.filter((k): k is string => typeof k === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Gibt false zurück, wenn sich der Merker nicht sichern ließ. */
+function markSeen(key: string): boolean {
+  try {
+    const list = seenKeys().filter((k) => k !== key);
+    list.push(key);
+    localStorage.setItem(SEEN_KEY, JSON.stringify(list.slice(-SEEN_MAX)));
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function setAdsPremiumStatus(premium: boolean) {
   isPremium = premium;
@@ -80,18 +135,6 @@ export function setAdsPremiumStatus(premium: boolean) {
 async function runConsentFlow() {
   try {
     const info = await AdMob.requestConsentInfo();
-
-    if (Capacitor.getPlatform() === 'ios') {
-      try {
-        const tracking = await AdMob.trackingAuthorizationStatus();
-        if (tracking.status === 'notDetermined') {
-          await AdMob.requestTrackingAuthorization();
-        }
-      } catch (e) {
-        console.warn('ATT-Abfrage fehlgeschlagen:', e);
-      }
-    }
-
     if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
       await AdMob.showConsentForm();
     }
@@ -141,12 +184,33 @@ export async function maybeShowInterstitial() {
   if (Date.now() - lastShownAt < MIN_GAP_MS) return;
 
   try {
-    await AdMob.prepareInterstitial({ adId: ids().interstitial });
+    await AdMob.prepareInterstitial({ adId: ids().interstitial, npa: NPA });
     await AdMob.showInterstitial();
     lastShownAt = Date.now();
   } catch (e) {
     console.warn('Interstitial fehlgeschlagen:', e);
   }
+}
+
+/**
+ * Wie `maybeShowInterstitial`, aber je `key` nur ein einziges Mal — über
+ * App-Neustarts hinweg. Für Abschlüsse, deren Bildschirm erneut aufrufbar ist
+ * (Duellpartie: `duel:<match_id>`).
+ *
+ * Der Merker wird VOR der Anzeige gesetzt, nicht danach: Ein Interstitial legt
+ * die WebView schlafen, und wird die App währenddessen vom System beendet,
+ * käme die Anzeige beim nächsten Öffnen sonst gleich noch einmal.
+ *
+ * Die Gelegenheit ist damit auch dann verbraucht, wenn die Bremse oben sie
+ * verwirft — genau wie in Solo, wo jede beendete Sitzung nur eine Chance hat.
+ */
+export async function maybeShowInterstitialOnce(key: string) {
+  if (!ready || isPremium) return;
+  if (seenKeys().includes(key)) return;
+  // Kein Speicher (Privatmodus, gesperrter Speicher): lieber gar keine Anzeige
+  // als bei jedem Öffnen wieder eine.
+  if (!markSeen(key)) return;
+  await maybeShowInterstitial();
 }
 
 /**
@@ -157,7 +221,7 @@ export async function maybeShowInterstitial() {
 export async function showRewardedAd(): Promise<boolean> {
   if (!ready) return false;
   try {
-    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
+    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded, npa: NPA });
     const reward = await AdMob.showRewardVideoAd();
     return !!reward;
   } catch (e) {

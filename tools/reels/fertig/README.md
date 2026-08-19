@@ -3,26 +3,24 @@
 Ausgelieferte Videos, bereit zum Hochladen. **1080×1920, H.264 + AAC, 30 fps** —
 so nehmen TikTok und Instagram sie ohne Nachkodierung an.
 
-## ⚠ Vor dem Posten: Store-Status prüfen
+## Store-Status: beide Stores sind live ✅
 
 Die Quiz-Reels enden mit **„Anigosha — kostenlos im Store"**, die beiden Spots seit
 18.08.2026 mit **„Now on the App Store and Google Play"** — die Spots nennen die
-Stores also ausdrücklich beim Namen.
+Stores also ausdrücklich beim Namen. **Das stimmt jetzt:** Josef hat am 18.08.2026
+gemeldet, dass Anigosha auch im **App Store** steht; Google Play läuft seit vc4.
 
-Stand **10.08.2026** hat Josef gemeldet: **Anigosha ist noch NICHT im App Store**;
-im App Store *und* Google Play stehen bisher nur **Swaply** und **Mahjong Royale**.
-Die Notiz in `CLAUDE.md` („1.0/Build 12 eingereicht", „Play vc4 live") ist damit
-mindestens für iOS überholt oder die Prüfung läuft noch.
+Die frühere Sperre an dieser Stelle („Stand 10.08.: noch NICHT im App Store, erst
+posten wenn auffindbar") ist damit erledigt. Die Videos können raus.
 
-**Diese Videos also erst veröffentlichen, wenn die App in dem Store auffindbar ist,
-aus dem die Zuschauer kommen.** Ein Aufruf, der ins Leere führt, verbrennt die
-Reichweite genau einmal — und die ersten Videos eines neuen Kanals sind die, die
-am meisten Auslieferung bekommen.
-
-Liegt die App nur bei Google Play, muss der Abspanntext das sagen — bei den Spots
-umso mehr, weil sie den App Store beim Namen nennen. Zu ändern in
+Sollte sich das je wieder ändern, ist der Abspanntext die Stellschraube:
 `tools/reels/spot/storyboard-spot.mjs` (`TEXTE.<lang>.outroCta`) bzw.
 `tools/reels/storyboard.mjs` (`outroCta`), danach neu bauen — kostet nichts.
+
+**Ein Link für beide Stores** steht in `public/get.html` und ist unter
+`anigosha.vercel.app/get` erreichbar (auch `/app`, `/download`). Er erkennt die
+Plattform und leitet weiter — gedacht für die Profile auf TikTok, Instagram und
+Facebook, wo nur EIN Link hineinpasst.
 
 ## Inhalt
 

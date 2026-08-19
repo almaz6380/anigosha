@@ -4,6 +4,10 @@
 // eine Szene, die Reels zeigen Fragen. Gemeinsam sind nur Renderer, Encoder
 // und die Klänge.
 
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 export const FPS = 30;
 
 // Die Bewegungs-Prompts beschreiben BEWEGUNG, nicht Inhalt — der steckt schon
@@ -136,10 +140,14 @@ export const TEXTE = {
     // Entscheidung vom 18.08.): „App Store" und „Google Play" sind ohnehin
     // Eigennamen, und die Zeile soll in jedem Markt gleich lesbar sein.
     outroCta: 'Now on the App Store and Google Play',
-    // Darunter die Sprachen, die die App wirklich kann — jede in sich selbst
-    // benannt, das versteht man ohne Übersetzung. Kommen weitere Sprachpakete
-    // dazu, gehört diese Zeile nachgezogen.
-    kommentar: 'English · Deutsch',
+    // Darunter die Sprachen, die die App wirklich kann — anders als die
+    // Store-Zeile darüber IN DER SPRACHE DER FASSUNG, und die eigene zuerst.
+    // Ein deutscher Spot, der „English · Deutsch" sagt, stellt die fremde
+    // Sprache voran und liest sich wie eine Übersetzung.
+    // ⚠ Spanisch fehlt hier bewusst: Die Oberfläche kann es, die 804 Fragen
+    // noch nicht (Migrationen 0022–0035 nicht eingespielt). Sobald die drin
+    // sind, hier UND in public/get.html nachziehen.
+    kommentar: 'Deutsch · Englisch',
     // Sprechtext, sobald die Stimme feststeht. Die eckigen Klammern sind
     // Regieanweisungen für ElevenLabs v3, kein Text zum Vorlesen.
     sprecher: '[excited] Du glaubst, du kennst Anime? [shouting] Dann beweis es! '
@@ -149,7 +157,7 @@ export const TEXTE = {
     outroTitel: 'Can you\nhandle the rest?',
     outroSub: '804 questions · 12 series · duel real opponents',
     outroCta: 'Now on the App Store and Google Play',
-    kommentar: 'English · Deutsch',
+    kommentar: 'English · German',
     sprecher: '[excited] You think you know anime? [shouting] Then prove it! '
             + '[excited] Anigosha — 804 questions, twelve series, and duels against real opponents!',
   },
@@ -157,6 +165,24 @@ export const TEXTE = {
 
 // Storyboard-Objekt in der Form, die tools/reels/template.mjs erwartet —
 // so lässt sich das Outro der Quiz-Reels unverändert wiederverwenden.
+// Store-Badges als data:-URI. Die Vorlage wird über page.setContent() gerendert
+// und hat deshalb keinen Origin — file:// laedt dort nicht (gleiche Regel wie
+// bei Schrift und Logo). Fehlt eine Datei, bleibt es bei der Textpille; der
+// Spot ist also nie kaputt, nur schlichter.
+function badges(lang) {
+  const ordner = join(dirname(fileURLToPath(import.meta.url)), 'badges');
+  const laden = (name) => {
+    for (const kandidat of [`${name}-${lang}.png`, `${name}-en.png`]) {
+      const pfad = join(ordner, kandidat);
+      if (existsSync(pfad)) return `data:image/png;base64,${readFileSync(pfad).toString('base64')}`;
+    }
+    return null;
+  };
+  const apple = laden('appstore');
+  const play = laden('googleplay');
+  return apple && play ? { apple, play } : null;
+}
+
 export function outroStoryboard(lang = 'de') {
   const t = TEXTE[lang];
   const dauer = OUTRO_DAUER * FPS;
@@ -168,6 +194,7 @@ export function outroStoryboard(lang = 'de') {
     bloecke: [{
       typ: 'outro', start: 0, dauer, ende: dauer,
       titel: t.outroTitel, sub: t.outroSub, cta: t.outroCta, kommentar: t.kommentar,
+      badges: badges(lang),
     }],
   };
 }
@@ -182,7 +209,9 @@ export function klangEreignisse() {
     if (teil.art === 'anime' && teil.id === '2-herausforderung') dazu('hook-hit', 0.85);
     if (teil.art === 'anime' && teil.id === '3-handys') dazu('whoosh', 0.6);
     if (teil.art === 'app') { dazu('tick', 0.4); ev.push({ id: 'correct', frameStart: f + Math.round(2.6 * FPS), lautstaerke: 0.75 }); }
-    if (teil.art === 'outro') dazu('outro', 0.7);
+    // Im Abspann bewusst KEIN App-Klang mehr (Josef, 18.08.): Dort soll allein
+    // der Song stehen. Der alte 'outro'-Jingle lag genau auf dem Schlussakkord
+    // und hat ihn zugedeckt — der einzige Moment, in dem die Musik frei trägt.
 
     const sek = teil.art === 'app' ? APP_DAUER
               : teil.art === 'outro' ? OUTRO_DAUER

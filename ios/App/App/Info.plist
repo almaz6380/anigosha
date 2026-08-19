@@ -28,8 +28,6 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Anigosha nutzt diese Angabe nur, um dir passendere Werbung zu zeigen. Du kannst jederzeit ablehnen.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

@@ -50,7 +50,8 @@ BILDER = [
 # Prueferhinweise, Abo-Bezeichnungen). Sie hier blind auszufuehren wuerde die
 # Texte EINER ANDEREN App in diese schreiben. Wer sie braucht, traegt zuerst
 # die eigenen Werte im Skript ein und entfernt den Namen aus dieser Liste.
-NICHT_KONFIGURIERT = ['name', 'pruefnotiz', 'abo_screenshot', 'abo_namen', 'abo_notiz']
+NICHT_KONFIGURIERT = ['name', 'abo_screenshot', 'abo_namen',
+                      'abo_notiz', 'alles']
 
 
 def _sperre_pruefen(a):
@@ -446,38 +447,22 @@ def setze_abo_screenshot(tok):
                                           'id': s['id']}}})
 
 
-# Antwort auf die Ablehnung vom 29.07. Der Pruefer sieht sonst nur, DASS
-# sich etwas geaendert hat, nicht wo. Englisch, weil das App Review liest.
-PRUEFNOTIZ = """What changed since the rejected build (1.0 build 3)
+# Prueferhinweis fuer Anigosha. Englisch, weil App Review das liest.
+# Inhaltsgleich mit dem, was am 13.08.2026 in App Store Connect steht — wer
+# --pruefnotiz laufen laesst, ueberschreibt die Notiz also nicht mit etwas
+# Fremdem. Bei jeder Aenderung in ASC hier nachziehen (oder umgekehrt).
+PRUEFNOTIZ = """Sign in with the demo account (already verified, no
+registration needed). All areas are then accessible: solo quiz, duels against
+bots and humans, leaderboards, profile. The "Remove Ads" purchase is optional
+and not required for review. The demo account is set to English.
 
-Guideline 1.4.1 - Safety, Physical Harm (missing sources)
-Every article that touches health now ends with a permanently visible
-"Sources" list - not collapsed, no tap required. Links open in Safari.
-Coverage is complete: 24 knowledge articles (training, nutrition,
-supplements, blood markers), 20 peptide articles and 8 diet articles.
-Where to look, starting from the app's Library tab:
-  Library > Training / Nutrition / Supplements / Blood values > any topic
-  Library > Peptides > any substance
-  Library > Diets > any diet
-The TDEE calculator cites Mifflin-St Jeor (1990) next to its result.
-Sources are real, verified references (PubMed, NIH, WHO, NEJM and similar).
-Entries without a stable public link are listed bibliographically without a
-URL rather than linked to an unreliable page.
-The AI coach is instructed to name its sources and never to invent one.
+Privacy / advertising
+Anigosha does not track users. The app privacy information declares no
+tracking, the binary contains no NSUserTrackingUsageDescription, and every ad
+request is sent with npa=1 (non-personalized). SKAdNetwork is used for
+attribution only, which does not require tracking consent.
 
-Guideline 2.1(b) - Performance, App Completeness (subscription)
-The auto-renewable subscriptions are submitted together with this version.
-Both now carry a review screenshot of the paywall.
-To reach the paywall in the app: Profile tab > "FullRep Premium" card.
-A 7-day free trial is offered before any purchase.
-
-Medical disclaimer
-FullRep does not replace medical advice. A disclaimer appears on every
-health-related screen, and a dedicated page is reachable at
-Profile > Health notice.
-
-Demo account (not required - the app is fully usable as a guest):
-appreview@wellbooked.at / MyPeak-Review#2026
+Demo account: store-review@anigosha.app / AnigoshaReview2026
 """
 
 
@@ -568,6 +553,166 @@ def aufraeumen(tok):
                   f'{res["data"]["attributes"].get("state")}')
     if not getan:
         print('  Keine blockierende Einreichung gefunden.')
+
+
+def alterseinstufung(tok):
+    """Alle Felder der Alterseinstufung zeigen — liest nur.
+
+    ASC mahnt seit August 2026 neue Fragen zu „Funktionen fuer soziale
+    Medien" an (Frist 07.09.2026). Welche Felder das genau sind, sagt die
+    Oberflaeche nicht; hier stehen sie mitsamt Wert, damit man die
+    unbeantworteten (None) sieht, statt im Formular zu suchen.
+    """
+    aid = app_id(tok)
+    infos = api(tok, f'apps/{aid}/appInfos')
+    for info in infos.get('data', []):
+        zustand = (info['attributes'].get('appStoreState')
+                   or info['attributes'].get('state') or '?')
+        ar = api(tok, f'appInfos/{info["id"]}/ageRatingDeclaration', fatal=False)
+        if not ar.get('data'):
+            print(f'\n  appInfo {info["id"][:8]} ({zustand}): keine Erklaerung')
+            continue
+        attr = ar['data']['attributes']
+        print(f'\n  appInfo {info["id"][:8]} ({zustand}) '
+              f'— Erklaerung {ar["data"]["id"][:8]}')
+        offen = [k for k, w in attr.items() if w is None]
+        for k in sorted(attr):
+            marke = '  ⚠ unbeantwortet' if attr[k] is None else ''
+            print(f'    {k}: {attr[k]!r}{marke}')
+        print(f'    → {len(offen)} von {len(attr)} unbeantwortet')
+
+
+# Antworten, die --alter-setzen ergaenzt. Nur Felder, die noch auf None
+# stehen, werden geschrieben — was schon beantwortet ist, bleibt unberuehrt.
+#
+# socialMediaAgeRestricted=False ist keine Ermessensfrage, sondern folgt aus
+# socialMedia=False, das seit der ersten Einreichung so erklaert ist:
+# Anigosha hat keinen Chat, keine Nachrichten, keine Beitraege und keine
+# Bilder. Duelle laufen ohne jede Kommunikation, sichtbar ist nur der
+# selbstgewaehlte Spielername in der Bestenliste (deshalb steht
+# userGeneratedContent auf True). Was es nicht gibt, kann nicht
+# altersbeschraenkt sein.
+ALTER_ANTWORTEN = {'socialMediaAgeRestricted': False}
+
+
+def alter_setzen(tok):
+    """Offene Felder der Alterseinstufung beantworten.
+
+    ASC mahnt die neuen Fragen zu „Funktionen fuer soziale Medien" bis zum
+    07.09.2026 an; laeuft die Frist ab, blockiert das kuenftige
+    Einreichungen. Geschrieben wird nur am bearbeitbaren appInfo und nur,
+    was dort None ist — ein bereits gesetzter Wert wird nie ueberschrieben.
+    """
+    aid = app_id(tok)
+    for info in api(tok, f'apps/{aid}/appInfos').get('data', []):
+        zustand = (info['attributes'].get('appStoreState')
+                   or info['attributes'].get('state') or '?')
+        ar = api(tok, f'appInfos/{info["id"]}/ageRatingDeclaration', fatal=False)
+        if not ar.get('data'):
+            continue
+        attr = ar['data']['attributes']
+        offen = {k: w for k, w in ALTER_ANTWORTEN.items() if attr.get(k) is None}
+        print(f'\n  appInfo {info["id"][:8]} ({zustand})')
+        for k, w in ALTER_ANTWORTEN.items():
+            if k in offen:
+                print(f'    {k}: None -> {w}')
+            else:
+                print(f'    {k}: schon {attr.get(k)!r} — bleibt')
+        if not offen:
+            continue
+        if TROCKEN:
+            print(f'    [trocken] wuerde {len(offen)} Feld(er) setzen')
+            continue
+        res = api(tok, f'ageRatingDeclarations/{ar["data"]["id"]}', 'PATCH', {
+            'data': {'type': 'ageRatingDeclarations', 'id': ar['data']['id'],
+                     'attributes': offen},
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'    FEHLER: {fehler_text(res)}')
+            print('    Nichts veraendert. Steht die Version in Pruefung, sperrt'
+                  ' Apple\n    den Schreibzugriff — dann nach der Freigabe'
+                  ' erneut.')
+        else:
+            print(f'    gesetzt: {", ".join(offen)}')
+
+
+def erneut_einreichen(tok):
+    """Eine abgelehnte Uebermittlung erneut abschicken — ohne sie anzufassen.
+
+    Nach einer Ablehnung steht die Uebermittlung auf UNRESOLVED_ISSUES. Der
+    normale --einreichen-Weg bricht dort ab und verlangt --aufraeumen. Genau
+    das waere hier falsch: Zurueckziehen loest auch das angehaengte
+    Kaufprodukt, und wieder anhaengen kann die API es nicht (am 07.08.2026
+    zweimal am echten Endpunkt geprueft). In der Oberflaeche heisst dieser
+    Weg „Erneut zur App-Pruefung uebermitteln" und behaelt beide Elemente.
+
+    Deshalb wird hier NICHTS zurueckgezogen und nichts angelegt — nur
+    submitted=true an die bestehende Uebermittlung. Schlaegt das fehl, ist
+    der Zustand unveraendert und der Klick in ASC bleibt uebrig.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    va = v['attributes']
+    print(f'  Version {va["versionString"]} ({va.get("appStoreState")})')
+
+    # Ohne neuen Build waere die Wiedervorlage sinnlos: Apple bekaeme
+    # denselben Stand noch einmal und lehnte aus demselben Grund ab.
+    b = api(tok, f'appStoreVersions/{v["id"]}/build', fatal=False)
+    if not b.get('data'):
+        sys.exit('  ABBRUCH: der Version ist kein Build zugewiesen '
+                 '— erst --build NR.')
+    ba = b['data']['attributes']
+    print(f'  Build {ba.get("version")} ({ba.get("processingState")})')
+
+    subm = api(tok, f'apps/{aid}/reviewSubmissions?limit=20')
+    lauf = [s for s in subm.get('data', [])
+            if s['attributes'].get('state') in ('WAITING_FOR_REVIEW', 'IN_REVIEW')]
+    if lauf:
+        print(f'  Laeuft bereits ({lauf[0]["attributes"]["state"]}) '
+              f'— nichts zu tun.')
+        return
+    offen = [s for s in subm.get('data', [])
+             if s['attributes'].get('state') in ('UNRESOLVED_ISSUES',
+                                                 'READY_FOR_REVIEW')]
+    if not offen:
+        sys.exit('  ABBRUCH: keine offene Uebermittlung. Mit --einreichungen '
+                 'nachsehen; ist wirklich keine da, ist --einreichen richtig.')
+    if len(offen) > 1:
+        sys.exit(f'  ABBRUCH: {len(offen)} offene Uebermittlungen — welche '
+                 f'gemeint ist, entscheidet niemand blind. --einreichungen.')
+
+    sub = offen[0]
+    print(f'  Uebermittlung {sub["id"]} ({sub["attributes"].get("state")})')
+    items = api(tok, f'reviewSubmissions/{sub["id"]}/items', fatal=False)
+    for i in items.get('data', []):
+        ziele = [f'{n}={bz["data"]["id"]}'
+                 for n, bz in (i.get('relationships') or {}).items()
+                 if (bz or {}).get('data')]
+        print(f'    Element {i["attributes"].get("state")}: '
+              f'{", ".join(ziele) or "—"}')
+    if len(items.get('data', [])) < 2:
+        # Kein harter Abbruch: Welche Beziehungen die Leseansicht fuer
+        # einmalige Kaeufe ausgibt, ist nicht dokumentiert — ein fehlendes
+        # Element kann auch nur heissen, dass die API es nicht zeigt.
+        print('  ⚠ weniger als zwei Elemente. Faehrt der Kauf nicht mit, '
+              'zeigt die App einen Knopf fuer ein ungenehmigtes Produkt '
+              '(3.1.1). Vor dem Absenden in ASC nachsehen.')
+
+    if TROCKEN:
+        print('  [trocken] wuerde submitted=true setzen')
+        return
+    res = api(tok, f'reviewSubmissions/{sub["id"]}', 'PATCH', {
+        'data': {'type': 'reviewSubmissions', 'id': sub['id'],
+                 'attributes': {'submitted': True}},
+    }, fatal=False)
+    if res.get('_fehler'):
+        print(f'  ABSENDEN FEHLGESCHLAGEN: {fehler_text(res)}')
+        print('  Nichts wurde veraendert. In App Store Connect auf der')
+        print('  Uebermittlungsseite „Erneut zur App-Pruefung uebermitteln" —')
+        print('  ein Klick, und beide Elemente bleiben beisammen.')
+        return
+    print(f'  abgesendet — Zustand jetzt '
+          f'{res["data"]["attributes"].get("state")}')
 
 
 def einreichen(tok):
@@ -1108,6 +1253,13 @@ def main():
                    help='App-Review-Notiz: was sich seit der Ablehnung aendert')
     p.add_argument('--einreichen', action='store_true',
                    help='Version samt Abos zur Pruefung schicken')
+    p.add_argument('--alter-setzen', action='store_true',
+                   help='offene Felder der Alterseinstufung beantworten')
+    p.add_argument('--alter', action='store_true',
+                   help='Alterseinstufung: alle Felder zeigen (liest nur)')
+    p.add_argument('--erneut', action='store_true',
+                   help='abgelehnte Uebermittlung erneut absenden '
+                        '(zieht nichts zurueck, behaelt den Kauf)')
     p.add_argument('--alles', action='store_true',
                    help='name, build 4, screenshots, abo-screenshot, '
                         'pruefnotiz, einreichen')
@@ -1124,7 +1276,7 @@ def main():
            a.screenshots, a.abo_screenshot,
            a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
-           a.einreichen, a.alles]
+           a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
         p.error('Einen Befehl angeben, z. B. --status')
 
@@ -1174,6 +1326,12 @@ def main():
         exportfrage(tok)
     if a.pruefnotiz:
         setze_pruefnotiz(tok)
+    if a.alter:
+        alterseinstufung(tok)
+    if a.alter_setzen:
+        alter_setzen(tok)
+    if a.erneut:
+        erneut_einreichen(tok)
     if a.einreichen:
         einreichen(tok)
 

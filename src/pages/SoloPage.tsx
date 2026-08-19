@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { appSprache } from '../i18n';
+import { datenSprache } from '../i18n';
 import { ArrowLeft, Check, Flag, Flame, Lightbulb, Scissors, Share2, Trophy, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitial } from '../lib/ads';
@@ -29,7 +29,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, refreshProfile } = useAuth();
-  const lang = appSprache();
+  const lang = datenSprache();
 
   const [step, setStep] = useState<Step>(daily ? 'quiz' : 'category');
   const [categories, setCategories] = useState<Category[]>([]);

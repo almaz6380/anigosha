@@ -103,6 +103,17 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 - [x] `@capacitor-community/admob@8`, `src/lib/ads.ts` mit **Googles Test-IDs** (`USE_TEST_ADS = true`)
 - [x] UMP-Einwilligung + iOS-ATT, Test-App-IDs in Info.plist und AndroidManifest, `cap sync` gelaufen
 - [x] Interstitial nach Solo-Runde mit Bremse: jede 2. Runde, mind. 90 s Abstand
+- [x] **Interstitial auch am Duell-Ende (10.08.2026)** — `maybeShowInterstitialOnce('duel:<match_id>')`,
+      ausgelöst vom Übergang auf `finished` in `DuelPage`, 1,2 s verzögert.
+      **Bewusst am Partie-Ende, nicht am Rundenende:** Eine Duellrunde sind nur drei
+      Fragen, danach wartet man auf den Gegner — vier Anzeigen je Partie statt einer.
+      **Und bewusst einmal je `match_id`:** `finished` ist ein Zustand, kein Ereignis;
+      eine fertige Partie bleibt in der Übersicht stehen und lässt sich morgen wieder
+      öffnen. Der Merker liegt in `localStorage` (`anigosha.ads.seen`, letzte 200),
+      denn der Rundenzähler in `ads.ts` überlebt keinen App-Neustart. Er wird **vor**
+      der Anzeige gesetzt — beendet iOS die App während des Interstitials, käme es
+      sonst beim nächsten Öffnen gleich noch einmal. Solo und Duell teilen sich den
+      Zähler, sonst verdoppeln sich die Einblendungen beim Moduswechsel.
 - [x] `showRewardedAd()` für den Streak-Schutz vorbereitet, `setAdsPremiumStatus()` als Werbefrei-Schalter
 - [x] **Echte AdMob-IDs eingetragen (28.07.)** — Konto `pub-8860791993288062` (dasselbe wie MyPeak):
       App-IDs in Info.plist/AndroidManifest, Anzeigenblöcke unter `PROD` in `src/lib/ads.ts`
@@ -256,15 +267,164 @@ Zugwechsel in matches → Trigger matches_notify → push_outbox
 **Offen:** Test auf echtem Gerät — ob eine Benachrichtigung wirklich auf dem Bildschirm
 erscheint, kann kein Skript prüfen.
 
-### M5 Release — Stand 07.08.2026, 17:00
+### iOS 1.0 (Build 12) von Apple ABGELEHNT — Richtlinie 2.1, ATT (12.08.2026)
 
-✅ **Beide Stores sind draussen — MIT funktionierendem Kauf (07.08.2026 abends).**
+Pruefung am 12.08. auf einem iPhone 17 Pro Max mit iOS 26.6, Uebermittlung
+`26268de2-8932-4506-a3c1-652fe4cdfc64`. Apples Wortlaut:
+
+> The app uses the AppTrackingTransparency framework, but we are unable to
+> locate the App Tracking Transparency permission request when reviewed on
+> iOS 26.6.
+
+**Nicht der Kauf.** Das Kaufprodukt „Werbung entfernen" stand in derselben
+Uebermittlung auf *Bereit zur Pruefung* und wurde nur mitblockiert, weil eine
+abgelehnte App-Version alle anderen Elemente aufhaelt. Es ist unveraendert
+angehaengt und faehrt beim erneuten Uebermitteln mit.
+
+**Ursache (13.08.): Der Dialog kam wirklich nie — zwei Fehler auf einmal.**
+
+1. **Falscher Thread.** `AdMob.requestTrackingAuthorization()` aus
+   `@capacitor-community/admob` ruft `ATTrackingManager` direkt in der
+   Plugin-Methode auf. Capacitor fuehrt Plugin-Aufrufe aber auf einer eigenen
+   Hintergrund-Warteschlange aus (`DispatchQueue(label: "bridge")` in
+   `CapacitorBridge.swift`) — ein UIKit-Dialog gehoert auf den Hauptthread.
+   Dass es ein Versehen im Plugin ist, zeigt die Nachbarmethode:
+   `trackingAuthorizationStatus` springt ausdruecklich mit
+   `DispatchQueue.main.async` zurueck, die Anfrage selbst nicht. Sie ist dort
+   zusaetzlich als „DEPRECATED" markiert.
+2. **Zu frueh.** Die Abfrage lief im `useEffect` von `App.tsx`, also waehrend
+   die WebView noch aufbaut. Solange die App nicht `.active` ist, beantwortet
+   iOS `requestTrackingAuthorization` stillschweigend, ohne etwas zu zeigen.
+
+Dazu kam eine Verkettung, die den Fehler verdeckt haette: Die ATT-Abfrage stand
+im selben `try` **hinter** `AdMob.requestConsentInfo()`. Haette der UMP-Aufruf
+geworfen, waere ATT ohne eine Zeile Protokoll ausgefallen.
+
+**Behoben:** Die Abfrage liegt jetzt **nativ im `AppDelegate`**
+(`frageNachTracking`, ausgeloest von `applicationDidBecomeActive`) — damit ist
+sie zwangslaeufig auf dem Hauptthread und die App zwangslaeufig aktiv.
+`src/lib/ads.ts` fragt nicht mehr selbst, sondern **wartet** nur noch auf die
+Antwort (max. 6 s), bevor es das AdMob-SDK startet; so verlangt es Google.
+Kam kein Dialog (Status bleibt `notDetermined`), versucht es der naechste
+Vordergrund-Wechsel erneut.
+
+**Regel fuers ganze Repo:** Systemdialoge nie ueber die Capacitor-Bruecke
+anfordern, wenn das Plugin nicht selbst auf den Hauptthread springt. Nativ im
+`AppDelegate` ist der kuerzere und pruefsichere Weg.
+
+**Stand 13.08., 12:00 — 1.0 (Build 14) ist erneut IN PRUEFUNG.**
+
+1. ✅ `iOS Release` gebaut und hochgeladen. ⚠ **Build 13 war schon vergeben:**
+   Der Lauf vom 10.08. (Commit `86aad6a`) hat ihn nicht nur gebaut, sondern
+   auch hochgeladen — zur Pruefung ging danach trotzdem Build 12. Vor jedem
+   Release erst `status` lesen, sonst weist Apple den Upload ab. Der ATT-Fix
+   traegt deshalb die **14**.
+2. ✅ Build 14 der Version 1.0 zugewiesen. Damit wechselte die Version von
+   `REJECTED` auf `PREPARE_FOR_SUBMISSION`.
+3. ✅ **Absendet — aber nur von Hand, und NICHT ueber den Knopf, den man
+   erwartet.** Auf der Uebermittlungsseite bleibt „Erneut zur App-Pruefung
+   uebermitteln" **grau**, solange das Element auf *Abgelehnt* steht; der
+   rote Kasten dort sagt es sogar: „Du kannst unten Aenderungen an deiner
+   App-Version vornehmen." Der richtige Knopf sitzt auf der **Versionsseite**
+   oben rechts und heisst **„Pruefung aktualisieren"** (blau, neben dem grauen
+   „Sichern"). Er schiebt die geaenderte Version zurueck in die bestehende
+   Uebermittlung; das Element wechselt auf *Bereit zur Pruefung*, und beide
+   Elemente gehen gemeinsam los. ⚠ Finger weg von „Uebermittlung abbrechen"
+   ganz unten — das ist `aufraeumen` von Hand.
+   **Per API ging es nicht.** `--erneut` (neuer Modus, s. u.) meldete:
+   *„appStoreVersions … is not in valid state.: This resource cannot be
+   reviewed, please check associated errors to see why."* `--warum` findet
+   nichts: Inhaberrechte gesetzt, Build VALID, `usesNonExemptEncryption`
+   beantwortet, Alterseinstufung am appInfo gesetzt, nur `whatsNew` und
+   `promotionalText` leer (bei 1.0 beides optional). Es liegt also nicht an
+   den Metadaten, sondern an der Uebermittlung selbst: Sie steht auf
+   `UNRESOLVED_ISSUES` und enthaelt ein `REJECTED`-Element. Dieses Element
+   zurueckzusetzen kann nur die Oberflaeche. Der Aufruf bleibt im Skript:
+   Sollte Apple es eines Tages zulassen, faellt es sofort auf.
+4. Apple verlangt in der Antwort im Resolution Center eine **Bildschirmaufnahme
+   vom echten Geraet**: frische Installation, ATT-Dialog vor jeder
+   Datenerhebung, danach der weitere Ablauf. Das kann kein Skript liefern.
+
+⚠ **NICHT `aufraeumen` laufen lassen** — das zoege die Uebermittlung zurueck
+und mit ihr das angehaengte Kaufprodukt, das sich per API nicht wieder
+anhaengen laesst. Der Trockenlauf von `--erneut` hat bestaetigt, dass beide
+Elemente dranhaengen: eines `REJECTED` (die Version), eines
+`READY_FOR_REVIEW` (der Kauf).
+
+**Neuer Modus `erneut`** (`scripts/asc.py --erneut`): prueft, ob der Version
+ein Build zugewiesen ist, zeigt die Elemente der Uebermittlung und setzt
+`submitted=true` — ohne irgendetwas zurueckzuziehen oder anzulegen. Schlaegt
+es fehl, ist der Zustand unveraendert. Er bleibt im Skript: Sollte Apple das
+eines Tages zulassen, faellt es sofort auf. Bis dahin ist er die Probe, die
+in Sekunden sagt, ob der Klick noetig ist.
+
+### Kehrtwende am 13.08.: ATT komplett raus (Build 15)
+
+Josefs Entscheidung, getroffen waehrend 1.0 (Build 14) bereits in der
+Warteschlange stand: **nicht auf Apples Antwort warten, sondern ATT ganz
+aufgeben.** Statt den Dialog zu reparieren, faellt die Grundlage der
+Richtlinie weg — wo kein Tracking erklaert wird, verlangt Apple keinen
+ATT-Dialog.
+
+Der Einwand dagegen ist im Chat festgehalten und wurde bewusst ueberstimmt:
+Der Fix in Build 14 behebt genau das Bemaengelte, und das Zurueckziehen kostet
+den Platz in der Pruefschlange sowie die Verbindung zum Kaufprodukt.
+
+**Was sich im Code geaendert hat:**
+
+| Datei | Aenderung |
+|---|---|
+| `ios/App/App/AppDelegate.swift` | `frageNachTracking` und der Import wieder raus — die Datei ist zurueck auf Capacitors Vorlage |
+| `ios/App/App/Info.plist` | `NSUserTrackingUsageDescription` entfernt. `SKAdNetworkItems` BLEIBT — SKAdNetwork ist Zuordnung ohne Einwilligung und gilt Apple nicht als Tracking |
+| `src/lib/ads.ts` | `warteAufTrackingAntwort` raus, neue Konstante `NPA = true` an jeder Anzeigenanfrage (`npa: 1` an Google) |
+| `project.pbxproj` | Build **15** |
+
+**Der Preis:** nur noch nicht-personalisierte Werbung, spuerbar weniger Erloes.
+
+**Wer sie zurueckholen will, braucht dreierlei gleichzeitig** — einzeln fuehrt
+jedes zur selben Ablehnung: die Info.plist-Zeile, die ATT-Abfrage nativ im
+AppDelegate (Fassung in Commit `b534db5`, NICHT ueber die Capacitor-Bruecke)
+und die Datenschutzangabe in ASC wieder auf Tracking.
+
+⚠ **Ohne die Aenderung der App-Datenschutzangabe ist die ganze Umstellung
+wirkungslos.** Erklaert ASC weiter Tracking, waehrend die App nicht mehr
+fragt, kommt exakt dieselbe Ablehnung zurueck. Die Angabe ist **per API nicht
+erreichbar**: App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
+Bearbeiten → „Nein, wir verwenden keine Geraete-IDs fuer Tracking-Zwecke".
+Die beiden anderen Haken (Drittanbieter-Werbung, mit der Identitaet
+verknuepft) bleiben — nur „Tracking" haengt an der ATT-Pflicht. Dafuer
+braucht es die Rolle Account Holder oder Admin.
+
+**⚠ Henne und Ei — die Reihenfolge ist zwingend, und zwar diese:**
+
+ASC laesst „kein Tracking" NICHT veroeffentlichen, solange an der Version ein
+Build haengt, der `NSUserTrackingUsageDescription` enthaelt. Der Dialog bricht
+dann rot ab: *„Deine App enthaelt NSUserTrackingUsageDescription … aktualisiere
+deine Antwort … ODER aktualisiere die Binaerdatei deiner App und lade ein neues
+Build hoch."* Ein Build laesst sich aber nur zuweisen, wenn die Version nicht in
+Pruefung ist. Also:
+
+1. Laufende Uebermittlung zurueckziehen (`aufraeumen`) — Version geht auf
+   `DEVELOPER_REJECTED`,
+2. Build ohne die Info.plist-Zeile zuweisen (`build`, `nummer 15`),
+3. **erst jetzt** App-Datenschutz auf kein Tracking veroeffentlichen,
+4. Kaufprodukt in ASC wieder „Zur Pruefung hinzufuegen" — beim Zurueckziehen
+   loest es sich mit, und anhaengen kann die API es nicht,
+5. „Zur Pruefung uebermitteln". Im Uebermittlungsentwurf muessen **zwei**
+   Elemente stehen; steht dort nur die App-Version, ginge sie mit sichtbarem
+   Kaufknopf fuer ein ungenehmigtes Produkt durch (3.1.1).
+
+**Ergebnis 13.08., 14:57:** Uebermittlung `2784e1a7-e7fc-4f6f-8196-5b57de8c838e`
+auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
+`26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
+
+### M5 Release — Stand 07.08.2026, 17:00
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **12** + Kaufprodukt **zur Pruefung eingereicht** | **vc4 in Produktion**, alle Nutzer, live |
-| Kauf | `anigosha_no_ads` faehrt in derselben Einreichung mit | funktioniert, am Geraet bestaetigt |
-| Naechstes | Freigabe abwarten (1–3 Tage), dann automatisch live | erledigt |
+| Stand | 1.0 / Build **15** ohne ATT — **13.08., 14:57 in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
+| Kauf | `anigosha_no_ads` faehrt in derselben Uebermittlung mit | funktioniert, am Geraet bestaetigt |
+| Naechstes | Apples Antwort abwarten | erledigt |
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -407,12 +567,33 @@ Offering haengt. Nach dem Anlegen einer zweiten Plattform IMMER pruefen, ob
 das Paket fuer beide Apps gefuellt ist.
 
 **Noch offen:**
-1. Kaufprodukt `anigosha_no_ads` bei Apple MIT Version 1.1 einreichen
-   (Falle „nur eine Einreichung je Plattform" beachten, s. Release-CI) —
-   vorher darf kein Store-Release von diesem Stand gebaut werden (3.1.1),
-2. Store-Beschreibungen wieder um den Werbefrei-Satz ergaenzen,
-3. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
+1. ✅ 1.0 (Build 15) am 13.08. um 14:57 eingereicht, ohne ATT, mit Kauf —
+   Apples Antwort abwarten,
+2. ~~Bildschirmaufnahme des ATT-Dialogs~~ entfaellt: Es gibt keinen Dialog
+   mehr, und ohne erklaertes Tracking verlangt Apple auch keinen,
+3. ✅ **Altersfreigabe beantwortet** (13.08.) — von den drei offenen Feldern
+   war nur eines eine echte Frage: `socialMediaAgeRestricted`, jetzt `False`.
+   Das folgt aus `socialMedia=False` (kein Chat, keine Nachrichten, keine
+   Beitraege, keine Bilder — sichtbar ist nur der Spielername in der
+   Bestenliste, daher `userGeneratedContent=True`). `kidsAgeBand` bleibt
+   leer, weil die App nicht in die Kids-Kategorie soll,
+   `developerAgeRatingInfoUrl` ist optional. **Apple nimmt diesen Schreib-
+   zugriff auch waehrend `WAITING_FOR_REVIEW` an** — anders als das
+   Einreichen selbst. Werkzeuge: `--alter` (liest) und `--alter-setzen`,
+4. ✅ **Werbefrei-Satz in den Play-Texten** (13.08., DE+EN, live). Bei Apple
+   bleibt er offen: Store-Texte sind gesperrt, solange eine Version in
+   Pruefung ist — kommt nach der Freigabe oder mit 1.1.
+   ⚠ **Die Store-Texte liegen jetzt im Repo**
+   (`store-assets/play-listing.<lang>.json`, ueber `--listing-lesen`
+   ausgelesen). Wer sie in der Play Console aendert, muss die Datei
+   nachziehen, sonst rollt der naechste `texte`-Lauf die Aenderung zurueck,
+5. ✅ Android-Kauf am Geraet bestaetigt (07.08., vc4) — Preis, Kaufdialog
    und Anspruch liefen komplett durch.
+
+`PRUEFNOTIZ` in `scripts/asc.py` traegt seit 13.08. Anigosha-Text und ist
+inhaltsgleich mit dem, was in ASC steht. `--alles` bleibt gesperrt: Es ruft
+`setze_namen`, `abo_namen` und `abo_notiz` direkt auf und umgeht damit deren
+Einzelsperren; deren Texte stammen weiter aus FullRep.
 
 **Diagnosewerkzeug bleibt im Code:** `preisDiagnose()` misst jeden Schritt mit
 eigenem Zeitlimit, `diagnoseMelden()` schreibt das Ergebnis in die Tabelle
@@ -459,7 +640,11 @@ Regeln dazu:
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
   `test-duel-flow.mjs` (19), `test-level.mts` (17, via `npx tsx`),
   `test-kauf-bruecke.mjs` (9, braucht Playwright+Chromium; prueft den Kauf-Code
-  gegen eine nachgebildete iOS-Bridge — faengt Haenger, die nur nativ auftreten).
+  gegen eine nachgebildete iOS-Bridge — faengt Haenger, die nur nativ auftreten),
+  `test-werbung.mjs` (22, braucht weder Netz noch AdMob-Konto: Ein Modul-Hook
+  schiebt `src/lib/ads.ts` die beiden Capacitor-Module unter — Stub in
+  `werbung-stub.mjs`, Umleitung in `werbung-hooks.mjs` — und `Date.now` wird
+  vorgestellt, um die 90-Sekunden-Sperre zu prüfen, ohne zu warten).
 - **Levelkurve:** `xpForLevel(n) = 50 · (n² − 1)` → Schwellen 150, 400, 750, 1200 …
   Der erste Aufstieg kommt nach ein bis zwei Runden. Bei fester Schrittweite (500)
   dauerte er rund vier Runden — beim Testen hat ihn deshalb nie jemand gesehen.
@@ -600,11 +785,28 @@ Einzelheiten und Neu-Erzeugung in `tools/reels/fertig/README.md`. Bewusst im Rep
 nicht unter `out/`: Letzteres ist gitignored, und der Container einer Cloud-Sitzung ist
 flüchtig — am 10.08. fiel der Dateibaum zurück und nahm alles unter `out/` mit.
 
-⚠ **Vor dem Posten Store-Status prüfen.** Alle Videos enden mit „Anigosha — kostenlos
-im Store". Josef hat am 10.08. gemeldet, dass Anigosha **noch nicht im App Store** ist
-und bisher nur Swaply und Mahjong Royale in beiden Stores stehen — das widerspricht dem
-Abschnitt „M5 Release" oben. Ein Aufruf, der ins Leere führt, verbrennt die Reichweite
-der ersten Videos, und genau die bekommen die meiste Auslieferung.
+✅ **Store-Status geklärt (18.08.2026): beide Stores sind live.** Josef hat den App
+Store bestätigt, Google Play läuft seit vc4. Die Videos enden mit „kostenlos im Store"
+bzw. „Now on the App Store and Google Play" — das trifft jetzt zu, die frühere Sperre
+(Stand 10.08.: „noch nicht im App Store") ist erledigt.
+
+**Ein Link für beide Stores: `anigosha.vercel.app/get`** (auch `/app`, `/download`) —
+`public/get.html`, eine statische Seite ohne Fremddienst. Sie erkennt die Plattform und
+leitet weiter: iOS → App Store, Android → Play, alles andere → Web-App; auf dem Rechner
+bleibt sie stehen und zeigt die Knöpfe (das ist zugleich der Rückfall, falls ein
+In-App-Browser die Weiterleitung unterbindet). Gedacht für die Profile auf TikTok,
+Instagram und Facebook, wo nur EIN Link hineinpasst.
+- **Pflegestelle sind die beiden Schalter `IOS_LIVE`/`ANDROID_LIVE`** oben in der Datei.
+  Steht einer auf `false`, sieht diese Plattform den Knopf nicht und landet in der
+  Web-App — lieber eine Runde im Browser als eine 404 im Store.
+- Die Rewrite-Regel in `vercel.json` muss **vor** der SPA-Regel stehen, sonst verschluckt
+  die den Pfad. ⚠ Und **keine Kommentar-Schlüssel in `vercel.json`**: Vercel prüft gegen
+  ein Schema und bricht bei unbekannten Feldern den ganzen Deploy ab.
+- Die Sprachzeile nennt bewusst nur DE und EN, solange die ES-Migrationen 0022–0035
+  nicht eingespielt sind (Oberfläche wäre spanisch, die 804 Fragen nicht).
+- ⚠ Store-Hosts sind aus der Claude-Sitzung gesperrt (403 vom Proxy) — ob eine App
+  wirklich im Store steht, lässt sich hier **nicht** nachsehen. Das muss Josef sagen
+  oder der ASC-Workflow (`mode: status`).
 
 **Warum das im Repo liegt:** Josef arbeitet vom Handy, Videoschnitt geht dort nicht.
 Die Fragen tragen bereits richtige Antwort **und** Erklärung, zweisprachig — damit ist

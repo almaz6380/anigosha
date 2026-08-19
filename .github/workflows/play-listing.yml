@@ -8,7 +8,7 @@ on:
       mode:
         description: 'Was aktualisiert wird'
         type: choice
-        options: [screenshots, texte, grafiken]
+        options: [screenshots, texte, texte-lesen, grafiken]
         default: screenshots
       lang:
         description: 'Sprache des Store-Eintrags'
@@ -54,6 +54,9 @@ jobs:
           fi
 
           case "$MODE" in
+            texte-lesen)
+              python3 scripts/play-upload.py --listing-lesen --lang "$LANG_INPUT"
+              ;;
             texte)
               python3 scripts/play-upload.py \
                 --listing "store-assets/play-listing.$LANG_INPUT.json" "${GEMEINSAM[@]}"

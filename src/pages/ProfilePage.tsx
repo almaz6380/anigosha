@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { appSprache } from '../i18n';
+import { appSprache, datenSprache } from '../i18n';
 import { ArrowLeft, Bell, BellOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
@@ -43,7 +43,7 @@ function PushSchalter() {
         setAn(false);
         setHinweis(t('push.aus'));
       } else {
-        const r = await pushAnmelden(appSprache());
+        const r = await pushAnmelden(datenSprache());
         setAn(r.ok);
         setHinweis(r.ok ? t('push.an') : r.text);
       }

@@ -239,6 +239,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body:
             'Supabase (Auftragsverarbeiter, Serverstandort Frankfurt/EU): Konto, Profil und Spielstände.\n\n' +
             'Vercel: Auslieferung der Web-App, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
+            'Vercel Web Analytics: eine Reichweitenmessung der Web-App (aufgerufene Seiten, ungefähres Herkunftsland, Gerätetyp, verweisende Seite). Sie setzt keine Cookies und legt keine dauerhafte Kennung an; einzelne Personen lassen sich damit nicht wiedererkennen und nicht über mehrere Besuche hinweg verfolgen. Die IP-Adresse wird nur kurzzeitig verarbeitet und nicht gespeichert. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden und verständlichen Website (Art. 6 Abs. 1 lit. f DSGVO). Die mobilen Apps sind davon nicht betroffen.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
             'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
             'RevenueCat (Auftragsverarbeiter, USA): Abwicklung und Wiederherstellung des Kaufs „Werbung entfernen", sofern du ihn tätigst.\n\n' +
@@ -324,6 +325,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body:
             'Supabase (processor, servers in Frankfurt/EU): account, profile and game data.\n\n' +
             'Vercel: delivery of the web app; server logs including IP addresses arise for technical reasons.\n\n' +
+            'Vercel Web Analytics: audience measurement for the web app (pages viewed, approximate country, device type, referring site). It sets no cookies and creates no persistent identifier; individuals cannot be recognised or tracked across visits. IP addresses are processed only briefly and not stored. The legal basis is our legitimate interest in a working and comprehensible website (Art. 6(1)(f) GDPR). The mobile apps are not affected.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
             'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
