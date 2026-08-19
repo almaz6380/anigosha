@@ -1,0 +1,126 @@
+name: Store-Badges holen
+
+# Laedt die offiziellen App-Store- und Google-Play-Badges herunter und legt sie
+# unter tools/reels/spot/badges/ ab.
+#
+# ⚠ Warum ueberhaupt ein Workflow dafuer: Aus einer Claude-Cloud-Sitzung sind die
+# Quellen NICHT erreichbar — play.google.com, gstatic.com und Wikimedia
+# antworten mit 403 vom Agent-Proxy, und Apples einzige erreichbare Datei
+# (developer.apple.com/assets/elements/badges/...) gibt es nur auf Englisch.
+# Der GitHub-Runner hat offenes Internet und loest das Problem.
+#
+# Nachzeichnen ist keine Alternative: Apple und Google untersagen das in ihren
+# Richtlinien ausdruecklich.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Zweig, in den die Badges committet werden'
+        default: 'claude/wellapps-social-strategy-m2gj6v'
+        required: true
+      dry_run:
+        description: 'Trockenlauf (nur herunterladen und zeigen, nichts committen)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  holen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Werkzeuge
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
+
+      - name: Badges herunterladen
+        run: |
+          set -uo pipefail
+          ZIEL=tools/reels/spot/badges
+          mkdir -p "$ZIEL"
+
+          # Laedt die erste URL, die wirklich ein Bild liefert. Mehrere Kandidaten,
+          # weil Apple und Google ihre Pfade ueber die Jahre umgestellt haben —
+          # ein einzelner harter Pfad waere eine tickende Zeitbombe.
+          hole() {
+            ziel="$1"; shift
+            for u in "$@"; do
+              echo "  versuche: ${u:0:100}"
+              if curl -fsSL --max-time 30 -o "/tmp/roh" "$u"; then
+                art=$(file -b --mime-type /tmp/roh)
+                case "$art" in
+                  image/svg+xml|text/xml|text/plain)
+                    # Auf 1000 px Breite rastern: Der Abspann rendert in 1080x1920
+                    # und stellt die Badges auf 128 px Hoehe. Kleiner waere unscharf.
+                    if rsvg-convert -w 1000 -o "$ziel" /tmp/roh 2>/dev/null; then
+                      echo "  ✓ $ziel  (aus SVG)"; return 0
+                    fi ;;
+                  image/png)
+                    cp /tmp/roh "$ziel"; echo "  ✓ $ziel  (PNG direkt)"; return 0 ;;
+                esac
+                echo "    → unbrauchbar ($art)"
+              fi
+            done
+            echo "  ✗ $ziel — keine Quelle hat geliefert"; return 1
+          }
+
+          fehler=0
+
+          echo "App Store (deutsch)"
+          hole "$ZIEL/appstore-de.png" \
+            "https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/de-de?size=1000x333" \
+            "https://toolbox.marketingtools.apple.com/api/v1/apple-app-store-badges/de-de/black" || fehler=1
+
+          echo "App Store (englisch)"
+          hole "$ZIEL/appstore-en.png" \
+            "https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=1000x333" \
+            "https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" || fehler=1
+
+          echo "Google Play (deutsch)"
+          hole "$ZIEL/googleplay-de.png" \
+            "https://play.google.com/intl/de_de/badges/static/images/badges/de_badge_web_generic.png" \
+            "https://play.google.com/intl/de/badges/static/images/badges/de_badge_web_generic.png" || fehler=1
+
+          echo "Google Play (englisch)"
+          hole "$ZIEL/googleplay-en.png" \
+            "https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" \
+            "https://play.google.com/intl/en/badges/static/images/badges/en_badge_web_generic.png" || fehler=1
+
+          echo
+          echo "=== Ergebnis ==="
+          ls -la "$ZIEL"/*.png 2>/dev/null || true
+          for f in "$ZIEL"/*.png; do [ -e "$f" ] && echo "$(basename "$f"): $(file -b "$f")"; done
+
+          # Kein harter Abbruch bei einzelnen Ausfaellen: Drei von vier Badges sind
+          # besser als keins, und das Log sagt genau, welches fehlt.
+          [ "$fehler" = 0 ] || echo "⚠ Mindestens eine Quelle hat nicht geliefert — siehe oben."
+
+      - name: Vorschau als Artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: store-badges
+          path: tools/reels/spot/badges/*.png
+          if-no-files-found: warn
+
+      - name: Committen
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -e
+          git config user.name  'Claude'
+          git config user.email '63almaz80@gmail.com'
+          git add tools/reels/spot/badges/*.png || true
+          if git diff --cached --quiet; then
+            echo 'Nichts zu committen — keine neue Datei.'
+            exit 0
+          fi
+          git commit -m 'Offizielle Store-Badges (App Store, Google Play) in DE und EN
+
+          Vom GitHub-Runner geholt, weil die Quellen aus der Claude-Cloud-Sitzung
+          gesperrt sind (403 vom Agent-Proxy). Aus SVG auf 1000 px Breite
+          gerastert bzw. als offizielles PNG uebernommen.'
+          git push origin HEAD:${{ inputs.branch }}
