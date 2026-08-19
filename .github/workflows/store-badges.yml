@@ -12,7 +12,18 @@ name: Store-Badges holen
 # Nachzeichnen ist keine Alternative: Apple und Google untersagen das in ihren
 # Richtlinien ausdruecklich.
 
+# ⚠ Der push-Ausloeser ist kein Schoenheitsfehler, sondern noetig:
+# `workflow_dispatch` fuehrt GitHub NUR fuer Workflows aus, die auf dem
+# Standardzweig liegen (sonst 404 auf den dispatches-Endpunkt). Diese Datei auf
+# `main` zu legen wuerde einen Vercel-Deploy ausloesen — fuer einen Download von
+# vier Bildern unverhaeltnismaessig. Ein push-Ausloeser laeuft dagegen von dem
+# Zweig, auf dem er liegt. Er greift nur, wenn DIESE Datei sich aendert; der
+# Commit des Workflows selbst legt spaeter nur PNGs ab und loest sich also nicht
+# endlos neu aus.
 on:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/store-badges.yml']
   workflow_dispatch:
     inputs:
       branch:
@@ -33,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ inputs.branch || github.ref_name }}
 
       - name: Werkzeuge
         run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
@@ -123,4 +134,4 @@ jobs:
           Vom GitHub-Runner geholt, weil die Quellen aus der Claude-Cloud-Sitzung
           gesperrt sind (403 vom Agent-Proxy). Aus SVG auf 1000 px Breite
           gerastert bzw. als offizielles PNG uebernommen.'
-          git push origin HEAD:${{ inputs.branch }}
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
