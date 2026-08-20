@@ -81,6 +81,9 @@ function PushSchalter() {
   );
 }
 
+// Alle fünf Sprachen stehen zur Wahl. Fehlen einer Sprache noch die Fragen
+// in der Datenbank, fängt datenSprache() das ab und holt sie auf Englisch —
+// die Oberfläche bleibt trotzdem übersetzt.
 const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
   { code: 'en', label: 'English' },
