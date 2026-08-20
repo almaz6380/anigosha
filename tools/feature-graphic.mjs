@@ -12,32 +12,43 @@ import { mkdirSync, readFileSync } from 'node:fs';
 
 const out = process.argv[2] ?? `${process.env.HOME}/Downloads/Anigosha-Store/vorstellungsgrafik-1024x500.png`;
 const icon = readFileSync(new URL('../store-assets/icon/icon-512.png', import.meta.url)).toString('base64');
+// ⚠ Schrift MITLIEFERN, nicht system-ui nehmen. system-ui ist auf jedem
+// Rechner eine andere: auf dem Mac San Francisco, in der Cloud-Sitzung
+// DejaVu Sans — und das ist so viel breiter, dass die Zeile dort umbricht
+// und anderswo nicht. Dasselbe Bild sah je nach Rechner anders aus.
+// Outfit liegt schon fuer die Reels im Repo; als data:-URI, weil eine per
+// setContent geladene Seite keinen Origin hat und file:// nicht laedt.
+const schrift = readFileSync(new URL('../tools/reels/assets/outfit.woff2', import.meta.url)).toString('base64');
 
 // Play verlangt die Grafik je Sprache — Aufruf mit SHOT_LANG=en fuer den en-US-Eintrag.
 const TEXTE = {
-  // ⚠ Der Untertitel MUSS in zwei Zeilen passen (Textspalte: 556 px). Deshalb
-  // nennt Zeile 2 nur ZWEI Begriffe; der dritte steht als Plakette darunter.
-  // Vorher stand er in der Zeile — und fiel in jeder Sprache als einzelnes
-  // Wort hinter einem verwaisten Trennpunkt in eine dritte Zeile.
-  de: { sub1: 'Das Quiz für', sub2: 'Anime-Fans', sub3: '804 Fragen &middot; Duelle',
-        pills: ['12 Kategorien', 'Bestenliste', 'Täglich neu'] },
-  en: { sub1: 'The quiz for', sub2: 'anime fans', sub3: '804 questions &middot; duels',
-        pills: ['12 categories', 'Leaderboard', 'New daily'] },
-  // ES ohne Artikel: »El quiz para fans del anime« sprengt die erste Zeile.
-  es: { sub1: 'Quiz para', sub2: 'fans del anime', sub3: '804 preguntas &middot; duelos',
-        pills: ['12 categorías', 'Clasificación', 'Cada día'] },
-  fr: { sub1: 'Le quiz des', sub2: "fans d'anime", sub3: '804 questions &middot; duels',
-        pills: ['12 catégories', 'Classement', 'Chaque jour'] },
-  pt: { sub1: 'O quiz para', sub2: 'fãs de anime', sub3: '804 perguntas &middot; duelos',
-        pills: ['12 categorias', 'Ranking', 'Todo dia'] },
+  de: { sub1: 'Das Quiz für', sub2: 'Anime-Fans',
+        sub3: '804 Fragen &middot; Duelle &middot; Bestenliste',
+        pills: ['12 Kategorien', 'Täglich neu'] },
+  en: { sub1: 'The quiz for', sub2: 'anime fans',
+        sub3: '804 questions &middot; duels &middot; ranking',
+        pills: ['12 categories', 'New daily'] },
+  // ES bleibt bei »ranking«: »clasificación« ist zwei Zeichen zu lang und
+  // kippt die Zeile um. Das Wort ist im spanischen Spielejargon gelaeufig.
+  es: { sub1: 'El quiz para', sub2: 'fans del anime',
+        sub3: '804 preguntas &middot; duelos &middot; ranking',
+        pills: ['12 categorías', 'Nuevo cada día'] },
+  fr: { sub1: 'Le quiz des', sub2: "fans d'anime",
+        sub3: '804 questions &middot; duels &middot; classement',
+        pills: ['12 catégories', 'Chaque jour'] },
+  pt: { sub1: 'O quiz para', sub2: 'fãs de anime',
+        sub3: '804 perguntas &middot; duelos &middot; ranking',
+        pills: ['12 categorias', 'Novo todo dia'] },
 };
 
 // Play blendet die Raender je nach Ansicht ab -> alles Wichtige weit nach innen.
 function seite(T) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
+  @font-face { font-family:'Outfit'; src:url(data:font/woff2;base64,${schrift}) format('woff2');
+               font-weight:100 900; font-display:block; }
   body { width:1024px; height:500px; overflow:hidden;
-         font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+         font-family:'Outfit', system-ui, -apple-system, sans-serif; }
   .wrap { position:relative; width:1024px; height:500px;
           background: linear-gradient(115deg, #0f0a1e 0%, #17102c 38%, #3b1d6b 72%, #7c3aed 100%);
           display:flex; align-items:center; gap:56px; padding:0 90px; }
@@ -85,6 +96,7 @@ for (const [lang, datei] of ziele) {
   const T = TEXTE[lang];
   if (!T) throw new Error(`keine Texte für Sprache ${lang}`);
   await page.setContent(seite(T), { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(400);
   // Der Untertitel MUSS zweizeilig bleiben. Eine dritte Zeile entsteht still,
   // sobald eine Uebersetzung laenger ist als die deutsche Vorlage — und sie
