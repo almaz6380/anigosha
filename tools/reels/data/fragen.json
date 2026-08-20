@@ -11261,7 +11261,7 @@
    "difficulty": 2,
    "correctIndex": 0,
    "de": {
-    "prompt": "Welches Hilfsmittel trägt Conan als Hosenträger?",
+    "prompt": "Welches Hilfsmittel von Professor Agasa trägt Conan um die Hüfte?",
     "options": [
      "Einen Ballaufblas-Gürtel",
      "Ein Funkgerät",
@@ -11271,7 +11271,7 @@
     "explanation": "Damit erzeugt er jederzeit einen Fußball für seine Turboschuhe."
    },
    "en": {
-    "prompt": "Which gadget does Conan wear as suspenders?",
+    "prompt": "Which of Professor Agasa's gadgets does Conan wear around his waist?",
     "options": [
      "A ball-inflating belt",
      "A radio",

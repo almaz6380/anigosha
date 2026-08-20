@@ -288,9 +288,9 @@ select public.seed_uebersetzung(
   'Heizo es el jefe de policía de la prefectura de Osaka.');
 
 select public.seed_uebersetzung(
-  'Welches Hilfsmittel trägt Conan als Hosenträger?',
+  'Welches Hilfsmittel von Professor Agasa trägt Conan um die Hüfte?',
   'es',
-  '¿Qué artilugio lleva Conan como tirantes?',
+  '¿Qué artilugio del profesor Agasa lleva Conan a la cintura?',
   '["Un cinturón que infla balones", "Una radio", "Una cuerda", "Un paracaídas"]',
   'Le proporciona un balón al instante para sus zapatos potenciadores.');
 

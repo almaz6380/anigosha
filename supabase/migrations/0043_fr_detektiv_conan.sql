@@ -288,9 +288,9 @@ select public.seed_uebersetzung(
   'Heizo est le préfet de police du département d''Osaka.');
 
 select public.seed_uebersetzung(
-  'Welches Hilfsmittel trägt Conan als Hosenträger?',
+  'Welches Hilfsmittel von Professor Agasa trägt Conan um die Hüfte?',
   'fr',
-  'Quel gadget Conan porte-t-il en guise de bretelles ?',
+  'Quel gadget du professeur Agasa Conan porte-t-il à la taille ?',
   '["Une ceinture qui gonfle des ballons", "Un émetteur radio", "Une corde", "Un parachute"]',
   'Elle lui fournit à tout moment un ballon pour ses chaussures turbo.');
 

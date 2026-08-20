@@ -1,6 +1,8 @@
 // Führt eine SQL-Datei über die Supabase-Management-API aus (HTTPS-Ersatz für
 // `supabase db push`, weil Port 5432 in dieser Umgebung blockiert ist).
-// Aufruf: node tools/run-sql.mjs <datei.sql>  (liest SUPABASE_ACCESS_TOKEN aus .env)
+// Aufruf: node tools/run-sql.mjs <datei.sql>
+// Token: SUPABASE_ACCESS_TOKEN oder SUPABASE_ACCESS_ANIGOSHA aus der Umgebung,
+// ersatzweise SUPABASE_ACCESS_TOKEN aus der (gitignorierten) .env
 import { readFileSync } from 'node:fs';
 
 const PROJECT_REF = 'hehrqqiobpbmmadmvpql';
@@ -12,8 +14,11 @@ if (!file) {
 }
 
 // Umgebungsvariable zuerst: In GitHub Actions gibt es keine .env, dort kommt
-// der Token aus den Repo-Secrets. Lokal bleibt die .env der Weg.
-let token = process.env.SUPABASE_ACCESS_TOKEN?.trim();
+// der Token aus den Repo-Secrets — und in einer Claude-Cloud-Sitzung gibt es
+// ebenfalls keine. SUPABASE_ACCESS_ANIGOSHA ist der zweite akzeptierte Name:
+// Dort liegen die Token mehrerer Projekte nebeneinander, sie koennen deshalb
+// nicht alle schlicht SUPABASE_ACCESS_TOKEN heissen. Lokal bleibt die .env.
+let token = (process.env.SUPABASE_ACCESS_TOKEN || process.env.SUPABASE_ACCESS_ANIGOSHA)?.trim();
 if (!token) {
   try {
     const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');

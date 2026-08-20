@@ -248,9 +248,9 @@ select public.seed_question('detektiv_conan', 2, 2,
   '["Juzo Megure", "Yusaku Kudo", "Heizo Hattori", "Ginshiro Toyama"]', 'Heizo is the police commissioner of Osaka Prefecture.');
 
 select public.seed_question('detektiv_conan', 2, 0,
-  'Welches Hilfsmittel trägt Conan als Hosenträger?',
+  'Welches Hilfsmittel von Professor Agasa trägt Conan um die Hüfte?',
   '["Einen Ballaufblas-Gürtel", "Ein Funkgerät", "Ein Seil", "Einen Fallschirm"]', 'Damit erzeugt er jederzeit einen Fußball für seine Turboschuhe.',
-  'Which gadget does Conan wear as suspenders?',
+  'Which of Professor Agasa''s gadgets does Conan wear around his waist?',
   '["A ball-inflating belt", "A radio", "A rope", "A parachute"]', 'It produces a football on demand for his power shoes.');
 
 select public.seed_question('detektiv_conan', 2, 3,
