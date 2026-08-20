@@ -635,6 +635,18 @@ Regeln dazu:
 - `supabase db push` funktioniert aus der Claude-Sandbox ohnehin nicht (**Port 5432 blockiert**,
   nur HTTPS geht raus). Auf Josefs Rechner ginge es, wird aber nicht gebraucht.
 - `tools/run-sql.mjs` bleibt als **Lese-/Verifikationswerkzeug** bestehen.
+- **`tools/statistik.mjs`** — Nutzungszahlen aus der Datenbank (`--tage 7`, `--json`):
+  Konten, aktive Spieler, Solo-Runden samt Abbruchquote, Duelle Bot/Mensch,
+  Sprachen, beliebteste Kategorien, gemeldete Fragen. Bots sind überall
+  ausgenommen — sie sind echte Zeilen in `profiles`, wer sie mitzählt, feiert
+  die eigene Infrastruktur als Nutzer. **Warum nicht aus den Stores:** Apple und
+  Google zeigen Downloads, also die uninteressanteste Zahl; ob jemand am zweiten
+  Tag wiederkommt oder Runden abbricht, steht nur hier. Vercel Web Analytics
+  misst wiederum **nur die Web-App** — die Store-Apps laden ihre Oberfläche aus
+  dem eigenen Paket und tauchen dort nie auf.
+  Braucht `SUPABASE_ACCESS_TOKEN` (Umgebungsvariable oder `.env`), **nicht** den
+  Service-Role-Key: Die Abfragen laufen über die Management-API, weil Port 5432
+  hier blockiert ist.
 - `tools/create-test-user.mjs` legt einen Testnutzer über die Admin-API an.
 - `tools/create-bots.mjs` legt die 12 Duell-Bots an (idempotent über die E-Mail).
 - **Testskripte** (alle grün zu halten): `test-solo-flow.mjs` (12), `test-joker-daily.mjs` (15),
