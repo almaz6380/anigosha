@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { appSprache } from '../i18n';
+import { appSprache, datenSprache } from '../i18n';
 import { ArrowLeft, Bell, BellOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
@@ -43,7 +43,7 @@ function PushSchalter() {
         setAn(false);
         setHinweis(t('push.aus'));
       } else {
-        const r = await pushAnmelden(appSprache());
+        const r = await pushAnmelden(datenSprache());
         setAn(r.ok);
         setHinweis(r.ok ? t('push.an') : r.text);
       }
@@ -81,10 +81,15 @@ function PushSchalter() {
   );
 }
 
+// Alle fünf Sprachen stehen zur Wahl. Fehlen einer Sprache noch die Fragen
+// in der Datenbank, fängt datenSprache() das ab und holt sie auf Englisch —
+// die Oberfläche bleibt trotzdem übersetzt.
 const LANGUAGES = [
   { code: 'de', label: 'Deutsch' },
   { code: 'en', label: 'English' },
   { code: 'es', label: 'Español' },
+  { code: 'fr', label: 'Français' },
+  { code: 'pt', label: 'Português' },
 ];
 
 /**
@@ -247,13 +252,17 @@ export default function ProfilePage() {
 
       <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
         <div className="text-sm text-accent-400/60 mb-2">{t('profile.language')}</div>
-        <div className="flex gap-2">
+        {/* flex-wrap ist Pflicht: Ab fuenf Sprachen passt die Reihe nicht mehr
+            in die Kartenbreite und liefe sonst rechts hinaus. */}
+        <div className="flex flex-wrap gap-2">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
               onClick={() => changeLanguage(lang.code)}
               className={`px-4 py-2 rounded-xl border transition-colors ${
-                i18n.language === lang.code
+                // Ueber appSprache() vergleichen, nicht ueber i18n.language:
+                // Letzteres kann 'pt-BR' sein und traefe dann keinen Knopf.
+                appSprache() === lang.code
                   ? 'bg-accent-600 border-accent-500'
                   : 'bg-night-800 border-night-700 hover:border-accent-500'
               }`}
