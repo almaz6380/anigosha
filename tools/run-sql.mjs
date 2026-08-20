@@ -11,10 +11,17 @@ if (!file) {
   process.exit(1);
 }
 
-const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
-const token = env.match(/^SUPABASE_ACCESS_TOKEN=(.+)$/m)?.[1]?.trim();
+// Umgebungsvariable zuerst: In GitHub Actions gibt es keine .env, dort kommt
+// der Token aus den Repo-Secrets. Lokal bleibt die .env der Weg.
+let token = process.env.SUPABASE_ACCESS_TOKEN?.trim();
 if (!token) {
-  console.error('SUPABASE_ACCESS_TOKEN fehlt in .env');
+  try {
+    const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
+    token = env.match(/^SUPABASE_ACCESS_TOKEN=(.+)$/m)?.[1]?.trim();
+  } catch { /* keine .env — dann muss die Umgebungsvariable gesetzt sein */ }
+}
+if (!token) {
+  console.error('SUPABASE_ACCESS_TOKEN fehlt (Umgebungsvariable oder .env)');
   process.exit(1);
 }
 
