@@ -11,7 +11,8 @@
 //
 // Aufruf:  node tools/statistik.mjs            (letzte 30 Tage)
 //          node tools/statistik.mjs --tage 7
-//          node tools/statistik.mjs --json     (fuer Weiterverarbeitung)
+//          node tools/statistik.mjs --json       (fuer Weiterverarbeitung)
+//          node tools/statistik.mjs --mit-tests  (Test- und Pruefkonten mitzaehlen)
 //
 // ⚠ Braucht SUPABASE_ACCESS_TOKEN — entweder als Umgebungsvariable (dann laeuft
 // es in jeder Cloud-Sitzung sofort) oder in der gitignorierten .env. Es ist
@@ -27,9 +28,14 @@ const arg = (name, standard) => {
 };
 const TAGE = arg('tage', 30);
 const ALS_JSON = process.argv.includes('--json');
+const MIT_TESTS = process.argv.includes('--mit-tests');
 
 function token() {
-  if (process.env.SUPABASE_ACCESS_TOKEN) return process.env.SUPABASE_ACCESS_TOKEN.trim();
+  // SUPABASE_ACCESS_ANIGOSHA als zweiter Name, weil in der Claude-Umgebung die
+  // Zugangstoken mehrerer Projekte nebeneinander liegen und deshalb nicht alle
+  // schlicht SUPABASE_ACCESS_TOKEN heissen koennen.
+  const aus_umgebung = process.env.SUPABASE_ACCESS_TOKEN || process.env.SUPABASE_ACCESS_ANIGOSHA;
+  if (aus_umgebung) return aus_umgebung.trim();
   const pfad = new URL('../.env', import.meta.url);
   if (existsSync(pfad)) {
     const t = readFileSync(pfad, 'utf8').match(/^SUPABASE_ACCESS_TOKEN=(.+)$/m)?.[1]?.trim();
@@ -40,7 +46,8 @@ SUPABASE_ACCESS_TOKEN fehlt.
 
 Er gehoert NICHT ins Repo. Zwei Wege:
   • dauerhaft: als Umgebungsvariable der Claude-Umgebung hinterlegen
-    (claude.ai/code → Environment) — dann laeuft dieses Skript in jeder
+    (claude.ai/code → Environment), unter SUPABASE_ACCESS_TOKEN oder
+    SUPABASE_ACCESS_ANIGOSHA — dann laeuft dieses Skript in jeder
     kuenftigen Sitzung ohne Zutun;
   • lokal: als Zeile SUPABASE_ACCESS_TOKEN=... in die .env (gitignored).
 
@@ -66,18 +73,55 @@ async function frage(sql) {
 // Ein Rundgang statt vieler Einzelabfragen — die Management-API ist langsam,
 // und so ist der Stand aller Zahlen garantiert derselbe Zeitpunkt.
 //
-// ⚠ `is_bot` ueberall ausschliessen. Die 12 Duell-Bots sind echte Zeilen in
-// `profiles`; wer sie mitzaehlt, feiert seine eigene Infrastruktur als Nutzer.
+// ⚠ Zwei Sorten Zeilen muessen raus, sonst misst man sich selbst:
+//
+// 1. `is_bot` — die 12 Duell-Bots sind echte Zeilen in `profiles`; wer sie
+//    mitzaehlt, feiert seine eigene Infrastruktur als Nutzer.
+// 2. Test- und Pruefkonten. Das wiegt schwerer, als es klingt: `solo-test`
+//    allein hatte am 20.08. 449 der 463 Solo-Runden, und weil die Testskripte
+//    Sitzungen anlegen ohne sie zu beenden, stand die Abbruchquote bei 95 %.
+//    Das ist kein Nutzerverhalten, das ist `test-solo-flow.mjs`.
+//
+// Erkannt werden sie an der E-Mail, nicht am Spielernamen — die Adresse steht
+// fest im jeweiligen Skript, der Name laesst sich in der App jederzeit aendern.
+const TESTKONTEN = `
+  select u.id from auth.users u
+  where u.email like '%@anibrain.local'        -- alle Testskripte in tools/
+     or u.email = 'anibrain-test@example.com'  -- erstes Handtestkonto, 27.07.
+     or u.email = 'store-review@anigosha.app'  -- Pruefkonto fuer beide Stores
+`;
+
+// `not exists` statt `not in`: Bei `not in` macht ein einziges NULL in der
+// Spalte die ganze Bedingung NULL, und die Zeile faellt still weg — etwa ein
+// Duell, das noch auf den zweiten Spieler wartet (`player_b is null`).
+const ohne = (spalte) =>
+  MIT_TESTS ? 'true' : `not exists (select 1 from testkonten tk where tk.id = ${spalte})`;
+
 const SQL = `
 with
-menschen as (select * from public.profiles where is_bot = false),
-spieler_solo as (
-  select user_id, started_at from public.solo_sessions
+testkonten as (${TESTKONTEN}),
+menschen as (
+  select p.* from public.profiles p
+  where p.is_bot = false and ${ohne('p.id')}
 ),
+solo as (
+  select s.* from public.solo_sessions s where ${ohne('s.user_id')}
+),
+duelle as (
+  select m.* from public.matches m
+  where ${ohne('m.player_a')} and ${ohne('m.player_b')}
+),
+meldungen as (
+  select r.* from public.question_reports r where ${ohne('r.user_id')}
+),
+tokens as (
+  select t.* from public.push_tokens t where ${ohne('t.user_id')}
+),
+spieler_solo as (select user_id, started_at from solo),
 spieler_duell as (
   select case when ma.player = 'a' then m.player_a else m.player_b end as user_id,
          ma.answered_at as started_at
-  from public.match_answers ma join public.matches m on m.id = ma.match_id
+  from public.match_answers ma join duelle m on m.id = ma.match_id
 ),
 aktiv as (select * from spieler_solo union all select * from spieler_duell)
 select json_build_object(
@@ -86,28 +130,32 @@ select json_build_object(
     'neu_heute',   (select count(*) from menschen where created_at >= current_date),
     'neu_gestern', (select count(*) from menschen where created_at >= current_date - 1 and created_at < current_date),
     'neu_zeitraum',(select count(*) from menschen where created_at >= now() - interval '${TAGE} days'),
-    'mit_push',    (select count(distinct user_id) from public.push_tokens)
+    'mit_push',    (select count(distinct user_id) from tokens),
+    'ohne_namen',  (select count(*) from menschen where username is null)
   ),
+  'ausgeblendet', (select count(*) from public.profiles p
+                   where p.is_bot = false
+                     and exists (select 1 from testkonten tk where tk.id = p.id)),
   'aktiv', json_build_object(
     'heute',     (select count(distinct user_id) from aktiv where started_at >= current_date),
     'sieben_tage',(select count(distinct user_id) from aktiv where started_at >= now() - interval '7 days'),
     'zeitraum',  (select count(distinct user_id) from aktiv where started_at >= now() - interval '${TAGE} days')
   ),
   'solo', json_build_object(
-    'runden_gesamt',   (select count(*) from public.solo_sessions),
-    'runden_zeitraum', (select count(*) from public.solo_sessions where started_at >= now() - interval '${TAGE} days'),
-    'abgebrochen',     (select count(*) from public.solo_sessions
+    'runden_gesamt',   (select count(*) from solo),
+    'runden_zeitraum', (select count(*) from solo where started_at >= now() - interval '${TAGE} days'),
+    'abgebrochen',     (select count(*) from solo
                         where started_at >= now() - interval '${TAGE} days' and finished_at is null),
-    'schnitt_richtig', (select round(avg(correct_count)::numeric, 2) from public.solo_sessions
+    'schnitt_richtig', (select round(avg(correct_count)::numeric, 2) from solo
                         where finished_at is not null and started_at >= now() - interval '${TAGE} days')
   ),
   'duelle', json_build_object(
-    'gesamt',       (select count(*) from public.matches),
-    'zeitraum',     (select count(*) from public.matches where created_at >= now() - interval '${TAGE} days'),
-    'beendet',      (select count(*) from public.matches where status = 'finished'),
-    'gegen_bot',    (select count(*) from public.matches m join public.profiles p on p.id = m.player_b
+    'gesamt',       (select count(*) from duelle),
+    'zeitraum',     (select count(*) from duelle where created_at >= now() - interval '${TAGE} days'),
+    'beendet',      (select count(*) from duelle where status = 'finished'),
+    'gegen_bot',    (select count(*) from duelle m join public.profiles p on p.id = m.player_b
                      where p.is_bot = true),
-    'gegen_mensch', (select count(*) from public.matches m join public.profiles p on p.id = m.player_b
+    'gegen_mensch', (select count(*) from duelle m join public.profiles p on p.id = m.player_b
                      where p.is_bot = false)
   ),
   'sprachen', (select coalesce(json_agg(z), '[]'::json) from
@@ -115,13 +163,13 @@ select json_build_object(
      group by language order by count(*) desc) z),
   'kategorien', (select coalesce(json_agg(z), '[]'::json) from
     (select c.slug, count(*) as runden
-     from public.solo_sessions s join public.categories c on c.id = s.category_id
+     from solo s join public.categories c on c.id = s.category_id
      where s.started_at >= now() - interval '${TAGE} days'
      group by c.slug order by count(*) desc limit 5) z),
   'meldungen', (select coalesce(json_agg(z), '[]'::json) from
-    (select reason as grund, count(*) as anzahl from public.question_reports
+    (select reason as grund, count(*) as anzahl from meldungen
      group by reason order by count(*) desc) z),
-  'meldungen_gesamt', (select count(*) from public.question_reports)
+  'meldungen_gesamt', (select count(*) from meldungen)
 ) as d;
 `;
 
@@ -143,12 +191,16 @@ const pfeil = (heute, gestern) => {
 
 console.log(`
 ANIGOSHA — Nutzung, Zeitraum: letzte ${TAGE} Tage
+${MIT_TESTS ? '⚠ MIT Test- und Pruefkonten — nicht als Nutzungszahl lesen.'
+            : `Bots, Test- und Pruefkonten ausgenommen (${d.ausgeblendet} Konten, --mit-tests zeigt sie).`}
 ${'─'.repeat(52)}
 
-KONTEN (Bots ausgenommen)
+KONTEN
   gesamt                     ${z(d.konten.gesamt)}
   neu heute                  ${z(d.konten.neu_heute)}${pfeil(d.konten.neu_heute, d.konten.neu_gestern)}
   neu im Zeitraum            ${z(d.konten.neu_zeitraum)}
+  ohne Spielername           ${z(d.konten.ohne_namen)}${
+    d.konten.gesamt ? `   (${Math.round(100 * d.konten.ohne_namen / d.konten.gesamt)} % haengen bei der Namenswahl)` : ''}
   mit Benachrichtigungen     ${z(d.konten.mit_push)}
 
 AKTIVE SPIELER (haben wirklich gespielt)
@@ -183,6 +235,13 @@ ${(d.meldungen ?? []).map((m) => `  ${String(m.grund).padEnd(27)}${z(m.anzahl)}`
 // Runde nicht zu Ende spielt, kommt meist auch nicht wieder.
 if (d.solo.runden_zeitraum > 20 && d.solo.abgebrochen / d.solo.runden_zeitraum > 0.3) {
   console.log('⚠ Mehr als 30 % der Solo-Runden werden abgebrochen — dort lohnt ein Blick.\n');
+}
+// Ein Konto ohne Spielernamen hat die Registrierung abgeschlossen und ist dann
+// auf der UsernamePage stehengeblieben — es hat nie eine Frage gesehen. Das ist
+// der teuerste Abbruch von allen, weil davor schon eine Mail bestaetigt wurde.
+if (d.konten.gesamt > 0 && d.konten.ohne_namen / d.konten.gesamt > 0.3) {
+  console.log(`⚠ ${d.konten.ohne_namen} von ${d.konten.gesamt} Konten haben keinen Spielernamen —\n`
+            + '  sie haengen nach der Registrierung auf der Namenswahl fest.\n');
 }
 if (d.duelle.gegen_mensch === 0 && d.duelle.gegen_bot > 0) {
   console.log('ℹ Noch kein einziges Duell zwischen zwei Menschen — dafuer braucht es\n'

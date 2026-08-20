@@ -1,7 +1,9 @@
 // Führt eine SQL-Datei über die Supabase-Management-API aus (HTTPS-Ersatz für
 // `supabase db push`, weil Port 5432 in dieser Umgebung blockiert ist).
-// Aufruf: node tools/run-sql.mjs <datei.sql>  (liest SUPABASE_ACCESS_TOKEN aus .env)
-import { readFileSync } from 'node:fs';
+// Aufruf: node tools/run-sql.mjs <datei.sql>
+// Token: SUPABASE_ACCESS_TOKEN bzw. SUPABASE_ACCESS_ANIGOSHA aus der Umgebung,
+// ersatzweise SUPABASE_ACCESS_TOKEN aus der (gitignorierten) .env
+import { readFileSync, existsSync } from 'node:fs';
 
 const PROJECT_REF = 'hehrqqiobpbmmadmvpql';
 
@@ -11,10 +13,24 @@ if (!file) {
   process.exit(1);
 }
 
-const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
-const token = env.match(/^SUPABASE_ACCESS_TOKEN=(.+)$/m)?.[1]?.trim();
+// Erst die Umgebung, dann die .env. SUPABASE_ACCESS_ANIGOSHA als zweiter Name,
+// weil in der Claude-Umgebung die Token mehrerer Projekte nebeneinander liegen
+// und deshalb nicht alle schlicht SUPABASE_ACCESS_TOKEN heissen koennen. Ohne
+// das laeuft in einer Cloud-Sitzung gar keine Migration: dort gibt es keine .env.
+function ermittleToken() {
+  const aus_umgebung = process.env.SUPABASE_ACCESS_TOKEN || process.env.SUPABASE_ACCESS_ANIGOSHA;
+  if (aus_umgebung) return aus_umgebung.trim();
+  const pfad = new URL('../.env', import.meta.url);
+  if (existsSync(pfad)) {
+    const t = readFileSync(pfad, 'utf8').match(/^SUPABASE_ACCESS_TOKEN=(.+)$/m)?.[1]?.trim();
+    if (t) return t;
+  }
+  return null;
+}
+
+const token = ermittleToken();
 if (!token) {
-  console.error('SUPABASE_ACCESS_TOKEN fehlt in .env');
+  console.error('SUPABASE_ACCESS_TOKEN fehlt — weder in der Umgebung noch in .env');
   process.exit(1);
 }
 
