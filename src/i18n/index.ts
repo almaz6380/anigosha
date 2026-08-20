@@ -32,24 +32,29 @@ export default i18n;
 // alles, was an Supabase geht.
 export type AppSprache = 'de' | 'en' | 'es' | 'fr' | 'pt';
 
-// ⚠ SPERRE, bis die jeweiligen Fragen-Migrationen eingespielt sind.
-// Die Oberfläche kann seit dem 18./19.08. Spanisch, Französisch und
-// Portugiesisch — die Datenbank NICHT: Ihr CHECK erlaubt nur ('de','en'),
-// und die RPCs kennen die neuen Codes nicht. Ohne diese Sperre bekäme ein
-// spanisches Gerät eine spanische Oberfläche und ein Quiz, das gar nicht
-// lädt — schlechter als eine englische App, die funktioniert.
-// Die Oberfläche bleibt in der gewählten Sprache, nur die Fragen kommen
-// auf Englisch.
+// Welche Sprachen die Fragen in der Datenbank wirklich haben.
 //
-// Zum Aufheben je Sprache auf `true` setzen, NACHDEM deren Migrationen
-// durch sind: es → 0022 + 0023–0035, fr → 0036 + 0037–0049,
-// pt → 0036 + 0050–0062. Sonst ist der Fehler sofort zurück.
+// Das war bis zum 20.08.2026 eine Sperre: Die Oberfläche konnte seit dem
+// 18./19.08. Spanisch, Französisch und Portugiesisch, die Datenbank nicht —
+// ihr CHECK erlaubte nur ('de','en'). Ohne die Sperre hätte ein spanisches
+// Gerät eine spanische Oberfläche bekommen und ein Quiz, das gar nicht lädt.
+//
+// Am 20.08. sind die Migrationen eingespielt (es: 0022 + 0023–0035,
+// fr: 0036 + 0037–0049, pt: 0036 + 0050–0062). Nachgezählt: 804 Fragen in
+// jeder der fünf Sprachen, keine Lücke, und die RPCs start_solo_session,
+// start_duel, get_duel_round, start_daily_challenge sowie register_push_token
+// kennen alle drei Codes. Damit steht hier überall `true`.
+//
+// Der Eintrag bleibt trotzdem stehen, statt ihn ersatzlos zu streichen: Die
+// nächste Sprache kommt wieder als Übersetzungspaket, und dann ist genau
+// diese Lücke zwischen fertiger Oberfläche und noch leerer Datenbank wieder
+// da. Neue Sprache also auf `false`, bis ihre Migrationen durch sind.
 const FRAGEN_IN_DER_DB: Record<AppSprache, boolean> = {
   de: true,
   en: true,
-  es: false,
-  fr: false,
-  pt: false,
+  es: true,
+  fr: true,
+  pt: true,
 };
 
 // Sprache der Oberfläche — kennt keine Sperre.
