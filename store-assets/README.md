@@ -84,3 +84,26 @@ Warum überhaupt beide: Der Store fällt **nicht** verlässlich von `pt-PT` auf
 englischen Standardeintrag. **In der App ist das anders**: `appSprache()`
 prüft auf `startsWith('pt')` bzw. `startsWith('es')`, dort genügt eine
 Fassung je Sprache.
+
+## Vorstellungsbild (nur Google Play)
+
+`vorstellungsbild/vorstellungsbild-1024x500-<lang>.png`, erzeugt mit
+`node tools/feature-graphic.mjs --alle`. Der App Store hat kein Gegenstück.
+
+Play verlangt das Bild **je Sprache**. `es-419` nimmt dieselbe Datei wie
+`es-ES`, `pt-PT` dieselbe wie `pt-BR` — die Grafik trägt keine der
+Formulierungen, in denen sich die Regionalfassungen unterscheiden.
+
+⚠ **Die Textspalte ist 556 px breit.** Der Untertitel muss zweizeilig bleiben;
+eine dritte Zeile entsteht still und enthält dann ein einzelnes Wort hinter
+einem verwaisten Trennpunkt. Genau das war in der deutschen Fassung schon so
+(»Bestenliste« stand allein). Deshalb nennt Zeile 2 nur noch zwei Begriffe,
+der dritte sitzt als Plakette darunter. Das Skript prüft beides selbst und
+meldet Zeilen- und Plakettenumbrüche.
+
+## Screenshots
+
+`screenshots/<lang>-<n>-<name>.png`, 1320×2868 — Apples Maß für 6,9",
+von Play ebenfalls angenommen. Ein Satz Bilder für beide Stores.
+Erzeugt mit `node tools/shot-store.mjs --lang de,en,es,fr,pt`.
+Portugiesisch deckt pt-BR und pt-PT ab, Spanisch es-ES und es-419.

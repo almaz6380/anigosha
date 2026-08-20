@@ -1,26 +1,40 @@
-// Rendert die Play-Vorstellungsgrafik (1024x500) aus HTML.
+// Rendert das Play-Vorstellungsbild (1024x500) aus HTML.
 // Nur Google Play kennt dieses Bannerbild; der App Store hat kein Gegenstueck.
-// Aufruf: node tools/feature-graphic.mjs [ziel.png]
+//
+// Aufruf: node tools/feature-graphic.mjs [ziel.png]      (Sprache via SHOT_LANG)
+//         node tools/feature-graphic.mjs --alle          (alle Sprachen ins Repo)
+//
+// Play verlangt das Bild je Sprache. es-419 nimmt dieselbe Datei wie es-ES,
+// pt-PT dieselbe wie pt-BR — die Grafik traegt keine der Formulierungen,
+// in denen sich die Regionalfassungen unterscheiden.
 import { chromium } from 'playwright';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 
 const out = process.argv[2] ?? `${process.env.HOME}/Downloads/Anigosha-Store/vorstellungsgrafik-1024x500.png`;
 const icon = readFileSync(new URL('../store-assets/icon/icon-512.png', import.meta.url)).toString('base64');
 
 // Play verlangt die Grafik je Sprache — Aufruf mit SHOT_LANG=en fuer den en-US-Eintrag.
-const T = {
-  de: { sub1: 'Das Quiz für', sub2: 'Anime-Fans',
-        sub3: '804 Fragen &middot; Duelle &middot; Bestenliste',
-        pill1: '12 Kategorien', pill2: 'Täglich neu' },
-  // EN bewusst kuerzer: das Textfeld ist 556 px breit, "leaderboard" faellt
-  // sonst allein in eine dritte Zeile — mit einem verwaisten Trennpunkt davor.
-  en: { sub1: 'The quiz for', sub2: 'anime fans',
-        sub3: '804 questions &middot; duels &middot; ranking',
-        pill1: '12 categories', pill2: 'New daily' },
-}[process.env.SHOT_LANG ?? 'de'];
+const TEXTE = {
+  // ⚠ Der Untertitel MUSS in zwei Zeilen passen (Textspalte: 556 px). Deshalb
+  // nennt Zeile 2 nur ZWEI Begriffe; der dritte steht als Plakette darunter.
+  // Vorher stand er in der Zeile — und fiel in jeder Sprache als einzelnes
+  // Wort hinter einem verwaisten Trennpunkt in eine dritte Zeile.
+  de: { sub1: 'Das Quiz für', sub2: 'Anime-Fans', sub3: '804 Fragen &middot; Duelle',
+        pills: ['12 Kategorien', 'Bestenliste', 'Täglich neu'] },
+  en: { sub1: 'The quiz for', sub2: 'anime fans', sub3: '804 questions &middot; duels',
+        pills: ['12 categories', 'Leaderboard', 'New daily'] },
+  // ES ohne Artikel: »El quiz para fans del anime« sprengt die erste Zeile.
+  es: { sub1: 'Quiz para', sub2: 'fans del anime', sub3: '804 preguntas &middot; duelos',
+        pills: ['12 categorías', 'Clasificación', 'Cada día'] },
+  fr: { sub1: 'Le quiz des', sub2: "fans d'anime", sub3: '804 questions &middot; duels',
+        pills: ['12 catégories', 'Classement', 'Chaque jour'] },
+  pt: { sub1: 'O quiz para', sub2: 'fãs de anime', sub3: '804 perguntas &middot; duelos',
+        pills: ['12 categorias', 'Ranking', 'Todo dia'] },
+};
 
 // Play blendet die Raender je nach Ansicht ab -> alles Wichtige weit nach innen.
-const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+function seite(T) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { width:1024px; height:500px; overflow:hidden;
          font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
@@ -48,15 +62,46 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="txt">
       <h1>Anigosha</h1>
       <div class="sub">${T.sub1} <span class="accent">${T.sub2}</span><br/>${T.sub3}</div>
-      <div class="pills"><span class="pill">${T.pill1}</span><span class="pill">${T.pill2}</span></div>
+      <div class="pills">${T.pills.map((p) => `<span class="pill">${p}</span>`).join('')}</div>
     </div>
   </div>
 </body></html>`;
+}
 
-const browser = await chromium.launch();
+const proxy = process.env.HTTPS_PROXY ?? process.env.https_proxy;
+const browser = await chromium.launch({
+  executablePath: process.env.CHROMIUM_PFAD,
+  ...(proxy ? { proxy: { server: proxy, bypass: 'localhost,127.0.0.1' } } : {}),
+});
 const page = await browser.newPage({ viewport: { width: 1024, height: 500 }, deviceScaleFactor: 1 });
-await page.setContent(html, { waitUntil: 'networkidle' });
-await page.waitForTimeout(400);
-await page.screenshot({ path: out });
+
+const alle = process.argv.includes('--alle');
+const ziele = alle
+  ? Object.keys(TEXTE).map((l) => [l, `store-assets/vorstellungsbild/vorstellungsbild-1024x500-${l}.png`])
+  : [[process.env.SHOT_LANG ?? 'de', out]];
+if (alle) mkdirSync('store-assets/vorstellungsbild', { recursive: true });
+
+for (const [lang, datei] of ziele) {
+  const T = TEXTE[lang];
+  if (!T) throw new Error(`keine Texte für Sprache ${lang}`);
+  await page.setContent(seite(T), { waitUntil: 'networkidle' });
+  await page.waitForTimeout(400);
+  // Der Untertitel MUSS zweizeilig bleiben. Eine dritte Zeile entsteht still,
+  // sobald eine Uebersetzung laenger ist als die deutsche Vorlage — und sie
+  // enthaelt dann ein einzelnes Wort hinter einem verwaisten Trennpunkt.
+  // Die Breite zu messen genuegt nicht: Der Text bricht um, statt zu ueberlaufen.
+  const zeilen = await page.evaluate(() => {
+    const el = document.querySelector('.sub');
+    const lh = parseFloat(getComputedStyle(el).lineHeight);
+    return Math.round(el.getBoundingClientRect().height / lh);
+  });
+  if (zeilen > 2) console.log(`  ⚠ ${lang}: Untertitel braucht ${zeilen} Zeilen — kürzen!`);
+  const plakettenReihen = await page.evaluate(() => {
+    const oben = [...document.querySelectorAll('.pill')].map((e) => Math.round(e.getBoundingClientRect().top));
+    return new Set(oben).size;
+  });
+  if (plakettenReihen > 1) console.log(`  ⚠ ${lang}: Plaketten brechen auf ${plakettenReihen} Reihen um`);
+  await page.screenshot({ path: datei });
+  console.log(`  ${datei}`);
+}
 await browser.close();
-console.log('geschrieben:', out);
