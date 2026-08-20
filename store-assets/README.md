@@ -9,10 +9,20 @@ Hand ändert, muss die Datei nachziehen: Der nächste `texte`-Lauf rollt die
 |---|---|---|
 | `play-listing.de-DE.json` | Google Play | Deutsch |
 | `play-listing.en-US.json` | Google Play | Englisch |
-| `play-listing.es-ES.json` | Google Play | Spanisch |
+| `play-listing.es-ES.json` | Google Play | Spanisch (Spanien) |
+| `play-listing.es-419.json` | Google Play | Spanisch (Lateinamerika) |
 | `play-listing.fr-FR.json` | Google Play | Französisch |
 | `play-listing.pt-BR.json` | Google Play | Portugiesisch (Brasilien) |
-| `appstore-listing.<locale>.json` | App Store | es-ES, fr-FR, pt-BR |
+| `play-listing.pt-PT.json` | Google Play | Portugiesisch (Portugal) |
+| `appstore-listing.es-ES.json` | App Store | Spanisch (Spanien) |
+| `appstore-listing.es-MX.json` | App Store | Spanisch (Lateinamerika) |
+| `appstore-listing.fr-FR.json` | App Store | Französisch |
+| `appstore-listing.pt-BR.json` | App Store | Portugiesisch (Brasilien) |
+| `appstore-listing.pt-PT.json` | App Store | Portugiesisch (Portugal) |
+
+⚠ **Apple kennt kein `es-419`.** Lateinamerika-Spanisch heißt dort `es-MX`.
+Play kennt umgekehrt kein `es-MX`. Gleicher Text, zwei Dateinamen — deshalb
+liegen beide im Repo, statt einen davon zur Laufzeit umzubenennen.
 
 ## Grenzen (werden vor dem Senden geprüft)
 
@@ -58,14 +68,19 @@ werden, sonst antwortet die API mit 404 für die Locale.
 Store Connect eingefügt (App → die Sprache anlegen → Felder aus der JSON-Datei
 kopieren). Solange eine Version in Prüfung ist, sind die Texte gesperrt.
 
-## Spanisch für Lateinamerika
+## Die Sprachvarianten sind angepasst, keine Kopien
 
-`es-ES` ist neutral gehalten und passt auch für `es-419` (Lateinamerika) —
-der weitaus größere Anime-Markt. Zum Ausspielen die Datei kopieren:
+Vier Sprachen gibt es doppelt, weil die Stores getrennte Einträge je Region
+führen. Die Paare unterscheiden sich bewusst — wer eines ändert, muss
+entscheiden, ob die Änderung ins andere gehört:
 
-```bash
-cp store-assets/play-listing.es-ES.json store-assets/play-listing.es-419.json
-```
+| Paar | Unterschiede |
+|---|---|
+| `es-ES` ↔ `es-419` / `es-MX` | `es-ES` nutzt die vosotros-Form (»ambos recibís«), Lateinamerika die ustedes-Form (»ambos reciben«); dazu »ordenador« vs. »computadora« und »costes« vs. »costos« |
+| `pt-BR` ↔ `pt-PT` | Brasilien siezt mit »você«, Portugal duzt mit »tu« (»Conheces mesmo as tuas séries?«); dazu »aplicativo« vs. »aplicação«, »compartilhe« vs. »partilha«, »ranking« vs. »classificação« |
 
-Bewusst nicht vorab angelegt: Zwei Dateien mit gleichem Inhalt laufen
-auseinander, sobald jemand nur eine davon pflegt.
+Warum überhaupt beide: Der Store fällt **nicht** verlässlich von `pt-PT` auf
+`pt-BR` zurück — ein Gerät in Portugal sähe sonst den deutschen oder
+englischen Standardeintrag. **In der App ist das anders**: `appSprache()`
+prüft auf `startsWith('pt')` bzw. `startsWith('es')`, dort genügt eine
+Fassung je Sprache.
