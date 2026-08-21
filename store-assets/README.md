@@ -68,6 +68,30 @@ werden, sonst antwortet die API mit 404 für die Locale.
 Store Connect eingefügt (App → die Sprache anlegen → Felder aus der JSON-Datei
 kopieren). Solange eine Version in Prüfung ist, sind die Texte gesperrt.
 
+### ⚠ Die Felder liegen auf ZWEI Seiten, nicht auf einer
+
+Apple trennt sie, und die Oberfläche sagt nicht dazu, wo das jeweils andere
+steckt. Wer den Namen auf der Versionsseite sucht, findet ihn nie:
+
+| Feld | Wo in ASC | Apples Bezeichnung |
+|---|---|---|
+| `name`, `subtitle` | **App-Informationen** → Lokalisierbare Informationen | `appInfoLocalizations` |
+| `keywords`, `promotionalText`, `description`, `whatsNew` | **die Version** (z. B. 1.1) | `appStoreVersionLocalizations` |
+
+Name und Untertitel gehören zur App, nicht zur Version — deshalb überleben sie
+einen Versionswechsel, die Beschreibung nicht.
+
+### `whatsNew` ist ab 1.1 Pflicht, je Sprache
+
+Bei einer Erstveröffentlichung ist „Neues in dieser Version" optional, bei jedem
+Update verlangt Apple es für **jede** angelegte Sprache — sonst bleibt „Zur
+Prüfung hinzufügen" mit dem Hinweis *„Dieses Feld ist erforderlich"* stehen.
+
+`appstore-listing.de-DE.json` und `.en-US.json` enthalten **nur** `whatsNew`.
+Das ist Absicht: Die deutschen und englischen Volltexte lagen nie im Repo,
+sondern seit jeher nur in den Store-Konsolen. Der Änderungstext braucht aber
+eine Heimat, sonst wird er bei jedem Update neu erfunden.
+
 ## Die Sprachvarianten sind angepasst, keine Kopien
 
 Vier Sprachen gibt es doppelt, weil die Stores getrennte Einträge je Region
