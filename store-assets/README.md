@@ -87,10 +87,16 @@ Bei einer Erstveröffentlichung ist „Neues in dieser Version" optional, bei je
 Update verlangt Apple es für **jede** angelegte Sprache — sonst bleibt „Zur
 Prüfung hinzufügen" mit dem Hinweis *„Dieses Feld ist erforderlich"* stehen.
 
-`appstore-listing.de-DE.json` und `.en-US.json` enthalten **nur** `whatsNew`.
-Das ist Absicht: Die deutschen und englischen Volltexte lagen nie im Repo,
-sondern seit jeher nur in den Store-Konsolen. Der Änderungstext braucht aber
-eine Heimat, sonst wird er bei jedem Update neu erfunden.
+`appstore-listing.de-DE.json` und `.en-US.json` enthalten **nur** `whatsNew`
+und `promotionalText`. Das ist Absicht: Die deutschen und englischen Volltexte
+(Beschreibung, Keywords) lagen nie im Repo, sondern seit jeher nur in den
+Store-Konsolen. Die beiden Felder hier ändern sich dagegen laufend und brauchen
+eine Heimat, sonst werden sie bei jedem Update neu erfunden.
+
+`promotionalText` ist das einzige Feld, das sich **ohne neue Einreichung**
+ändern lässt, auch an einer bereits veröffentlichten Version. Deshalb steht dort
+das, was sich häufig ändert — derzeit die tägliche Challenge, in allen sieben
+Sprachen mit derselben Aussage.
 
 ## Die Sprachvarianten sind angepasst, keine Kopien
 
