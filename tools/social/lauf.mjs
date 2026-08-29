@@ -99,6 +99,11 @@ function vorflugProbe() {
       app: 'anigosha', post: { sprache: 'de', medium: 'bild' },
       texte: { caption: 'Nur echte Fans schaffen 3/3', medienherkunft: 'ki-bild' } },
 
+    { name: 'KI-erzeugte Menschen ohne Wasserzeichen',
+      app: 'fullrep', post: { sprache: 'de' },
+      texte: { caption: 'Kraft folgt der Wiederholung.',
+        medienherkunft: 'ki-menschen (kein Wasserzeichen)' } },
+
     { name: 'Store-Link in der Caption',
       app: 'anigosha', post: { sprache: 'de' },
       texte: { caption: 'Hol es dir: https://apps.apple.com/app/id6797757350' } },
@@ -118,6 +123,15 @@ function vorflugProbe() {
     { name: 'FullRep-Uebungskarte ohne Quelle und ohne Hinweis',
       app: 'fullrep', post: { sprache: 'de', quelle_pflicht: false },
       texte: { caption: 'Bankdruecken. Flachbank mit der Langhantel.' } },
+
+    { name: 'KI-Bild MIT Wasserzeichen geht durch',
+      app: 'fullrep', post: { sprache: 'de' },
+      texte: { caption: 'Kraft folgt der Wiederholung.',
+        medienherkunft: 'ki-menschen (Wasserzeichen gesetzt)', wasserzeichen: true } },
+
+    { name: 'Echtes Foto braucht KEIN Wasserzeichen',
+      app: 'fullrep', post: { sprache: 'de' },
+      texte: { caption: 'Bankdruecken mit der Langhantel.', medienherkunft: 'echtes Foto' } },
 
     { name: 'Anigosha korrekt: Typografie, beide Stores',
       app: 'anigosha', post: { sprache: 'de', medium: 'reel' },
@@ -218,7 +232,11 @@ async function tageslauf() {
           tonquelle: post.medium === 'reel'
             ? (k === 'mahjong' ? 'synth' : k === 'wellbooked' ? 'stille' : 'eigen')
             : undefined,
-          medienherkunft: k === 'anigosha' ? 'typografie' : undefined,
+          // Die Herkunft steht im Beiblatt („Medienherkunft: …"). Sie dort
+          // zu lesen ist verlaesslicher, als sie hier zu erraten.
+          medienherkunft: (beiblatt.match(/^- Medienherkunft:\s*(.+)$/m)?.[1]
+            ?? (k === 'anigosha' ? 'typografie' : undefined)),
+          wasserzeichen: /Wasserzeichen gesetzt/.test(beiblatt) || undefined,
           quelle: /Quelle:|Source:/.test(beiblatt) ? 'ja' : undefined,
         },
       });

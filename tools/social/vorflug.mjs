@@ -86,6 +86,19 @@ export function pruefe({ appSchluessel, app, post, texte }) {
       'Store-Link in der Caption drosselt die Reichweite. Gehoert in die Bio, nicht in den Post.'));
   }
 
+  // --- Regel fuer alle: KI-erzeugte Menschen muessen gekennzeichnet sein ----
+  // Josefs Regel vom 29.08.2026. Sie deckt sich mit dem, was Meta und TikTok
+  // fuer realistische KI-Inhalte ohnehin verlangen, und mit Art. 50 des
+  // EU AI Act. Wer selbst kennzeichnet, bestimmt, wie das Label aussieht.
+  //
+  // ⚠ Gilt fuer KI-erzeugte MENSCHEN. Ein echtes Foto zu kennzeichnen waere
+  // genauso falsch wie ein KI-Bild nicht zu kennzeichnen.
+  if (texte.medienherkunft?.startsWith('ki-menschen') && texte.wasserzeichen !== true) {
+    funde.push(befund(true, 'ki-wasserzeichen',
+      'KI-erzeugte Menschen im Bild, aber kein AI-Wasserzeichen. Es gehoert '
+      + 'unten rechts in die Ecke — sonst setzt die Plattform ihr eigenes Label darueber.'));
+  }
+
   // --- Anigosha ------------------------------------------------------------
   if (r.nur_typografie && post.medium && texte.medienherkunft &&
       texte.medienherkunft !== 'typografie') {
