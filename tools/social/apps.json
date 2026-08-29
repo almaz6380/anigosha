@@ -125,11 +125,11 @@
       "npm i --no-save playwright ffmpeg-static"
     ],
     "regeln": {
-      "quelle_sichtbar": true,
       "download_badges": true,
       "_hinweis_entfallen": "Der aerztliche Haftungshinweis ist eine Auflage fuer den STORE-EINTRAG (Google-Ablehnung 30.07.2026), nicht fuer Social-Media-Beitraege. Josefs Entscheidung vom 29.08.2026. In der App und im Play-Text bleibt er unveraendert.",
       "verbotene_medien": "keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen",
-      "store_link_in_caption": false
+      "store_link_in_caption": false,
+      "_quellen_entfallen": "Quellenangaben stehen nicht mehr in Social-Media-Beitraegen. Apples 1.4.1-Ablehnung vom 29.07.2026 betraf medizinische Inhalte IN DER APP; dort (References.jsx) bleiben sie sichtbar. Josefs Entscheidung vom 29.08.2026."
     }
   }
 }

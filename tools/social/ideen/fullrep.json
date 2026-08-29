@@ -1,6 +1,6 @@
 {
   "_quelle": "162 Uebungsordner mit je zwei Fotos (public/exercise-demos/*/0.jpg,1.jpg), ~1 MB belegtes Wissen (src/data/*Knowledge.js mit quickDE/quickEN und references), 25 Rezepte, 244 Uebungen, 21 Peak-Programme",
-  "_regel": "Quelle sichtbar im Bild, nie eingeklappt (Apple 1.4.1). Download-Badges fuer App Store und Google Play statt eines Satzes. Keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen. Der aerztliche Haftungshinweis entfaellt in Social-Media-Beitraegen — er ist eine Auflage fuer den Store-Eintrag.",
+  "_regel": "Download-Badges fuer App Store und Google Play statt eines Satzes. KI-erzeugte Menschen tragen unten rechts ein AI-Wasserzeichen. Keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen. Haftungshinweis und Quellenangabe entfallen in Beitraegen — beide sind Auflagen fuer den Store-Eintrag, wo sie unveraendert bleiben.",
   "winkel": [
     {
       "id": "uebung-loop",
@@ -21,7 +21,6 @@
       "status": "vorhanden",
       "haken": "Ein quickDE/quickEN-Paar aus den Wissensdateien, mit sichtbarer Quelle. Genau das, was Apple 1.4.1 verlangt hat — hier wird die Pflicht zum Format",
       "schluessel": "wissensthema",
-      "quelle_pflicht": true,
       "sprachen": [
         "de",
         "en"
@@ -34,7 +33,6 @@
       "status": "vorhanden",
       "haken": "Trainingsmythos gegen die belegte Aussage. Der Studienbeleg ist der Unterschied zu jedem anderen Fitnesskanal",
       "schluessel": "wissensthema",
-      "quelle_pflicht": true,
       "sprachen": [
         "de",
         "en"
@@ -59,7 +57,6 @@
       "status": "neu",
       "haken": "Eine Woche aus einem der 21 Peak-Programme, mit Studienzitat. Zeigt Substanz statt Versprechen",
       "schluessel": "programm",
-      "quelle_pflicht": true,
       "sprachen": [
         "de",
         "en"
@@ -72,7 +69,6 @@
       "status": "vorhanden",
       "haken": "Zitatkarte mit sichtbarer Quellenangabe. Teilbar, weil belegt",
       "schluessel": "wissensthema",
-      "quelle_pflicht": true,
       "sprachen": [
         "de",
         "en"
@@ -109,7 +105,6 @@
       "status": "vorhanden",
       "haken": "Ein Mikronaehrstoff aus nutritionKnowledge.js — was er tut, worin er steckt. Ohne Dosierung, ohne Heilversprechen",
       "schluessel": "wissensthema",
-      "quelle_pflicht": true,
       "sprachen": [
         "de",
         "en"

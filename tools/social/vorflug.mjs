@@ -10,9 +10,8 @@
 //              Nutzung wird stummgeschaltet, und ein stummer Reel ist tot.
 //   WELLbooked Die Marke traegt ein Ausrufezeichen. Und Claude fuegt keinen
 //              Ton hinzu — das ist eine ausdrueckliche Anweisung vom 01.08.
-//   FullRep    Apple 1.4.1 verlangt sichtbare Quellen bei belegten Aussagen.
-//              (Der aerztliche Haftungshinweis gilt fuer den Store-Eintrag,
-//              nicht fuer Social-Media-Beitraege — siehe unten.)
+//   FullRep    Haftungshinweis und Quellenangabe gelten fuer den
+//              STORE-EINTRAG, nicht fuer Social-Media-Beitraege — siehe unten.
 //
 // Und ueberall: Der Store-Satz wird aus der Konfiguration gebaut, nie getippt.
 // Anigosha hatte ihn schon einmal falsch im Video stehen.
@@ -136,19 +135,19 @@ export function pruefe({ appSchluessel, app, post, texte }) {
   }
 
   // --- FullRep -------------------------------------------------------------
-  // Der aerztliche Haftungshinweis wird hier NICHT mehr geprueft (Josefs
-  // Entscheidung vom 29.08.2026). Er ist eine Auflage fuer den STORE-EINTRAG —
-  // dort hat Google am 30.07.2026 nachgesehen —, nicht fuer Social-Media-
-  // Beitraege. In der App, im Play-Text und unter /legal/health bleibt er
-  // unveraendert; wer ihn DORT entfernt, holt die Ablehnung zurueck.
+  // Hier standen zwei Pruefungen: aerztlicher Haftungshinweis und sichtbare
+  // Quellenangabe. BEIDE sind entfallen (Josefs Entscheidungen vom
+  // 29.08.2026), und das ist kein Versehen.
   //
-  // Die Quellenangabe bleibt Pflicht: Apple hat unter 1.4.1 abgelehnt, und
-  // ein Beleg ist ohnehin der Unterschied zu jedem anderen Fitnesskanal.
-  if (r.quelle_sichtbar && post.quelle_pflicht && !texte.quelle) {
-    funde.push(befund(true, 'quelle-sichtbar',
-      'Belegte Aussage ohne sichtbare Quelle. Apple 1.4.1 hat die App deswegen ' +
-      'schon einmal abgelehnt.'));
-  }
+  // Beide sind Auflagen fuer den STORE-EINTRAG: Google hat am 30.07.2026 die
+  // Play-Beschreibung wegen des fehlenden Hinweises abgelehnt, Apple am
+  // 29.07.2026 unter 1.4.1 wegen unbelegter medizinischer Inhalte in der App.
+  //
+  // ⚠ In der App (MedicalDisclaimer.jsx, References.jsx), im Play-Text
+  // (store-assets/play-listing.de-DE.json) und unter /legal/health bleiben
+  // beide UNVERAENDERT. Wer sie DORT entfernt, holt beide Ablehnungen zurueck.
+  // Ein Instagram-Beitrag ist kein Store-Listing — nur darauf bezieht sich
+  // dieser Verzicht.
 
   return {
     bestanden: !funde.some((f) => f.hart),

@@ -79,10 +79,6 @@ function trockenlauf() {
 // Leitplanke Dekoration.
 function vorflugProbe() {
   const faelle = [
-    { name: 'FullRep-Wissenskarte ohne sichtbare Quelle',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
-      texte: { caption: 'Kreatin verbessert die Maximalkraft.' } },
-
     { name: 'WELLbooked ohne Ausrufezeichen',
       app: 'wellbooked', post: { sprache: 'de' },
       texte: { caption: 'Mit WELLbooked findest du freie Termine.', tonquelle: 'stille' } },
@@ -110,18 +106,17 @@ function vorflugProbe() {
   ];
 
   const gut = [
-    { name: 'FullRep korrekt: Quelle sichtbar, beide Stores erlaubt',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+    { name: 'FullRep korrekt: ohne Quelle, beide Stores erlaubt',
+      app: 'fullrep', post: { sprache: 'de' },
       texte: { caption: 'Kreatin gehoert zu den am besten untersuchten Supplementen. '
-        + 'Im App Store und bei Google Play.',
-        quelle: 'Kreider et al. 2017, JISSN' } },
+        + 'Im App Store und bei Google Play.' } },
 
     { name: 'WELLbooked! korrekt: Marke mit !, stumm',
       app: 'wellbooked', post: { sprache: 'de' },
       texte: { caption: 'WELLbooked! zeigt freie Termine in deiner Naehe.', tonquelle: 'stille' } },
 
-    { name: 'FullRep-Uebungskarte ohne Quelle und ohne Hinweis',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: false },
+    { name: 'FullRep-Uebungskarte, reine Technik',
+      app: 'fullrep', post: { sprache: 'de' },
       texte: { caption: 'Bankdruecken. Flachbank mit der Langhantel.' } },
 
     { name: 'KI-Bild MIT Wasserzeichen geht durch',
@@ -211,7 +206,15 @@ async function tageslauf() {
           });
         }
       } catch (e) {
-        const grund = (e.stderr?.toString() || e.message).trim().split('\n').slice(-3).join(' ');
+        // ⚠ Die LETZTEN Zeilen eines Node-Stacks sind „Node.js v22" und
+        // Klammern. Beim ersten Serverausfall stand als ganze Fehlermeldung
+        // „✗ }" da — der eigentliche Grund (ERR_CONNECTION_REFUSED) lag
+        // mittendrin. Deshalb die erste Zeile suchen, die wie ein Grund
+        // aussieht.
+        const roh = (e.stderr?.toString() || e.message).trim().split('\n');
+        const grund = roh.find((z) => /Error|error:|✗|refused|ENOENT|not found|Cannot/i.test(z))
+          ?? roh.find((z) => z.trim() && !/^\s*[{}^)]/.test(z))
+          ?? roh[0];
         console.log(`     ✗ ${grund.slice(0, 220)}`);
         bericht.push({ app: k, post, fehler: grund, dateien: [] });
         continue;
@@ -237,7 +240,6 @@ async function tageslauf() {
           medienherkunft: (beiblatt.match(/^- Medienherkunft:\s*(.+)$/m)?.[1]
             ?? (k === 'anigosha' ? 'typografie' : undefined)),
           wasserzeichen: /Wasserzeichen gesetzt/.test(beiblatt) || undefined,
-          quelle: /Quelle:|Source:/.test(beiblatt) ? 'ja' : undefined,
         },
       });
 
