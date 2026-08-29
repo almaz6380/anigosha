@@ -1,0 +1,45 @@
+{
+  "_quelle": "162 Uebungsordner mit je zwei Fotos (public/exercise-demos/*/0.jpg,1.jpg), ~1 MB belegtes Wissen (src/data/*Knowledge.js mit quickDE/quickEN und references), 25 Rezepte, 244 Uebungen, 21 Peak-Programme",
+  "_regel": "Jede Gesundheitsaussage traegt den Hinweis mit ALLEN DREI Woertern Rat, Diagnose, Behandlung. Quelle sichtbar im Bild, nie eingeklappt. CTA nennt nur Google Play, solange iOS nicht freigegeben ist. Keine Dosierungen, keine Diagnosen, keine Therapien.",
+  "winkel": [
+    { "id": "uebung-loop", "medium": "reel", "format": "uebung-loop", "status": "neu",
+      "haken": "Start- und Endposition aus public/exercise-demos/<Uebung>/ als sauberer Loop, mit Name und Zielmuskel. 162 Uebungen = 162 Posts ohne Wiederholung",
+      "schluessel": "uebung", "sprachen": ["de", "en"] },
+
+    { "id": "quick-fakt", "medium": "reel", "format": "wissen-reel", "status": "neu",
+      "haken": "Ein quickDE/quickEN-Paar aus den Wissensdateien, mit sichtbarer Quelle. Genau das, was Apple 1.4.1 verlangt hat — hier wird die Pflicht zum Format",
+      "schluessel": "wissensthema", "hinweis_pflicht": true, "quelle_pflicht": true, "sprachen": ["de", "en"] },
+
+    { "id": "mythos-check", "medium": "reel", "format": "wissen-reel", "status": "neu",
+      "haken": "Trainingsmythos gegen die belegte Aussage. Der Studienbeleg ist der Unterschied zu jedem anderen Fitnesskanal",
+      "schluessel": "wissensthema", "hinweis_pflicht": true, "quelle_pflicht": true, "sprachen": ["de", "en"] },
+
+    { "id": "drei-fehler", "medium": "reel", "format": "uebung-loop", "status": "neu",
+      "haken": "Drei Ausfuehrungsfehler einer Uebung, aus den Beschreibungen. Fehlerkorrektur wird staerker gespeichert als Anleitung",
+      "schluessel": "uebung", "sprachen": ["de", "en"] },
+
+    { "id": "programm-woche", "medium": "reel", "format": "wissen-reel", "status": "neu",
+      "haken": "Eine Woche aus einem der 21 Peak-Programme, mit Studienzitat. Zeigt Substanz statt Versprechen",
+      "schluessel": "programm", "hinweis_pflicht": true, "quelle_pflicht": true, "sprachen": ["de", "en"] },
+
+    { "id": "wissens-karte", "medium": "bild", "format": "wissen-karte", "status": "neu",
+      "haken": "Zitatkarte mit sichtbarer Quellenangabe. Teilbar, weil belegt",
+      "schluessel": "wissensthema", "hinweis_pflicht": true, "quelle_pflicht": true, "sprachen": ["de", "en"] },
+
+    { "id": "uebung-karte", "medium": "bild", "format": "uebung-karte", "status": "neu",
+      "haken": "Start und Ende nebeneinander, Muskelgruppe farbig markiert. Als Nachschlagebild speicherbar — Saves zaehlen bei Instagram mehr als Likes",
+      "schluessel": "uebung", "sprachen": ["de", "en"] },
+
+    { "id": "rezept-karte", "medium": "bild", "format": "rezept-karte", "status": "neu",
+      "haken": "Eines der 25 Rezepte mit Makros. Essen ist das teilbarste Fitnessthema ueberhaupt",
+      "schluessel": "rezept", "sprachen": ["de", "en"] },
+
+    { "id": "naehrstoff", "medium": "bild", "format": "wissen-karte", "status": "neu",
+      "haken": "Ein Mikronaehrstoff aus nutritionKnowledge.js — was er tut, worin er steckt. Ohne Dosierung, ohne Heilversprechen",
+      "schluessel": "wissensthema", "hinweis_pflicht": true, "quelle_pflicht": true, "sprachen": ["de", "en"] },
+
+    { "id": "erfolg", "medium": "bild", "format": "erfolg-karte", "status": "neu",
+      "haken": "Eines der 23 Achievements als Motivationswinkel — 100 Trainings, 30 Tage Serie. Zielt auf Wiedereinsteiger",
+      "schluessel": "achievement", "sprachen": ["de", "en"] }
+  ]
+}
