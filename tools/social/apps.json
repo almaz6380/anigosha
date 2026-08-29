@@ -1,37 +1,56 @@
 {
   "_hinweis": "Registratur der vier Apps. Store-Verfuegbarkeit NIE im Text festtippen — der CTA wird aus 'stores' gebaut. Genau dieser Satz war bei Anigosha schon einmal falsch.",
-
   "anigosha": {
     "name": "Anigosha",
     "marke": "Anigosha",
     "nische": "Anime-Wissensquiz mit Duellen",
     "pfad": "/home/user/anigosha",
-    "stores": { "ios": true, "android": true },
+    "stores": {
+      "ios": true,
+      "android": true
+    },
     "linkInBio": "anigosha.vercel.app/get",
-    "sprachen": ["de", "en"],
-    "kanaele": ["tiktok", "instagram", "facebook"],
+    "sprachen": [
+      "de",
+      "en"
+    ],
+    "kanaele": [
+      "tiktok",
+      "instagram",
+      "facebook"
+    ],
     "posts_pro_tag": 2,
     "motor": {
       "reel": "node tools/reels/make-reel.mjs",
       "bild": "node tools/post-bild.mjs"
     },
-    "vorbereitung": ["npm i --no-save playwright ffmpeg-static"],
+    "vorbereitung": [
+      "npm i --no-save playwright ffmpeg-static"
+    ],
     "regeln": {
       "nur_typografie": true,
       "verbotene_medien": "Bilder erkennbarer Anime-Figuren, auch KI-erzeugte — Takedown-Risiko fuer das ganze Entwicklerkonto",
       "store_link_in_caption": false
     }
   },
-
   "mahjong": {
     "name": "Mahjong Royale",
     "marke": "Mahjong Royale",
     "nische": "Mahjong-Sammlung: Solitaer, Connect, Riichi, 4 Spieler",
     "pfad": "/home/user/mahjong-app",
-    "stores": { "ios": true, "android": true },
+    "stores": {
+      "ios": true,
+      "android": true
+    },
     "linkInBio": "mahjong-app-plum.vercel.app/links",
-    "sprachen": ["en"],
-    "kanaele": ["tiktok", "instagram", "facebook"],
+    "sprachen": [
+      "en"
+    ],
+    "kanaele": [
+      "tiktok",
+      "instagram",
+      "facebook"
+    ],
     "posts_pro_tag": 2,
     "motor": {
       "reel": "node scripts/reel/make-reel.mjs",
@@ -48,22 +67,32 @@
       "store_link_in_caption": false
     }
   },
-
   "wellbooked": {
     "name": "WELLbooked!",
     "marke": "WELLbooked!",
     "nische": "Wellness-Buchungen AT+DE mit Last-Minute-Rabatten; B2C Kundschaft, B2B Studios",
     "pfad": "/home/user/wellbooked",
-    "stores": { "ios": true, "android": true },
+    "stores": {
+      "ios": true,
+      "android": true
+    },
     "linkInBio": "wellbooked.at",
-    "sprachen": ["de"],
-    "kanaele": ["instagram", "facebook", "tiktok"],
+    "sprachen": [
+      "de"
+    ],
+    "kanaele": [
+      "instagram",
+      "facebook",
+      "tiktok"
+    ],
     "posts_pro_tag": 2,
     "motor": {
       "reel": "python3 docs/reels/bild-reel.py",
       "bild": "python3 docs/reels/anzeige.py"
     },
-    "vorbereitung": ["pip install --quiet Pillow numpy"],
+    "vorbereitung": [
+      "pip install --quiet Pillow numpy"
+    ],
     "regeln": {
       "marke_mit_ausrufezeichen": true,
       "tonspur_muss_leer_sein": true,
@@ -72,26 +101,33 @@
       "store_link_in_caption": false
     }
   },
-
   "fullrep": {
     "name": "FullRep",
     "marke": "FullRep",
     "nische": "Fitness- und Ernaehrungstracker mit belegtem Wissen",
     "pfad": "/home/user/mypeak",
-    "stores": { "ios": false, "android": true },
+    "stores": {
+      "ios": true,
+      "android": true
+    },
     "linkInBio": "my-peak.vercel.app",
-    "sprachen": ["de", "en"],
+    "sprachen": [
+      "de",
+      "en"
+    ],
     "kanaele": [],
     "posts_pro_tag": 2,
     "motor": {
       "reel": "node scripts/post-reel.mjs",
       "bild": "node scripts/post-bild.mjs"
     },
-    "vorbereitung": ["npm i --no-save playwright ffmpeg-static"],
+    "vorbereitung": [
+      "npm i --no-save playwright ffmpeg-static"
+    ],
     "regeln": {
-      "gesundheitshinweis_pflicht": true,
-      "hinweis_woerter": ["Rat", "Diagnose", "Behandlung"],
       "quelle_sichtbar": true,
+      "download_badges": true,
+      "_hinweis_entfallen": "Der aerztliche Haftungshinweis ist eine Auflage fuer den STORE-EINTRAG (Google-Ablehnung 30.07.2026), nicht fuer Social-Media-Beitraege. Josefs Entscheidung vom 29.08.2026. In der App und im Play-Text bleibt er unveraendert.",
       "verbotene_medien": "keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen",
       "store_link_in_caption": false
     }

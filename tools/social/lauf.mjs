@@ -79,17 +79,9 @@ function trockenlauf() {
 // Leitplanke Dekoration.
 function vorflugProbe() {
   const faelle = [
-    { name: 'FullRep nennt den App Store, obwohl iOS nicht live ist',
-      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: false },
-      texte: { caption: 'Jetzt gratis im App Store und bei Google Play laden!' } },
-
-    { name: 'FullRep-Gesundheitsaussage ohne die drei Pflichtwoerter',
-      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
-      texte: { caption: 'Kreatin verbessert die Maximalkraft.', quelle: 'Kreider et al. 2017' } },
-
     { name: 'FullRep-Wissenskarte ohne sichtbare Quelle',
-      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
-      texte: { caption: 'Kein Ersatz fuer aerztlichen Rat, Diagnose oder Behandlung.' } },
+      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+      texte: { caption: 'Kreatin verbessert die Maximalkraft.' } },
 
     { name: 'WELLbooked ohne Ausrufezeichen',
       app: 'wellbooked', post: { sprache: 'de' },
@@ -113,25 +105,19 @@ function vorflugProbe() {
   ];
 
   const gut = [
-    { name: 'FullRep korrekt: nur Play, Hinweis vollstaendig, Quelle sichtbar',
-      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
-      texte: { caption: 'Kreatin gehoert zu den am besten untersuchten Supplementen. ' +
-        'Kein Ersatz fuer aerztlichen Rat, keine Diagnose, keine Behandlung. Gratis bei Google Play.',
+    { name: 'FullRep korrekt: Quelle sichtbar, beide Stores erlaubt',
+      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+      texte: { caption: 'Kreatin gehoert zu den am besten untersuchten Supplementen. '
+        + 'Im App Store und bei Google Play.',
         quelle: 'Kreider et al. 2017, JISSN' } },
 
     { name: 'WELLbooked! korrekt: Marke mit !, stumm',
       app: 'wellbooked', post: { sprache: 'de' },
       texte: { caption: 'WELLbooked! zeigt freie Termine in deiner Naehe.', tonquelle: 'stille' } },
 
-    { name: 'FullRep englisch: Hinweis auf Englisch zaehlt genauso',
-      app: 'fullrep', post: { sprache: 'en', hinweis_pflicht: true, quelle_pflicht: true },
-      texte: { caption: 'Creatine is among the best studied supplements. Not a substitute '
-        + 'for medical advice, diagnosis or treatment. Free on Google Play.',
-        quelle: 'Kreider et al. 2017, JISSN' } },
-
-    { name: 'FullRep-Uebungskarte braucht KEINEN Gesundheitshinweis',
-      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: false, quelle_pflicht: false },
-      texte: { caption: 'Bankdruecken. Flachbank mit der Langhantel. Gratis bei Google Play.' } },
+    { name: 'FullRep-Uebungskarte ohne Quelle und ohne Hinweis',
+      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: false },
+      texte: { caption: 'Bankdruecken. Flachbank mit der Langhantel.' } },
 
     { name: 'Anigosha korrekt: Typografie, beide Stores',
       app: 'anigosha', post: { sprache: 'de', medium: 'reel' },

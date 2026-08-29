@@ -10,9 +10,9 @@
 //              Nutzung wird stummgeschaltet, und ein stummer Reel ist tot.
 //   WELLbooked Die Marke traegt ein Ausrufezeichen. Und Claude fuegt keinen
 //              Ton hinzu — das ist eine ausdrueckliche Anweisung vom 01.08.
-//   FullRep    Zwei Store-Ablehnungen haengen an Gesundheitsaussagen. Google
-//              sucht nach 'Rat', 'Diagnose' und 'Behandlung'; Apple 1.4.1
-//              verlangt sichtbare Quellen.
+//   FullRep    Apple 1.4.1 verlangt sichtbare Quellen bei belegten Aussagen.
+//              (Der aerztliche Haftungshinweis gilt fuer den Store-Eintrag,
+//              nicht fuer Social-Media-Beitraege — siehe unten.)
 //
 // Und ueberall: Der Store-Satz wird aus der Konfiguration gebaut, nie getippt.
 // Anigosha hatte ihn schon einmal falsch im Video stehen.
@@ -123,24 +123,14 @@ export function pruefe({ appSchluessel, app, post, texte }) {
   }
 
   // --- FullRep -------------------------------------------------------------
-  // Nur wo der Winkel es verlangt — eine Uebungskarte ist Technik, keine
-  // Gesundheitsaussage, und ein Hinweis darauf waere Ballast.
-  if (r.gesundheitshinweis_pflicht && post.hinweis_pflicht === true) {
-    // ⚠ Der Hinweis ist zweisprachig. Auf einem englischen Post steht
-    // „advice, diagnosis or treatment" — gegen die deutschen Woerter
-    // geprueft fiel jeder englische Post durch, obwohl er korrekt war.
-    const woerter = post.sprache === 'en'
-      ? ['advice', 'diagnosis', 'treatment']
-      : (r.hinweis_woerter ?? []);
-    const fehlt = woerter.filter(
-      (w) => !new RegExp(`\\b${w}\\b`, 'i').test(alles),
-    );
-    if (fehlt.length) {
-      funde.push(befund(true, 'gesundheitshinweis',
-        `Der Haftungshinweis nennt ${fehlt.join(' und ')} nicht. Googles Pruefung sucht ` +
-        'genau nach diesen Woertern — daran ist die App am 30.07.2026 gescheitert.'));
-    }
-  }
+  // Der aerztliche Haftungshinweis wird hier NICHT mehr geprueft (Josefs
+  // Entscheidung vom 29.08.2026). Er ist eine Auflage fuer den STORE-EINTRAG —
+  // dort hat Google am 30.07.2026 nachgesehen —, nicht fuer Social-Media-
+  // Beitraege. In der App, im Play-Text und unter /legal/health bleibt er
+  // unveraendert; wer ihn DORT entfernt, holt die Ablehnung zurueck.
+  //
+  // Die Quellenangabe bleibt Pflicht: Apple hat unter 1.4.1 abgelehnt, und
+  // ein Beleg ist ohnehin der Unterschied zu jedem anderen Fitnesskanal.
   if (r.quelle_sichtbar && post.quelle_pflicht && !texte.quelle) {
     funde.push(befund(true, 'quelle-sichtbar',
       'Belegte Aussage ohne sichtbare Quelle. Apple 1.4.1 hat die App deswegen ' +
