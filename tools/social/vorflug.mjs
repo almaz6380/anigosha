@@ -17,6 +17,27 @@
 // Und ueberall: Der Store-Satz wird aus der Konfiguration gebaut, nie getippt.
 // Anigosha hatte ihn schon einmal falsch im Video stehen.
 
+/**
+ * Holt aus der Beiblatt-Datei NUR den Text, der wirklich gepostet wird.
+ *
+ * ⚠ Ohne das prueft die Leitplanke die ganze Datei — und faellt auf den
+ * eigenen Anleitungstext herein. Beim ersten echten Lauf verwarf sie jeden
+ * FullRep-Post, weil im Abschnitt „Beim Hochladen" die Zeile steht
+ * „iOS ist noch nicht freigegeben: nirgends den App Store nennen".
+ * Die Warnung selbst nannte den Store.
+ *
+ * Die vier Repos schreiben zwei Stile: „CAPTION ZUM KOPIEREN" mit
+ * Unterstrichen (Anigosha) und „## Caption (kopieren)" (die uebrigen).
+ */
+export function captionAus(beiblatt) {
+  if (!beiblatt) return '';
+  const start = beiblatt.search(/^(##\s*Caption|CAPTION ZUM KOPIEREN)/im);
+  if (start === -1) return beiblatt;
+  const rest = beiblatt.slice(start).replace(/^.*\n(-{3,}\n)?/, '');
+  const ende = rest.search(/^(##\s|[A-ZÄÖÜ ]{6,}\n-{3,})/m);
+  return ende === -1 ? rest : rest.slice(0, ende);
+}
+
 /** Ein Befund. `hart: true` verwirft den Post. */
 const befund = (hart, regel, text) => ({ hart, regel, text });
 
@@ -85,8 +106,10 @@ export function pruefe({ appSchluessel, app, post, texte }) {
   if (r.marke_mit_ausrufezeichen) {
     for (const [feld, text] of Object.entries(texte)) {
       if (!text || feld === 'hashtags' || feld.startsWith('_')) continue;
-      // "WELLbooked" ohne "!" direkt dahinter
-      if (/WELLbooked(?!!)/.test(text)) {
+      // „WELLbooked" ohne „!" direkt dahinter. Das vorangestellte (?<!#)
+      // nimmt Hashtags aus: in #WELLbooked ist das Ausrufezeichen nicht
+      // moeglich, und die Regel sagt das ausdruecklich.
+      if (/(?<!#)WELLbooked(?!!)/.test(text)) {
         funde.push(befund(true, 'marke-ausrufezeichen',
           `Feld "${feld}" schreibt "WELLbooked" ohne Ausrufezeichen. ` +
           'Die Marke ist "WELLbooked!" — Ausnahme sind nur Hashtags.'));
@@ -100,8 +123,16 @@ export function pruefe({ appSchluessel, app, post, texte }) {
   }
 
   // --- FullRep -------------------------------------------------------------
-  if (r.gesundheitshinweis_pflicht && post.hinweis_pflicht !== false) {
-    const fehlt = (r.hinweis_woerter ?? []).filter(
+  // Nur wo der Winkel es verlangt — eine Uebungskarte ist Technik, keine
+  // Gesundheitsaussage, und ein Hinweis darauf waere Ballast.
+  if (r.gesundheitshinweis_pflicht && post.hinweis_pflicht === true) {
+    // ⚠ Der Hinweis ist zweisprachig. Auf einem englischen Post steht
+    // „advice, diagnosis or treatment" — gegen die deutschen Woerter
+    // geprueft fiel jeder englische Post durch, obwohl er korrekt war.
+    const woerter = post.sprache === 'en'
+      ? ['advice', 'diagnosis', 'treatment']
+      : (r.hinweis_woerter ?? []);
+    const fehlt = woerter.filter(
       (w) => !new RegExp(`\\b${w}\\b`, 'i').test(alles),
     );
     if (fehlt.length) {

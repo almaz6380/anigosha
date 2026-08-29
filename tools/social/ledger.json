@@ -1,1 +1,76 @@
-{"zeilen":[]}
+{
+  "zeilen": [
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "fandom",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed86095",
+      "sprache": "en"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "wusstest-du-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed84273",
+      "sprache": "de"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "figur-des-tages",
+      "medium": "reel",
+      "schluessel": "figur",
+      "inhalt": "seed13233",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "figur-galerie",
+      "medium": "bild",
+      "schluessel": "figur-vierer",
+      "inhalt": "seed93722",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "rechenbeispiel",
+      "medium": "bild",
+      "schluessel": "kennzahl",
+      "inhalt": "seed36196",
+      "sprache": "de"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "kategorie-karte",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed44510",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "mythos-check",
+      "medium": "reel",
+      "schluessel": "wissensthema",
+      "inhalt": "seed80315",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "uebung-karte",
+      "medium": "bild",
+      "schluessel": "uebung",
+      "inhalt": "seed23953",
+      "sprache": "de"
+    }
+  ]
+}

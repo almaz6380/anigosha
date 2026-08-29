@@ -187,6 +187,10 @@ export function waehlePosts({ app, heute, ledger, anzahl = 2, nurVorhanden = fal
     schluessel: w.schluessel,
     haken: w.haken,
     bereich: w.bereich ?? null,
+    // Die Leitplanke braucht diese beiden — ohne sie verlangte sie den
+    // Gesundheitshinweis auch auf einer reinen Uebungskarte.
+    hinweis_pflicht: w.hinweis_pflicht === true,
+    quelle_pflicht: w.quelle_pflicht === true,
     sprache: w.sprachen[saat(heute, app, w.id) % w.sprachen.length],
     seed: saat(heute, app, w.id, String(i)) % 100000,
     gesperrteInhalte: [...inhalteWeg],

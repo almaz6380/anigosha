@@ -236,4 +236,4 @@ Store-Satz im Bild: ${storeSatz}
 `);
 
 console.log(`✓ ${ziel}`);
-console.log(`  ${BREITE}×${HOEHE} · ${kat} · ${a.lang} · Loesung: ${loesung}`);
+console.log(`  ${BREITE}×${HOEHE} · ${kat} · ${a.lang} · ${fragen.length} Frage(n)`);

@@ -12,8 +12,19 @@
 // dem ersten echten Lauf zaehlt: Wiederholt sich das System? Wer erst nach
 // dem Rendern nachsieht, hat 20 Minuten pro Antwort bezahlt.
 
-import { ladeApps, ladeLedger, waehlePosts, vorschau, aktivesFestival } from './waehlen.mjs';
-import { pruefe, berichte, storeSatz } from './vorflug.mjs';
+import { execFileSync } from 'node:child_process';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import {
+  ladeApps, ladeLedger, waehlePosts, vorschau, aktivesFestival, mulberry32, saat,
+} from './waehlen.mjs';
+import { pruefe, berichte, storeSatz, captionAus } from './vorflug.mjs';
+import { aufruf, ergebnisse, ausgabeOrt } from './motoren.mjs';
+import { baueGalerie } from './galerie.mjs';
+
+const HIER = dirname(fileURLToPath(import.meta.url));
 
 const argv = process.argv.slice(2);
 const hat = (n) => argv.includes(`--${n}`);
@@ -73,11 +84,11 @@ function vorflugProbe() {
       texte: { caption: 'Jetzt gratis im App Store und bei Google Play laden!' } },
 
     { name: 'FullRep-Gesundheitsaussage ohne die drei Pflichtwoerter',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
       texte: { caption: 'Kreatin verbessert die Maximalkraft.', quelle: 'Kreider et al. 2017' } },
 
     { name: 'FullRep-Wissenskarte ohne sichtbare Quelle',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
       texte: { caption: 'Kein Ersatz fuer aerztlichen Rat, Diagnose oder Behandlung.' } },
 
     { name: 'WELLbooked ohne Ausrufezeichen',
@@ -103,7 +114,7 @@ function vorflugProbe() {
 
   const gut = [
     { name: 'FullRep korrekt: nur Play, Hinweis vollstaendig, Quelle sichtbar',
-      app: 'fullrep', post: { sprache: 'de', quelle_pflicht: true },
+      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: true, quelle_pflicht: true },
       texte: { caption: 'Kreatin gehoert zu den am besten untersuchten Supplementen. ' +
         'Kein Ersatz fuer aerztlichen Rat, keine Diagnose, keine Behandlung. Gratis bei Google Play.',
         quelle: 'Kreider et al. 2017, JISSN' } },
@@ -111,6 +122,16 @@ function vorflugProbe() {
     { name: 'WELLbooked! korrekt: Marke mit !, stumm',
       app: 'wellbooked', post: { sprache: 'de' },
       texte: { caption: 'WELLbooked! zeigt freie Termine in deiner Naehe.', tonquelle: 'stille' } },
+
+    { name: 'FullRep englisch: Hinweis auf Englisch zaehlt genauso',
+      app: 'fullrep', post: { sprache: 'en', hinweis_pflicht: true, quelle_pflicht: true },
+      texte: { caption: 'Creatine is among the best studied supplements. Not a substitute '
+        + 'for medical advice, diagnosis or treatment. Free on Google Play.',
+        quelle: 'Kreider et al. 2017, JISSN' } },
+
+    { name: 'FullRep-Uebungskarte braucht KEINEN Gesundheitshinweis',
+      app: 'fullrep', post: { sprache: 'de', hinweis_pflicht: false, quelle_pflicht: false },
+      texte: { caption: 'Bankdruecken. Flachbank mit der Langhantel. Gratis bei Google Play.' } },
 
     { name: 'Anigosha korrekt: Typografie, beide Stores',
       app: 'anigosha', post: { sprache: 'de', medium: 'reel' },
@@ -145,16 +166,110 @@ if (hat('pruefung')) {
 } else if (hat('trocken')) {
   trockenlauf();
 } else {
+  await tageslauf();
+}
+
+// ------------------------------------------------------------------ Tageslauf
+async function tageslauf() {
   const ledger = ladeLedger();
-  console.log(`Auswahl fuer ${HEUTE}:\n`);
+  const echt = hat('echt');
+  // Jede App rendert in ihr eigenes out/social/<datum> — siehe die Erklaerung
+  // zu ausgabeOrt() in motoren.mjs.
+  const bericht = [];
+
+  console.log(`${echt ? 'Tageslauf' : 'Vorschau (ohne --echt wird nichts gerendert)'} fuer ${HEUTE}\n`);
+
   for (const k of appSchluessel) {
-    const posts = waehlePosts({ app: k, heute: HEUTE, ledger, anzahl: APPS[k].posts_pro_tag, nurVorhanden: NUR_VORHANDEN });
-    console.log(`━━ ${APPS[k].name}`);
-    for (const p of posts) {
-      console.log(`   ${p.medium === 'reel' ? '▶' : '▣'} ${p.winkel} · ${p.sprache} · Seed ${p.seed}`);
-      console.log(`     ${p.haken}`);
+    const app = APPS[k];
+    const posts = waehlePosts({
+      app: k, heute: HEUTE, ledger,
+      anzahl: Number(wert('anzahl', app.posts_pro_tag)),
+      nurVorhanden: NUR_VORHANDEN || echt,
+    });
+    console.log(`━━ ${app.name}`);
+    if (!posts.length) { console.log('   nichts verfuegbar\n'); continue; }
+
+    for (const post of posts) {
+      post.dateiname = `${k}-${post.winkel}-${post.sprache}-s${post.seed}`;
+      app.storeSatz = storeSatz(app, post.sprache);
+      const wuerfel = mulberry32(saat(HEUTE, k, post.winkel, 'motor'));
+      const ort = ausgabeOrt(k, app, HEUTE);
+      const plan = aufruf({ appSchluessel: k, app, post, wuerfel, out: ort.fuerMotor });
+
+      console.log(`   ${post.medium === 'reel' ? '▶' : '▣'} ${post.winkel} · ${post.sprache} · Seed ${post.seed}`);
+      for (const s of plan.schritte) {
+        console.log(`     $ ${s.args.filter((a) => !a.startsWith('/')).join(' ')}`);
+      }
+
+      if (!echt) { bericht.push({ app: k, post, dateien: [] }); continue; }
+
+      try {
+        for (const s of plan.schritte) {
+          execFileSync(s.cmd, s.args, {
+            cwd: s.cwd, stdio: 'pipe',
+            env: { ...process.env, CHROMIUM_PFAD: process.env.CHROMIUM_PFAD ?? '/opt/pw-browsers/chromium' },
+          });
+        }
+      } catch (e) {
+        const grund = (e.stderr?.toString() || e.message).trim().split('\n').slice(-3).join(' ');
+        console.log(`     ✗ ${grund.slice(0, 220)}`);
+        bericht.push({ app: k, post, fehler: grund, dateien: [] });
+        continue;
+      }
+
+      const dateien = ergebnisse(ort.abs, post.dateiname, post.seed);
+      const captionDatei = dateien.find((f) => f.endsWith('.txt'));
+      const beiblatt = captionDatei ? readFileSync(captionDatei, 'utf8') : '';
+      // Geprueft wird, was gepostet wird — nicht die Anleitung drumherum.
+      const caption = captionAus(beiblatt);
+
+      // Leitplanke auf dem FERTIGEN Text, nicht auf der Absicht. Ein Post,
+      // der hier durchfaellt, wird nicht ausgeliefert.
+      const pruefung = pruefe({
+        appSchluessel: k, app, post,
+        texte: {
+          caption,
+          tonquelle: post.medium === 'reel'
+            ? (k === 'mahjong' ? 'synth' : k === 'wellbooked' ? 'stille' : 'eigen')
+            : undefined,
+          medienherkunft: k === 'anigosha' ? 'typografie' : undefined,
+          quelle: /Quelle:|Source:/.test(beiblatt) ? 'ja' : undefined,
+        },
+      });
+
+      if (!pruefung.bestanden) {
+        console.log(berichte(pruefung, post.winkel).split('\n').slice(1).join('\n'));
+        bericht.push({ app: k, post, dateien, verworfen: pruefung.funde });
+        continue;
+      }
+
+      console.log(`     ✓ ${dateien.map((f) => f.split('/').pop()).join(', ')}`);
+      bericht.push({ app: k, post, dateien });
+      ledger.zeilen.push({
+        app: k, datum: HEUTE, winkel: post.winkel, medium: post.medium,
+        schluessel: post.schluessel, inhalt: `seed${post.seed}`, sprache: post.sprache,
+      });
     }
     console.log();
   }
-  console.log('Zum Rendern fehlen noch die Motoren — Stufe 1 baut sie. Bis dahin: --trocken');
+
+  if (echt) {
+    writeFileSync(join(HIER, 'ledger.json'), JSON.stringify(ledger, null, 2) + '\n');
+    const gut = bericht.filter((b) => b.dateien.length && !b.verworfen && !b.fehler);
+    console.log(`${gut.length} von ${bericht.length} Posts fertig`);
+    for (const b of gut) console.log(`   ${b.dateien.find((f) => !f.endsWith('.txt')) ?? b.dateien[0]}`);
+    const schlecht = bericht.filter((b) => b.verworfen || b.fehler);
+    if (schlecht.length) {
+      console.log(`⚠ ${schlecht.length} verworfen oder fehlgeschlagen — siehe oben.`);
+    }
+
+    const galerie = join(HIER, '..', '..', 'out', 'social', `galerie-${HEUTE}.html`);
+    mkdirSync(dirname(galerie), { recursive: true });
+    writeFileSync(galerie, baueGalerie({
+      datum: HEUTE, apps: APPS, bericht,
+      tmp: join(HIER, '..', '..', 'out', 'social', '.standbilder'),
+    }));
+    console.log(`\nGalerie: ${galerie}`);
+  }
+  return bericht;
 }
