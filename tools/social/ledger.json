@@ -57,19 +57,19 @@
     {
       "app": "fullrep",
       "datum": "2026-08-30",
-      "winkel": "mythos-check",
+      "winkel": "quick-fakt",
       "medium": "reel",
       "schluessel": "wissensthema",
-      "inhalt": "seed80315",
-      "sprache": "en"
+      "inhalt": "seed46250",
+      "sprache": "de"
     },
     {
       "app": "fullrep",
       "datum": "2026-08-30",
-      "winkel": "uebung-karte",
+      "winkel": "wissens-karte",
       "medium": "bild",
-      "schluessel": "uebung",
-      "inhalt": "seed23953",
+      "schluessel": "wissensthema",
+      "inhalt": "seed17891",
       "sprache": "de"
     }
   ]

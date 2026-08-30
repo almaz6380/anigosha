@@ -12,7 +12,7 @@
 // dem ersten echten Lauf zaehlt: Wiederholt sich das System? Wer erst nach
 // dem Rendern nachsieht, hat 20 Minuten pro Antwort bezahlt.
 
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -164,6 +164,40 @@ if (hat('pruefung')) {
   await tageslauf();
 }
 
+// --------------------------------------------------- Vorschau-Server (Mahjong)
+// ⚠ Mahjongs Reels und Bildposts fotografieren die LAUFENDE App ab; ohne
+// `vite preview` bricht jeder Aufruf mit ERR_CONNECTION_REFUSED ab. Beim ersten
+// unbeaufsichtigten Lauf war genau das der Grund fuer zwei fehlende Posts.
+// Einen laufenden Server vorauszusetzen ist im Zeitplanbetrieb keine Annahme,
+// die man treffen darf — also startet der Lauf ihn selbst und raeumt ihn weg.
+async function erreichbar(url) {
+  try {
+    const a = new AbortController();
+    const t = setTimeout(() => a.abort(), 1500);
+    const r = await fetch(url, { signal: a.signal });
+    clearTimeout(t);
+    return r.ok;
+  } catch { return false; }
+}
+
+async function starteVorschau(app) {
+  const url = 'http://127.0.0.1:5199/';
+  if (await erreichbar(url)) return null;   // laeuft schon, nichts zu tun
+
+  console.log('   Vorschau-Server wird gestartet …');
+  // Der Bau muss vorher durch sein, sonst liefert preview einen leeren dist-Ordner.
+  execFileSync('npm', ['run', 'build'], { cwd: app.pfad, stdio: 'ignore' });
+  const kind = spawn('npx', ['vite', 'preview', '--port', '5199', '--host', '127.0.0.1'],
+    { cwd: app.pfad, stdio: 'ignore', detached: false });
+
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 500));
+    if (await erreichbar(url)) return kind;
+  }
+  kind.kill();
+  throw new Error('Vorschau-Server kam nicht hoch (20 s gewartet)');
+}
+
 // ------------------------------------------------------------------ Tageslauf
 async function tageslauf() {
   const ledger = ladeLedger();
@@ -174,8 +208,13 @@ async function tageslauf() {
 
   console.log(`${echt ? 'Tageslauf' : 'Vorschau (ohne --echt wird nichts gerendert)'} fuer ${HEUTE}\n`);
 
+  let vorschau = null;
   for (const k of appSchluessel) {
     const app = APPS[k];
+    if (echt && k === 'mahjong') {
+      try { vorschau = await starteVorschau(app); }
+      catch (e) { console.log(`   ✗ ${e.message}`); }
+    }
     const posts = waehlePosts({
       app: k, heute: HEUTE, ledger,
       anzahl: Number(wert('anzahl', app.posts_pro_tag)),
@@ -258,6 +297,10 @@ async function tageslauf() {
     }
     console.log();
   }
+
+  // Der selbst gestartete Server wird auch selbst beendet — ein Zeitplan, der
+  // Prozesse hinterlaesst, sammelt sie ueber Wochen an.
+  if (vorschau) vorschau.kill();
 
   if (echt) {
     writeFileSync(join(HIER, 'ledger.json'), JSON.stringify(ledger, null, 2) + '\n');
