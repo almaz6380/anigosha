@@ -53,17 +53,22 @@ Deshalb legt `posten.mjs` fuer Instagram bewusst **nichts** an. Der Container
 entsteht erst beim Freigeben. Ein am Morgen erzeugter waere am Abend tot, und
 der Fehler saehe aus wie ein kaputter Zugang.
 
-**Offen bleibt, wo die Bilder oeffentlich liegen sollen** (`BILD_HOST_BASIS`).
-Die Repos sind privat, `raw.githubusercontent.com` scheidet damit aus — Meta
-kaeme nicht heran. Drei Wege, keiner davon entschieden:
+**Geloest ueber Vercel Blob** (Entscheidung vom 30.08.2026). `posten.mjs` legt
+das Bild oeffentlich ab und merkt sich die Adresse; der Container entsteht
+beim Freigeben, danach wird das Bild wieder geloescht.
 
-1. Ein **oeffentliches** Repo nur fuer die Tagesbilder. Kostenlos, kein neuer
-   Dienst. Nachteil: Die Bilder sind unter einer unauffaelligen Adresse
-   erreichbar, bevor Josef sie freigibt.
-2. **Vercel Blob** — sauber, aber ein weiterer Schluessel und ein weiterer
-   Dienst.
-3. **Instagram bleibt Handarbeit.** Bild und Text liegen fertig in der
-   Galerie, Hochladen dauert 30 Sekunden am Handy.
+Warum Blob und nicht ein oeffentliches Repo: Auf dem Hobby-Tarif ist es im
+Freibetrag kostenlos, und Vercel rechnet Mehrverbrauch **nicht ab, sondern
+schaltet ab** — „You will not pay for any additional usage. However, you will
+not be able to access Vercel Blob if limits are exceeded." Es kann also keine
+Rechnung entstehen. Verbrauch hier: acht Bilder taeglich zu je rund 150 kB,
+also etwa 36 MB im Monat gegen 5 GB Freibetrag.
+
+⚠ Angesprochen wird Blob ueber `npx vercel blob put`, **nicht** ueber das
+npm-Paket `@vercel/blob`. Grund: Playwright und ffmpeg-static sind in diesem
+Repo per `--no-save` installiert und stehen nicht in der `package.json` — jedes
+`npm install` raeumt sie weg und legt den Tageslauf lahm. Ein dokumentiertes
+REST-API gibt es nicht, eine nachgebaute Route waere eine Wette.
 
 ## Was Josef einrichten muss
 

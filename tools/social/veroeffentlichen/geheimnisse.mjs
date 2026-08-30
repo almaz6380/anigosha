@@ -43,10 +43,11 @@ export const BEDARF = {
         + 'Langzeit-Token haelt 60 Tage und muss danach erneuert werden.',
     },
     {
-      name: 'BILD_HOST_BASIS',
-      zweck: 'Oeffentliche Adresse, unter der Instagram das Bild abholen kann',
-      holen: 'Instagram nimmt KEINE Dateien entgegen, nur oeffentliche Links '
-        + '(„must be on a public server"). Siehe README in diesem Ordner.',
+      name: 'BLOB_TOKEN',
+      zweck: 'Legt das Bild oeffentlich ab, damit Instagram es abholen kann',
+      holen: 'Vercel → Storage → Blob-Store anlegen → Tab „.env.local" → der Wert '
+        + 'von BLOB_READ_WRITE_TOKEN. Auf Hobby kostenlos; bei Ueberschreitung '
+        + 'schaltet Vercel ab, statt abzurechnen.',
     },
   ],
   tiktok: [

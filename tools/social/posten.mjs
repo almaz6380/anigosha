@@ -38,6 +38,7 @@ import { fileURLToPath } from 'node:url';
 import { bericht as geheimBericht, fehlende } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang } from './veroeffentlichen/tiktok.mjs';
+import { hochladen } from './veroeffentlichen/blob.mjs';
 import { captionAus } from './vorflug.mjs';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -168,11 +169,20 @@ for (const p of posten) {
         fertig += r.trocken ? 0 : 1;
 
       } else if (kanal === 'instagram') {
-        // Bewusst NICHT vorbereitet. Der Container verfaellt nach 24 Stunden,
-        // ein am Morgen angelegter waere am Abend tot — und der Fehler saehe
-        // aus wie ein kaputter Zugang. Er entsteht beim Freigeben.
-        console.log('   ⏸ instagram  wartet auf die Freigabe '
-          + '(Container verfaellt nach 24 h, wird erst dann angelegt)');
+        // Instagram bekommt hier NUR das Bild an eine oeffentliche Adresse
+        // gelegt — den Container gibt es erst beim Freigeben.
+        //
+        // ⚠ Beides zugleich waere ein Fehler: Der Container verfaellt nach 24
+        // Stunden. Einer, der morgens entsteht und abends freigegeben wird,
+        // kann tot sein, und die Meldung saehe aus wie ein kaputter Zugang.
+        const r = await hochladen({
+          datei: p.medium, token: process.env.BLOB_TOKEN,
+          praefix: `social/${DATUM}`, trocken: !ECHT,
+        });
+        console.log(r.trocken
+          ? `   ▸ instagram  wuerde das Bild ablegen unter ${r.pfad}`
+          : `   ✓ instagram  Bild liegt bereit — Container entsteht beim Freigeben`);
+        if (!r.trocken) console.log(`     ${r.url}`);
         offen += 1;
       }
     } catch (e) {
