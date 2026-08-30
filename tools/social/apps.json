@@ -98,7 +98,8 @@
       "tonspur_muss_leer_sein": true,
       "verbotene_medien": "KI-Nahaufnahmen von Gesichtern, starke Mimik, grosser Mund- oder Haaransatz; keine Prominenten-Doppelgaenger; kein Text in KI-Bildern",
       "preise_nur_aus": "src/lib/constants.ts",
-      "store_link_in_caption": false
+      "store_link_in_caption": false,
+      "ki_bildquelle": "public/bilder/kategorien/ — KI-erzeugt laut docs/bilder-leitfaden.md (Bing Image Creator / DALL·E 3). Mehrere Bilder zeigen erkennbare Personen, deshalb laeuft anzeige.py hier immer mit --ki. Wer ein ECHTES Foto einsetzt, muss --ki fuer dieses Motiv weglassen."
     }
   },
   "fullrep": {

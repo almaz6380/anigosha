@@ -95,6 +95,14 @@ function vorflugProbe() {
       app: 'anigosha', post: { sprache: 'de', medium: 'bild' },
       texte: { caption: 'Nur echte Fans schaffen 3/3', medienherkunft: 'ki-bild' } },
 
+    { name: 'WELLbooked!-Kategoriebild ohne Wasserzeichen',
+      // ⚠ Dieser Fall fehlte — und genau deshalb ist der Fehler durchgerutscht.
+      // Die Probe deckte nur FullRep ab, waehrend WELLbookeds Kategoriebilder
+      // seit jeher KI-erzeugt sind und Personen zeigen.
+      app: 'wellbooked', post: { sprache: 'de' },
+      texte: { caption: 'WELLbooked! zeigt freie Termine in deiner Naehe.',
+        tonquelle: 'stille', medienherkunft: 'ki-menschen (kein Wasserzeichen)' } },
+
     { name: 'KI-erzeugte Menschen ohne Wasserzeichen',
       app: 'fullrep', post: { sprache: 'de' },
       texte: { caption: 'Kraft folgt der Wiederholung.',
@@ -123,6 +131,12 @@ function vorflugProbe() {
       app: 'fullrep', post: { sprache: 'de' },
       texte: { caption: 'Kraft folgt der Wiederholung.',
         medienherkunft: 'ki-menschen (Wasserzeichen gesetzt)', wasserzeichen: true } },
+
+    { name: 'WELLbooked!-Kategoriebild MIT Wasserzeichen geht durch',
+      app: 'wellbooked', post: { sprache: 'de' },
+      texte: { caption: 'WELLbooked! zeigt freie Termine in deiner Naehe.',
+        tonquelle: 'stille', medienherkunft: 'ki-menschen (Wasserzeichen gesetzt)',
+        wasserzeichen: true } },
 
     { name: 'Echtes Foto braucht KEIN Wasserzeichen',
       app: 'fullrep', post: { sprache: 'de' },
