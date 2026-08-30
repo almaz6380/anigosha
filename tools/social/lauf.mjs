@@ -216,6 +216,27 @@ async function starteVorschau(app) {
 async function tageslauf() {
   const ledger = ladeLedger();
   const echt = hat('echt');
+
+  // ⚠ Einen Tag, der schon im Ledger steht, ZUERST rauswerfen — sonst haengt
+  // ein zweiter Lauf desselben Tages seine Zeilen einfach an.
+  //
+  // Das ist beim Entwickeln am 30.08.2026 passiert: drei Laeufe, 6 statt 2
+  // Zeilen je App. Zwei Folgen, beide unangenehm:
+  //   1. posten.mjs haette den Tag dreifach in die Kanaele geladen.
+  //   2. waehlen.mjs zaehlt die letzten Verwendungen je Winkel. Ein
+  //      dreifach gezaehlter Winkel gilt als frischer benutzt, als er ist —
+  //      die Rotation verrutscht still und faellt niemandem auf.
+  //
+  // Ein Tageslauf ist ein ERSETZEN, kein Anhaengen: Was heute gilt, ist das,
+  // was der letzte Lauf von heute erzeugt hat.
+  if (echt) {
+    const vorher = ledger.zeilen.length;
+    ledger.zeilen = ledger.zeilen.filter(
+      (z) => !(z.datum === HEUTE && appSchluessel.includes(z.app)),
+    );
+    const weg = vorher - ledger.zeilen.length;
+    if (weg) console.log(`(${weg} Ledger-Zeile(n) von heute ersetzt — es gab schon einen Lauf)\n`);
+  }
   // Jede App rendert in ihr eigenes out/social/<datum> — siehe die Erklaerung
   // zu ausgabeOrt() in motoren.mjs.
   const bericht = [];
