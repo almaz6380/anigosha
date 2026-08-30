@@ -88,6 +88,39 @@ Business-Verifizierung.
 behauptet. Die 60 Tage gelten fuer den NUTZER-Token: *„Long-lived Page access
 token do not have an expiration date."* Kein Kalendereintrag noetig.
 
+### ⚠ Vorab: Instagram-Konto und Facebook-Seite sind NICHT dasselbe
+
+Diese Unterscheidung hat beim Einrichten am 30.08.2026 die meiste Zeit
+gekostet, weil Meta sie nirgends erklaert.
+
+| | Eigenes Login? | Wird als Zugang eingetragen? |
+|---|---|---|
+| **Instagram-Konto** | ja — eigene E-Mail, eigenes Passwort | **nein** |
+| **Facebook-Seite** | **nein** — haengt an einem persoenlichen Profil | ja, darueber laeuft alles |
+
+Wer drei Apps hat, hat typischerweise **drei Instagram-Konten mit drei
+E-Mails** — und die verwirren, weil man sie irgendwo einzutragen erwartet. Man
+traegt sie nirgends ein. Eine Facebook-**Seite** hat dagegen weder E-Mail noch
+Passwort; sie ist ein Aufsatz auf dem persoenlichen Profil. Man meldet sich
+immer als PERSON an und verwaltet von dort alle Seiten.
+
+Fuer die Automatik zaehlt daher nur zweierlei:
+1. Ein Profil ist Administrator **aller** Seiten, die bespielt werden sollen.
+2. Jedes Instagram-Konto ist mit „seiner" Seite **verbunden**.
+
+**Der 30-Sekunden-Test, VOR jeder Token-Arbeit:** facebook.com → Menue →
+„Seiten". Stehen alle Seiten da, ist Punkt 1 erfuellt. Fehlt eine, haengt sie
+an einem anderen Profil: dort anmelden → Seite → Einstellungen →
+„Seiten-Zugriff" → das Haupt-Profil mit **vollem Zugriff** hinzufuegen.
+
+⚠ Ohne Punkt 2 gibt `GET /<Seiten-ID>?fields=instagram_business_account`
+nichts zurueck — und der Fehler sieht nach einem Rechteproblem aus, obwohl nur
+die Verknuepfung fehlt. (Seite → Einstellungen → „Verknuepfte Konten".)
+
+⚠ Wer den Test ueberspringt, merkt eine fehlende Seite erst nach der GANZEN
+Token-Prozedur: `GET /me/accounts` liefert dann stillschweigend nur die Seiten
+des angemeldeten Profils.
+
 ### A · Meta (Facebook und Instagram in einem Zug)
 
 Beide laufen ueber EINE App und EINEN Seiten-Token.
