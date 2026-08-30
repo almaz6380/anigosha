@@ -35,7 +35,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { bericht as geheimBericht, fehlende } from './veroeffentlichen/geheimnisse.mjs';
+import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang, frischerToken } from './veroeffentlichen/tiktok.mjs';
 import { hochladen } from './veroeffentlichen/blob.mjs';
@@ -123,8 +123,12 @@ if (!posten.length) {
   process.exit(0);
 }
 
-// Welche Kanaele kommen ueberhaupt vor?
-const gebraucht = [...new Set(posten.flatMap((p) => p.kanaele))];
+// ⚠ Je APP und Kanal, nicht je Kanal: Jede App hat eigene Konten. Eine
+// gemeinsame Garnitur haette Mahjong-Werbung auf der WELLbooked!-Seite
+// gepostet, und das faellt erst auf, wenn es draussen ist.
+const gebraucht = [...new Map(
+  posten.map((p) => [p.app, { app: p.app, kanaele: p.kanaele }]),
+).values()];
 const g = geheimBericht(gebraucht);
 console.log('Zugangsdaten');
 console.log(g.text || '  (keine noetig)');
@@ -144,14 +148,17 @@ if (ECHT && !g.vollstaendig) {
 // Den TikTok-Zugang EINMAL je Lauf erneuern, nicht je Beitrag: Jede
 // Erneuerung kann den Refresh-Token austauschen, und mehrere Erneuerungen
 // hintereinander wuerden die Rotation nur unnoetig oft ausloesen.
-let ttZwischenspeicher = null;
-async function tiktokToken() {
+// Den TikTok-Zugang EINMAL JE APP erneuern, nicht je Beitrag: Jede
+// Erneuerung kann den Refresh-Token austauschen, und mehrere Erneuerungen
+// hintereinander wuerden die Rotation nur unnoetig oft ausloesen.
+// ⚠ Je App ein eigener Speicher — es sind verschiedene TikTok-Konten.
+const ttSpeicher = new Map();
+async function tiktokToken(appSchluessel) {
   if (!ECHT) return null;
-  if (ttZwischenspeicher) return ttZwischenspeicher;
+  if (ttSpeicher.has(appSchluessel)) return ttSpeicher.get(appSchluessel);
+  const z = zugaenge(appSchluessel);
   const r = await frischerToken({
-    clientKey: process.env.TIKTOK_CLIENT_KEY,
-    clientSecret: process.env.TIKTOK_CLIENT_SECRET,
-    refreshToken: process.env.TIKTOK_REFRESH_TOKEN,
+    clientKey: z.tiktokKey, clientSecret: z.tiktokSecret, refreshToken: z.tiktokRefresh,
   });
   if (r.neuerRefresh) {
     // ⚠ Laut TikToks Doku: „You must use the newly-returned token if the value
@@ -160,14 +167,15 @@ async function tiktokToken() {
     // nach einem widerrufenen Zugang aussieht.
     //
     // Der neue Wert wird hier ABSICHTLICH NICHT ausgegeben: Er ist ein
-    // Geheimnis, und diese Ausgabe landet in Github-Protokollen.
-    console.log('\n   ⚠ TikTok hat den Refresh-Token AUSGETAUSCHT.');
-    console.log('     Der neue Wert muss ins Secret TIKTOK_REFRESH_TOKEN,');
+    // Geheimnis, und diese Ausgabe landet in GitHub-Protokollen.
+    const name = `TIKTOK_REFRESH_TOKEN_${appSchluessel.toUpperCase()}`;
+    console.log(`\n   ⚠ TikTok hat den Refresh-Token fuer ${appSchluessel} AUSGETAUSCHT.`);
+    console.log(`     Der neue Wert muss ins Secret ${name},`);
     console.log('     sonst schlaegt der naechste Lauf fehl. Er steht hier');
     console.log('     bewusst nicht — Protokolle sind kein Ort fuer Geheimnisse.');
     console.log('     (Der Zeitplan-Workflow schreibt ihn spaeter selbst zurueck.)\n');
   }
-  ttZwischenspeicher = r.token;
+  ttSpeicher.set(appSchluessel, r.token);
   return r.token;
 }
 
@@ -175,12 +183,13 @@ let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
   const istVideo = /\.(mp4|mov)$/i.test(p.medium);
+  const z = zugaenge(p.app);
 
   for (const kanal of p.kanaele) {
     try {
       if (kanal === 'facebook') {
         const r = await entwurfAnlegen({
-          seitenId: process.env.FB_SEITEN_ID, token: process.env.FB_SEITEN_TOKEN,
+          seitenId: z.fbSeitenId, token: z.fbToken,
           datei: p.medium, text: p.text, trocken: !ECHT,
         });
         console.log(r.trocken
@@ -191,7 +200,7 @@ for (const p of posten) {
       } else if (kanal === 'tiktok') {
         if (!istVideo) { console.log('   – tiktok     uebersprungen (kein Video)'); continue; }
         const r = await inPosteingang({
-          token: await tiktokToken(), datei: p.medium, trocken: !ECHT,
+          token: await tiktokToken(p.app), datei: p.medium, trocken: !ECHT,
         });
         console.log(r.trocken
           ? `   ▸ tiktok     wuerde ${r.mb} MB in den Posteingang laden`
@@ -206,7 +215,7 @@ for (const p of posten) {
         // Stunden. Einer, der morgens entsteht und abends freigegeben wird,
         // kann tot sein, und die Meldung saehe aus wie ein kaputter Zugang.
         const r = await hochladen({
-          datei: p.medium, token: process.env.BLOB_TOKEN,
+          datei: p.medium, token: z.blobToken,
           praefix: `social/${DATUM}`, trocken: !ECHT,
         });
         console.log(r.trocken

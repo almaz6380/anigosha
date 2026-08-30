@@ -133,18 +133,43 @@ zurueckschreiben.
 vercel.com → Storage → Create Database → **Blob** → Reiter `.env.local` → Wert
 von `BLOB_READ_WRITE_TOKEN`.
 
-### D · Die acht Werte hinterlegen
+### D · Die Werte hinterlegen — je App eigene
+
+⚠ **Es sind drei Facebook-Seiten, drei Instagram-Konten und drei
+TikTok-Konten**, nicht je eines. Der erste Entwurf las EIN `FB_SEITEN_ID` fuer
+alles; damit waeren Mahjong-Beitraege auf der WELLbooked!-Seite gelandet — und
+das faellt erst auf, wenn es draussen ist. Deshalb tragen die Namen das
+App-Kuerzel.
 
 GitHub → Repo → Settings → Secrets and variables → **Actions**:
 
-| Secret | aus Schritt |
+**Fuer alle Apps gemeinsam (3):**
+
+| Secret | woher |
 |---|---|
-| `FB_SEITEN_ID`, `FB_SEITEN_TOKEN` | A6 |
-| `IG_KONTO_ID` | A7 |
-| `IG_TOKEN` | A6 (derselbe Wert wie FB_SEITEN_TOKEN) |
-| `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET` | B4 |
-| `TIKTOK_REFRESH_TOKEN` | B5 |
-| `BLOB_TOKEN` | C |
+| `TIKTOK_CLIENT_KEY` | TikTok-App → Basic information |
+| `TIKTOK_CLIENT_SECRET` | ebenda, wird nur einmal gezeigt |
+| `BLOB_TOKEN` | Vercel → Storage → Blob → `.env.local` |
+
+**Je App vier, also zwoelf** — `<APP>` ist `ANIGOSHA`, `MAHJONG` oder
+`WELLBOOKED`:
+
+| Secret | woher |
+|---|---|
+| `FB_SEITEN_ID_<APP>` | `GET /me/accounts` → `id` der richtigen Seite |
+| `FB_SEITEN_TOKEN_<APP>` | ebenda → `access_token` derselben Seite |
+| `IG_KONTO_ID_<APP>` | `GET /<Seiten-ID>?fields=instagram_business_account` |
+| `TIKTOK_REFRESH_TOKEN_<APP>` | OAuth je TikTok-Konto einmal |
+
+**Einen Wert gibt es NICHT:** ein eigenes `IG_TOKEN`. Instagram wird ueber den
+Weg „Facebook Login for Business" mit demselben SEITEN-Token angesprochen wie
+die Seite. Zwei Felder mit demselben Wert sind kein Komfort, sondern eine
+Gelegenheit, sie auseinanderlaufen zu lassen.
+
+⚠ **Das angemeldete Facebook-PROFIL muss Administrator jeder Seite sein.**
+Seiten haengen an Profilen, nicht an E-Mail-Adressen. Ist ein Profil Admin
+aller drei Seiten, deckt EINE Meta-App alles ab: `GET /me/accounts` liefert
+dann alle Seiten samt eigenem Token je Seite.
 
 ⚠ **Kein Wert davon in einen Chat.** Ein Schluessel im Sitzungsprotokoll gilt
 als verbrannt und muss ersetzt werden.
