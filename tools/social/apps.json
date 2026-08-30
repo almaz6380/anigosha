@@ -117,6 +117,7 @@
       "en"
     ],
     "kanaele": [],
+    "_kanaele_offen": "Die drei Profile sind noch nicht angelegt. Die Ausstattung dafuer liegt fertig in mypeak/store-assets/social/ (Avatar, FB-Titelbild, IG-Kacheln, TikTok-Cover, bios-de.md und bios-en.md). Sobald die Konten stehen, hier [\"tiktok\",\"facebook\",\"instagram\"] eintragen — erst dann druckt das Beiblatt die richtigen Hinweise zum Hochladen.",
     "posts_pro_tag": 2,
     "motor": {
       "reel": "node scripts/post-reel.mjs",
@@ -130,7 +131,8 @@
       "_hinweis_entfallen": "Der aerztliche Haftungshinweis ist eine Auflage fuer den STORE-EINTRAG (Google-Ablehnung 30.07.2026), nicht fuer Social-Media-Beitraege. Josefs Entscheidung vom 29.08.2026. In der App und im Play-Text bleibt er unveraendert.",
       "verbotene_medien": "keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen",
       "store_link_in_caption": false,
-      "_quellen_entfallen": "Quellenangaben stehen nicht mehr in Social-Media-Beitraegen. Apples 1.4.1-Ablehnung vom 29.07.2026 betraf medizinische Inhalte IN DER APP; dort (References.jsx) bleiben sie sichtbar. Josefs Entscheidung vom 29.08.2026."
+      "_quellen_entfallen": "Quellenangaben stehen nicht mehr in Social-Media-Beitraegen. Apples 1.4.1-Ablehnung vom 29.07.2026 betraf medizinische Inhalte IN DER APP; dort (References.jsx) bleiben sie sichtbar. Josefs Entscheidung vom 29.08.2026.",
+    "_bildquelle_offen": "Die Uebungsfotos aus public/exercise-demos/ gehen NICHT in Werbung. Geprueft am 30.08.2026: free-exercise-db und die Quelle davor (wrkout/exercises.json) erklaeren beide die Unlicense, nennen aber nirgends die Herkunft der Fotos; die Dateien tragen kein Copyright-EXIF; die Issues #2 und #12 stellen genau diese Frage und sind seit Jahren unbeantwortet. Eine Unlicense-Erklaerung des Weiterverteilers ist keine Rechtekette. In der App bleiben die Fotos. Fuer Social liegt FOTO_BEREICHE in mypeak/scripts/social-daten.mjs leer — die Posts laufen typografisch. Ersatzquelle: store-assets/social/fotos/ mit HERKUNFT.md je Datei."
     }
   }
 }

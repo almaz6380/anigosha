@@ -71,6 +71,150 @@
       "schluessel": "wissensthema",
       "inhalt": "seed17891",
       "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "ladder",
+      "medium": "reel",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed71096",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "frage-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed51144",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "blumen-falle",
+      "medium": "reel",
+      "schluessel": "level",
+      "inhalt": "seed28522",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "paar-standbild",
+      "medium": "bild",
+      "schluessel": "level",
+      "inhalt": "seed62327",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "regulierte-bereiche",
+      "medium": "bild",
+      "schluessel": "aussage",
+      "inhalt": "seed17284",
+      "sprache": "de"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "tirol-wien",
+      "medium": "bild",
+      "schluessel": "region",
+      "inhalt": "seed54413",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "mythos-check",
+      "medium": "reel",
+      "schluessel": "wissensthema",
+      "inhalt": "seed80315",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "rezept-karte",
+      "medium": "bild",
+      "schluessel": "rezept",
+      "inhalt": "seed88901",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "fandom",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed86095",
+      "sprache": "en"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-08-30",
+      "winkel": "wusstest-du-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed84273",
+      "sprache": "de"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "clear",
+      "medium": "reel",
+      "schluessel": "level",
+      "inhalt": "seed38085",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-08-30",
+      "winkel": "paar",
+      "medium": "reel",
+      "schluessel": "level",
+      "inhalt": "seed59079",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "rechenbeispiel",
+      "medium": "bild",
+      "schluessel": "kennzahl",
+      "inhalt": "seed36196",
+      "sprache": "de"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-08-30",
+      "winkel": "kategorie-karte",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed44510",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "uebung-loop",
+      "medium": "reel",
+      "schluessel": "uebung",
+      "inhalt": "seed79331",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-08-30",
+      "winkel": "uebung-karte",
+      "medium": "bild",
+      "schluessel": "uebung",
+      "inhalt": "seed23953",
+      "sprache": "de"
     }
   ]
 }
