@@ -37,7 +37,7 @@ import { fileURLToPath } from 'node:url';
 
 import { bericht as geheimBericht, fehlende } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
-import { inPosteingang } from './veroeffentlichen/tiktok.mjs';
+import { inPosteingang, frischerToken } from './veroeffentlichen/tiktok.mjs';
 import { hochladen } from './veroeffentlichen/blob.mjs';
 import { captionAus } from './vorflug.mjs';
 
@@ -141,6 +141,36 @@ if (ECHT && !g.vollstaendig) {
   process.exit(1);
 }
 
+// Den TikTok-Zugang EINMAL je Lauf erneuern, nicht je Beitrag: Jede
+// Erneuerung kann den Refresh-Token austauschen, und mehrere Erneuerungen
+// hintereinander wuerden die Rotation nur unnoetig oft ausloesen.
+let ttZwischenspeicher = null;
+async function tiktokToken() {
+  if (!ECHT) return null;
+  if (ttZwischenspeicher) return ttZwischenspeicher;
+  const r = await frischerToken({
+    clientKey: process.env.TIKTOK_CLIENT_KEY,
+    clientSecret: process.env.TIKTOK_CLIENT_SECRET,
+    refreshToken: process.env.TIKTOK_REFRESH_TOKEN,
+  });
+  if (r.neuerRefresh) {
+    // ⚠ Laut TikToks Doku: „You must use the newly-returned token if the value
+    // is different than the previous one." Wer das ueberliest, bei dem laeuft
+    // es genau einmal — der naechste Lauf scheitert mit einer Meldung, die
+    // nach einem widerrufenen Zugang aussieht.
+    //
+    // Der neue Wert wird hier ABSICHTLICH NICHT ausgegeben: Er ist ein
+    // Geheimnis, und diese Ausgabe landet in Github-Protokollen.
+    console.log('\n   ⚠ TikTok hat den Refresh-Token AUSGETAUSCHT.');
+    console.log('     Der neue Wert muss ins Secret TIKTOK_REFRESH_TOKEN,');
+    console.log('     sonst schlaegt der naechste Lauf fehl. Er steht hier');
+    console.log('     bewusst nicht — Protokolle sind kein Ort fuer Geheimnisse.');
+    console.log('     (Der Zeitplan-Workflow schreibt ihn spaeter selbst zurueck.)\n');
+  }
+  ttZwischenspeicher = r.token;
+  return r.token;
+}
+
 let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
@@ -161,7 +191,7 @@ for (const p of posten) {
       } else if (kanal === 'tiktok') {
         if (!istVideo) { console.log('   – tiktok     uebersprungen (kein Video)'); continue; }
         const r = await inPosteingang({
-          token: process.env.TIKTOK_TOKEN, datei: p.medium, trocken: !ECHT,
+          token: await tiktokToken(), datei: p.medium, trocken: !ECHT,
         });
         console.log(r.trocken
           ? `   ▸ tiktok     wuerde ${r.mb} MB in den Posteingang laden`

@@ -25,9 +25,12 @@ export const BEDARF = {
     {
       name: 'FB_SEITEN_TOKEN',
       zweck: 'Erlaubt das Anlegen unveroeffentlichter Beitraege',
-      holen: 'Meta-Entwickler-App → Graph API Explorer → Seiten-Token mit der '
-        + 'Berechtigung pages_manage_posts. Danach in ein Langzeit-Token tauschen, '
-        + 'sonst laeuft es nach zwei Stunden ab.',
+      holen: 'Meta-Entwickler-App → Graph API Explorer → Token mit pages_show_list, '
+        + 'pages_read_engagement, pages_manage_posts, instagram_basic und '
+        + 'instagram_content_publish. Diesen Nutzer-Token ERST langlebig machen '
+        + '(fb_exchange_token), DANN ueber GET /me/accounts den Seiten-Token holen. '
+        + 'Nur ein so abgeleiteter Seiten-Token ist unbefristet — der Weg ohne '
+        + 'Schritt „langlebig machen" raecht sich nach zwei Stunden.',
     },
   ],
   instagram: [
@@ -52,9 +55,21 @@ export const BEDARF = {
   ],
   tiktok: [
     {
-      name: 'TIKTOK_TOKEN',
-      zweck: 'Laedt das Video in den Entwurfs-Posteingang des Kontos',
-      holen: 'TikTok-Entwickler-App, Content Posting API, Scope video.upload',
+      name: 'TIKTOK_CLIENT_KEY',
+      zweck: 'Weist die App bei TikTok aus',
+      holen: 'developers.tiktok.com → Manage apps → deine App → Basic information',
+    },
+    {
+      name: 'TIKTOK_CLIENT_SECRET',
+      zweck: 'Gehoert zum Client Key',
+      holen: 'Ebenda. Wird nur EINMAL angezeigt — sofort wegspeichern.',
+    },
+    {
+      name: 'TIKTOK_REFRESH_TOKEN',
+      zweck: 'Daraus holt sich der Code vor jedem Lauf einen frischen Zugang',
+      holen: 'Einmalig den OAuth-Ablauf mit Scope video.upload durchlaufen. '
+        + 'Haelt 365 Tage. ⚠ Der Access-Token haelt nur 24 Stunden — ihn direkt '
+        + 'zu hinterlegen waere sinnlos, er ist am naechsten Tag tot.',
     },
   ],
 };

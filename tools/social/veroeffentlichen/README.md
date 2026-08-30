@@ -70,30 +70,84 @@ Repo per `--no-save` installiert und stehen nicht in der `package.json` — jede
 `npm install` raeumt sie weg und legt den Tageslauf lahm. Ein dokumentiertes
 REST-API gibt es nicht, eine nachgebaute Route waere eine Wette.
 
-## Was Josef einrichten muss
+## Einrichtung — Schritt fuer Schritt
 
-Ohne diese fuenf Schritte laeuft keine Zeile. Reihenfolge einhalten — Schritt 3
-braucht die Seite aus Schritt 1.
+Drei Dinge vorweg, alle nachgeschlagen und nicht angenommen:
 
-1. **Facebook-Seite** anlegen und **Instagram** darauf verbinden.
-   Instagram muss dafuer ein **Profi-Konto** sein (Einstellungen → Konto →
-   Kontotyp). Profilbild, Titelbild und Texte liegen fertig unter
-   `mypeak/store-assets/social/` bzw. bei den anderen Apps.
-2. **TikTok-Konto** anlegen.
-3. **Meta-Entwickler-App** unter developers.facebook.com anlegen, Produkte
-   „Facebook Login" und „Instagram Graph API" hinzufuegen, Berechtigungen
-   `pages_manage_posts` und `instagram_content_publish` beantragen.
-4. **TikTok-Entwickler-App** unter developers.tiktok.com, Produkt
-   „Content Posting API", Scope `video.upload`.
-5. Die Werte als **GitHub-Secrets** hinterlegen — Settings → Secrets and
-   variables → Actions, dort, wo auch die Signierschluessel liegen.
+**✅ Creator-Konten reichen.** *„allows users of your app to access data in
+their Instagram Business and Instagram **Creator** accounts."*
 
-⚠ **Kein Token ins Repo und keines in den Chat.** Ein Schluessel, der im
-Sitzungsprotokoll steht, gilt als verbrannt und muss ersetzt werden.
+**✅ Keine App-Pruefung noetig.** *„If your app will only be used by people who
+have a role on it, the permissions and features your app requires will only
+need Standard Access."* Und: *„Business, Consumer, and Gaming apps are
+automatically approved for Standard Access."* Wer nur seine eigene Seite und
+sein eigenes Konto bespielt, braucht weder App Review noch
+Business-Verifizierung.
 
-⚠ Meta-Langzeit-Token halten **60 Tage**. Danach schlaegt das Posten fehl, und
-zwar mit einer Meldung, die nach einem kaputten Zugang aussieht. Das Datum
-gehoert in den Kalender.
+**⚠ Der Facebook-Seiten-Token laeuft NICHT ab** — anders als frueher hier
+behauptet. Die 60 Tage gelten fuer den NUTZER-Token: *„Long-lived Page access
+token do not have an expiration date."* Kein Kalendereintrag noetig.
+
+### A · Meta (Facebook und Instagram in einem Zug)
+
+Beide laufen ueber EINE App und EINEN Seiten-Token.
+
+1. Instagram mit der Facebook-Seite verbinden (Seite → Einstellungen →
+   Verknuepfte Konten).
+2. developers.facebook.com → App erstellen → Typ **Business**. Nur dieser Typ
+   bekommt Standard Access automatisch.
+3. Produkte: „Facebook Login for Business" und „Instagram".
+4. Graph API Explorer → App waehlen → Token erzeugen mit `pages_show_list`,
+   `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`,
+   `instagram_content_publish`.
+5. ⚠ **Langlebig machen, sonst ist alles Weitere in zwei Stunden tot:**
+   `GET /oauth/access_token?grant_type=fb_exchange_token&client_id=<APP_ID>&client_secret=<APP_SECRET>&fb_exchange_token=<TOKEN_AUS_4>`
+6. `GET /me/accounts` → je Seite `id` (= `FB_SEITEN_ID`) und `access_token`
+   (= `FB_SEITEN_TOKEN`). Nur ein aus dem LANGLEBIGEN Nutzer-Token abgeleiteter
+   Seiten-Token ist unbefristet.
+7. `GET /<FB_SEITEN_ID>?fields=instagram_business_account` → `IG_KONTO_ID`.
+   `IG_TOKEN` ist derselbe Wert wie `FB_SEITEN_TOKEN`.
+
+### B · TikTok
+
+1. developers.tiktok.com → Manage apps → App erstellen.
+2. Produkt „Content Posting API". Direct Post NICHT aktivieren — wir laden in
+   den Entwurfs-Posteingang.
+3. Scope `video.upload`.
+4. Client Key und Client Secret notieren (das Secret wird nur einmal gezeigt).
+5. Einmalig OAuth durchlaufen → **Refresh-Token**.
+
+⚠ **Nicht den Access-Token hinterlegen.** Er haelt laut Doku „24 hours after
+initial issuance" und waere am naechsten Tag tot. Der Code holt sich vor jedem
+Lauf selbst einen frischen aus dem Refresh-Token (der haelt 365 Tage).
+
+⚠ **Der Refresh-Token kann dabei rotieren:** *„The returned `refresh_token` may
+be different than the one passed in the payload. You must use the
+newly-returned token."* `posten.mjs` meldet eine Rotation ausdruecklich — den
+neuen Wert gibt es bewusst NICHT aus, denn diese Ausgabe landet in
+GitHub-Protokollen. Der Zeitplan-Workflow wird ihn spaeter selbst
+zurueckschreiben.
+
+### C · Vercel Blob
+
+vercel.com → Storage → Create Database → **Blob** → Reiter `.env.local` → Wert
+von `BLOB_READ_WRITE_TOKEN`.
+
+### D · Die acht Werte hinterlegen
+
+GitHub → Repo → Settings → Secrets and variables → **Actions**:
+
+| Secret | aus Schritt |
+|---|---|
+| `FB_SEITEN_ID`, `FB_SEITEN_TOKEN` | A6 |
+| `IG_KONTO_ID` | A7 |
+| `IG_TOKEN` | A6 (derselbe Wert wie FB_SEITEN_TOKEN) |
+| `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET` | B4 |
+| `TIKTOK_REFRESH_TOKEN` | B5 |
+| `BLOB_TOKEN` | C |
+
+⚠ **Kein Wert davon in einen Chat.** Ein Schluessel im Sitzungsprotokoll gilt
+als verbrannt und muss ersetzt werden.
 
 ## Zwei Sicherungen im Code
 

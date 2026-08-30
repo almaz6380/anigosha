@@ -21,6 +21,54 @@
 const API = 'https://open.tiktokapis.com/v2';
 
 /**
+ * Holt einen frischen Access-Token.
+ *
+ * ⚠ WARUM DAS NOETIG IST: TikToks Access-Token haelt laut Doku „24 hours after
+ * initial issuance". Ein fest in den Secrets hinterlegter Token waere am
+ * naechsten Tag tot — und der Fehler saehe aus wie ein Zugangsproblem, nicht
+ * wie ein Ablauf. Der Refresh-Token haelt dagegen 365 Tage.
+ *
+ * ⚠ UND DIE FALLE DARIN — woertlich aus der Doku:
+ *
+ *     „The returned `refresh_token` may be different than the one passed in
+ *      the payload. You must use the newly-returned token if the value is
+ *      different than the previous one."
+ *
+ * Der Refresh-Token kann sich also bei jeder Erneuerung AENDERN. Wer den neuen
+ * Wert nicht zurueckschreibt, bei dem laeuft das Ganze genau einmal und
+ * scheitert danach mit einer Meldung, die nach einem widerrufenen Zugang
+ * aussieht. Deshalb meldet diese Funktion eine Rotation ausdruecklich zurueck
+ * (`neuerRefresh`), statt sie zu verschlucken.
+ */
+export async function frischerToken({ clientKey, clientSecret, refreshToken }) {
+  const antwort = await fetch(`${API}/oauth/token/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_key: clientKey,
+      client_secret: clientSecret,
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+  });
+  const daten = await antwort.json();
+
+  if (!antwort.ok || !daten.access_token) {
+    throw new Error(`TikTok (Token erneuern) ${antwort.status}: `
+      + `${daten.error_description ?? daten.error ?? JSON.stringify(daten).slice(0, 300)}`);
+  }
+
+  return {
+    token: daten.access_token,
+    // null, wenn TikTok denselben zurueckgibt — nur eine echte Aenderung ist
+    // eine Rotation, und nur die muss jemand irgendwo nachtragen.
+    neuerRefresh: daten.refresh_token && daten.refresh_token !== refreshToken
+      ? daten.refresh_token : null,
+    haeltNoch: daten.expires_in,
+  };
+}
+
+/**
  * Laedt ein Video in den Entwurfs-Posteingang.
  *
  * Zwei Schritte: Upload-Adresse anfordern, dann die Datei dorthin schieben.
