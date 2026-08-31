@@ -132,9 +132,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);padding
 h1{font-family:var(--font-disp)}
 </style><body>${variante}</body>`;
 
+// Zwei Betriebsarten:
+//   ohne Fahne   rendert die styles.css SO WIE SIE IST — der Nachweis, wenn
+//                die Umstellung schon im Code steht.
+//   --vergleich  rendert zweimal, alt und neu nebeneinander — die Vorlage,
+//                wenn erst noch entschieden werden soll.
+const VARIANTEN = process.argv.includes('--vergleich')
+  ? [['alt', false], ['neu', true]]
+  : [['echt', false]];
+
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 for (const [datei, , inhalt] of SCHIRME) {
-  for (const [suffix, farbig] of [['alt', false], ['neu', true]]) {
+  for (const [suffix, farbig] of VARIANTEN) {
     // ⚠ colorScheme: 'dark' ist Pflicht. Ohne das meldet der Browser „hell",
     // styles.css schaltet in seinen Hell-Block und ueberschreibt genau die
     // Variablen, die hier getauscht werden — die Vorschau zeigte dann die
@@ -149,4 +158,4 @@ for (const [datei, , inhalt] of SCHIRME) {
   }
 }
 await browser.close();
-console.log('✓ vier Bildschirme gerendert');
+console.log(`✓ ${SCHIRME.length * VARIANTEN.length} Bildschirme gerendert`);
