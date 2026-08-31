@@ -4,33 +4,63 @@
     "name": "Swaply",
     "wortmarke": "Swaply",
     "_farben_quelle": "Aus Josefs App-Icon abgetastet am 30.08.2026 — nicht geschaetzt.",
-    "verlauf": ["#5f99df", "#68bfa5"],
+    "verlauf": [
+      "#5f99df",
+      "#68bfa5"
+    ],
     "schrift": "#ffffff",
     "gedaempft": "rgba(255,255,255,.82)",
     "kontrast": "#0d2137",
     "zeichen": "tausch",
-    "_stores_offen": "Ob Swaply im Store steht, ist NICHT bestaetigt. Deshalb keine Download-Badges: Ein Badge fuer einen Store, in dem die App nicht liegt, ist schlimmer als gar keiner.",
-    "stores": { "ios": false, "android": false },
+    "stores": {
+      "ios": true,
+      "android": true
+    },
     "spruch": {
       "de": "Schlechte Gewohnheiten gegen gute tauschen",
       "en": "Swap bad habits for good ones"
     },
     "spruchZeilen": {
-      "de": ["Schlechte", "Gewohnheiten", "gegen gute", "tauschen"],
-      "en": ["Swap bad", "habits for", "good ones"]
+      "de": [
+        "Schlechte",
+        "Gewohnheiten",
+        "gegen gute",
+        "tauschen"
+      ],
+      "en": [
+        "Swap bad",
+        "habits for",
+        "good ones"
+      ]
     },
     "dreiklang": {
-      "de": ["Tauschen statt verzichten", "Ein Tausch pro Tag", "Dranbleiben statt aufgeben"],
-      "en": ["Swap, don't sacrifice", "One swap a day", "Keep going, not perfect"]
+      "de": [
+        "Tauschen statt verzichten",
+        "Ein Tausch pro Tag",
+        "Dranbleiben statt aufgeben"
+      ],
+      "en": [
+        "Swap, don't sacrifice",
+        "One swap a day",
+        "Keep going, not perfect"
+      ]
     },
     "leiste": {
-      "de": ["ERKENNEN", "TAUSCHEN", "DRANBLEIBEN"],
-      "en": ["SPOT IT", "SWAP IT", "KEEP IT"]
+      "de": [
+        "ERKENNEN",
+        "TAUSCHEN",
+        "DRANBLEIBEN"
+      ],
+      "en": [
+        "SPOT IT",
+        "SWAP IT",
+        "KEEP IT"
+      ]
     },
     "bios": {
       "de": {
         "tiktok": "Schlechte Gewohnheiten gegen gute tauschen 🔄 Ein Tausch nach dem anderen",
-        "instagram": "Swaply – tausche schlechte Gewohnheiten gegen gute.\nEin Tausch nach dem anderen.\nKleine Schritte, echte Veränderung 🔄",
+        "instagram": "Tausche schlechte Gewohnheiten gegen gute 🔄\nRauchfrei · zuckerfrei · weniger Handy\nKostenlos · alles bleibt auf deinem Gerät\n👇 Hier laden",
         "facebook": "Tausche schlechte Gewohnheiten gegen gute — ein Tausch nach dem anderen."
       },
       "en": {
@@ -38,6 +68,13 @@
         "instagram": "Swaply – swap your bad habits for good ones.\nOne swap at a time.\nSmall steps, real change 🔄",
         "facebook": "Swap bad habits for good ones — one swap at a time."
       }
+    },
+    "_quelle": "Aus SwaplyUebergabe.pdf vom 31.08.2026 (Uebergabe der Swaply-Sitzung).",
+    "links": {
+      "appstore": "https://apps.apple.com/app/id6787695557",
+      "play": "https://play.google.com/store/apps/details?id=at.gallab.swaply",
+      "bio": "https://getswaply.vercel.app",
+      "_hinweis": "getswaply.vercel.app traegt beide Store-Knoepfe und funktioniert. Die feineren Pfade /instagram, /tiktok und /app liegen im Branch claude/swaply-profile-cover-images-mlgr9m des Repos almaz6380/swaply und antworten bis zum Deploy mit 404."
     }
   }
 }

@@ -16,11 +16,12 @@ Titelbild: **gibt es bei TikTok nicht.** Stattdessen
 
 ## Instagram
 
-Bio (117 von 150 Zeichen)
+Bio (137 von 150 Zeichen)
 
-    Swaply – tausche schlechte Gewohnheiten gegen gute.
-    Ein Tausch nach dem anderen.
-    Kleine Schritte, echte Veränderung 🔄
+    Tausche schlechte Gewohnheiten gegen gute 🔄
+    Rauchfrei · zuckerfrei · weniger Handy
+    Kostenlos · alles bleibt auf deinem Gerät
+    👇 Hier laden
 
 Profilbild: `swaply-avatar-1080.png`
 Titelbild: **gibt es bei Instagram nicht.** Stattdessen die drei Kacheln
@@ -43,7 +44,7 @@ in einer mittigen Zone von 1440×560; mit `--raster` nachpruefbar.
 
 ## Was bewusst NICHT drinsteht
 
-- **Keine Download-Badges.** Ob Swaply im Store steht, ist NICHT bestaetigt. Deshalb keine Download-Badges: Ein Badge fuer einen Store, in dem die App nicht liegt, ist schlimmer als gar keiner.
+- **Keine Download-Badges.** 
 - **Kein Preis**, solange „kostenlos" nicht gegen beide Stores geprueft ist.
 - **Keine Funktionsliste** im Facebook-Infotext: Ich kenne die App nicht aus
   eigener Anschauung. Was hier steht, beschreibt die Idee — die Funktionen
