@@ -3,15 +3,15 @@
   "swaply": {
     "name": "Swaply",
     "wortmarke": "Swaply",
-    "_farben_quelle": "Aus Josefs App-Icon abgetastet am 30.08.2026 — nicht geschaetzt.",
+    "_farben_quelle": "Aus landing/index.html des Branches claude/swaply-profile-cover-images-mlgr9m (Repo almaz6380/swaply) — die echten CSS-Variablen, nicht vom Screenshot geschaetzt. WICHTIG: dunkler Grund, Verlauf nur als AKZENT. Mein erster Entwurf hatte den Verlauf als Grund genommen und sah dadurch blass und beliebig aus.",
     "verlauf": [
-      "#5f99df",
-      "#68bfa5"
+      "#4e8cfe",
+      "#46adc6",
+      "#3ece8e"
     ],
-    "schrift": "#ffffff",
-    "gedaempft": "rgba(255,255,255,.82)",
+    "schrift": "#eefaf7",
+    "gedaempft": "#9dbcbb",
     "kontrast": "#0d2137",
-    "zeichen": "tausch",
     "stores": {
       "ios": true,
       "android": true
@@ -22,10 +22,10 @@
     },
     "spruchZeilen": {
       "de": [
-        "Schlechte",
+        "Tausche",
+        "schlechte",
         "Gewohnheiten",
-        "gegen gute",
-        "tauschen"
+        "gegen gute"
       ],
       "en": [
         "Swap bad",
@@ -35,14 +35,20 @@
     },
     "dreiklang": {
       "de": [
-        "Tauschen statt verzichten",
-        "Ein Tausch pro Tag",
-        "Dranbleiben statt aufgeben"
+        "Doomscrolling",
+        "Zucker & Snacking",
+        "Nikotin & Vaping",
+        "Alkohol",
+        "Prokrastination",
+        "Nägelkauen"
       ],
       "en": [
-        "Swap, don't sacrifice",
-        "One swap a day",
-        "Keep going, not perfect"
+        "Doomscrolling",
+        "Sugar & snacking",
+        "Nicotine & vaping",
+        "Alcohol",
+        "Procrastination",
+        "Nail biting"
       ]
     },
     "leiste": {
@@ -75,6 +81,20 @@
       "play": "https://play.google.com/store/apps/details?id=at.gallab.swaply",
       "bio": "https://getswaply.vercel.app",
       "_hinweis": "getswaply.vercel.app traegt beide Store-Knoepfe und funktioniert. Die feineren Pfade /instagram, /tiktok und /app liegen im Branch claude/swaply-profile-cover-images-mlgr9m des Repos almaz6380/swaply und antworten bis zum Deploy mit 404."
+    },
+    "grund": "#06171c",
+    "grundTief": "#05252c",
+    "weich": "#cfe6e4",
+    "linie": "rgba(255,255,255,.14)",
+    "mint": "#7fe3b6",
+    "mittel": {
+      "icon": "marken-mittel/swaply/icon.png",
+      "display": "marken-mittel/swaply/fredoka-latin.woff2",
+      "body": "marken-mittel/swaply/nunito-latin.woff2"
+    },
+    "zusatz": {
+      "de": "Kostenlos · Kein Konto · Alles bleibt auf deinem Gerät",
+      "en": "Free · No account · Everything stays on your device"
     }
   }
 }

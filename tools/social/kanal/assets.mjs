@@ -67,43 +67,47 @@ for (const [sprache, satz] of Object.entries(M.bios)) {
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const b64 = (p) => readFileSync(p).toString('base64');
 
-// --- Das Zeichen ------------------------------------------------------------
-// Der Tausch-Pfeilkreis. Bewusst als schlichte, allgemein gebraeuchliche Form
-// nachgezeichnet (zwei Bogenpfeile im Kreis) — kein fremdes Markenzeichen.
-const ZEICHEN = {
-  tausch: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.7 3"/><path d="M21 3v6h-6"/>
-    <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3"/><path d="M3 21v-6h6"/></svg>`,
-}[M.zeichen];
+// --- Markenmittel -----------------------------------------------------------
+// ⚠ Das echte App-Icon und die echten Schriften der Marke, nicht nachgebaut.
+// Der erste Entwurf hat das Tausch-Zeichen nachgezeichnet und eine
+// Fremdschrift genommen — das Ergebnis war „irgendein Verlauf mit Kreis" und
+// hatte mit Swaplys Auftritt nichts zu tun.
+const mittelPfad = (rel) => join(HIER, rel);
+const ICON = M.mittel?.icon ? b64(mittelPfad(M.mittel.icon)) : null;
+const F_DISPLAY = M.mittel?.display ? b64(mittelPfad(M.mittel.display)) : null;
+const F_BODY = M.mittel?.body ? b64(mittelPfad(M.mittel.body)) : null;
 
-const [VON, BIS] = M.verlauf;
+const [G1, G2, G3] = M.verlauf;
+// Der Markenverlauf — exakt wie in landing/index.html: 105 Grad, drei Stopps.
+const VERLAUF = `linear-gradient(105deg, ${G1} 0%, ${G2} 52%, ${G3} 100%)`;
 
 function kopf(breite, hoehe) {
-  const outfitPfad = join(WURZEL, 'tools', 'reels', 'assets', 'outfit.woff2');
-  const outfit = existsSync(outfitPfad) ? b64(outfitPfad) : null;
-
   return `<!doctype html><meta charset="utf-8"><style>
-${outfit ? `@font-face{font-family:'Outfit';src:url(data:font/woff2;base64,${outfit}) format('woff2')}` : ''}
+${F_DISPLAY ? `@font-face{font-family:'Display';src:url(data:font/woff2;base64,${F_DISPLAY}) format('woff2')}` : ''}
+${F_BODY ? `@font-face{font-family:'Body';src:url(data:font/woff2;base64,${F_BODY}) format('woff2')}` : ''}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:${breite}px;height:${hoehe}px;overflow:hidden}
-body{font-family:${outfit ? "'Outfit'," : ''}system-ui,sans-serif;color:${M.schrift};position:relative;
-  background:linear-gradient(135deg,${VON} 0%,${BIS} 100%)}
-/* Ein leiser Lichtschein, damit die Flaeche nicht wie ein flacher Farbverlauf
-   aus dem Baukasten wirkt. */
+/* ⚠ DUNKLER Grund, Verlauf nur als Akzent — so ist das Design gebaut.
+   Umgekehrt (Verlauf als Flaeche) wirkt es blass und beliebig. */
+body{font-family:${F_BODY ? "'Body'," : ''}system-ui,sans-serif;font-weight:600;
+  color:${M.schrift};position:relative;background:${M.grund}}
+/* Die weichen Farbschleier der Startseite: gruen und blau, sehr leise. */
 body::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(70% 55% at 22% 12%,rgba(255,255,255,.20),transparent 68%)}
+  background:
+    radial-gradient(58% 42% at 18% 8%, rgba(78,140,254,.20), transparent 68%),
+    radial-gradient(62% 46% at 86% 92%, rgba(62,206,142,.18), transparent 70%),
+    radial-gradient(40% 30% at 60% 50%, ${M.grundTief}, transparent 72%)}
+.disp{font-family:${F_DISPLAY ? "'Display'," : ''}system-ui,sans-serif;font-weight:600;
+  letter-spacing:-.015em}
 .z{position:relative;z-index:3}
-.mark{color:${M.schrift};display:block}
-.mark svg{width:100%;height:100%;display:block}
-/* Das Zeichen sehr gross und sehr leise im Hintergrund — dieselbe Form wie
-   vorn, nur als Textur. Es bleibt IMMER ganz im Bild: ein angeschnittener
-   Kreis liest nicht als Zeichen, sondern als stehengebliebene Form. */
-.textur{position:absolute;opacity:.10;color:#fff;pointer-events:none;z-index:1}
-.textur svg{width:100%;height:100%}
-.rahmen{position:absolute;z-index:9;border:3px dashed rgba(220,0,0,.9);
+/* Das echte App-Icon, mit derselben Ecke und demselben Schatten wie auf der Seite. */
+.icon{display:block;border-radius:26px;box-shadow:0 22px 45px -20px rgba(0,0,0,.7)}
+.drei{display:flex;flex-wrap:wrap;gap:14px}
+.drei span{border:1.5px solid ${M.linie};border-radius:999px;padding:12px 26px;
+  font-size:26px;font-weight:700;color:${M.weich};white-space:nowrap}
+.rahmen{position:absolute;z-index:9;border:3px dashed rgba(255,90,90,.9);
   display:flex;align-items:flex-start;justify-content:flex-end}
-.rahmen b{background:rgba(220,0,0,.9);color:#fff;font-size:20px;padding:4px 10px}
+.rahmen b{background:rgba(255,90,90,.9);color:#fff;font-size:20px;padding:4px 10px}
 </style>`;
 }
 
@@ -111,23 +115,23 @@ const rahmen = (b, h, gB, gH, name) => (RASTER ? `
 <div class="rahmen" style="width:${b}px;height:${h}px;left:${(gB - b) / 2}px;top:${(gH - h) / 2}px">
   <b>${name}</b></div>` : '');
 
-const chips = (klasse = '') => `<div class="drei ${klasse}">`
-  + M.dreiklang[LANG].map((d) => `<span>${esc(d)}</span>`).join('') + '</div>';
+const chips = (n, klasse = '') => `<div class="drei ${klasse}">`
+  + M.dreiklang[LANG].slice(0, n).map((d) => `<span>${esc(d)}</span>`).join('') + '</div>';
+
+const icon = (px, klasse = '') =>
+  `<img class="icon ${klasse}" src="data:image/png;base64,${ICON}" width="${px}" height="${px}">`;
 
 // --- Avatar 1080x1080 -------------------------------------------------------
-// ⚠ KEIN Text. Facebook zeigt das Profilbild am Rechner mit 176 px, Instagram
-// am Handy mit rund 110 px. Ein Schriftzug ist dort ein grauer Fleck.
-// Alle drei beschneiden zum KREIS, also bleibt das Zeichen deutlich innerhalb.
+// ⚠ Hier ist das Icon NICHT auf einen Grund gesetzt — es IST die Flaeche.
+// Das App-Icon traegt seinen Verlauf schon; ein zweiter Grund darunter waere
+// ein Rahmen um einen Rahmen. Alle drei Kanaele beschneiden ohnehin zum Kreis.
 function avatar() {
   const B = 1080;
   return `${kopf(B, B)}
-<body>
-<div class="z mark zeichen">${ZEICHEN}</div>
-<style>
-.zeichen{position:absolute;width:${Math.round(B * 0.46)}px;height:${Math.round(B * 0.46)}px;
-  left:50%;top:50%;transform:translate(-50%,-50%)}
-${RASTER ? '.kreis{position:absolute;inset:0;border-radius:50%;border:3px dashed rgba(220,0,0,.9);z-index:9}' : ''}
-</style>
+<body style="background:none">
+<img src="data:image/png;base64,${ICON}" style="width:${B}px;height:${B}px;display:block">
+<style>body::before{display:none}
+${RASTER ? '.kreis{position:absolute;inset:0;border-radius:50%;border:3px dashed rgba(255,90,90,.9);z-index:9}' : ''}</style>
 ${RASTER ? '<div class="kreis"></div>' : ''}`;
 }
 
@@ -139,28 +143,27 @@ function fbTitel() {
   const B = 1640, H = 856;
   return `${kopf(B, H)}
 <body>
-<div class="textur mark tex">${ZEICHEN}</div>
 <div class="mitte z">
   <div class="links">
-    <div class="mark plakette">${ZEICHEN}</div>
+    ${icon(160)}
     <div>
-      <div class="wort">${esc(M.wortmarke)}</div>
+      <div class="disp wort">${esc(M.wortmarke)}</div>
       <div class="spruch">${esc(M.spruch[LANG])}</div>
+      <div class="zusatz">${esc(M.zusatz[LANG])}</div>
     </div>
   </div>
-  ${chips()}
+  ${chips(5)}
 </div>
 <style>
-.tex{width:620px;height:620px;right:110px;top:118px}
 .mitte{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:1440px;display:flex;flex-direction:column;gap:54px}
-.links{display:flex;align-items:center;gap:40px}
-.plakette{width:150px;height:150px;flex:0 0 auto}
-.wort{font-size:112px;line-height:.95;font-weight:600;letter-spacing:-.02em}
-.spruch{font-size:38px;color:${M.gedaempft};margin-top:14px;font-weight:500}
-.drei{display:flex;gap:18px;flex-wrap:wrap}
-.drei span{border:2px solid rgba(255,255,255,.55);border-radius:999px;padding:13px 30px;
-  font-size:27px;font-weight:600;white-space:nowrap}
+  width:1440px;display:flex;flex-direction:column;gap:48px}
+.links{display:flex;align-items:center;gap:38px}
+.wort{font-size:104px;line-height:.98}
+/* Der Markenverlauf als Schrift-Fuellung: der Akzent sitzt auf dem Text,
+   nicht unter allem. Genau so macht es die Startseite mit ihrer Ueberschrift. */
+.spruch{font-size:36px;font-weight:800;margin-top:12px;
+  background:${VERLAUF};-webkit-background-clip:text;background-clip:text;color:transparent}
+.zusatz{font-size:26px;color:${M.gedaempft};margin-top:10px;font-weight:600}
 </style>
 ${rahmen(1640, 624, B, H, 'Desktop 820×312')}
 ${rahmen(1522, 856, B, H, 'Mobil 640×360')}
@@ -168,42 +171,36 @@ ${rahmen(1440, 560, B, H, 'Schutzzone')}`;
 }
 
 // --- Instagram: drei Kacheln, die EIN Banner ergeben ------------------------
-// ⚠ Beim Hochladen RUECKWAERTS: 3, dann 2, dann 1. Das Raster sortiert
-// neuestes-zuerst von links; wer 1,2,3 postet, sieht im Profil 3,2,1.
-// ⚠ Kein Wort laeuft ueber die Fuge — zwischen den Kacheln liegt ein Spalt und
-// jede ist einzeln anklickbar. Durchlaufen darf nur die Linie.
+// ⚠ RUECKWAERTS hochladen: 3, dann 2, dann 1. Das Raster sortiert
+// neuestes-zuerst von links.
+// ⚠ Kein Wort laeuft ueber die Fuge — durchlaufen darf nur die Linie.
 function igKachel(n) {
   const B = 1080, H = 1350;
   const inhalt = [
-    `<div class="mark plakette">${ZEICHEN}</div><div class="wort">${esc(M.wortmarke)}</div>`,
-    `<div class="spruchGross">${M.spruchZeilen[LANG].map(esc).join('<br>')}</div>`,
-    chips('senkrecht'),
+    `${icon(260)}<div class="disp wort">${esc(M.wortmarke)}</div>`,
+    `<div class="disp spruchGross">${M.spruchZeilen[LANG].map(esc).join('<br>')}</div>`,
+    `${chips(6, 'senkrecht')}<div class="zusatz">${esc(M.zusatz[LANG])}</div>`,
   ][n - 1];
 
   return `${kopf(B, H)}
 <body>
-${n === 2 ? `<div class="textur mark tex">${ZEICHEN}</div>` : ''}
 <div class="z augenbraue">${esc(M.leiste[LANG][n - 1])}</div>
 <div class="linie"></div>
 <div class="z inhalt">${inhalt}</div>
 <style>
-.tex{width:700px;height:700px;left:50%;margin-left:-350px;bottom:-120px}
-/* Wort ueber der Linie und die Linie selbst sitzen in allen drei Kacheln auf
-   exakt derselben Hoehe — das ist die Ausrichtung, die man im Raster sieht. */
-.augenbraue{position:absolute;left:88px;top:150px;font-size:38px;font-weight:600;
-  letter-spacing:.2em;color:${M.gedaempft}}
-.linie{position:absolute;left:0;right:0;top:236px;height:5px;
-  background:rgba(255,255,255,.75);z-index:2}
-/* Mittig im Feld UNTER der Linie, nicht mittig in der Kachel — sonst haengt
-   der Inhalt oben und darunter klafft ein Loch. */
-.inhalt{position:absolute;left:0;right:0;top:242px;bottom:0;padding:0 88px 96px;
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:42px}
-.plakette{width:230px;height:230px}
-.wort{font-size:112px;line-height:.95;font-weight:600;letter-spacing:-.02em}
-.spruchGross{font-size:82px;line-height:1.12;font-weight:600;letter-spacing:-.02em}
-.drei.senkrecht{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
-.drei span{border:2px solid rgba(255,255,255,.55);border-radius:999px;padding:16px 34px;
-  font-size:34px;font-weight:600}
+.augenbraue{position:absolute;left:80px;top:150px;font-size:34px;font-weight:800;
+  letter-spacing:.2em;color:${M.mint}}
+/* Die durchlaufende Linie traegt den Markenverlauf — sie ist der Faden, der
+   die drei Kacheln im Raster zu einer Leiste macht. */
+.linie{position:absolute;left:0;right:0;top:230px;height:6px;background:${VERLAUF};z-index:2}
+.inhalt{position:absolute;left:0;right:0;top:236px;bottom:0;padding:0 80px 90px;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:38px}
+.wort{font-size:104px;line-height:.98}
+.spruchGross{font-size:88px;line-height:1.08;
+  background:${VERLAUF};-webkit-background-clip:text;background-clip:text;color:transparent}
+.drei.senkrecht{flex-direction:column;gap:16px;align-items:flex-start}
+.drei.senkrecht span{font-size:30px;padding:12px 26px}
+.zusatz{font-size:26px;color:${M.gedaempft};line-height:1.4}
 </style>`;
 }
 
@@ -214,27 +211,22 @@ function tiktokCover() {
   const B = 1080, H = 1920;
   return `${kopf(B, H)}
 <body>
-<div class="textur mark tex">${ZEICHEN}</div>
 <div class="z inhalt">
-  <div class="mark plakette">${ZEICHEN}</div>
-  <div class="wort">${esc(M.wortmarke)}</div>
-  <div class="kante"></div>
-  <div class="spruch">${M.spruchZeilen[LANG].map(esc).join('<br>')}</div>
-  ${chips('senkrecht')}
+  ${icon(200)}
+  <div class="disp wort">${esc(M.wortmarke)}</div>
+  <div class="disp spruch">${M.spruchZeilen[LANG].map(esc).join('<br>')}</div>
+  ${chips(4, 'senkrecht')}
+  <div class="zusatz">${esc(M.zusatz[LANG])}</div>
 </div>
 <style>
-/* Der Textur-Kreis fuellt die untere Haelfte, die TikTok ohnehin ueberdeckt —
-   dort stoert er nie und die Flaeche wirkt nicht leer. */
-.tex{width:760px;height:760px;left:50%;margin-left:-380px;bottom:150px}
-.inhalt{position:absolute;left:0;top:250px;width:880px;padding:0 78px;
+.inhalt{position:absolute;left:0;top:230px;width:900px;padding:0 76px;
   display:flex;flex-direction:column;align-items:flex-start;gap:30px}
-.plakette{width:170px;height:170px}
-.wort{font-size:116px;line-height:.95;font-weight:600;letter-spacing:-.02em}
-.kante{width:140px;height:7px;background:rgba(255,255,255,.85);border-radius:4px}
-.spruch{font-size:56px;line-height:1.16;font-weight:600;letter-spacing:-.02em}
-.drei.senkrecht{display:flex;flex-direction:column;gap:18px;margin-top:10px}
-.drei span{border:2px solid rgba(255,255,255,.55);border-radius:999px;padding:14px 30px;
-  font-size:31px;font-weight:600;align-self:flex-start}
+.wort{font-size:112px;line-height:.98}
+.spruch{font-size:58px;line-height:1.1;
+  background:${VERLAUF};-webkit-background-clip:text;background-clip:text;color:transparent}
+.drei.senkrecht{flex-direction:column;gap:14px;margin-top:6px}
+.drei.senkrecht span{font-size:29px;padding:12px 24px}
+.zusatz{font-size:26px;color:${M.gedaempft};line-height:1.45;margin-top:4px}
 </style>
 ${RASTER ? `
 <div class="rahmen" style="left:0;top:1344px;width:${B}px;height:576px"><b>TikTok-Oberflaeche</b></div>
