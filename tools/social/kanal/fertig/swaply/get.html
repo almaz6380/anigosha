@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Swaply laden</title>
+<meta name="theme-color" content="#5f99df">
+<link rel="canonical" href="https://SWAPLY-DOMAIN.vercel.app/get">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<!-- Vorschau beim Teilen (WhatsApp, Facebook, Instagram-DM). Ohne diese Zeilen
+     zeigt der Link nur die nackte URL — das kostet Klicks. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swaply">
+<meta property="og:title" content="Swaply — Gewohnheiten tauschen">
+<meta property="og:description" content="Ein Tausch nach dem anderen. Kleine Schritte, echte Veränderung.">
+<meta property="og:url" content="https://SWAPLY-DOMAIN.vercel.app/get">
+<meta property="og:image" content="https://SWAPLY-DOMAIN.vercel.app/icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  /* Dieselben Farben wie die App und die Social-Posts: Schwarz mit Amber. */
+  /* Swaplys Verlauf, aus dem App-Icon abgetastet: Blau nach Tuerkis. */
+  :root { --von: #5f99df; --bis: #68bfa5; --karte: rgba(255,255,255,.16);
+          --rand: rgba(255,255,255,.42); --creme: #ffffff; --gedaempft: rgba(255,255,255,.85); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: linear-gradient(135deg, var(--von) 0%, var(--bis) 100%);
+    /* Ein weiches Licht statt eines Bildes: nichts nachzuladen, also auch kein
+       Blitzen von Weiß, bevor der Hintergrund steht. */
+    background-image: linear-gradient(135deg, var(--von) 0%, var(--bis) 100%),
+      radial-gradient(70% 50% at 22% 10%, rgba(255,255,255,.20), transparent 68%);
+    color: var(--creme);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: grid; place-items: center;
+    padding: 32px 20px calc(32px + env(safe-area-inset-bottom));
+    text-align: center;
+  }
+  main { width: 100%; max-width: 340px; }
+  img.logo {
+    width: 96px; height: 96px; border-radius: 22px; display: block; margin: 0 auto 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+  }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  p.sub { margin: 0 0 26px; color: var(--gedaempft); font-size: 15px; font-weight: 600; }
+  a.knopf {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 15px 18px; margin-bottom: 12px; border-radius: 14px;
+    background: var(--karte); border: 1px solid var(--rand);
+    color: var(--creme); text-decoration: none; font-weight: 600; font-size: 16px;
+  }
+  a.knopf:active { background: var(--rand); }
+  a.knopf svg { width: 22px; height: 22px; flex: none; }
+  a.web { background: none; border-color: transparent; color: var(--creme); font-weight: 500; }
+  p.fuss { margin: 22px 0 0; font-size: 13px; color: rgba(255,255,255,.72); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="/icon-192.png" alt="" width="96" height="96">
+  <h1 id="titel">Swaply laden</h1>
+  <p class="sub" id="untertitel">Schlechte Gewohnheiten gegen gute tauschen.</p>
+
+  <a class="knopf" id="ios" href="#" hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.6 2.3 2.8 2.2 1.1 0 1.6-.7 2.9-.7s1.7.7 2.9.7c1.2 0 2-1.1 2.7-2.2.9-1.2 1.2-2.5 1.2-2.5s-2.3-.9-2.3-3.6zM14.3 5.4c.6-.8 1-1.9.9-3-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.6-1.3z"/></svg>
+    <span>App Store</span>
+  </a>
+
+  <a class="knopf" id="android" href="#" hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 1.8a1 1 0 0 0-.5.9v18.6a1 1 0 0 0 .5.9l10-10.2-10-10.2zm11.1 9.1 2.6-2.6-9.8-5.6a1 1 0 0 0-.4-.1l7.6 8.3zm0 2.2-7.6 8.3c.1 0 .3 0 .4-.1l9.8-5.6-2.6-2.6zm4-3.5-2.2 2.4 2.2 2.4 2.3-1.3c.7-.4.7-1.8 0-2.2l-2.3-1.3z"/></svg>
+    <span>Google Play</span>
+  </a>
+
+  <a class="knopf web" id="web" href="/">Oder direkt im Browser nutzen</a>
+
+  <p class="fuss" id="fuss">Deutsch &middot; English</p>
+</main>
+
+<script>
+// Ein Link für beide Stores. Er steht in den Profilen von TikTok, Instagram und
+// Facebook — deshalb muss er auf JEDEM Gerät irgendwo Sinnvollem landen und darf
+// niemanden auf eine Store-Seite schicken, die es nicht gibt.
+//
+// ⚠ Die beiden Schalter sind die einzige Stelle, die gepflegt werden muss.
+// Steht einer auf false, sieht diese Plattform den Knopf gar nicht erst und
+// landet in der Web-App. Lieber eine Runde im Browser als eine 404 im Store.
+// ⚠ BEIDE STEHEN ABSICHTLICH AUF false. Sie gehoeren erst auf true, wenn die
+// App im jeweiligen Store WIRKLICH liegt — sonst schickt der Bio-Link Leute
+// auf eine 404. Solange false, landen alle in der Web-App; das ist der
+// harmlosere Fehler.
+var IOS_LIVE     = false;
+var ANDROID_LIVE = false;
+
+// ⚠ ZWEI WERTE EINSETZEN, dann die Schalter oben auf true:
+//   APP_STORE  App Store Connect → App → „Apple-ID" (zehnstellige Zahl)
+//   PLAY       Play Console → App-Details → Paketname (z. B. at.gallab.swaply)
+// Vorher die eigene ID gegenpruefen: Bei FullRep gibt es eine fremde App mit
+// aehnlichem Namen im selben Markt — wer die falsche ID einsetzt, schickt die
+// eigenen Follower zur Konkurrenz.
+var APP_STORE = 'https://apps.apple.com/app/idHIER_APP_STORE_ID';
+var PLAY      = 'https://play.google.com/store/apps/details?id=HIER_PAKETNAME';
+
+var ua = navigator.userAgent || '';
+// iPadOS meldet sich seit 13 als Mac — nur der Touch-Punkt verrät es noch.
+var istIOS = /iPad|iPhone|iPod/.test(ua) ||
+             (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+var istAndroid = /Android/.test(ua);
+
+var texte = {
+  de: { titel: 'Swaply laden', sub: 'Schlechte Gewohnheiten gegen gute tauschen.',
+        web: 'Oder direkt im Browser nutzen' },
+  en: { titel: 'Get Swaply', sub: 'Swap bad habits for good ones.',
+        web: 'Or use it right in your browser' }
+};
+var t = texte[(navigator.language || 'de').slice(0, 2) === 'de' ? 'de' : 'en'];
+document.documentElement.lang = t === texte.de ? 'de' : 'en';
+document.getElementById('titel').textContent = t.titel;
+document.getElementById('untertitel').textContent = t.sub;
+document.getElementById('web').textContent = t.web;
+
+var ios = document.getElementById('ios'), android = document.getElementById('android');
+ios.href = APP_STORE; android.href = PLAY;
+if (IOS_LIVE) ios.hidden = false;
+if (ANDROID_LIVE) android.hidden = false;
+
+// Auf dem Handy sofort weiter — der Sinn eines Bio-Links ist ein Tipp, nicht zwei.
+// `replace` statt `href`, sonst landet der Zurück-Knopf wieder hier und der
+// Nutzer sitzt in einer Schleife fest.
+if (istIOS && IOS_LIVE) location.replace(APP_STORE);
+else if (istAndroid && ANDROID_LIVE) location.replace(PLAY);
+else if (istIOS || istAndroid) location.replace('/');
+// Alles andere (Rechner) sieht die Seite mit allen Knöpfen — das ist der Fallback,
+// der auch greift, wenn ein In-App-Browser die Weiterleitung unterbindet.
+</script>
+</body>
+</html>
