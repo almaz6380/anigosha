@@ -1,0 +1,43 @@
+{
+  "_hinweis": "Markendaten fuer den Kanal-Ausstatter. Je Marke Farben, Zeichen und Texte. FullRep hat seinen eigenen Generator in mypeak/scripts/kanal-assets.mjs (dort liegt sein Logo); wer will, kann ihn spaeter hierher ziehen.",
+  "swaply": {
+    "name": "Swaply",
+    "wortmarke": "Swaply",
+    "_farben_quelle": "Aus Josefs App-Icon abgetastet am 30.08.2026 — nicht geschaetzt.",
+    "verlauf": ["#5f99df", "#68bfa5"],
+    "schrift": "#ffffff",
+    "gedaempft": "rgba(255,255,255,.82)",
+    "kontrast": "#0d2137",
+    "zeichen": "tausch",
+    "_stores_offen": "Ob Swaply im Store steht, ist NICHT bestaetigt. Deshalb keine Download-Badges: Ein Badge fuer einen Store, in dem die App nicht liegt, ist schlimmer als gar keiner.",
+    "stores": { "ios": false, "android": false },
+    "spruch": {
+      "de": "Schlechte Gewohnheiten gegen gute tauschen",
+      "en": "Swap bad habits for good ones"
+    },
+    "spruchZeilen": {
+      "de": ["Schlechte", "Gewohnheiten", "gegen gute", "tauschen"],
+      "en": ["Swap bad", "habits for", "good ones"]
+    },
+    "dreiklang": {
+      "de": ["Tauschen statt verzichten", "Ein Tausch pro Tag", "Dranbleiben statt aufgeben"],
+      "en": ["Swap, don't sacrifice", "One swap a day", "Keep going, not perfect"]
+    },
+    "leiste": {
+      "de": ["ERKENNEN", "TAUSCHEN", "DRANBLEIBEN"],
+      "en": ["SPOT IT", "SWAP IT", "KEEP IT"]
+    },
+    "bios": {
+      "de": {
+        "tiktok": "Schlechte Gewohnheiten gegen gute tauschen 🔄 Ein Tausch nach dem anderen",
+        "instagram": "Swaply – tausche schlechte Gewohnheiten gegen gute.\nEin Tausch nach dem anderen.\nKleine Schritte, echte Veränderung 🔄",
+        "facebook": "Tausche schlechte Gewohnheiten gegen gute — ein Tausch nach dem anderen."
+      },
+      "en": {
+        "tiktok": "Swap bad habits for good ones 🔄 One swap at a time",
+        "instagram": "Swaply – swap your bad habits for good ones.\nOne swap at a time.\nSmall steps, real change 🔄",
+        "facebook": "Swap bad habits for good ones — one swap at a time."
+      }
+    }
+  }
+}
