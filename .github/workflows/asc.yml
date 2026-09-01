@@ -11,7 +11,8 @@ name: App Store Connect
 #   abo-screenshot  Paywall-Bild an alle Abos (gegen "Missing Metadata")
 #   abo-namen       Abo-Anzeigenamen MyPeak -> FullRep
 #   texte-lesen     Store-Texte der offenen Version zeigen (liest nur)
-#   neuigkeiten     „Neue Funktionen" je Sprache in die offene Version schreiben
+#   texte-sichern   Store-Texte nach store-assets/asc-texte.json holen (liest nur)
+#   texte-schreiben store-assets/asc-texte.json zurueckschreiben
 #   einreichungen   alle Einreichungen samt Zustand zeigen (liest nur)
 #   aufraeumen      festhaengende Einreichungen zurueckziehen
 #   abo-notiz       Prueferhinweis am Abo setzen
@@ -38,7 +39,8 @@ on:
           - kauf-einreichen
           - screenshots
           - texte-lesen
-          - neuigkeiten
+          - texte-sichern
+          - texte-schreiben
           - einreichungen
           - aufraeumen
           - inhaberrechte
@@ -102,7 +104,7 @@ jobs:
             ARGS="--$MODE"
           fi
           # warum liest nur, kennt --dry-run also nicht.
-          if [ "$MODE" != "status" ] && [ "$MODE" != "warum" ] && [ "$MODE" != "einreichungen" ] && [ "$MODE" != "texte-lesen" ] && [ "$MODE" != "sandbox" ] && [ "$MODE" != "alter" ] && [ "$DRY" = "true" ]; then
+          if [ "$MODE" != "status" ] && [ "$MODE" != "warum" ] && [ "$MODE" != "einreichungen" ] && [ "$MODE" != "texte-lesen" ] && [ "$MODE" != "texte-sichern" ] && [ "$MODE" != "sandbox" ] && [ "$MODE" != "alter" ] && [ "$DRY" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
           # Nur beim Einreichen sinnvoll; ueberall sonst waere er wirkungslos

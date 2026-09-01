@@ -39,42 +39,9 @@ WURZEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 30 fuer subtitle).
 NAMEN = {}
 
-# „Neue Funktionen" der offenen Version. Apple verlangt sie bei jedem Update
-# (bei 1.0 waren sie optional). Je Locale <= 4000 Zeichen.
-NEUIGKEITEN = {
-    'de-DE': ('Ein völlig neues Aussehen: Der Himmel folgt jetzt der Tageszeit — '
-              'und zwar durch die ganze App, nicht nur auf dem Startbildschirm.\n\n'
-              '• Neue Schrift und ruhigere Karten\n'
-              '• Jede Serie hat ihre eigene Farbe\n'
-              '• Überarbeiteter Quiz-Bildschirm: Du siehst auf einen Blick, wie du stehst\n'
-              '• Podest für die ersten drei in der Bestenliste'),
-    'en-US': ('A completely new look: the sky now follows the time of day — '
-              'throughout the whole app, not just on the home screen.\n\n'
-              '• New typeface and calmer cards\n'
-              '• Every series has its own colour\n'
-              '• Reworked quiz screen: see at a glance how you are doing\n'
-              '• A podium for the top three on the leaderboard'),
-    'es-ES': ('Un aspecto completamente nuevo: el cielo sigue ahora la hora del día, '
-              'en toda la aplicación y no solo en la pantalla de inicio.\n\n'
-              '• Nueva tipografía y tarjetas más serenas\n'
-              '• Cada serie tiene su propio color\n'
-              '• Pantalla de preguntas renovada: ves de un vistazo cómo vas\n'
-              '• Podio para los tres primeros de la clasificación'),
-    'fr-FR': ('Une apparence entièrement nouvelle : le ciel suit désormais l\'heure '
-              'de la journée, dans toute l\'application et plus seulement sur l\'accueil.\n\n'
-              '• Nouvelle typographie et cartes plus sobres\n'
-              '• Chaque série a sa propre couleur\n'
-              '• Écran de quiz repensé : vous voyez d\'un coup d\'œil où vous en êtes\n'
-              '• Un podium pour les trois premiers du classement'),
-    'pt-BR': ('Um visual completamente novo: o céu agora acompanha a hora do dia — '
-              'no aplicativo inteiro, não só na tela inicial.\n\n'
-              '• Nova tipografia e cartões mais tranquilos\n'
-              '• Cada série tem a sua própria cor\n'
-              '• Tela de perguntas renovada: você vê num relance como está indo\n'
-              '• Pódio para os três primeiros no ranking'),
-}
-NEUIGKEITEN['es-MX'] = NEUIGKEITEN['es-ES']
-NEUIGKEITEN['pt-PT'] = NEUIGKEITEN['pt-BR']
+# Die Store-Texte je Sprache, die asc-texte.json fuehrt und zurueckschreibt.
+FELDER = ('description', 'whatsNew', 'promotionalText', 'keywords',
+          'supportUrl', 'marketingUrl')
 
 # Welcher Ordner in welchen Screenshot-Typ gehoert. 1320x2868 ist das
 # iPhone-6,9"-Format, 2048x2732 das iPad-12,9".
@@ -1207,12 +1174,45 @@ def texte_lesen(tok):
                       f'{"…" if len(einzeilig) > 300 else ""}')
 
 
-def setze_neuigkeiten(tok):
-    """Traegt „Neue Funktionen" (whatsNew) je Sprache in die offene Version.
+def texte_sichern(tok):
+    """Schreibt alle Store-Texte der offenen Version nach store-assets/asc-texte.json.
 
-    Apple verlangt das Feld bei jedem Update; bei 1.0 war es optional. Sprachen
-    ohne Eintrag in NEUIGKEITEN bleiben unangetastet.
+    Und gibt sie zusaetzlich vollstaendig aus: In GitHub Actions ist das
+    Protokoll der einzige Weg, an die Datei heranzukommen.
+
+    Warum ueberhaupt: Die Apple-Texte lagen bisher NUR in der Konsole. Damit war
+    weder pruefbar noch nachvollziehbar, was dort steht — genau so blieben in 1.1
+    die Beschreibungen von de-DE und pt-PT monatelang vertauscht.
     """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    daten = {}
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        daten[a['locale']] = {f: a.get(f) for f in FELDER}
+    ziel = os.path.join(WURZEL, 'store-assets', 'asc-texte.json')
+    os.makedirs(os.path.dirname(ziel), exist_ok=True)
+    with open(ziel, 'w', encoding='utf-8') as f:
+        json.dump(daten, f, ensure_ascii=False, indent=2, sort_keys=True)
+        f.write('\n')
+    print(f'  {len(daten)} Sprachen nach store-assets/asc-texte.json geschrieben\n')
+    print('── Datei-Inhalt ──')
+    print(json.dumps(daten, ensure_ascii=False, indent=2, sort_keys=True))
+
+
+def texte_schreiben(tok):
+    """Schreibt store-assets/asc-texte.json zurueck in die offene Version.
+
+    Nur Felder, die sich unterscheiden. Sprachen, die in der Datei fehlen,
+    bleiben unangetastet; `null` bedeutet ebenfalls „nicht anfassen".
+    """
+    quelle = os.path.join(WURZEL, 'store-assets', 'asc-texte.json')
+    if not os.path.exists(quelle):
+        sys.exit('  store-assets/asc-texte.json fehlt — erst --texte-sichern laufen lassen.')
+    with open(quelle, encoding='utf-8') as f:
+        soll = json.load(f)
+
     aid = app_id(tok)
     v = offene_version(tok, aid)
     print(f'  Version {v["attributes"]["versionString"]} '
@@ -1220,24 +1220,27 @@ def setze_neuigkeiten(tok):
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
     for loc in locs.get('data', []):
         a = loc['attributes']
-        soll = NEUIGKEITEN.get(a['locale'])
-        if not soll:
-            print(f'  {a["locale"]}: kein Text hinterlegt — uebersprungen')
+        wunsch = soll.get(a['locale'])
+        if not wunsch:
+            print(f'  {a["locale"]}: nicht in der Datei — uebersprungen')
             continue
-        if a.get('whatsNew') == soll:
+        aendern = {f: wunsch[f] for f in FELDER
+                   if wunsch.get(f) is not None and wunsch.get(f) != a.get(f)}
+        if not aendern:
             print(f'  {a["locale"]}: steht schon richtig')
             continue
-        print(f'  {a["locale"]}: setze {len(soll)} Zeichen')
+        print(f'  {a["locale"]}: {", ".join(sorted(aendern))}')
         if TROCKEN:
             continue
         res = api(tok, f'appStoreVersionLocalizations/{loc["id"]}', 'PATCH', {
             'data': {'type': 'appStoreVersionLocalizations', 'id': loc['id'],
-                     'attributes': {'whatsNew': soll}},
+                     'attributes': aendern},
         }, fatal=False)
         if res.get('_fehler'):
             print(f'    FEHLER: {fehler_text(res)}')
         else:
             print('    gesetzt')
+
 
 
 def zeige_status(tok):
@@ -1336,8 +1339,10 @@ def main():
                    help='Abo-Anzeigenamen von MyPeak auf FullRep ziehen')
     p.add_argument('--texte-lesen', action='store_true',
                    help='Store-Texte der offenen Version zeigen (liest nur)')
-    p.add_argument('--neuigkeiten', action='store_true',
-                   help='„Neue Funktionen" je Sprache in die offene Version schreiben')
+    p.add_argument('--texte-sichern', action='store_true',
+                   help='Store-Texte nach store-assets/asc-texte.json holen (liest nur)')
+    p.add_argument('--texte-schreiben', action='store_true',
+                   help='store-assets/asc-texte.json in die offene Version zurueckschreiben')
     p.add_argument('--einreichungen', action='store_true',
                    help='alle Einreichungen samt Zustand und Elementen zeigen')
     p.add_argument('--aufraeumen', action='store_true',
@@ -1373,7 +1378,7 @@ def main():
 
     tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
-           a.warum, a.texte_lesen, a.neuigkeiten,
+           a.warum, a.texte_lesen, a.texte_sichern, a.texte_schreiben,
            a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
@@ -1416,8 +1421,10 @@ def main():
         abo_namen(tok)
     if a.texte_lesen:
         texte_lesen(tok)
-    if a.neuigkeiten:
-        setze_neuigkeiten(tok)
+    if a.texte_sichern:
+        texte_sichern(tok)
+    if a.texte_schreiben:
+        texte_schreiben(tok)
     if a.einreichungen:
         zeige_einreichungen(tok)
     if a.aufraeumen:
