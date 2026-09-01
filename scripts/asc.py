@@ -39,6 +39,43 @@ WURZEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 30 fuer subtitle).
 NAMEN = {}
 
+# „Neue Funktionen" der offenen Version. Apple verlangt sie bei jedem Update
+# (bei 1.0 waren sie optional). Je Locale <= 4000 Zeichen.
+NEUIGKEITEN = {
+    'de-DE': ('Ein völlig neues Aussehen: Der Himmel folgt jetzt der Tageszeit — '
+              'und zwar durch die ganze App, nicht nur auf dem Startbildschirm.\n\n'
+              '• Neue Schrift und ruhigere Karten\n'
+              '• Jede Serie hat ihre eigene Farbe\n'
+              '• Überarbeiteter Quiz-Bildschirm: Du siehst auf einen Blick, wie du stehst\n'
+              '• Podest für die ersten drei in der Bestenliste'),
+    'en-US': ('A completely new look: the sky now follows the time of day — '
+              'throughout the whole app, not just on the home screen.\n\n'
+              '• New typeface and calmer cards\n'
+              '• Every series has its own colour\n'
+              '• Reworked quiz screen: see at a glance how you are doing\n'
+              '• A podium for the top three on the leaderboard'),
+    'es-ES': ('Un aspecto completamente nuevo: el cielo sigue ahora la hora del día, '
+              'en toda la aplicación y no solo en la pantalla de inicio.\n\n'
+              '• Nueva tipografía y tarjetas más serenas\n'
+              '• Cada serie tiene su propio color\n'
+              '• Pantalla de preguntas renovada: ves de un vistazo cómo vas\n'
+              '• Podio para los tres primeros de la clasificación'),
+    'fr-FR': ('Une apparence entièrement nouvelle : le ciel suit désormais l\'heure '
+              'de la journée, dans toute l\'application et plus seulement sur l\'accueil.\n\n'
+              '• Nouvelle typographie et cartes plus sobres\n'
+              '• Chaque série a sa propre couleur\n'
+              '• Écran de quiz repensé : vous voyez d\'un coup d\'œil où vous en êtes\n'
+              '• Un podium pour les trois premiers du classement'),
+    'pt-BR': ('Um visual completamente novo: o céu agora acompanha a hora do dia — '
+              'no aplicativo inteiro, não só na tela inicial.\n\n'
+              '• Nova tipografia e cartões mais tranquilos\n'
+              '• Cada série tem a sua própria cor\n'
+              '• Tela de perguntas renovada: você vê num relance como está indo\n'
+              '• Pódio para os três primeiros no ranking'),
+}
+NEUIGKEITEN['es-MX'] = NEUIGKEITEN['es-ES']
+NEUIGKEITEN['pt-PT'] = NEUIGKEITEN['pt-BR']
+
 # Welcher Ordner in welchen Screenshot-Typ gehoert. 1320x2868 ist das
 # iPhone-6,9"-Format, 2048x2732 das iPad-12,9".
 BILDER = [
@@ -1145,6 +1182,64 @@ def exportfrage(tok, wert=False):
         print('  gesetzt')
 
 
+
+def texte_lesen(tok):
+    """Liest die Store-Texte der offenen Version. Aendert nichts.
+
+    Die Beschreibungen liegen bewusst NICHT im Repo, sondern nur in der
+    Konsole — wer sie aendern will, muss also erst sehen, was dort steht.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    print(f'  Version {v["attributes"]["versionString"]} '
+          f'({v["attributes"].get("appStoreState")})')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        print(f'\n  ── {a["locale"]} ──')
+        for feld in ('description', 'whatsNew', 'promotionalText', 'keywords'):
+            wert = a.get(feld)
+            if wert is None or wert == '':
+                print(f'    {feld}: (leer)')
+            else:
+                einzeilig = wert.replace('\n', ' ⏎ ')
+                print(f'    {feld}: {einzeilig[:300]}'
+                      f'{"…" if len(einzeilig) > 300 else ""}')
+
+
+def setze_neuigkeiten(tok):
+    """Traegt „Neue Funktionen" (whatsNew) je Sprache in die offene Version.
+
+    Apple verlangt das Feld bei jedem Update; bei 1.0 war es optional. Sprachen
+    ohne Eintrag in NEUIGKEITEN bleiben unangetastet.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    print(f'  Version {v["attributes"]["versionString"]} '
+          f'({v["attributes"].get("appStoreState")})')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        soll = NEUIGKEITEN.get(a['locale'])
+        if not soll:
+            print(f'  {a["locale"]}: kein Text hinterlegt — uebersprungen')
+            continue
+        if a.get('whatsNew') == soll:
+            print(f'  {a["locale"]}: steht schon richtig')
+            continue
+        print(f'  {a["locale"]}: setze {len(soll)} Zeichen')
+        if TROCKEN:
+            continue
+        res = api(tok, f'appStoreVersionLocalizations/{loc["id"]}', 'PATCH', {
+            'data': {'type': 'appStoreVersionLocalizations', 'id': loc['id'],
+                     'attributes': {'whatsNew': soll}},
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'    FEHLER: {fehler_text(res)}')
+        else:
+            print('    gesetzt')
+
+
 def zeige_status(tok):
     aid = app_id(tok)
 
@@ -1239,6 +1334,10 @@ def main():
                    help='Was blockiert die Einreichung? (liest nur)')
     p.add_argument('--abo-namen', action='store_true',
                    help='Abo-Anzeigenamen von MyPeak auf FullRep ziehen')
+    p.add_argument('--texte-lesen', action='store_true',
+                   help='Store-Texte der offenen Version zeigen (liest nur)')
+    p.add_argument('--neuigkeiten', action='store_true',
+                   help='„Neue Funktionen" je Sprache in die offene Version schreiben')
     p.add_argument('--einreichungen', action='store_true',
                    help='alle Einreichungen samt Zustand und Elementen zeigen')
     p.add_argument('--aufraeumen', action='store_true',
@@ -1314,6 +1413,10 @@ def main():
         diagnose(tok)
     if a.abo_namen:
         abo_namen(tok)
+    if a.texte_lesen:
+        texte_lesen(tok)
+    if a.neuigkeiten:
+        setze_neuigkeiten(tok)
     if a.einreichungen:
         zeige_einreichungen(tok)
     if a.aufraeumen:
