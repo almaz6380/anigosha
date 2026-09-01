@@ -29,7 +29,8 @@ alter Stand die Live-Version.
 (Migrationen 0022–0062 + `es.json`/`fr.json`/`pt.json`), weitere Sprachen = reine
 Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen).
 ⚠ Keine der drei ist live, solange die Migrationen nicht eingespielt sind — die
-Cloud-Sitzungen hatten keine DB-Schlüssel. **Reihenfolge zwingend:** 0022 (Constraints +
+Cloud-Sitzungen hatten damals keine DB-Schlüssel — **seit dem SessionStart-Hook (01.09.) haben sie
+welche**, das Einspielen scheitert also nicht mehr am Zugang. **Reihenfolge zwingend:** 0022 (Constraints +
 RPCs + `seed_uebersetzung`) → 0023–0035 (ES) → 0036 (Constraints/RPCs um fr+pt) →
 0037–0049 (FR) → 0050–0062 (PT), je mit Trockenlauf. Eine Seed-Migration vor ihrer
 Sprach-Migration bricht am Check-Constraint ab.
@@ -612,6 +613,43 @@ Befund praesentiert und waren falsch; jede kostete einen Build von ~25 Minuten.
 Der Geraetemitschnitt haette am ersten Tag dieselbe Eingrenzung geliefert.
 
 ## Umgebung / Werkzeuge
+
+### SessionStart-Hook: Cloud-Sitzungen einsatzbereit machen (01.09.2026)
+
+`.claude/hooks/session-start.sh` (registriert in `.claude/settings.json`) läuft **nur in
+Cloud-Sitzungen** (`$CLAUDE_CODE_REMOTE`), installiert bei Bedarf die Abhängigkeiten und
+baut über `env-schreiben.mjs` die `.env` zusammen.
+
+**Der Kniff: aus einer Variablen werden vier.** Hinterlegt ist nur
+`SUPABASE_ACCESS_ANIGOSHA` (Management-Token, `sbp_…`). Daraus gibt
+`GET /v1/projects/<ref>/api-keys?reveal=true` den Anon- und den Service-Role-Key heraus;
+die `.env` entsteht daraus. Es muss also **kein weiterer Schlüssel** in der Umgebung
+liegen — und es entsteht auch kein neuer Zugriff: Wer den Token hat, kommt ohnehin an
+den Service-Role-Key.
+
+**Vier Regeln, die im Skript stehen und dort bleiben müssen:**
+
+1. **Eine vorhandene `.env` wird nie angefasst.** Auf Josefs Rechner stünden dort echte
+   Werte, die die API gar nicht kennt (RevenueCat-Schlüssel); bei einem `resume` steht
+   dort schon das eigene Ergebnis.
+2. **Nie einen Schlüsselwert nach stdout.** Was ein SessionStart-Hook ausgibt, landet im
+   Sitzungskontext und damit im Protokoll. Das Skript meldet nur, *dass* es etwas gebaut hat.
+3. **Kein harter Abbruch.** Fehlt der Token oder antwortet die API mit einem Fehler, sagt
+   der Hook das und gibt 0 zurück. Eine Sitzung ohne Datenbank ist immer noch brauchbar.
+4. **`CLAUDE_CODE_REMOTE` ist in einer Cloud-Sitzung bereits gesetzt.** Wer den lokalen
+   Fall testen will, muss die Variable ausdrücklich entfernen
+   (`env -u CLAUDE_CODE_REMOTE …`) — sonst prüft man gar nichts.
+
+⚠ **`SUPABASE_ACCESS_ALMAZ` liegt ebenfalls in dieser Umgebung** und öffnet FullRep und
+WELLbooked. Für Anigosha wird sie nicht gebraucht; wenn die Umgebung nur diesem Projekt
+dienen soll, gehört sie dort raus.
+
+**Noch offen — die Playwright-Werkzeuge** (`check-theme-color`, `shot-home`,
+`shot-levelup`, `store-shots`) laufen trotz `.env` nicht: Das Repo hält Playwright
+1.62.1, das Abbild bringt aber die Browser-Bauart 1194 mit (erwartet wird 1234). Mit
+ausdrücklichem `executablePath: '/opt/pw-browsers/chromium'` funktioniert derselbe
+Browser einwandfrei — die Werkzeuge geben ihn nur nicht an. Zusätzlich brauchen sie
+einen laufenden `npm run preview`. Das ist ein eigener Punkt, nicht Sache des Hooks.
 
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
