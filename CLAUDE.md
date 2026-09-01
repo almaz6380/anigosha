@@ -987,6 +987,13 @@ hatte. Wer das Aussehen aendert, aendert `useSky()` und die `.himmel-*`-Bloecke 
    `LevelUpClouds`), muss die Schriftfarbe selbst setzen. Sonst erbt es die Tinte der
    Buehne und steht tagsueber dunkel auf dunkel.
 
+**Live seit 01.09.2026 (PR #6) — aber NUR im Web.** ⚠ Ab jetzt sehen
+anigosha.vercel.app und die Store-Apps unterschiedlich aus: Capacitor buendelt die
+Web-Dateien ins App-Paket, iOS und Android tragen also weiter das alte
+Dunkelviolett, bis ein neuer Release-Build hochgeladen ist. Wer Screenshots oder
+Store-Bilder vergleicht, vergleicht sonst zwei Staende. Das gilt auch fuer die
+Reels: Deren Aussehen kommt aus `tools/reels/`, nicht aus der App.
+
 **Was der Entwurf vorsah und bewusst NICHT umgesetzt wurde:** "67 Fragen" unter jeder
 Kategorie. `fetchCategories` liefert keine Zaehlungen — die Fragen-Tabelle ist fuer
 Clients gesperrt (siehe Kommentar in `src/lib/solo.ts`). Die Zahl waere erfunden gewesen.
