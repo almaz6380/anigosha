@@ -46,17 +46,18 @@
     "daily": "Défi du jour"
   },
   "home": {
-    "greeting": "Salut {{name}} !",
+    "greetingMorning": "Bonjour, {{name}}",
+    "greetingDay": "Salut, {{name}}",
+    "greetingEvening": "Bonsoir, {{name}}",
+    "greetingNight": "Encore là, {{name}} ?",
     "solo": "Quiz solo",
     "soloSub": "Catégories, difficulté, XP",
     "duel": "Duel",
-    "duelSub": "Au tour par tour contre d'autres",
     "leaderboard": "Classement",
-    "leaderboardSub": "Les meilleurs otakus du monde",
     "profile": "Profil",
-    "profileSub": "Statistiques et réglages",
     "daily": "Défi du jour",
-    "dailySub": "5 questions, chaque jour"
+    "dailyKicker": "Aujourd'hui",
+    "dailyGo": "Jouer"
   },
   "profile": {
     "title": "Profil",
@@ -99,7 +100,8 @@
     "shareText": "J'ai trouvé {{correct}} bonnes réponses sur {{total}} en {{category}} ! Tu fais mieux ?",
     "fiftyFifty": "50:50 — retirer deux réponses",
     "streakDays_one": "{{count}} jour d'affilée",
-    "streakDays_other": "{{count}} jours d'affilée"
+    "streakDays_other": "{{count}} jours d'affilée",
+    "chooseSeries": "Choisis une série"
   },
   "daily": {
     "title": "Défi du jour",
@@ -134,7 +136,10 @@
       "running": "Un duel contre {{name}} est déjà en cours. Termine-le d'abord.",
       "tooMany": "Ça fait beaucoup de défis d'un coup. Réessaie dans une heure.",
       "unknown": "Ça n'a pas marché. Réessaie."
-    }
+    },
+    "play": "Jouer",
+    "finished": "Terminés",
+    "format": "4 manches de 3 questions"
   },
   "legal": {
     "imprint": "Mentions légales",
@@ -164,5 +169,8 @@
     "danke": "La publicité est désactivée dès maintenant. Merci !",
     "nichtsGefunden": "Aucun achat antérieur n'a été trouvé.",
     "abgebrochen": "Achat non finalisé."
+  },
+  "leaderboard": {
+    "kicker": "Mondial · par Elo"
   }
 }

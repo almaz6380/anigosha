@@ -29,7 +29,8 @@ alter Stand die Live-Version.
 (Migrationen 0022–0062 + `es.json`/`fr.json`/`pt.json`), weitere Sprachen = reine
 Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen).
 ⚠ Keine der drei ist live, solange die Migrationen nicht eingespielt sind — die
-Cloud-Sitzungen hatten keine DB-Schlüssel. **Reihenfolge zwingend:** 0022 (Constraints +
+Cloud-Sitzungen hatten damals keine DB-Schlüssel — **seit dem SessionStart-Hook (01.09.) haben sie
+welche**, das Einspielen scheitert also nicht mehr am Zugang. **Reihenfolge zwingend:** 0022 (Constraints +
 RPCs + `seed_uebersetzung`) → 0023–0035 (ES) → 0036 (Constraints/RPCs um fr+pt) →
 0037–0049 (FR) → 0050–0062 (PT), je mit Trockenlauf. Eine Seed-Migration vor ihrer
 Sprach-Migration bricht am Check-Constraint ab.
@@ -613,6 +614,92 @@ Der Geraetemitschnitt haette am ersten Tag dieselbe Eingrenzung geliefert.
 
 ## Umgebung / Werkzeuge
 
+### SessionStart-Hook: Cloud-Sitzungen einsatzbereit machen (01.09.2026)
+
+`.claude/hooks/session-start.sh` (registriert in `.claude/settings.json`) läuft **nur in
+Cloud-Sitzungen** (`$CLAUDE_CODE_REMOTE`), installiert bei Bedarf die Abhängigkeiten und
+baut über `env-schreiben.mjs` die `.env` zusammen.
+
+**Der Kniff: aus einer Variablen werden vier.** Hinterlegt ist nur
+`SUPABASE_ACCESS_ANIGOSHA` (Management-Token, `sbp_…`). Daraus gibt
+`GET /v1/projects/<ref>/api-keys?reveal=true` den Anon- und den Service-Role-Key heraus;
+die `.env` entsteht daraus. Es muss also **kein weiterer Schlüssel** in der Umgebung
+liegen — und es entsteht auch kein neuer Zugriff: Wer den Token hat, kommt ohnehin an
+den Service-Role-Key.
+
+**Vier Regeln, die im Skript stehen und dort bleiben müssen:**
+
+1. **Eine vorhandene `.env` wird nie angefasst.** Auf Josefs Rechner stünden dort echte
+   Werte, die die API gar nicht kennt (RevenueCat-Schlüssel); bei einem `resume` steht
+   dort schon das eigene Ergebnis.
+2. **Nie einen Schlüsselwert nach stdout.** Was ein SessionStart-Hook ausgibt, landet im
+   Sitzungskontext und damit im Protokoll. Das Skript meldet nur, *dass* es etwas gebaut hat.
+3. **Kein harter Abbruch.** Fehlt der Token oder antwortet die API mit einem Fehler, sagt
+   der Hook das und gibt 0 zurück. Eine Sitzung ohne Datenbank ist immer noch brauchbar.
+4. **`CLAUDE_CODE_REMOTE` ist in einer Cloud-Sitzung bereits gesetzt.** Wer den lokalen
+   Fall testen will, muss die Variable ausdrücklich entfernen
+   (`env -u CLAUDE_CODE_REMOTE …`) — sonst prüft man gar nichts.
+
+⚠ **`SUPABASE_ACCESS_ALMAZ` liegt ebenfalls in dieser Umgebung** und öffnet FullRep und
+WELLbooked. Für Anigosha wird sie nicht gebraucht; wenn die Umgebung nur diesem Projekt
+dienen soll, gehört sie dort raus.
+
+**Die Playwright-Werkzeuge** hängen an `tools/pruefbrowser.mjs` (01.09.2026). Der
+Helfer löst zwei Dinge: `browserStarten()` nimmt `CHROMIUM_PFAD`, sonst
+`/opt/pw-browsers/chromium` — nötig, weil das Repo Playwright 1.62.1 hält (erwartet
+Browser-Bauart 1234), das Abbild aber 1194 mitbringt; die Meldung lautet sonst
+„Executable doesn't exist" und rät zu einem 150-MB-Download. `vorschauSichern()` baut
+bei Bedarf und startet `vite preview`, statt in einen nichtssagenden Zeitablauf zu
+laufen.
+
+⚠ **Chromium kommt in einer Cloud-Sitzung NICHT ins Netz — Node schon.** Node folgt
+`HTTPS_PROXY`, der Browser nicht: Der Relay bricht jeden Tunnel aus Chromium ab
+(`ERR_CONNECTION_RESET`, im Proxy-Log `ws_closed_mid_exchange` nach ~39 Byte). Das gilt
+für **jeden** Host — mit example.com, Vercel und Supabase geprüft, nicht nur für einen.
+`--disable-http2` half nicht (Hypothese aufgestellt, gemessen, verworfen), und
+`proxy:` an `chromium.launch()` ebenso wenig; es bleibt trotzdem gesetzt, falls die
+Umgebung das eines Tages kann.
+
+Daraus folgt die Arbeitsteilung:
+
+| Werkzeug | in der Cloud |
+|---|---|
+| `check-theme-color` | **läuft** — es braucht keine Daten, nur die gerenderte Seite |
+| `shot-home`, `shot-levelup`, `store-shots` | brechen mit klarer Meldung ab (`netzVerlangen`) |
+
+Der Abbruch ist Absicht: Ohne Daten rendert die App eine leere Seite, und ein Screenshot
+davon sähe echt aus. Ein falsches Bild ist schlimmer als kein Bild. Auf Josefs Rechner
+laufen alle vier.
+
+**`check-theme-color` prüft seit „Himmel überall" etwas anderes als früher.** Damals trug
+nur der Startbildschirm den Himmel und die Solo-Seite MUSSTE auf Dunkelviolett
+zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jetzt im
+Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
+verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
+
+### ⚠ Migration 0021 ist HALB eingespielt — Freundschaftsduell ist live kaputt (01.09.2026)
+
+Beim Durchlaufen der Testskripte aufgefallen, **nicht** durch eine Änderung verursacht.
+`0021_freundesduell.sql` liegt nur teilweise in der Datenbank:
+
+| aus 0021 | Stand in der DB |
+|---|---|
+| `create or replace function` (challenge_friend, duel_state, list_duels, …) | ✅ vorhanden |
+| `alter table matches add is_friendly` | ❌ **fehlt** |
+| `alter table push_outbox` — `kind` um `'challenge'` erweitern | ❌ **fehlt** (CHECK erlaubt nur `your_turn`, `match_found`, `match_finished`) |
+
+**Folge für echte Nutzer:** „Freund herausfordern" schlägt fehl. Die Funktion existiert und
+läuft an, greift dann auf `matches.is_friendly` zu — die Spalte gibt es nicht, die RPC wirft,
+der Client zeigt „Das hat nicht geklappt." `tools/test-freundesduell.mjs` meldet das mit
+10 Fehlschlägen; erster Satz: `column "is_friendly" does not exist`.
+
+**Zu tun:** `0021` einspielen — und zwar **vor** 0022–0062, die Sprachmigrationen setzen darauf
+auf. Die Datei ist idempotent, ein erneuter Lauf schadet den bereits vorhandenen Funktionen
+nicht. Trockenlauf nicht vergessen (siehe „Migrationen — Ablauf").
+
+Bewusst NICHT in dieser Sitzung eingespielt: Migrationen werden gerade an anderer Stelle
+behandelt, und zwei Terminals gleichzeitig auf derselben Datenbank sind eine schlechte Idee.
+
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
 Claude spielt Migrationen selbst ein. Freigegeben über eine Permission-Regel in
@@ -856,10 +943,70 @@ noch ein Trending-Sound darüberpasst.
 KI-generierten (dieselbe Regel wie für die App). Anime-Titel als Text sind in Reels und
 Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keywords.
 
+## Oberflaeche: "Himmel ueberall" (Richtung A, 01.09.2026)
+
+Der Tageszeit-Himmel war die beste Idee der App und kam genau einmal vor — auf dem
+Startbildschirm. Jede andere Seite war flaches `night-950`. Seit dem 01.09. ist er das
+Milieu der ganzen App.
+
+**Die eine Quelle: `useSky()` in `src/components/SkyBackground.tsx`.** Sie macht aus der
+Uhrzeit eine `.himmel-*`-Klasse; `AppShell` haengt sie an die `.buehne` und faerbt darueber
+Statusleiste und html-Hintergrund. Alles darunter erbt Tinte, Milchglas und Linien als
+CSS-Variablen. **In den Seiten steht deshalb keine einzige Tag/Nacht-Abfrage mehr.**
+Vorher baute `isNightSky()` in `HomePage.tsx` sechs Klassenstrings zusammen — bei neun
+Bildschirmen waere daraus derselbe Wildwuchs geworden, den die Sprachweiche schon einmal
+hatte. Wer das Aussehen aendert, aendert `useSky()` und die `.himmel-*`-Bloecke in
+`src/index.css`. Sonst nichts.
+
+| Baustein | Wo |
+|---|---|
+| Tageszeit → Aussehen | `useSky()` in `SkyBackground.tsx` |
+| Buehne + Kopfzeile | `src/components/AppShell.tsx` (`AppShell`, `PageHeader`) |
+| Tokens und Klassen | `src/index.css`, Block "Der Himmel als Milieu" |
+| Farbe je Serie | `src/lib/kategorien.ts` |
+
+**Klassen:** `.glas` (Karte), `.glas-stumm` (ohne Schatten, fuer zuruecktretende Zeilen),
+`.knopf` / `.knopf-rand` (Haupt-/Nebenaktion), `.notiz` + `.notiz-kante`
+("Wusstest du?"), `.rubrik`, `.leise`, `.fein`, `.feld`, `.akzent-flaeche`,
+`.akzent-text`.
+
+**Vier Dinge, die hier Zeit gekostet haben:**
+
+1. **Alles Eigene muss in `@layer components`.** Ungeschichtet nach
+   `@import "tailwindcss"` schlaegt es jede Tailwind-Utility — `.glas` mit Radius 22 haette
+   jedes `rounded-[18px]` an einer Antwortoption ueberstimmt. Tailwind v4 legt seine
+   Utilities in eine Ebene, und ungeschichtetes CSS sticht jede Ebene.
+2. **Outfit ist eine variable Schrift mit Vorgabewert 100 (Thin).** Ohne
+   `font-weight: 100 900` im `@font-face` faellt die ganze App auf Thin zurueck und sieht
+   ausgeblichen aus. Die Datei liegt als `public/fonts/outfit.woff2` und ist dieselbe,
+   die die Reels benutzen (`tools/reels/assets/outfit.woff2`) — bewusst lokal statt ueber
+   Google Fonts.
+3. **Die Hauptaktion ist keine Farbe, sondern volle Tinte.** Violett→Pink erscheint
+   hoechstens einmal je Bildschirm. Vorher war der Verlauf ueberall und wog deshalb nichts.
+4. **Wer etwas baut, das einen dunklen Schleier ueber die Buehne legt** (wie
+   `LevelUpClouds`), muss die Schriftfarbe selbst setzen. Sonst erbt es die Tinte der
+   Buehne und steht tagsueber dunkel auf dunkel.
+
+**Was der Entwurf vorsah und bewusst NICHT umgesetzt wurde:** "67 Fragen" unter jeder
+Kategorie. `fetchCategories` liefert keine Zaehlungen — die Fragen-Tabelle ist fuer
+Clients gesperrt (siehe Kommentar in `src/lib/solo.ts`). Die Zahl waere erfunden gewesen.
+
+**Pruefen ohne Datenbank:** Cloud-Sitzungen haben keine `.env`, also rendert keine
+angemeldete Seite. Ein Pruefstand mit Attrappen fuer `AuthContext` und die `lib/*`-Module
+(Vite-Alias auf `/^.*\/lib\/solo$/` usw., eigener `root`) zeigt alle Bildschirme in
+Chromium. Drei Fallen dabei: Der Pruefstand muss **im Repo** liegen (sonst findet Vite
+React nicht), sein CSS braucht ein `@source "../src"` (sonst erzeugt Tailwind keine
+einzige Utility aus `src/` und die Seiten sehen aus wie unformatiertes HTML), und der
+Alias-Regex muss die GANZE Angabe fassen — Vite ersetzt nur den Treffer.
+Die Stunde laesst sich ueber `Date.prototype.getHours` festnageln, um beide Himmel zu
+pruefen.
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)
-- Dunkles Violett/Pink-Design (Tailwind-Theme in `src/index.css`: night-*/accent-*/pink-*), bewusst anders als MyPeak-Gold
+- Oberflaeche siehe "Himmel ueberall" oben: `AppShell` + `.glas`/`.knopf`, keine Tag/Nacht-Abfrage
+  in den Seiten. Die night-*/accent-*/pink-*-Farben bleiben als Basis im Theme (Akzent, Nachthimmel),
+  bewusst anders als MyPeak-Gold
 - Supabase-Migrationen nummeriert in `supabase/migrations/`, idempotent (drop policy if exists …)
 - Wiederverwendungs-Vorlagen: `~/Projects/mypeak/src/lib/ads.js` (AdMob+UMP), `revenuecat.js`, `~/Projects/wellbooked/src/lib/push-client.ts`
 - KEIN Commit/Deploy ohne ausdrückliche Freigabe von Josef

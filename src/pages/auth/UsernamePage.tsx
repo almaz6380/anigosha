@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import AppShell from '../../components/AppShell';
 
 const USERNAME_RE = /^[A-Za-z0-9_]{3,16}$/;
 
@@ -36,27 +37,27 @@ export default function UsernamePage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-night-950">
+    <AppShell className="flex flex-col items-center justify-center !px-6">
       <h1 className="text-2xl font-bold mb-2">{t('username.title')}</h1>
-      <p className="text-accent-400/70 text-sm mb-8 text-center">{t('username.subtitle')}</p>
+      <p className="leise text-sm mb-8 text-center">{t('username.subtitle')}</p>
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3">
         <input
           autoFocus
           placeholder={t('username.placeholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-xl bg-night-800 border border-night-700 px-4 py-3 outline-none focus:border-accent-500 placeholder:text-accent-400/40"
+          className="feld w-full px-4 py-3"
         />
-        <p className="text-xs text-accent-400/60">{t('username.rules')}</p>
+        <p className="text-xs leise">{t('username.rules')}</p>
         {error && <p className="text-sm text-pink-400">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-xl bg-accent-600 hover:bg-accent-500 disabled:opacity-50 py-3 font-semibold transition-colors"
+          className="knopf w-full py-3.5 disabled:opacity-50"
         >
           {busy ? t('common.loading') : t('common.continue')}
         </button>
       </form>
-    </div>
+    </AppShell>
   );
 }

@@ -46,17 +46,18 @@
     "daily": "Desafio diário"
   },
   "home": {
-    "greeting": "E aí, {{name}}!",
+    "greetingMorning": "Bom dia, {{name}}",
+    "greetingDay": "Olá, {{name}}",
+    "greetingEvening": "Boa noite, {{name}}",
+    "greetingNight": "Ainda por aí, {{name}}?",
     "solo": "Quiz solo",
     "soloSub": "Categorias, dificuldade, XP",
     "duel": "Duelo",
-    "duelSub": "Por turnos contra outros",
     "leaderboard": "Ranking",
-    "leaderboardSub": "Os melhores otakus do mundo",
     "profile": "Perfil",
-    "profileSub": "Estatísticas e ajustes",
     "daily": "Desafio diário",
-    "dailySub": "5 perguntas, novas todo dia"
+    "dailyKicker": "Hoje",
+    "dailyGo": "Jogar agora"
   },
   "profile": {
     "title": "Perfil",
@@ -99,7 +100,8 @@
     "shareText": "Acertei {{correct}} de {{total}} perguntas sobre {{category}}! Consegue superar?",
     "fiftyFifty": "50:50 — remover duas respostas",
     "streakDays_one": "{{count}} dia seguido",
-    "streakDays_other": "{{count}} dias seguidos"
+    "streakDays_other": "{{count}} dias seguidos",
+    "chooseSeries": "Escolha uma série"
   },
   "daily": {
     "title": "Desafio diário",
@@ -134,7 +136,10 @@
       "running": "Já existe um duelo em andamento contra {{name}}. Termine ele primeiro.",
       "tooMany": "Foram muitos desafios de uma vez. Tente de novo em uma hora.",
       "unknown": "Não deu certo. Tente de novo."
-    }
+    },
+    "play": "Jogar",
+    "finished": "Encerrados",
+    "format": "4 rodadas de 3 perguntas"
   },
   "legal": {
     "imprint": "Informações legais",
@@ -164,5 +169,8 @@
     "danke": "Os anúncios estão desativados a partir de agora. Obrigado!",
     "nichtsGefunden": "Nenhuma compra anterior foi encontrada.",
     "abgebrochen": "Compra não concluída."
+  },
+  "leaderboard": {
+    "kicker": "Mundial · por Elo"
   }
 }
