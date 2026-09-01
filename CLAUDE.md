@@ -677,6 +677,29 @@ zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jet
 Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
 verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
 
+### ⚠ Migration 0021 ist HALB eingespielt — Freundschaftsduell ist live kaputt (01.09.2026)
+
+Beim Durchlaufen der Testskripte aufgefallen, **nicht** durch eine Änderung verursacht.
+`0021_freundesduell.sql` liegt nur teilweise in der Datenbank:
+
+| aus 0021 | Stand in der DB |
+|---|---|
+| `create or replace function` (challenge_friend, duel_state, list_duels, …) | ✅ vorhanden |
+| `alter table matches add is_friendly` | ❌ **fehlt** |
+| `alter table push_outbox` — `kind` um `'challenge'` erweitern | ❌ **fehlt** (CHECK erlaubt nur `your_turn`, `match_found`, `match_finished`) |
+
+**Folge für echte Nutzer:** „Freund herausfordern" schlägt fehl. Die Funktion existiert und
+läuft an, greift dann auf `matches.is_friendly` zu — die Spalte gibt es nicht, die RPC wirft,
+der Client zeigt „Das hat nicht geklappt." `tools/test-freundesduell.mjs` meldet das mit
+10 Fehlschlägen; erster Satz: `column "is_friendly" does not exist`.
+
+**Zu tun:** `0021` einspielen — und zwar **vor** 0022–0062, die Sprachmigrationen setzen darauf
+auf. Die Datei ist idempotent, ein erneuter Lauf schadet den bereits vorhandenen Funktionen
+nicht. Trockenlauf nicht vergessen (siehe „Migrationen — Ablauf").
+
+Bewusst NICHT in dieser Sitzung eingespielt: Migrationen werden gerade an anderer Stelle
+behandelt, und zwei Terminals gleichzeitig auf derselben Datenbank sind eine schlechte Idee.
+
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
 Claude spielt Migrationen selbst ein. Freigegeben über eine Permission-Regel in
