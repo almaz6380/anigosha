@@ -25,15 +25,17 @@ Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Sp
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
-**Sprachen:** DE + EN zum Launch; **ES, FR und PT seit 18./19.08.2026 im Repo fertig**
-(Migrationen 0022–0062 + `es.json`/`fr.json`/`pt.json`), weitere Sprachen = reine
-Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen).
-⚠ Keine der drei ist live, solange die Migrationen nicht eingespielt sind — die
-Cloud-Sitzungen hatten damals keine DB-Schlüssel — **seit dem SessionStart-Hook (01.09.) haben sie
-welche**, das Einspielen scheitert also nicht mehr am Zugang. **Reihenfolge zwingend:** 0022 (Constraints +
-RPCs + `seed_uebersetzung`) → 0023–0035 (ES) → 0036 (Constraints/RPCs um fr+pt) →
-0037–0049 (FR) → 0050–0062 (PT), je mit Trockenlauf. Eine Seed-Migration vor ihrer
-Sprach-Migration bricht am Check-Constraint ab.
+**Sprachen: DE, EN, ES, FR und PT sind LIVE** (Migrationen 0022–0063 eingespielt,
+UI in `src/i18n/locales/*.json`). Am 01.09.2026 nachgemessen: **804 Übersetzungen je
+Sprache, alle 12 Kategorien, keine fehlende Erklärung**, und `start_solo_session` wie
+`start_daily_challenge` liefern für jede der fünf die richtige Sprache.
+⚠ **Hier stand bis 01.09. das Gegenteil** („keine der drei ist live") — das war seit dem
+20.08. falsch, wie der Kommentar in `public/get.html` schon damals festhielt. Wer eine
+Aussage über den Sprachstand braucht, misst sie: `select lang, count(*) from
+question_translations group by lang`. Weitere Sprachen sind reine Übersetzungspakete.
+**Reihenfolge zwingend, falls eine dazukommt:** erst die Sprach-Migration (Constraints +
+RPCs + `seed_uebersetzung`), dann ihre Seed-Migrationen, je mit Trockenlauf. Eine
+Seed-Migration vor ihrer Sprach-Migration bricht am Check-Constraint ab.
 **Sprachweiche zentral in `appSprache()`** (`src/i18n/index.ts`) — sie ist die einzige
 Stelle, die Regionalcodes wie `pt-BR` auf unsere Codes abbildet; früher stand die
 de/en-Weiche viermal verstreut im Code, wodurch fremdsprachige Nutzer deutsche Fragen
