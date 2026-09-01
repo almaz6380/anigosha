@@ -47,6 +47,10 @@
   },
   "home": {
     "greeting": "¡Hola, {{name}}!",
+    "greetingMorning": "Buenos días, {{name}}",
+    "greetingDay": "Hola, {{name}}",
+    "greetingEvening": "Buenas tardes, {{name}}",
+    "greetingNight": "¿Sigues por ahí, {{name}}?",
     "solo": "Quiz en solitario",
     "soloSub": "Categorías, dificultad, XP",
     "duel": "Duelo",
@@ -56,7 +60,9 @@
     "profile": "Perfil",
     "profileSub": "Estadísticas y ajustes",
     "daily": "Reto diario",
-    "dailySub": "5 preguntas, nuevas cada día"
+    "dailySub": "5 preguntas, nuevas cada día",
+    "dailyKicker": "Hoy",
+    "dailyGo": "Jugar ahora"
   },
   "profile": {
     "title": "Perfil",
@@ -99,7 +105,8 @@
     "shareText": "¡Acerté {{correct}} de {{total}} preguntas sobre {{category}}! ¿Puedes superarlo?",
     "fiftyFifty": "50:50 — quitar dos respuestas",
     "streakDays_one": "{{count}} día seguido",
-    "streakDays_other": "{{count}} días seguidos"
+    "streakDays_other": "{{count}} días seguidos",
+    "chooseSeries": "Elige una serie"
   },
   "daily": {
     "title": "Reto diario",
@@ -134,7 +141,10 @@
       "running": "Ya hay un duelo en curso contra {{name}}. Termínalo primero.",
       "tooMany": "Demasiados retos de golpe. Inténtalo de nuevo en una hora.",
       "unknown": "No ha funcionado. Inténtalo otra vez."
-    }
+    },
+    "play": "Jugar",
+    "finished": "Terminados",
+    "format": "4 rondas de 3 preguntas"
   },
   "legal": {
     "imprint": "Aviso legal",
@@ -164,5 +174,8 @@
     "danke": "La publicidad está desactivada desde ahora. ¡Gracias!",
     "nichtsGefunden": "No se encontró ninguna compra anterior.",
     "abgebrochen": "Compra no completada."
+  },
+  "leaderboard": {
+    "kicker": "Mundial · por Elo"
   }
 }

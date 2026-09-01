@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Outfit — dieselbe Datei, die auch die Reels benutzen
+   (tools/reels/assets/outfit.woff2). Bewusst lokal statt über Google Fonts:
+   spart den Fremdaufruf beim Start und hält App und Videos wirklich identisch.
+
+   ⚠ Die Datei ist eine variable Schrift mit Achse wght 100–900, deren
+   Vorgabewert 100 (Thin) ist. Ohne die Zeile `font-weight: 100 900` fällt
+   ALLES auf Thin zurück und die App sieht aus wie ausgeblichen.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Anigosha-Farbwelt: dunkles Violett + Pink-Akzent (bewusst anders als MyPeak-Gold) */
   --color-night-950: #0f0a1e;
@@ -11,10 +28,176 @@
   --color-accent-600: #7c3aed;
   --color-pink-400: #f472b6;
   --color-pink-500: #ec4899;
+
+  /* Richtig/falsch — bewusst für beide Himmel dieselben Werte: als volle
+     Fläche mit weißer Schrift tragen sie hell wie dunkel. */
+  --color-richtig: #059669;
+  --color-falsch: #e11d48;
+
+  --font-sans: 'Outfit', 'Avenir Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 html {
   background-color: var(--color-night-950);
+}
+
+/* ---------------------------------------------------------------------------
+   Der Himmel als Milieu der ganzen App
+   ---------------------------------------------------------------------------
+   Jede Seite liegt in einer `.buehne`, die eine der vier `.himmel-*`-Klassen
+   trägt. Die setzt Tinte, Milchglas und Linien als CSS-Variablen; alles
+   darunter erbt sie. Deshalb braucht keine Karte mehr zu wissen, welche
+   Tageszeit gerade ist — sie schreibt `class="glas"` und ist fertig.
+
+   Vergeben wird die Klasse an genau einer Stelle: useSky() in
+   src/components/SkyBackground.tsx. Wer hier Werte ändert, ändert sie überall.
+--------------------------------------------------------------------------- */
+/* ⚠ Alles hier steht in `@layer components`, damit Tailwinds Utilities
+   gewinnen. Ungeschichtet nach `@import "tailwindcss"` hätte `.glas` mit
+   seinem Radius 22 jedes `rounded-[18px]` an einer Antwortoption geschlagen —
+   Tailwind v4 legt seine Utilities in eine Ebene, und ungeschichtetes CSS
+   sticht jede Ebene. */
+@layer components {
+  .buehne {
+    color: var(--tinte);
+  }
+
+  .himmel-morning,
+  .himmel-day {
+    --tinte: #10243a;
+    --tinte-leise: rgba(16, 36, 58, 0.58);
+    --tinte-fein: rgba(16, 36, 58, 0.42);
+    --linie: rgba(16, 36, 58, 0.18);
+    --spur: rgba(16, 36, 58, 0.12);
+    --glas-flaeche: rgba(255, 255, 255, 0.55);
+    --glas-rand: rgba(255, 255, 255, 0.8);
+    --glas-schatten: 0 8px 24px -10px rgba(15, 23, 42, 0.35);
+    --knopf-flaeche: #10243a;
+    --knopf-schrift: #ffffff;
+    --notiz-flaeche: #10243a;
+    --notiz-tinte: #f1f5fb;
+    --notiz-akzent: #f9a8d4;
+  }
+
+  /* Abends ist der Himmel unten orange — dieselbe kühle Tinte wirkte darauf
+     fremd, deshalb ein wärmerer Ton bei gleicher Helligkeit. */
+  .himmel-evening {
+    --tinte: #1c1630;
+    --tinte-leise: rgba(28, 22, 48, 0.58);
+    --tinte-fein: rgba(28, 22, 48, 0.42);
+    --linie: rgba(28, 22, 48, 0.2);
+    --spur: rgba(28, 22, 48, 0.14);
+    --glas-flaeche: rgba(255, 255, 255, 0.5);
+    --glas-rand: rgba(255, 255, 255, 0.72);
+    --glas-schatten: 0 8px 24px -10px rgba(28, 22, 48, 0.4);
+    --knopf-flaeche: #1c1630;
+    --knopf-schrift: #ffffff;
+    --notiz-flaeche: #1c1630;
+    --notiz-tinte: #f6f1fb;
+    --notiz-akzent: #f9a8d4;
+  }
+
+  .himmel-night {
+    --tinte: #ede9fe;
+    --tinte-leise: rgba(237, 233, 254, 0.58);
+    --tinte-fein: rgba(237, 233, 254, 0.42);
+    --linie: rgba(167, 139, 250, 0.3);
+    --spur: rgba(237, 233, 254, 0.14);
+    --glas-flaeche: rgba(47, 32, 87, 0.42);
+    --glas-rand: rgba(167, 139, 250, 0.26);
+    --glas-schatten: 0 8px 26px -12px rgba(0, 0, 0, 0.8);
+    --knopf-flaeche: #ede9fe;
+    --knopf-schrift: #17102c;
+    /* Nachts dreht sich die Notiz um: helle Karte auf dunklem Himmel. Eine
+       dunkle Karte wäre im Nachthimmel schlicht verschwunden. */
+    --notiz-flaeche: rgba(237, 233, 254, 0.94);
+    --notiz-tinte: #17102c;
+    --notiz-akzent: #be1c66;
+  }
+
+  .glas {
+    border-radius: 22px;
+    border: 1px solid var(--glas-rand);
+    background: var(--glas-flaeche);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--glas-schatten);
+  }
+
+  /* Für Zeilen, die zurücktreten sollen (wartende Duelle): ohne Schatten
+     liegen sie flach auf dem Himmel statt darüber zu schweben. */
+  .glas-stumm {
+    box-shadow: none;
+  }
+
+  .leise { color: var(--tinte-leise); }
+  .fein { color: var(--tinte-fein); }
+
+  .rubrik {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tinte-fein);
+  }
+
+  /* Die Hauptaktion ist keine Farbe, sondern volle Tinte. Der Verlauf bleibt
+     dem einen Akzent pro Bildschirm vorbehalten — sonst wiegt er nichts. */
+  .knopf {
+    border-radius: 9999px;
+    background: var(--knopf-flaeche);
+    color: var(--knopf-schrift);
+    font-weight: 600;
+  }
+
+  .knopf-rand {
+    border-radius: 9999px;
+    border: 1px solid var(--linie);
+    background: var(--glas-flaeche);
+    color: inherit;
+    font-weight: 600;
+  }
+
+  .akzent-flaeche {
+    background: linear-gradient(90deg, #7c3aed, #ec4899);
+  }
+
+  .akzent-text {
+    background: linear-gradient(90deg, #7c3aed, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* „Wusstest du?" — die Erklärung ist das, was Anigosha von jedem anderen
+     Quiz unterscheidet. Vorher trug sie exakt dieselben Klassen wie eine
+     Fehlermeldung. Sie kehrt den Himmel um und trägt die Akzentkante. */
+  .notiz {
+    border-radius: 18px;
+    background: var(--notiz-flaeche);
+    color: var(--notiz-tinte);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .notiz-kante {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, #a78bfa, #f472b6);
+  }
+
+  .feld {
+    border-radius: 14px;
+    border: 1px solid var(--linie);
+    background: var(--glas-flaeche);
+    color: inherit;
+  }
+  .feld::placeholder { color: var(--tinte-fein); }
+  .feld:focus { outline: none; border-color: var(--color-accent-500); }
 }
 
 /* ---------------------------------------------------------------------------
@@ -131,7 +314,7 @@ html {
 body {
   margin: 0;
   color: #ede9fe;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Outfit', 'Avenir Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   /* Notch/Home-Indicator (Capacitor, viewport-fit=cover) */
   padding-top: env(safe-area-inset-top);

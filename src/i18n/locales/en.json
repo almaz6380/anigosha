@@ -47,6 +47,10 @@
   },
   "home": {
     "greeting": "Hey {{name}}!",
+    "greetingMorning": "Good morning, {{name}}",
+    "greetingDay": "Hello, {{name}}",
+    "greetingEvening": "Good evening, {{name}}",
+    "greetingNight": "Still up, {{name}}?",
     "solo": "Solo Quiz",
     "soloSub": "Categories, difficulty, XP",
     "duel": "Duel",
@@ -56,7 +60,9 @@
     "profile": "Profile",
     "profileSub": "Stats & settings",
     "daily": "Daily Challenge",
-    "dailySub": "5 questions, new every day"
+    "dailySub": "5 questions, new every day",
+    "dailyKicker": "Today",
+    "dailyGo": "Play now"
   },
   "profile": {
     "title": "Profile",
@@ -99,7 +105,8 @@
     "shareText": "I got {{correct}} out of {{total}} questions right on {{category}}! Can you beat that?",
     "fiftyFifty": "50:50 — remove two answers",
     "streakDays_one": "{{count}} day in a row",
-    "streakDays_other": "{{count}} days in a row"
+    "streakDays_other": "{{count}} days in a row",
+    "chooseSeries": "Pick a series"
   },
   "daily": {
     "title": "Daily Challenge",
@@ -134,7 +141,10 @@
       "running": "A duel against {{name}} is already running. Finish it first.",
       "tooMany": "That's a lot of challenges at once. Try again in an hour.",
       "unknown": "That didn't work. Please try again."
-    }
+    },
+    "play": "Play",
+    "finished": "Finished",
+    "format": "4 rounds of 3 questions"
   },
   "legal": {
     "imprint": "Legal Notice",
@@ -164,5 +174,8 @@
     "danke": "Ads are off from now on. Thank you!",
     "nichtsGefunden": "No earlier purchase was found.",
     "abgebrochen": "Purchase not completed."
+  },
+  "leaderboard": {
+    "kicker": "Worldwide · by Elo"
   }
 }

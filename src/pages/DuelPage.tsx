@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { datenSprache } from '../i18n';
-import { ArrowLeft, Bot, Check, ChevronRight, Heart, Swords, UserPlus, X } from 'lucide-react';
+import { ArrowRight, Bot, Check, ChevronRight, Heart, Lightbulb, Swords, UserPlus, X } from 'lucide-react';
 import type { SoloQuestion, AnswerResult } from '../lib/solo';
 import { maybeShowInterstitialOnce } from '../lib/ads';
+import AppShell, { PageHeader } from '../components/AppShell';
 import {
   answerDuel,
   challengeFriend,
@@ -171,46 +172,98 @@ export default function DuelPage() {
     }
   }
 
-  const shell = 'min-h-dvh bg-night-950 px-5 pt-8 pb-10 max-w-md mx-auto';
-
   // --- Übersicht -----------------------------------------------------------
   if (!active) {
+    const dran = duels.filter((d) => d.status !== 'finished' && d.my_turn);
+    const offen = duels.filter((d) => d.status !== 'finished' && !d.my_turn);
+    const fertig = duels.filter((d) => d.status === 'finished');
+
+    /** Eine Partiezeile. `wach` trennt die Partien, in denen der Nutzer am Zug
+     *  ist, von den wartenden — vorher stand alles in einer Liste und der
+     *  Zustand nur als Kleingedrucktes daneben. */
+    const Zeile = (d: DuelSummary, wach: boolean) => (
+      <button
+        key={d.match_id}
+        onClick={() => openMatch(d.match_id)}
+        className={`glas relative overflow-hidden text-left flex items-center gap-3.5 ${
+          wach ? 'px-[18px] py-4 pl-[21px]' : 'glas-stumm px-[18px] py-3.5 opacity-60'
+        }`}
+        style={wach ? { borderColor: 'rgba(244,114,182,0.45)' } : undefined}
+      >
+        {wach && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1 akzent-flaeche" />}
+        <div
+          className={`rounded-full shrink-0 flex items-center justify-center font-bold ${wach ? 'w-10 h-10 text-[15px]' : 'w-9 h-9 text-sm'}`}
+          style={{ background: 'var(--spur)', border: '1px solid var(--linie)' }}
+        >
+          {(d.opponent?.username ?? '—').slice(0, 1).toUpperCase()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className={`truncate flex items-center gap-1.5 ${wach ? 'text-base font-bold' : 'text-[15px] font-semibold'}`}>
+            {d.opponent?.username ?? '—'}
+            {d.opponent?.is_bot && <Bot className="w-3.5 h-3.5 fein shrink-0" />}
+            {d.is_friendly && (
+              <Heart className="w-3.5 h-3.5 text-pink-400 shrink-0" aria-label={t('duel.friendly')} />
+            )}
+          </div>
+          <div className="text-xs mt-0.5 leise truncate">
+            {t('duel.round', { n: d.round_no })}
+            {' · '}
+            {d.status === 'finished'
+              ? d.my_score > d.opp_score
+                ? t('duel.won')
+                : d.my_score < d.opp_score
+                  ? t('duel.lost')
+                  : t('duel.draw')
+              : `${d.my_score} : ${d.opp_score}`}
+          </div>
+        </div>
+        {wach ? (
+          <span className="px-3 py-1.5 rounded-full akzent-flaeche text-white text-xs font-bold shrink-0">
+            {t('duel.play')}
+          </span>
+        ) : (
+          <ChevronRight className="w-4 h-4 fein shrink-0" />
+        )}
+      </button>
+    );
+
+    const Gruppe = (titel: string, liste: DuelSummary[], wach: boolean) =>
+      liste.length > 0 && (
+        <>
+          <p className="rubrik mt-6 mb-2.5 px-1">{titel}</p>
+          <div className="flex flex-col gap-2.5">{liste.map((d) => Zeile(d, wach))}</div>
+        </>
+      );
+
     return (
-      <div className={shell}>
-        <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/')} className="p-1 -ml-1 text-accent-400" aria-label="back">
-            <ArrowLeft className="w-6 h-6" />
+      <AppShell>
+        <PageHeader onBack={() => navigate('/')} kicker={t('duel.format')} title={t('nav.duel')} />
+
+        {error && <div className="glas mt-5 p-4 text-sm leise">{error}</div>}
+
+        <div className="flex gap-2.5 mt-5">
+          <button
+            onClick={neu}
+            disabled={busy}
+            className="flex-1 knopf py-4 flex items-center justify-center gap-2 text-[15px] disabled:opacity-50"
+          >
+            <Swords className="w-[17px] h-[17px]" strokeWidth={2.2} />
+            {t('duel.new')}
           </button>
-          <h1 className="font-bold text-lg">{t('nav.duel')}</h1>
+          <button
+            onClick={() => setFordernOffen((o) => !o)}
+            disabled={busy}
+            aria-label={t('duel.challengeFriend')}
+            title={t('duel.challengeFriend')}
+            className="w-[52px] h-[52px] rounded-full knopf-rand flex items-center justify-center disabled:opacity-50 shrink-0"
+          >
+            <UserPlus className="w-[19px] h-[19px]" strokeWidth={2} />
+          </button>
         </div>
 
-        {error && (
-          <div className="mt-6 rounded-2xl border border-night-700 bg-night-900 p-4 text-sm text-accent-400/80">
-            {error}
-          </div>
-        )}
-
-        <button
-          onClick={neu}
-          disabled={busy}
-          className="w-full rounded-2xl bg-accent-500 p-4 font-semibold text-night-950 mt-6 flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          <Swords className="w-5 h-5" />
-          {t('duel.new')}
-        </button>
-
-        {!fordernOffen ? (
-          <button
-            onClick={() => setFordernOffen(true)}
-            disabled={busy}
-            className="w-full rounded-2xl border border-night-700 bg-night-900 p-4 font-semibold text-accent-400 mt-3 flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <UserPlus className="w-5 h-5" />
-            {t('duel.challengeFriend')}
-          </button>
-        ) : (
-          <div className="mt-3 rounded-2xl border border-night-700 bg-night-900 p-4">
-            <label htmlFor="freundName" className="text-xs text-accent-400/60">
+        {fordernOffen && (
+          <div className="glas mt-2.5 p-4">
+            <label htmlFor="freundName" className="rubrik">
               {t('duel.challengeHint')}
             </label>
             <div className="flex gap-2 mt-2">
@@ -224,66 +277,30 @@ export default function DuelPage() {
                 autoCapitalize="none"
                 spellCheck={false}
                 maxLength={16}
-                className="flex-1 min-w-0 rounded-xl bg-night-950 border border-night-700 px-3 py-2.5 text-sm outline-none focus:border-accent-500"
+                className="feld flex-1 min-w-0 px-3 py-2.5 text-sm"
               />
               <button
                 onClick={fordern}
                 disabled={busy || !fordernName.trim()}
-                className="rounded-xl bg-accent-500 px-4 py-2.5 text-sm font-semibold text-night-950 disabled:opacity-40"
+                className="knopf px-5 py-2.5 text-sm disabled:opacity-40"
               >
                 {t('duel.challengeGo')}
               </button>
             </div>
-            <p className="text-[11px] text-accent-400/40 mt-2">{t('duel.friendlyNote')}</p>
+            <p className="text-[11px] fein mt-2">{t('duel.friendlyNote')}</p>
           </div>
         )}
 
-        <div className="mt-6 flex flex-col gap-3">
-          {duels.length === 0 && (
-            <p className="text-sm text-accent-400/50 text-center py-6">{t('duel.empty')}</p>
-          )}
-          {duels.map((d) => (
-            <button
-              key={d.match_id}
-              onClick={() => openMatch(d.match_id)}
-              className="rounded-2xl bg-night-900 border border-night-700 p-4 text-left flex items-center gap-3 hover:border-accent-500 transition-colors"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold truncate flex items-center gap-1.5">
-                  {d.opponent?.username ?? '—'}
-                  {d.opponent?.is_bot && <Bot className="w-3.5 h-3.5 text-accent-400/40 shrink-0" />}
-                  {d.is_friendly && (
-                    <Heart
-                      className="w-3.5 h-3.5 text-pink-400/70 shrink-0"
-                      aria-label={t('duel.friendly')}
-                    />
-                  )}
-                </div>
-                <div className="text-xs text-accent-400/60 mt-0.5">
-                  {d.status === 'finished'
-                    ? d.my_score > d.opp_score
-                      ? t('duel.won')
-                      : d.my_score < d.opp_score
-                        ? t('duel.lost')
-                        : t('duel.draw')
-                    : d.my_turn
-                      ? t('duel.yourTurn')
-                      : t('duel.waiting')}
-                  {' · '}
-                  {t('duel.round', { n: d.round_no })}
-                </div>
-              </div>
-              <div className="text-sm font-semibold tabular-nums">
-                {d.my_score}:{d.opp_score}
-              </div>
-              {d.my_turn && d.status === 'active' && (
-                <span className="w-2 h-2 rounded-full bg-accent-400 shrink-0" />
-              )}
-              <ChevronRight className="w-4 h-4 text-accent-400/40 shrink-0" />
-            </button>
-          ))}
-        </div>
-      </div>
+        {duels.length === 0 && <p className="text-sm fein text-center py-8">{t('duel.empty')}</p>}
+
+        {Gruppe(t('duel.yourTurn'), dran, true)}
+        {Gruppe(t('duel.waiting'), offen, false)}
+        {Gruppe(t('duel.finished'), fertig, false)}
+
+        {duels.some((d) => d.opponent?.is_bot) && (
+          <p className="mt-6 text-[11px] fein text-center">{t('duel.botHint')}</p>
+        )}
+      </AppShell>
     );
   }
 
@@ -291,86 +308,97 @@ export default function DuelPage() {
   const q = questions[index];
 
   return (
-    <div className={shell}>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => {
-            setActive(null);
-            setState(null);
-            load();
-          }}
-          className="p-1 -ml-1 text-accent-400"
-          aria-label="back"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="font-bold text-lg flex-1 truncate">
-          {state?.opponent?.username ?? t('nav.duel')}
-        </h1>
-        <span className="text-sm font-semibold tabular-nums">
-          {state?.my_score ?? 0}:{state?.opp_score ?? 0}
-        </span>
-      </div>
+    <AppShell>
+      <PageHeader
+        onBack={() => {
+          setActive(null);
+          setState(null);
+          load();
+        }}
+        kicker={t('duel.round', { n: state?.round_no ?? 1 })}
+        title={state?.opponent?.username ?? t('nav.duel')}
+        right={
+          <span className="text-base font-bold tabular-nums shrink-0">
+            {state?.my_score ?? 0}:{state?.opp_score ?? 0}
+          </span>
+        }
+      />
 
       {state?.opponent?.is_bot && (
-        <div className="mt-2 text-[11px] text-accent-400/40 flex items-center gap-1">
+        <div className="mt-2 text-[11px] fein flex items-center gap-1">
           <Bot className="w-3 h-3" />
           {t('duel.botHint')}
         </div>
       )}
 
       {state?.is_friendly && (
-        <div className="flex items-center gap-1.5 text-[11px] text-pink-400/60 mt-1">
+        <div className="flex items-center gap-1.5 text-[11px] text-pink-400 mt-1">
           <Heart className="w-3 h-3" />
           {t('duel.friendlyNote')}
         </div>
       )}
 
       {finished ? (
-        <div className="mt-10 text-center">
-          <div className="text-5xl font-extrabold bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent">
+        <div className="mt-12 text-center">
+          <div className="text-[64px] font-extrabold leading-none tracking-[-0.05em]">
             {state.my_score}:{state.opp_score}
           </div>
-          <p className="mt-3 text-accent-400/70">
-            {state.my_score > state.opp_score
-              ? t('duel.won')
-              : state.my_score < state.opp_score
-                ? t('duel.lost')
-                : t('duel.draw')}
+          <p className="mt-4 inline-flex px-4 py-2 rounded-full glas text-[15px] font-bold">
+            <span className="akzent-text">
+              {state.my_score > state.opp_score
+                ? t('duel.won')
+                : state.my_score < state.opp_score
+                  ? t('duel.lost')
+                  : t('duel.draw')}
+            </span>
           </p>
         </div>
       ) : !state?.my_turn ? (
-        <div className="mt-10 text-center text-sm text-accent-400/70">
+        <p className="mt-12 text-center text-sm leise">
           {t('duel.waitingLong', { name: state?.opponent?.username ?? '' })}
-        </div>
+        </p>
       ) : q ? (
         <>
-          <div className="text-xs text-accent-400/50 mt-6">
-            {t('duel.round', { n: state?.round_no ?? 1 })} · {index + 1}/{questions.length}
+          <div className="flex gap-1.5 mt-4">
+            {questions.map((_, i) => (
+              <span
+                key={i}
+                className="flex-1 h-[5px] rounded-[3px]"
+                style={{ background: i <= index ? 'var(--knopf-flaeche)' : 'var(--spur)' }}
+              />
+            ))}
           </div>
-          <h2 className="text-xl font-semibold mt-2 leading-snug">{q.prompt}</h2>
 
-          <div className="flex flex-col gap-3 mt-6">
+          <h2 className="text-[25px] font-bold mt-6 leading-[1.24] tracking-[-0.02em] text-pretty">
+            {q.prompt}
+          </h2>
+
+          <div className="flex flex-col gap-2.5 mt-5">
             {q.options.map((option, i) => {
               const isCorrect = feedback && i === feedback.correct_index;
               const isWrongPick = feedback && i === picked && !feedback.correct;
+              const voll = isCorrect || isWrongPick;
               return (
                 <button
                   key={i}
                   disabled={picked !== null}
                   onClick={() => pick(i)}
                   className={[
-                    'rounded-2xl border p-4 text-left flex items-center gap-3 transition-colors',
-                    isCorrect
-                      ? 'border-emerald-500 bg-emerald-500/10'
-                      : isWrongPick
-                        ? 'border-rose-500 bg-rose-500/10'
-                        : 'border-night-700 bg-night-900',
-                    picked === null ? 'hover:border-accent-500' : '',
+                    'rounded-[18px] px-4 py-3.5 text-left flex items-center gap-3 text-base transition-opacity',
+                    voll ? 'font-semibold text-white' : 'glas font-medium',
+                    picked !== null && !voll ? 'opacity-50' : '',
                   ].join(' ')}
+                  style={
+                    voll
+                      ? {
+                          background: isCorrect ? 'var(--color-richtig)' : 'var(--color-falsch)',
+                          boxShadow: `0 6px 20px -8px ${isCorrect ? 'rgba(5,150,105,0.9)' : 'rgba(225,29,72,0.8)'}`,
+                        }
+                      : undefined
+                  }
                 >
-                  {isCorrect && <Check className="w-5 h-5 text-emerald-400 shrink-0" />}
-                  {isWrongPick && <X className="w-5 h-5 text-rose-400 shrink-0" />}
+                  {isCorrect && <Check className="w-5 h-5 shrink-0" strokeWidth={2.8} />}
+                  {isWrongPick && <X className="w-5 h-5 shrink-0" strokeWidth={2.6} />}
                   <span>{option}</span>
                 </button>
               );
@@ -378,28 +406,36 @@ export default function DuelPage() {
           </div>
 
           {feedback && (
-            <div className="mt-6">
+            <div className="mt-5">
               {feedback.explanation && (
-                <div className="rounded-2xl bg-night-900 border border-night-700 p-4">
-                  <div className="text-xs uppercase tracking-wide text-accent-400/60 mb-1">
-                    {t('solo.didYouKnow')}
+                <div className="notiz pl-5 pr-[18px] py-[17px]">
+                  <span className="notiz-kante" aria-hidden />
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Lightbulb className="w-[15px] h-[15px]" style={{ color: 'var(--notiz-akzent)' }} />
+                    <span
+                      className="text-[11px] font-bold uppercase tracking-[0.14em]"
+                      style={{ color: 'var(--notiz-akzent)' }}
+                    >
+                      {t('solo.didYouKnow')}
+                    </span>
                   </div>
-                  <p className="text-sm leading-relaxed">{feedback.explanation}</p>
+                  <p className="text-[15px] leading-[1.5]">{feedback.explanation}</p>
                 </div>
               )}
               <button
                 onClick={next}
                 disabled={busy}
-                className="w-full rounded-2xl bg-accent-500 p-4 font-semibold text-night-950 mt-5 disabled:opacity-50"
+                className="w-full knopf py-4 mt-4 flex items-center justify-center gap-2 text-base disabled:opacity-50"
               >
                 {index + 1 < questions.length ? t('common.continue') : t('duel.endRound')}
+                <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.4} />
               </button>
             </div>
           )}
         </>
       ) : (
-        <div className="mt-10 text-center text-sm text-accent-400/70">{t('common.loading')}</div>
+        <p className="mt-12 text-center text-sm leise">{t('common.loading')}</p>
       )}
-    </div>
+    </AppShell>
   );
 }

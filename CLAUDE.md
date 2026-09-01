@@ -856,10 +856,70 @@ noch ein Trending-Sound darüberpasst.
 KI-generierten (dieselbe Regel wie für die App). Anime-Titel als Text sind in Reels und
 Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keywords.
 
+## Oberflaeche: "Himmel ueberall" (Richtung A, 01.09.2026)
+
+Der Tageszeit-Himmel war die beste Idee der App und kam genau einmal vor — auf dem
+Startbildschirm. Jede andere Seite war flaches `night-950`. Seit dem 01.09. ist er das
+Milieu der ganzen App.
+
+**Die eine Quelle: `useSky()` in `src/components/SkyBackground.tsx`.** Sie macht aus der
+Uhrzeit eine `.himmel-*`-Klasse; `AppShell` haengt sie an die `.buehne` und faerbt darueber
+Statusleiste und html-Hintergrund. Alles darunter erbt Tinte, Milchglas und Linien als
+CSS-Variablen. **In den Seiten steht deshalb keine einzige Tag/Nacht-Abfrage mehr.**
+Vorher baute `isNightSky()` in `HomePage.tsx` sechs Klassenstrings zusammen — bei neun
+Bildschirmen waere daraus derselbe Wildwuchs geworden, den die Sprachweiche schon einmal
+hatte. Wer das Aussehen aendert, aendert `useSky()` und die `.himmel-*`-Bloecke in
+`src/index.css`. Sonst nichts.
+
+| Baustein | Wo |
+|---|---|
+| Tageszeit → Aussehen | `useSky()` in `SkyBackground.tsx` |
+| Buehne + Kopfzeile | `src/components/AppShell.tsx` (`AppShell`, `PageHeader`) |
+| Tokens und Klassen | `src/index.css`, Block "Der Himmel als Milieu" |
+| Farbe je Serie | `src/lib/kategorien.ts` |
+
+**Klassen:** `.glas` (Karte), `.glas-stumm` (ohne Schatten, fuer zuruecktretende Zeilen),
+`.knopf` / `.knopf-rand` (Haupt-/Nebenaktion), `.notiz` + `.notiz-kante`
+("Wusstest du?"), `.rubrik`, `.leise`, `.fein`, `.feld`, `.akzent-flaeche`,
+`.akzent-text`.
+
+**Vier Dinge, die hier Zeit gekostet haben:**
+
+1. **Alles Eigene muss in `@layer components`.** Ungeschichtet nach
+   `@import "tailwindcss"` schlaegt es jede Tailwind-Utility — `.glas` mit Radius 22 haette
+   jedes `rounded-[18px]` an einer Antwortoption ueberstimmt. Tailwind v4 legt seine
+   Utilities in eine Ebene, und ungeschichtetes CSS sticht jede Ebene.
+2. **Outfit ist eine variable Schrift mit Vorgabewert 100 (Thin).** Ohne
+   `font-weight: 100 900` im `@font-face` faellt die ganze App auf Thin zurueck und sieht
+   ausgeblichen aus. Die Datei liegt als `public/fonts/outfit.woff2` und ist dieselbe,
+   die die Reels benutzen (`tools/reels/assets/outfit.woff2`) — bewusst lokal statt ueber
+   Google Fonts.
+3. **Die Hauptaktion ist keine Farbe, sondern volle Tinte.** Violett→Pink erscheint
+   hoechstens einmal je Bildschirm. Vorher war der Verlauf ueberall und wog deshalb nichts.
+4. **Wer etwas baut, das einen dunklen Schleier ueber die Buehne legt** (wie
+   `LevelUpClouds`), muss die Schriftfarbe selbst setzen. Sonst erbt es die Tinte der
+   Buehne und steht tagsueber dunkel auf dunkel.
+
+**Was der Entwurf vorsah und bewusst NICHT umgesetzt wurde:** "67 Fragen" unter jeder
+Kategorie. `fetchCategories` liefert keine Zaehlungen — die Fragen-Tabelle ist fuer
+Clients gesperrt (siehe Kommentar in `src/lib/solo.ts`). Die Zahl waere erfunden gewesen.
+
+**Pruefen ohne Datenbank:** Cloud-Sitzungen haben keine `.env`, also rendert keine
+angemeldete Seite. Ein Pruefstand mit Attrappen fuer `AuthContext` und die `lib/*`-Module
+(Vite-Alias auf `/^.*\/lib\/solo$/` usw., eigener `root`) zeigt alle Bildschirme in
+Chromium. Drei Fallen dabei: Der Pruefstand muss **im Repo** liegen (sonst findet Vite
+React nicht), sein CSS braucht ein `@source "../src"` (sonst erzeugt Tailwind keine
+einzige Utility aus `src/` und die Seiten sehen aus wie unformatiertes HTML), und der
+Alias-Regex muss die GANZE Angabe fassen — Vite ersetzt nur den Treffer.
+Die Stunde laesst sich ueber `Date.prototype.getHours` festnageln, um beide Himmel zu
+pruefen.
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)
-- Dunkles Violett/Pink-Design (Tailwind-Theme in `src/index.css`: night-*/accent-*/pink-*), bewusst anders als MyPeak-Gold
+- Oberflaeche siehe "Himmel ueberall" oben: `AppShell` + `.glas`/`.knopf`, keine Tag/Nacht-Abfrage
+  in den Seiten. Die night-*/accent-*/pink-*-Farben bleiben als Basis im Theme (Akzent, Nachthimmel),
+  bewusst anders als MyPeak-Gold
 - Supabase-Migrationen nummeriert in `supabase/migrations/`, idempotent (drop policy if exists …)
 - Wiederverwendungs-Vorlagen: `~/Projects/mypeak/src/lib/ads.js` (AdMob+UMP), `revenuecat.js`, `~/Projects/wellbooked/src/lib/push-client.ts`
 - KEIN Commit/Deploy ohne ausdrückliche Freigabe von Josef
