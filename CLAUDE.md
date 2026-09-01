@@ -677,28 +677,28 @@ zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jet
 Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
 verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
 
-### ⚠ Migration 0021 ist HALB eingespielt — Freundschaftsduell ist live kaputt (01.09.2026)
+### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
 
-Beim Durchlaufen der Testskripte aufgefallen, **nicht** durch eine Änderung verursacht.
-`0021_freundesduell.sql` liegt nur teilweise in der Datenbank:
+Beim Durchlaufen der Testskripte fiel auf, dass `0021_freundesduell.sql` nur **halb** in
+der Datenbank lag: Die Funktionen waren da (`create or replace function` war gelaufen),
+aber `matches.is_friendly` fehlte und der CHECK auf `push_outbox.kind` kannte
+`'challenge'` nicht. **Für echte Nutzer hiess das: „Freund herausfordern" schlug fehl** —
+`challenge_friend` lief an, griff auf die fehlende Spalte zu und warf.
 
-| aus 0021 | Stand in der DB |
-|---|---|
-| `create or replace function` (challenge_friend, duel_state, list_duels, …) | ✅ vorhanden |
-| `alter table matches add is_friendly` | ❌ **fehlt** |
-| `alter table push_outbox` — `kind` um `'challenge'` erweitern | ❌ **fehlt** (CHECK erlaubt nur `your_turn`, `match_found`, `match_finished`) |
+Am 01.09. nachgeholt: Trockenlauf (`begin` … `rollback`) sauber, echt eingespielt, danach
+`spalte=1` und der CHECK kennt `challenge`. `tools/test-freundesduell.mjs` ist von
+10 Fehlschlaegen auf **19/19 gruen** gesprungen.
 
-**Folge für echte Nutzer:** „Freund herausfordern" schlägt fehl. Die Funktion existiert und
-läuft an, greift dann auf `matches.is_friendly` zu — die Spalte gibt es nicht, die RPC wirft,
-der Client zeigt „Das hat nicht geklappt." `tools/test-freundesduell.mjs` meldet das mit
-10 Fehlschlägen; erster Satz: `column "is_friendly" does not exist`.
+⚠ **`0021` ersetzt auch `apply_match_elo`, `duel_state`, `list_duels`, `get_duel_round`
+und `matches_notify`** — also den Kern der Duelllogik. Deshalb danach die ganze Suite
+nachgefahren, nicht nur den einen Test: solo 12, duel 19, joker/daily 15, push 23,
+push-versand 8, freundesduell 19 — alle gruen.
 
-**Zu tun:** `0021` einspielen — und zwar **vor** 0022–0062, die Sprachmigrationen setzen darauf
-auf. Die Datei ist idempotent, ein erneuter Lauf schadet den bereits vorhandenen Funktionen
-nicht. Trockenlauf nicht vergessen (siehe „Migrationen — Ablauf").
-
-Bewusst NICHT in dieser Sitzung eingespielt: Migrationen werden gerade an anderer Stelle
-behandelt, und zwei Terminals gleichzeitig auf derselben Datenbank sind eine schlechte Idee.
+**Merksatz:** Eine Migration kann teilweise durchlaufen. `create or replace function`
+gelingt, waehrend ein `alter table` in derselben Datei scheitert — und der Fehler faellt
+erst Wochen spaeter auf, weil der Client nur „Das hat nicht geklappt." zeigt. Nach jedem
+Einspielen **lesend nachzaehlen**, wie es unten steht, und die zugehoerigen Testskripte
+laufen lassen.
 
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
