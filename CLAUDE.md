@@ -644,12 +644,38 @@ den Service-Role-Key.
 WELLbooked. Für Anigosha wird sie nicht gebraucht; wenn die Umgebung nur diesem Projekt
 dienen soll, gehört sie dort raus.
 
-**Noch offen — die Playwright-Werkzeuge** (`check-theme-color`, `shot-home`,
-`shot-levelup`, `store-shots`) laufen trotz `.env` nicht: Das Repo hält Playwright
-1.62.1, das Abbild bringt aber die Browser-Bauart 1194 mit (erwartet wird 1234). Mit
-ausdrücklichem `executablePath: '/opt/pw-browsers/chromium'` funktioniert derselbe
-Browser einwandfrei — die Werkzeuge geben ihn nur nicht an. Zusätzlich brauchen sie
-einen laufenden `npm run preview`. Das ist ein eigener Punkt, nicht Sache des Hooks.
+**Die Playwright-Werkzeuge** hängen an `tools/pruefbrowser.mjs` (01.09.2026). Der
+Helfer löst zwei Dinge: `browserStarten()` nimmt `CHROMIUM_PFAD`, sonst
+`/opt/pw-browsers/chromium` — nötig, weil das Repo Playwright 1.62.1 hält (erwartet
+Browser-Bauart 1234), das Abbild aber 1194 mitbringt; die Meldung lautet sonst
+„Executable doesn't exist" und rät zu einem 150-MB-Download. `vorschauSichern()` baut
+bei Bedarf und startet `vite preview`, statt in einen nichtssagenden Zeitablauf zu
+laufen.
+
+⚠ **Chromium kommt in einer Cloud-Sitzung NICHT ins Netz — Node schon.** Node folgt
+`HTTPS_PROXY`, der Browser nicht: Der Relay bricht jeden Tunnel aus Chromium ab
+(`ERR_CONNECTION_RESET`, im Proxy-Log `ws_closed_mid_exchange` nach ~39 Byte). Das gilt
+für **jeden** Host — mit example.com, Vercel und Supabase geprüft, nicht nur für einen.
+`--disable-http2` half nicht (Hypothese aufgestellt, gemessen, verworfen), und
+`proxy:` an `chromium.launch()` ebenso wenig; es bleibt trotzdem gesetzt, falls die
+Umgebung das eines Tages kann.
+
+Daraus folgt die Arbeitsteilung:
+
+| Werkzeug | in der Cloud |
+|---|---|
+| `check-theme-color` | **läuft** — es braucht keine Daten, nur die gerenderte Seite |
+| `shot-home`, `shot-levelup`, `store-shots` | brechen mit klarer Meldung ab (`netzVerlangen`) |
+
+Der Abbruch ist Absicht: Ohne Daten rendert die App eine leere Seite, und ein Screenshot
+davon sähe echt aus. Ein falsches Bild ist schlimmer als kein Bild. Auf Josefs Rechner
+laufen alle vier.
+
+**`check-theme-color` prüft seit „Himmel überall" etwas anderes als früher.** Damals trug
+nur der Startbildschirm den Himmel und die Solo-Seite MUSSTE auf Dunkelviolett
+zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jetzt im
+Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
+verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
 
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
