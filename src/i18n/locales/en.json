@@ -46,7 +46,6 @@
     "daily": "Daily Challenge"
   },
   "home": {
-    "greeting": "Hey {{name}}!",
     "greetingMorning": "Good morning, {{name}}",
     "greetingDay": "Hello, {{name}}",
     "greetingEvening": "Good evening, {{name}}",
@@ -54,13 +53,9 @@
     "solo": "Solo Quiz",
     "soloSub": "Categories, difficulty, XP",
     "duel": "Duel",
-    "duelSub": "Turn-based against others",
     "leaderboard": "Leaderboard",
-    "leaderboardSub": "The best otakus worldwide",
     "profile": "Profile",
-    "profileSub": "Stats & settings",
     "daily": "Daily Challenge",
-    "dailySub": "5 questions, new every day",
     "dailyKicker": "Today",
     "dailyGo": "Play now"
   },

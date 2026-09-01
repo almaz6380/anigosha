@@ -46,7 +46,6 @@
     "daily": "Tägliche Challenge"
   },
   "home": {
-    "greeting": "Hey {{name}}!",
     "greetingMorning": "Guten Morgen, {{name}}",
     "greetingDay": "Hallo, {{name}}",
     "greetingEvening": "Guten Abend, {{name}}",
@@ -54,13 +53,9 @@
     "solo": "Solo-Quiz",
     "soloSub": "Kategorien, Schwierigkeit, XP",
     "duel": "Duell",
-    "duelSub": "Rundenbasiert gegen andere",
     "leaderboard": "Bestenliste",
-    "leaderboardSub": "Die besten Otakus weltweit",
     "profile": "Profil",
-    "profileSub": "Statistiken & Einstellungen",
     "daily": "Tägliche Challenge",
-    "dailySub": "5 Fragen, jeden Tag neu",
     "dailyKicker": "Heute",
     "dailyGo": "Jetzt spielen"
   },
