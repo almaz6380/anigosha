@@ -1373,7 +1373,8 @@ def main():
 
     tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
-           a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
+           a.warum, a.texte_lesen, a.neuigkeiten,
+           a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
