@@ -460,6 +460,19 @@ mehr: Erzwingen kann dort nichts gewinnen.
 Der Weg ist: `aufraeumen` (zieht die Einreichung zurueck, Version geht auf
 `DEVELOPER_REJECTED`) → Bilder tauschen → `einreichen`. Preis: 1.1 verliert
 den Platz in der Pruefschlange und faengt von vorn an (1–3 Tage).
+**Am 02.09. genau so gemacht:** Einreichung `f6a46ed9` zurueckgezogen
+(`CANCELING` → `COMPLETE`), alle elf Saetze getauscht (5 von 5 hoch, 6 von 6
+alte weg), neu eingereicht als `32fd32e6` — `WAITING_FOR_REVIEW`. Der Kauf
+`anigosha_no_ads` ist `APPROVED` und musste diesmal nicht von Hand
+angehaengt werden; der Lauf ging komplett per API durch.
+
+**iPad war zuerst vergessen.** `BILDER` kannte nur `APP_IPHONE_67`, also
+trugen die iPad-Saetze nach dem ersten Tausch noch das alte Design — zwei
+Staende in derselben Version. Jetzt stehen beide iPad-Typen mit drin
+(`APP_IPAD_PRO_3GEN_129`, `APP_IPAD_PRO_129`), mit einem dritten Feld je
+Eintrag: ob ein fehlender Satz angelegt werden darf. iPhone ja, iPad nein —
+die gibt es nur auf de-DE und en-US, und Apple faellt fuer die uebrigen
+Sprachen darauf zurueck.
 
 **Zwei Fehler im Skript, die dabei aufgefallen sind und beide behoben sind.**
 `datei_hoch` und `api(..., fatal=False)` liefern beide einen Erfolgswert
@@ -495,7 +508,7 @@ hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 | | App Store | Google Play |
 |---|---|---|
 | Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1 mit Build 16, seit 02.09. WAITING_FOR_REVIEW** | **1.1 / vc6 am 02.09. auf `production` hochgeladen** |
+| In Arbeit | **1.1 mit Build 16, am 02.09. neu eingereicht (`32fd32e6`, WAITING_FOR_REVIEW) — mit den Bildern der neuen Oberflaeche** | **1.1 / vc6 am 02.09. auf `production` hochgeladen, Bilder in allen 7 Sprachen getauscht** |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
