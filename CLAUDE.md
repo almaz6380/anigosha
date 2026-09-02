@@ -445,7 +445,7 @@ hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 | | App Store | Google Play |
 |---|---|---|
 | Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1 mit Build 16, seit 02.09. WAITING_FOR_REVIEW** | Release mit dem neuen Aussehen ausgeloest |
+| In Arbeit | **1.1 mit Build 16, seit 02.09. WAITING_FOR_REVIEW** | **1.1 / vc6 am 02.09. auf `production` hochgeladen** |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
