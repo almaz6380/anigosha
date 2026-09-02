@@ -428,22 +428,37 @@ def _tausche_bilder(tok, sid, alt_ids, pfade):
             print(f'    [trocken] hoch (nach dem Loeschen) {os.path.basename(p)}')
         return
 
-    for p in zuerst:
-        datei_hoch(tok, 'appScreenshots', p, {
+    def hoch(p):
+        return datei_hoch(tok, 'appScreenshots', p, {
             'appScreenshotSet': {
                 'data': {'type': 'appScreenshotSets', 'id': sid}}})
+
+    # Der Rueckgabewert von datei_hoch MUSS ausgewertet werden. Am 02.09. tat
+    # das hier nichts, und weil Apple waehrend WAITING_FOR_REVIEW zwar das
+    # Loeschen erlaubt, aber kein Anlegen ("Can't Create Screenshot while
+    # Waiting For Review"), scheiterten alle Uploads still — geloescht wurde
+    # trotzdem. Ergebnis: sieben Sprachen ohne ein einziges Bild.
+    geschafft = sum(1 for p in zuerst if hoch(p))
     if zuerst:
-        print(f'    {len(zuerst)} neue hochgeladen, alte stehen noch')
+        print(f'    {geschafft} von {len(zuerst)} neuen hochgeladen')
+    if zuerst and geschafft == 0:
+        print('    Kein einziges neues Bild angenommen — alte bleiben stehen.')
+        return
+    # Auch hier den Erfolg zaehlen, nicht die Schleifendurchlaeufe: api() mit
+    # fatal=False schluckt den Fehler stumm, und eine Zeile "6 alte geloescht"
+    # ueber sechs abgelehnten DELETEs ist schlimmer als gar keine Meldung.
+    weg = 0
     for i in alt_ids:
-        api(tok, f'appScreenshots/{i}', 'DELETE', fatal=False)
+        res = api(tok, f'appScreenshots/{i}', 'DELETE', fatal=False)
+        if isinstance(res, dict) and res.get('_fehler'):
+            print(f'    FEHLER beim Loeschen von {i}: {fehler_text(res)}')
+        else:
+            weg += 1
     if alt_ids:
-        print(f'    {len(alt_ids)} alte geloescht')
-    for p in danach:
-        datei_hoch(tok, 'appScreenshots', p, {
-            'appScreenshotSet': {
-                'data': {'type': 'appScreenshotSets', 'id': sid}}})
+        print(f'    {weg} von {len(alt_ids)} alten geloescht')
+    rest = sum(1 for p in danach if hoch(p))
     if danach:
-        print(f'    {len(danach)} weitere hochgeladen')
+        print(f'    {rest} von {len(danach)} weiteren hochgeladen')
 
 
 def setze_screenshots(tok):
@@ -451,19 +466,20 @@ def setze_screenshots(tok):
     v = offene_version(tok, aid)
     zustand = v['attributes'].get('appStoreState')
     print(f'  Version {v["attributes"]["versionString"]}  Zustand {zustand}')
-    # Eine Version, die gerade bei Apple liegt, ruehrt man normalerweise nicht
-    # an: Apple kann den Schreibzugriff ablehnen, und ein halber Durchlauf
-    # hinterlaesst eine gemischte Bildstrecke. Mit --trotzdem geht es
-    # ausdruecklich doch — der Tausch unten ist so gebaut, dass der Satz dabei
-    # nie leer wird.
+    # HARTE Sperre, kein --trotzdem. Am 02.09. gemessen: Waehrend
+    # WAITING_FOR_REVIEW erlaubt Apple das LOESCHEN von Screenshots, verweigert
+    # aber jedes Anlegen ("Can't Create Screenshot while Waiting For Review").
+    # Ein erzwungener Lauf kann die Bildstrecke also nur zerstoeren, nie
+    # ersetzen — genau das ist an dem Tag passiert, in allen sieben Sprachen.
+    # Der Weg ist: Einreichung zurueckziehen (--aufraeumen), Bilder tauschen,
+    # neu einreichen.
     if zustand in IN_PRUEFUNG and not TROCKEN:
-        if not TROTZDEM:
-            sys.exit(
-                f'Version {v["attributes"]["versionString"]} steht auf '
-                f'{zustand} — Bilder bleiben unangetastet.\n'
-                'Nach der Freigabe erneut laufen lassen, oder bewusst mit '
-                '--trotzdem erzwingen.')
-        print(f'  ACHTUNG: {zustand} — Bilder werden trotzdem getauscht.')
+        sys.exit(
+            f'Version {v["attributes"]["versionString"]} steht auf {zustand}. '
+            'Apple laesst dabei Loeschen zu, aber kein Hochladen — ein Lauf '
+            'wuerde die Bildstrecke leeren.\n'
+            'Erst --aufraeumen (zieht die Einreichung zurueck), dann die '
+            'Bilder, dann --einreichen.')
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
     for loc in locs.get('data', []):
         lc = loc['attributes']['locale']

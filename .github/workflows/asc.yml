@@ -61,7 +61,7 @@ on:
         type: boolean
         default: true
       trotzdem:
-        description: 'Erzwingen: einreichen ohne Abos, oder Bilder tauschen waehrend der Pruefung'
+        description: 'Einreichen, auch wenn die Abos nicht mitkoennen (2.1b-Risiko)'
         type: boolean
         default: false
 
@@ -107,12 +107,12 @@ jobs:
           if [ "$MODE" != "status" ] && [ "$MODE" != "warum" ] && [ "$MODE" != "einreichungen" ] && [ "$MODE" != "texte-lesen" ] && [ "$MODE" != "texte-sichern" ] && [ "$MODE" != "sandbox" ] && [ "$MODE" != "alter" ] && [ "$DRY" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
-          # Nur bei diesen beiden sinnvoll; ueberall sonst waere er wirkungslos
+          # Nur beim Einreichen sinnvoll; ueberall sonst waere er wirkungslos
           # und wuerde nur den Eindruck erwecken, es sei etwas erzwungen worden.
-          # Bei screenshots hebt er die Sperre auf, die den Bildtausch an einer
-          # Version in Pruefung verhindert.
-          if { [ "$MODE" = "einreichen" ] || [ "$MODE" = "screenshots" ]; } \
-             && [ "$TROTZDEM" = "true" ]; then
+          # Fuer screenshots gibt es ihn bewusst NICHT mehr: Apple verweigert
+          # waehrend der Pruefung jedes Anlegen, erlaubt aber das Loeschen —
+          # erzwingen kann dort nur zerstoeren.
+          if [ "$MODE" = "einreichen" ] && [ "$TROTZDEM" = "true" ]; then
             ARGS="$ARGS --trotzdem"
           fi
           echo "scripts/asc.py $ARGS"

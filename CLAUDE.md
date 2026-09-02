@@ -449,12 +449,27 @@ alten entfernen, dann den Rest. Der Satz ist damit **zu keinem Zeitpunkt
 leer**, und die Reihenfolge bleibt erhalten — die zuerst hochgeladenen stehen
 nach dem Loeschen vorn, der Rest haengt sich hinten an.
 
-⚠ Eine Version in `WAITING_FOR_REVIEW`/`IN_REVIEW`/`PENDING_*` ist trotzdem
-gesperrt: Apple kann den Schreibzugriff ablehnen, und ein halber Durchlauf
-hinterlaesst eine gemischte Strecke. `dry_run` liest immer durch, und
-`trotzdem: true` erzwingt es bewusst. **Am 02.09. so erzwungen** — 1.1 stand
-auf `WAITING_FOR_REVIEW` mit Build 16, Josef wollte die neuen Bilder trotzdem
-drin haben.
+⚠ **Waehrend der Pruefung geht gar nichts — am 02.09. gemessen, nicht
+vermutet.** Der Lauf wurde bewusst erzwungen, waehrend 1.1 auf
+`WAITING_FOR_REVIEW` stand. Apple lehnte **jedes** Anlegen ab
+(*„Can't Create Screenshot while Waiting For Review"*) und **jedes Loeschen
+ebenso**. Ergebnis: nichts hochgeladen, nichts verloren, alle sieben Saetze
+unveraendert. Die Sperre ist deshalb **hart** und kennt kein `--trotzdem`
+mehr: Erzwingen kann dort nichts gewinnen.
+
+Der Weg ist: `aufraeumen` (zieht die Einreichung zurueck, Version geht auf
+`DEVELOPER_REJECTED`) → Bilder tauschen → `einreichen`. Preis: 1.1 verliert
+den Platz in der Pruefschlange und faengt von vorn an (1–3 Tage).
+
+**Zwei Fehler im Skript, die dabei aufgefallen sind und beide behoben sind.**
+`datei_hoch` und `api(..., fatal=False)` liefern beide einen Erfolgswert
+zurueck; `_tausche_bilder` wertete keinen davon aus. Es meldete „4 neue
+hochgeladen" und „6 alte geloescht", waehrend Apple elf von elf Aufrufen
+abgelehnt hatte. **Eine Zaehlung ueber Schleifendurchlaeufe statt ueber
+Erfolge ist keine Messung, sondern eine Behauptung** — und sie liess den Lauf
+gruen aussehen. Jetzt wird gezaehlt, was durchging, und wenn kein einziges
+neues Bild angenommen wurde, bleiben die alten stehen, statt geloescht zu
+werden.
 
 ### ⚠ Versionsnummern laufen zwischen iOS und Android auseinander (02.09.2026)
 
