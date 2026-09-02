@@ -421,6 +421,25 @@ Pruefung ist. Also:
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
+### ⚠ Versionsnummern laufen zwischen iOS und Android auseinander (02.09.2026)
+
+Beide Projekte fuehren ihre Nummern getrennt, und niemand haelt sie zusammen:
+
+| | Datei | Stand vor dem 02.09. |
+|---|---|---|
+| iOS | `ios/App/App.xcodeproj/project.pbxproj` | 1.1 / Build 16 (am 21.08. gesetzt) |
+| Android | `android/app/build.gradle` | **1.0 / versionCode 5** — nie nachgezogen |
+
+Der Play-Upload brach deshalb mit `403 "Version code 5 has already been used"` ab —
+der Build war da schon fertig, es kostete also fuenf Minuten Bauzeit fuer nichts.
+Am 02.09. auf **1.1 / versionCode 6** gehoben.
+
+**Merksatz:** Vor jedem Android-Release `grep versionCode android/app/build.gradle`
+gegen die zuletzt hochgeladene vc pruefen. Der Workflow zeigt die Nummer zwar im
+Schritt „Versionsnummer anzeigen", aber erst der Upload ganz am Ende faellt darueber.
+Dasselbe gilt fuer iOS: `CURRENT_PROJECT_VERSION` muss ueber der hoechsten bereits
+hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
+
 ### M5 Release — Stand 02.09.2026 (per API gemessen, nicht fortgeschrieben)
 
 | | App Store | Google Play |
