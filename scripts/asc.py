@@ -394,9 +394,56 @@ def kauf_einreichen(tok):
             print('    zur Pruefung geschickt')
 
 
-# Waehrend die Version bei Apple liegt, ist ihre Bildstrecke tabu.
+# Waehrend die Version bei Apple liegt, ist ihre Bildstrecke heikel.
 IN_PRUEFUNG = {'WAITING_FOR_REVIEW', 'IN_REVIEW', 'PENDING_APPLE_RELEASE',
                'PENDING_DEVELOPER_RELEASE', 'PROCESSING_FOR_APP_STORE'}
+
+# Apple laesst hoechstens 10 Bilder je Satz zu. Die Zahl steht hier, weil sie
+# den ganzen Ablauf unten bestimmt.
+MAX_BILDER = 10
+
+
+def _tausche_bilder(tok, sid, alt_ids, pfade):
+    """Alte Bilder durch neue ersetzen, ohne den Satz je zu leeren.
+
+    Der naive Weg — erst alles loeschen, dann hochladen — hinterlaesst bei
+    einem Abbruch eine Version ganz ohne Bildstrecke. Der umgekehrte Weg geht
+    nicht in einem Rutsch: 6 alte plus 5 neue sind 11, und Apple nimmt nur 10.
+
+    Deshalb dreistufig: so viele neue hochladen, wie ohne Loeschen noch
+    hineinpassen; dann die alten entfernen; dann den Rest hochladen. Die
+    Reihenfolge bleibt dabei erhalten, weil die zuerst hochgeladenen neuen
+    Bilder nach dem Loeschen vorn stehen und der Rest hinten angehaengt wird.
+    Bricht es irgendwo ab, steht im Satz immer noch etwas.
+    """
+    platz = max(0, MAX_BILDER - len(alt_ids))
+    zuerst, danach = pfade[:platz], pfade[platz:]
+
+    if TROCKEN:
+        for p in zuerst:
+            print(f'    [trocken] hoch (vor dem Loeschen) {os.path.basename(p)}')
+        for i in alt_ids:
+            print(f'    [trocken] alt loeschen {i}')
+        for p in danach:
+            print(f'    [trocken] hoch (nach dem Loeschen) {os.path.basename(p)}')
+        return
+
+    for p in zuerst:
+        datei_hoch(tok, 'appScreenshots', p, {
+            'appScreenshotSet': {
+                'data': {'type': 'appScreenshotSets', 'id': sid}}})
+    if zuerst:
+        print(f'    {len(zuerst)} neue hochgeladen, alte stehen noch')
+    for i in alt_ids:
+        api(tok, f'appScreenshots/{i}', 'DELETE', fatal=False)
+    if alt_ids:
+        print(f'    {len(alt_ids)} alte geloescht')
+    for p in danach:
+        datei_hoch(tok, 'appScreenshots', p, {
+            'appScreenshotSet': {
+                'data': {'type': 'appScreenshotSets', 'id': sid}}})
+    if danach:
+        print(f'    {len(danach)} weitere hochgeladen')
 
 
 def setze_screenshots(tok):
@@ -404,19 +451,19 @@ def setze_screenshots(tok):
     v = offene_version(tok, aid)
     zustand = v['attributes'].get('appStoreState')
     print(f'  Version {v["attributes"]["versionString"]}  Zustand {zustand}')
-    # Der Ablauf hier ist NICHT transaktional: erst werden alle alten Bilder
-    # geloescht, dann die neuen hochgeladen. Bricht er dazwischen ab, steht die
-    # Version ohne Bildstrecke da — bei einer Version in Pruefung waere das ein
-    # Ablehnungsgrund. Umdrehen (erst hoch, dann alt weg) geht nicht: Apple
-    # laesst hoechstens 10 Bilder je Satz zu, und 6 alte plus 5 neue sind 11.
-    # Also gar nicht erst anfangen, solange Apple die Version haelt.
+    # Eine Version, die gerade bei Apple liegt, ruehrt man normalerweise nicht
+    # an: Apple kann den Schreibzugriff ablehnen, und ein halber Durchlauf
+    # hinterlaesst eine gemischte Bildstrecke. Mit --trotzdem geht es
+    # ausdruecklich doch — der Tausch unten ist so gebaut, dass der Satz dabei
+    # nie leer wird.
     if zustand in IN_PRUEFUNG and not TROCKEN:
-        sys.exit(
-            f'Version {v["attributes"]["versionString"]} steht auf {zustand} — '
-            'Bilder bleiben unangetastet.\n'
-            'Nach der Freigabe (oder an einer neuen Version) erneut laufen '
-            'lassen. Mit dry_run laesst sich vorher gegenlesen, welche Bilder '
-            'aus welchem Ordner kaemen.')
+        if not TROTZDEM:
+            sys.exit(
+                f'Version {v["attributes"]["versionString"]} steht auf '
+                f'{zustand} — Bilder bleiben unangetastet.\n'
+                'Nach der Freigabe erneut laufen lassen, oder bewusst mit '
+                '--trotzdem erzwingen.')
+        print(f'  ACHTUNG: {zustand} — Bilder werden trotzdem getauscht.')
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
     for loc in locs.get('data', []):
         lc = loc['attributes']['locale']
@@ -429,18 +476,16 @@ def setze_screenshots(tok):
             if not pfade:
                 print(f'    {typ}: keine Bilder in {basis}')
                 continue
+            if len(pfade) > MAX_BILDER:
+                print(f'    {typ}: {len(pfade)} Bilder in {ordner} — Apple '
+                      f'nimmt nur {MAX_BILDER}. Uebersprungen.')
+                continue
             print(f'    {typ}: {len(pfade)} Bilder aus {ordner}')
             sid = vorhanden.get(typ)
+            alt_ids = []
             if sid:
                 alt = api(tok, f'appScreenshotSets/{sid}/appScreenshots')
-                for s in alt.get('data', []):
-                    if TROCKEN:
-                        print(f'    [trocken] alt loeschen {s["id"]}')
-                    else:
-                        api(tok, f'appScreenshots/{s["id"]}', 'DELETE',
-                            fatal=False)
-                if not TROCKEN and alt.get('data'):
-                    print(f'    {typ}: {len(alt["data"])} alte geloescht')
+                alt_ids = [s['id'] for s in alt.get('data', [])]
             elif TROCKEN:
                 print(f'    [trocken] Set {typ} anlegen')
                 sid = 'TROCKEN'
@@ -457,10 +502,7 @@ def setze_screenshots(tok):
                     continue
                 sid = neu['data']['id']
                 print(f'    Set {typ} angelegt')
-            for p in pfade:
-                datei_hoch(tok, 'appScreenshots', p, {
-                    'appScreenshotSet': {
-                        'data': {'type': 'appScreenshotSets', 'id': sid}}})
+            _tausche_bilder(tok, sid, alt_ids, pfade)
 
 
 def setze_abo_screenshot(tok):

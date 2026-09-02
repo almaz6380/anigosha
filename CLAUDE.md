@@ -438,14 +438,23 @@ Erzeugt werden sie aus dem Pruefstand:
 ist gefahrlos: Loeschen und Hochladen liegen in EINER Edit-Transaktion, erst
 `commit_edit` macht sie sichtbar.
 
-⚠ **Bei Apple ist es das nicht.** `setze_screenshots` loescht erst alle alten
-Bilder, dann laedt es hoch — bricht es dazwischen ab, steht die Version ohne
-Bildstrecke da. Umdrehen geht nicht: Apple erlaubt hoechstens 10 Bilder je
-Satz, und 6 alte plus 5 neue sind 11. Deshalb bricht `setze_screenshots` seit
-02.09. ab, solange die offene Version auf `WAITING_FOR_REVIEW`, `IN_REVIEW`
-oder `PENDING_*` steht (`dry_run` liest trotzdem). **1.1 wartet seit dem
-02.09. auf Apples Pruefung — die iOS-Bilder gehen erst nach der Freigabe
-hoch, oder mit 1.2.**
+**Bei Apple war das lange nicht so.** `setze_screenshots` loeschte erst alle
+alten Bilder und lud dann hoch — brach es dazwischen ab, stand die Version
+ohne Bildstrecke da. Einfach umdrehen geht nicht: Apple nimmt hoechstens 10
+Bilder je Satz, und 6 alte plus 5 neue sind 11.
+
+Seit 02.09. laeuft es **dreistufig** (`_tausche_bilder`): so viele neue
+hochladen, wie ohne Loeschen noch hineinpassen (bei 6 alten also 4), dann die
+alten entfernen, dann den Rest. Der Satz ist damit **zu keinem Zeitpunkt
+leer**, und die Reihenfolge bleibt erhalten — die zuerst hochgeladenen stehen
+nach dem Loeschen vorn, der Rest haengt sich hinten an.
+
+⚠ Eine Version in `WAITING_FOR_REVIEW`/`IN_REVIEW`/`PENDING_*` ist trotzdem
+gesperrt: Apple kann den Schreibzugriff ablehnen, und ein halber Durchlauf
+hinterlaesst eine gemischte Strecke. `dry_run` liest immer durch, und
+`trotzdem: true` erzwingt es bewusst. **Am 02.09. so erzwungen** — 1.1 stand
+auf `WAITING_FOR_REVIEW` mit Build 16, Josef wollte die neuen Bilder trotzdem
+drin haben.
 
 ### ⚠ Versionsnummern laufen zwischen iOS und Android auseinander (02.09.2026)
 
