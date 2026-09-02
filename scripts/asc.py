@@ -45,8 +45,14 @@ FELDER = ('description', 'whatsNew', 'promotionalText', 'keywords',
 
 # Welcher Ordner in welchen Screenshot-Typ gehoert. 1320x2868 ist das
 # iPhone-6,9"-Format, 2048x2732 das iPad-12,9".
+# Drittes Feld: ob ein fehlender Satz angelegt werden darf. Fuer das iPhone
+# ja — der ist Pflicht. Fuer das iPad nein: Sie existieren nur auf de-DE und
+# en-US, und Apple faellt fuer die uebrigen Sprachen ohnehin darauf zurueck.
+# Dort neue Saetze anzulegen waere eine Ausweitung, die niemand bestellt hat.
 BILDER = [
-    ('store-assets/ios', 'APP_IPHONE_67'),
+    ('store-assets/ios', 'APP_IPHONE_67', True),
+    ('store-assets/ipad', 'APP_IPAD_PRO_3GEN_129', False),
+    ('store-assets/ipad', 'APP_IPAD_PRO_129', False),
 ]
 
 
@@ -487,7 +493,7 @@ def setze_screenshots(tok):
         sets = api(tok, f'appStoreVersionLocalizations/{loc["id"]}/appScreenshotSets')
         vorhanden = {s['attributes']['screenshotDisplayType']: s['id']
                      for s in sets.get('data', [])}
-        for basis, typ in BILDER:
+        for basis, typ, anlegen_erlaubt in BILDER:
             ordner, pfade = bilder_ordner(basis, lc)
             if not pfade:
                 print(f'    {typ}: keine Bilder in {basis}')
@@ -502,6 +508,9 @@ def setze_screenshots(tok):
             if sid:
                 alt = api(tok, f'appScreenshotSets/{sid}/appScreenshots')
                 alt_ids = [s['id'] for s in alt.get('data', [])]
+            elif not anlegen_erlaubt:
+                print(f'    {typ}: kein Satz vorhanden — nicht angelegt')
+                continue
             elif TROCKEN:
                 print(f'    [trocken] Set {typ} anlegen')
                 sid = 'TROCKEN'
