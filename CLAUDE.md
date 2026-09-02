@@ -421,13 +421,19 @@ Pruefung ist. Also:
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
-### M5 Release — Stand 07.08.2026, 17:00
+### M5 Release — Stand 02.09.2026 (per API gemessen, nicht fortgeschrieben)
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **15** ohne ATT — **13.08., 14:57 in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
-| Kauf | `anigosha_no_ads` faehrt in derselben Uebermittlung mit | funktioniert, am Geraet bestaetigt |
-| Naechstes | Apples Antwort abwarten | erledigt |
+| Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
+| In Arbeit | **1.1 mit Build 16, seit 02.09. WAITING_FOR_REVIEW** | Release mit dem neuen Aussehen ausgeloest |
+| Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
+
+⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
+Das war seit Apples Freigabe falsch, und die falsche Annahme haette beinahe dazu
+gefuehrt, eine laufende Pruefung zurueckzuziehen, die es gar nicht gab. **Vor jeder
+Aussage ueber den Store-Stand `mode: status` laufen lassen** — der Lauf dauert
+20 Sekunden und liest Versionen, Builds, Kaeufe und offene Einreichungen.
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -453,11 +459,22 @@ faengt nach dem Einreichen von vorn an (1–3 Tage).
 Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch — kommt mit 1.1**
-(Josefs Entscheidung vom 07.08.). Er wurde am 06.08. entfernt, weil der Kauf
-abgeschaltet war; jetzt funktioniert er und darf zurueck, DE+EN, in beiden
-Stores. Bei Apple sind die Texte bis zur Freigabe gesperrt, bei Google jederzeit
-aenderbar. Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
+**Store-Texte liegen jetzt im Repo: `store-assets/asc-texte.json`** (Apple) neben
+`store-assets/play-listing.<lang>.json` (Google). Gepflegt mit `mode: texte-sichern`
+(holen) und `mode: texte-schreiben` (zurueckschreiben, nur geaenderte Felder).
+
+**Warum das noetig wurde — drei Fehler, die nur deshalb monatelang unbemerkt
+blieben, weil die Apple-Texte nirgends im Repo standen** (gefunden am 02.09., alle
+behoben, bevor 1.1 eingereicht wurde):
+
+1. **`de-DE` und `pt-PT` hatten VERTAUSCHTE Beschreibungen.** Deutsche
+   App-Store-Besucher haetten einen portugiesischen Text gelesen.
+2. Der deutsche Text war zusaetzlich der Stand vor den neuen Sprachen und warb
+   mit „Deutsch und Englisch".
+3. Dieselbe veraltete Zeile stand in `en-US`.
+
+Der Werbefrei-Satz, den diese Datei bis zum 02.09. als offen fuehrte, stand in
+allen Beschreibungen laengst drin.
 
 ### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
@@ -1071,6 +1088,8 @@ Produktnummern über `nummer`, Trockenlauf über `dry_run`):
 | `build` | weist Build `nummer` der offenen Version zu |
 | `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
 | `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
+| `texte-sichern` | liest nur: alle Store-Texte nach `store-assets/asc-texte.json` (und ins Protokoll) |
+| `texte-schreiben` | schreibt diese Datei zurueck — nur geaenderte Felder, fehlende Sprachen bleiben |
 | `aufraeumen` | zieht festhaengende Einreichungen zurueck (auch laufende!) |
 | `einreichen` | Version zur Pruefung — **bricht ab, wenn ein Kaufprodukt einreichbar waere**, denn anhaengen kann die API es nicht (s. u.) |
 
