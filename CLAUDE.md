@@ -421,6 +421,32 @@ Pruefung ist. Also:
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
+### Store-Bilder: je Sprache ein Satz, und wann sie hochduerfen (02.09.2026)
+
+Die Bilder lagen flach unter `store-assets/{ios,play,ipad}/` — ein einziger,
+deutscher Satz. Apple fuehrt aber sieben Sprachen (de-DE, en-US, es-ES, es-MX,
+fr-FR, pt-BR, pt-PT), Google sieben. Wer den flachen Satz hochlaedt, ersetzt
+lokalisierte Bilder durch deutsche. Sie liegen jetzt unter
+`<format>/<code>/` mit unserem Sprachcode; `asc.py` und der Play-Workflow
+bilden ab (`pt-BR` → `pt`) und fallen auf Englisch zurueck.
+
+Erzeugt werden sie aus dem Pruefstand:
+`SPRACHEN=de,en,es,fr,pt node tools/store-shots-pruefstand.mjs`.
+
+**Google Play am 02.09. fuer alle sieben Sprachen hochgeladen** (Workflow
+`Play-Eintrag aktualisieren`, `mode: screenshots`, je Sprache ein Lauf). Das
+ist gefahrlos: Loeschen und Hochladen liegen in EINER Edit-Transaktion, erst
+`commit_edit` macht sie sichtbar.
+
+⚠ **Bei Apple ist es das nicht.** `setze_screenshots` loescht erst alle alten
+Bilder, dann laedt es hoch — bricht es dazwischen ab, steht die Version ohne
+Bildstrecke da. Umdrehen geht nicht: Apple erlaubt hoechstens 10 Bilder je
+Satz, und 6 alte plus 5 neue sind 11. Deshalb bricht `setze_screenshots` seit
+02.09. ab, solange die offene Version auf `WAITING_FOR_REVIEW`, `IN_REVIEW`
+oder `PENDING_*` steht (`dry_run` liest trotzdem). **1.1 wartet seit dem
+02.09. auf Apples Pruefung — die iOS-Bilder gehen erst nach der Freigabe
+hoch, oder mit 1.2.**
+
 ### ⚠ Versionsnummern laufen zwischen iOS und Android auseinander (02.09.2026)
 
 Beide Projekte fuehren ihre Nummern getrennt, und niemand haelt sie zusammen:

@@ -394,10 +394,29 @@ def kauf_einreichen(tok):
             print('    zur Pruefung geschickt')
 
 
+# Waehrend die Version bei Apple liegt, ist ihre Bildstrecke tabu.
+IN_PRUEFUNG = {'WAITING_FOR_REVIEW', 'IN_REVIEW', 'PENDING_APPLE_RELEASE',
+               'PENDING_DEVELOPER_RELEASE', 'PROCESSING_FOR_APP_STORE'}
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
-    print(f'  Version {v["attributes"]["versionString"]}')
+    zustand = v['attributes'].get('appStoreState')
+    print(f'  Version {v["attributes"]["versionString"]}  Zustand {zustand}')
+    # Der Ablauf hier ist NICHT transaktional: erst werden alle alten Bilder
+    # geloescht, dann die neuen hochgeladen. Bricht er dazwischen ab, steht die
+    # Version ohne Bildstrecke da — bei einer Version in Pruefung waere das ein
+    # Ablehnungsgrund. Umdrehen (erst hoch, dann alt weg) geht nicht: Apple
+    # laesst hoechstens 10 Bilder je Satz zu, und 6 alte plus 5 neue sind 11.
+    # Also gar nicht erst anfangen, solange Apple die Version haelt.
+    if zustand in IN_PRUEFUNG and not TROCKEN:
+        sys.exit(
+            f'Version {v["attributes"]["versionString"]} steht auf {zustand} — '
+            'Bilder bleiben unangetastet.\n'
+            'Nach der Freigabe (oder an einer neuen Version) erneut laufen '
+            'lassen. Mit dry_run laesst sich vorher gegenlesen, welche Bilder '
+            'aus welchem Ordner kaemen.')
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
     for loc in locs.get('data', []):
         lc = loc['attributes']['locale']
