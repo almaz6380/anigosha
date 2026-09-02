@@ -466,6 +466,14 @@ alte weg), neu eingereicht als `32fd32e6` — `WAITING_FOR_REVIEW`. Der Kauf
 `anigosha_no_ads` ist `APPROVED` und musste diesmal nicht von Hand
 angehaengt werden; der Lauf ging komplett per API durch.
 
+**Kurz darauf noch einmal, fuer Build 17.** Der Layout-Fix fuer hohe Geraete
+kam nach Build 16, also fehlte er in der eingereichten Fassung. Ablauf:
+`aufraeumen` sofort ausloesen (nicht erst nach dem Bauen — das Zurueckziehen
+geht in Sekunden, der iOS-Build braucht neun Minuten, beides parallel spart
+eine Wartezeit), dann `build 17`, dann `einreichen`. **Merksatz: Ein Build
+laesst sich hochladen, waehrend die Version in Pruefung ist — nur das
+Zuweisen verlangt eine Version, die Apple nicht haelt.**
+
 **iPad war zuerst vergessen.** `BILDER` kannte nur `APP_IPHONE_67`, also
 trugen die iPad-Saetze nach dem ersten Tausch noch das alte Design — zwei
 Staende in derselben Version. Jetzt stehen beide iPad-Typen mit drin
@@ -508,7 +516,7 @@ hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 | | App Store | Google Play |
 |---|---|---|
 | Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1 mit Build 16, am 02.09. neu eingereicht (`32fd32e6`, WAITING_FOR_REVIEW) — mit den Bildern der neuen Oberflaeche** | **1.1 / vc6 am 02.09. auf `production` hochgeladen, Bilder in allen 7 Sprachen getauscht** |
+| In Arbeit | **1.1 mit Build 17, am 02.09. eingereicht — WAITING_FOR_REVIEW** | **1.1 / vc7 am 02.09. auf `production`** |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
