@@ -49,6 +49,27 @@ BILDER = [
     ('store-assets/ios', 'APP_IPHONE_67'),
 ]
 
+
+def bilder_ordner(basis, locale):
+    """Der Bilderordner fuer eine ASC-Sprache.
+
+    Store-Bilder sind je Sprache eigene Bilder — wer nur den deutschen Satz
+    hochlaedt, zeigt englischen Besuchern eine deutsche Oberflaeche. Die
+    Saetze liegen unter <basis>/<code> (tools/store-shots-pruefstand.mjs
+    erzeugt sie). Fehlt die Sprache, faellt es auf Englisch zurueck und erst
+    danach auf die alte flache Ablage direkt unter <basis>.
+    """
+    code = locale.split('-')[0].lower()
+    for kandidat in (os.path.join(basis, code), os.path.join(basis, 'en'), basis):
+        voll = os.path.join(WURZEL, kandidat)
+        if not os.path.isdir(voll):
+            continue
+        pfade = sorted(os.path.join(voll, f) for f in os.listdir(voll)
+                       if f.endswith('.png') and f[0].isdigit())
+        if pfade:
+            return kandidat, pfade
+    return basis, []
+
 # ── In dieser Kopie nicht konfiguriert ─────────────────────────────────────
 # Diese Befehle tragen in MyPeaks Fassung fest verdrahtete Texte (Store-Namen,
 # Prueferhinweise, Abo-Bezeichnungen). Sie hier blind auszufuehren wuerde die
@@ -384,14 +405,12 @@ def setze_screenshots(tok):
         sets = api(tok, f'appStoreVersionLocalizations/{loc["id"]}/appScreenshotSets')
         vorhanden = {s['attributes']['screenshotDisplayType']: s['id']
                      for s in sets.get('data', [])}
-        for ordner, typ in BILDER:
-            pfade = sorted(
-                os.path.join(WURZEL, ordner, f)
-                for f in os.listdir(os.path.join(WURZEL, ordner))
-                if f.endswith('.png') and f[0].isdigit())
+        for basis, typ in BILDER:
+            ordner, pfade = bilder_ordner(basis, lc)
             if not pfade:
-                print(f'    {typ}: keine Bilder in {ordner}')
+                print(f'    {typ}: keine Bilder in {basis}')
                 continue
+            print(f'    {typ}: {len(pfade)} Bilder aus {ordner}')
             sid = vorhanden.get(typ)
             if sid:
                 alt = api(tok, f'appScreenshotSets/{sid}/appScreenshots')

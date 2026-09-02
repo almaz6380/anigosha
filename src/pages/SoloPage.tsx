@@ -215,10 +215,15 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   // --- Kategorieauswahl ----------------------------------------------------
   if (step === 'category') {
     return (
-      <AppShell>
+      <AppShell className="flex flex-col">
         <PageHeader onBack={() => navigate('/')} kicker={t('nav.solo')} title={t('solo.chooseSeries')} />
         {error && <Notice>{error}</Notice>}
-        <div className="grid grid-cols-2 gap-2.5 mt-5">
+        {/* Zwoelf Kategorien sind eine feste Menge — auf einem hohen Geraet
+            (iPhone 6,9") blieb darunter ein Drittel leer. `auto-rows-fr` teilt
+            die Hoehe auf die sechs Reihen auf, statt die Kacheln oben zu
+            stapeln. Der Deckel verhindert, dass sie auf einem iPad zu
+            Plakaten werden; darunter darf ruhig Himmel stehen. */}
+        <div className="grid grid-cols-2 gap-2.5 mt-5 grow auto-rows-fr max-h-[780px]">
           {categories.map((c) => {
             const f = kategorieFarbe(c.slug);
             return (
@@ -229,7 +234,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
                   setError(null);
                   setStep('difficulty');
                 }}
-                className="glas relative overflow-hidden p-3.5 pl-4 flex flex-col gap-2 text-left"
+                className="glas relative overflow-hidden p-3.5 pl-4 flex flex-col gap-2 justify-between text-left"
               >
                 <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[5px]" style={{ background: f }} />
                 <span aria-hidden className="w-[22px] h-[22px] rounded-[7px]" style={{ background: f, opacity: 0.18 }} />

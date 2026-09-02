@@ -1032,6 +1032,28 @@ Dunkelviolett, bis ein neuer Release-Build hochgeladen ist. Wer Screenshots oder
 Store-Bilder vergleicht, vergleicht sonst zwei Staende. Das gilt auch fuer die
 Reels: Deren Aussehen kommt aus `tools/reels/`, nicht aus der App.
 
+**Hohe Geraete: das untere Drittel blieb leer (02.09.2026).** Auf einem iPhone
+6,9" (956 pt) endete der Startbildschirm nach zwei Dritteln, darunter nur Himmel.
+Zwei Versuche davor waren falsch und stehen hier, damit sie niemand wiederholt:
+ein leerer Abstandshalter verschob das Loch nur in die Mitte, und reines `grow`
+zog es in die Heldenkarte hinein (Text mittig, viel Luft darueber und darunter).
+
+Richtig ist die gedeckelte Fassung: Die Karte waechst bis `max-h-[300px]` und
+wird dabei zum Plakat — Sonne oben, Text und Knopf unten (`justify-end`). Was
+dann noch uebrig ist, verteilt `justify-between` an der Buehne auf die
+Zwischenraeume. Auf der Kategorienseite macht `auto-rows-fr` (Deckel 780 px)
+dasselbe mit den zwoelf Kacheln.
+
+**`grow` waechst nur, es schrumpft nie** — deshalb bleibt ein iPhone SE (667 pt)
+unveraendert bei den natuerlichen Hoehen. Gemessen wird mit `mess.mjs`-Art
+Skripten gegen den Pruefstand: 6,9", 14 und SE, alle Seiten, `scrollt` und
+Restraum unten.
+
+**Duell und Bestenliste sind bewusst NICHT gestreckt.** Das sind Datenlisten —
+im Pruefstand mit vier Attrappen-Zeilen sehen sie leer aus, mit echten Daten
+laufen sie ueber. Dort Hoehe zu erfinden hiesse, einen leeren Zustand zu
+polstern.
+
 **Was der Entwurf vorsah und bewusst NICHT umgesetzt wurde:** "67 Fragen" unter jeder
 Kategorie. `fetchCategories` liefert keine Zaehlungen — die Fragen-Tabelle ist fuer
 Clients gesperrt (siehe Kommentar in `src/lib/solo.ts`). Die Zahl waere erfunden gewesen.
@@ -1045,6 +1067,12 @@ einzige Utility aus `src/` und die Seiten sehen aus wie unformatiertes HTML), un
 Alias-Regex muss die GANZE Angabe fassen — Vite ersetzt nur den Treffer.
 Die Stunde laesst sich ueber `Date.prototype.getHours` festnageln, um beide Himmel zu
 pruefen.
+
+**Der Pruefstand liegt seit 02.09. im Repo** — `.pruefstand/` plus
+`vite.pruefstand.config.ts`; die drei Fallen stehen als Kommentar in der Konfig.
+Starten mit `npx vite --config vite.pruefstand.config.ts --port 4501`. Er ist die
+Grundlage der Store-Screenshots (`tools/store-shots-pruefstand.mjs`) und der
+einzige Weg, angemeldete Bildschirme ohne Datenbank zu sehen.
 
 ## Konventionen
 

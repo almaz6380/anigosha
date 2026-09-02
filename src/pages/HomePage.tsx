@@ -31,7 +31,7 @@ export default function HomePage() {
   }[phase];
 
   return (
-    <AppShell className="flex flex-col gap-3.5">
+    <AppShell className="flex flex-col gap-3.5 justify-between">
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[13px] font-medium uppercase tracking-[0.08em] leise truncate">
@@ -70,7 +70,15 @@ export default function HomePage() {
 
       {/* Die Tägliche Challenge ist der Held der Seite — sie ist der Grund
           wiederzukommen, stand aber als schmale Zeile über dem Raster. */}
-      <Link to="/daily" className="glas p-5 relative overflow-hidden">
+      {/* Auf einem hohen Geraet (iPhone 6,9": 956 pt) blieb das untere Drittel
+          leer. Ein leerer Abstandshalter haette das Loch nur verschoben, reines
+          `grow` es in die Karte hineingezogen. Deshalb beides gedeckelt: Die
+          Karte waechst bis 300 px und wird dabei zum Plakat — der Text sitzt
+          unten (`justify-end`), oben stehen Sonne und Wolke. Was dann noch
+          uebrig ist, verteilt `justify-between` an der Buehne auf die
+          Zwischenraeume. `grow` waechst nur und schrumpft nie: auf einem SE
+          (667 pt) bleibt alles bei der natuerlichen Hoehe. */}
+      <Link to="/daily" className="glas p-5 relative overflow-hidden grow max-h-[300px] flex flex-col justify-end">
         <div
           aria-hidden
           className="absolute -right-7 -top-7 w-[116px] h-[116px] rounded-full"
