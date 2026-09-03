@@ -856,6 +856,37 @@ noch ein Trending-Sound darüberpasst.
 KI-generierten (dieselbe Regel wie für die App). Anime-Titel als Text sind in Reels und
 Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keywords.
 
+## Social-Automatik für alle fünf Apps — `tools/social/` (Stand 03.09.2026)
+
+Ein Orchestrator (`lauf.mjs` erzeugt, `posten.mjs` lädt als Entwurf hoch) für
+Anigosha, Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige
+Einrichtung: `tools/social/veroeffentlichen/README.md`. **Nichts geht ungelesen
+raus** — Facebook als Entwurf, TikTok in den Posteingang, Instagram erst beim
+Freigeben.
+
+**Meta ist eingerichtet bis auf die fünf Token.** App **WELLapps**
+(`1808340180592380`, Typ Business), fünf Berechtigungen auf „Bereit zum Testen",
+fünf Seiten mit fünf Instagram-Konten verknüpft. Seiten- und Instagram-IDs sind
+öffentlich und stehen in `apps.json` unter `meta`; als Secret fehlt je App nur
+noch `FB_SEITEN_TOKEN_<APP>`. TikTok (3 geteilte + 5 Refresh-Token) und
+`BLOB_TOKEN` sind noch gar nicht angefangen. Prüfen mit
+`node tools/social/posten.mjs --trocken` — das listet genau, was fehlt.
+
+**Drei Dinge, die am 03.09. je eine halbe Stunde gekostet haben:**
+
+1. **Der Graph API Explorer zeigt nur Berechtigungen, die die App hat.** Fehlen
+   welche in der Auswahlliste, sind sie unter App → Anwendungsfälle →
+   Berechtigungen und Features noch nicht hinzugefügt. Die Liste ist kein
+   Fehler, sie ist ehrlich.
+2. **`GET /me/accounts` kommt leer zurück**, obwohl der Access Token Debugger
+   unter „Granulare Bereiche" alle Seiten zeigt — bei Seiten über ein
+   Business-Portfolio. Seiten direkt per ID abfragen, das trägt.
+3. **Der Explorer merkt sich den Token je Gerät.** Am Handy erzeugt heißt nicht
+   am Mac vorhanden. Bei „geht plötzlich nicht mehr" zuerst die Token-Anfänge
+   vergleichen. Und: **erst im Debugger messen, dann erklären** — dort stehen
+   Laufzeit und freigegebene Seiten schwarz auf weiß; die drei Vermutungen
+   davor (Seiten fehlen, Dialog übersprungen, Token kurzlebig) waren alle falsch.
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)

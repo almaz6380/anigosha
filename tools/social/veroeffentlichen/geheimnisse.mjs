@@ -36,9 +36,33 @@
 // ueber den Weg „Facebook Login for Business" mit demselben SEITEN-Token
 // angesprochen wie die Seite selbst. Zwei Felder mit demselben Wert sind kein
 // Komfort, sondern eine Gelegenheit, sie auseinanderlaufen zu lassen.
+//
+// --- Zwei weitere sind ins Repo gewandert (03.09.2026) -----------------------
+//
+// `FB_SEITEN_ID_*` und `IG_KONTO_ID_*` sind KEINE Geheimnisse: Jede
+// Facebook-Seite zeigt ihre ID oeffentlich, und die Instagram-ID ist ohne
+// Token wertlos. Sie stehen deshalb in apps.json unter `meta` — das spart
+// zehn Eingaben am Handy und macht die Zuordnung Seite ↔ App im Repo
+// nachlesbar. Eine gesetzte Umgebungsvariable gewinnt trotzdem, damit ein
+// Testlauf gegen eine andere Seite ohne Aenderung am Repo moeglich bleibt.
+// Geheim bleibt allein der Seiten-Token.
+
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const APPS = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'apps.json'), 'utf8'),
+);
 
 /** Aus „mahjong" wird „MAHJONG" — das Kuerzel im Namen des Geheimnisses. */
 const kuerzel = (appSchluessel) => appSchluessel.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+/** Der im Repo hinterlegte Wert (apps.json → meta), falls es einen gibt. */
+const ausRepo = (appSchluessel, feld) => APPS[appSchluessel]?.meta?.[feld];
+
+/** Umgebung schlaegt Repo; sonst der Repo-Wert. */
+const wertVon = (name, appSchluessel, feld) => process.env[name] ?? ausRepo(appSchluessel, feld);
 
 /**
  * Die Zugaenge, die ein Kanal FUER EINE BESTIMMTE APP braucht.
@@ -54,17 +78,25 @@ export function bedarf(kanal, appSchluessel) {
     return [
       {
         name: `FB_SEITEN_ID_${K}`,
+        imRepo: ausRepo(appSchluessel, 'fbSeitenId'),
         zweck: `Die Facebook-Seite von ${appSchluessel}`,
-        holen: 'Graph API Explorer: GET /me/accounts → Feld `id` der richtigen Seite',
+        holen: 'Steht in apps.json unter meta.fbSeitenId (oeffentlicher Wert). Fehlt '
+          + 'sie dort: Access Token Debugger → „Granulare Bereiche" → pages_show_list '
+          + 'listet jede freigegebene Seite mit ID. ⚠ GET /me/accounts kommt LEER '
+          + 'zurueck, wenn die Seiten ueber ein Business-Portfolio laufen — die '
+          + 'Seite direkt per ID abfragen.',
       },
       {
         name: `FB_SEITEN_TOKEN_${K}`,
         zweck: 'Erlaubt Entwuerfe auf dieser Seite — und traegt auch Instagram',
-        holen: 'Token mit pages_show_list, pages_read_engagement, pages_manage_posts, '
-          + 'instagram_basic, instagram_content_publish erzeugen. Diesen Nutzer-Token '
-          + 'ERST langlebig machen (fb_exchange_token), DANN GET /me/accounts → Feld '
-          + '`access_token` der richtigen Seite. Nur ein so abgeleiteter Seiten-Token '
-          + 'ist unbefristet; ohne den Zwischenschritt ist nach zwei Stunden Schluss.',
+        holen: 'Graph API Explorer → App WELLapps → Nutzer-Token mit pages_show_list, '
+          + 'pages_read_engagement, pages_manage_posts, instagram_basic, '
+          + 'instagram_content_publish → im Dialog ALLE Seiten freigeben. Dann '
+          + `GET /${ausRepo(appSchluessel, 'fbSeitenId') ?? '<Seiten-ID>'}`
+          + '?fields=name,access_token → Feld `access_token`. Vorher im Debugger '
+          + 'pruefen, dass der Nutzer-Token ~2 Monate gueltig ist (Business-Login '
+          + 'liefert das direkt; steht dort „1 Stunde", erst verlaengern). Nur ein aus '
+          + 'einem LANGLEBIGEN Nutzer-Token abgeleiteter Seiten-Token ist unbefristet.',
       },
     ];
   }
@@ -73,8 +105,10 @@ export function bedarf(kanal, appSchluessel) {
     return [
       {
         name: `IG_KONTO_ID_${K}`,
+        imRepo: ausRepo(appSchluessel, 'igKontoId'),
         zweck: `Das Instagram-Konto von ${appSchluessel}`,
-        holen: `GET /<FB_SEITEN_ID_${K}>?fields=instagram_business_account. `
+        holen: 'Steht in apps.json unter meta.igKontoId (oeffentlicher Wert). Fehlt '
+          + `sie dort: GET /<Seiten-ID>?fields=instagram_business_account. `
           + 'Einen eigenen Instagram-Token gibt es NICHT — es laeuft ueber den '
           + `Seiten-Token FB_SEITEN_TOKEN_${K}.`,
       },
@@ -118,7 +152,8 @@ export function bedarf(kanal, appSchluessel) {
 
 /** Was fehlt fuer diesen Kanal dieser App? Leere Liste = alles da. */
 export function fehlende(kanal, appSchluessel) {
-  return bedarf(kanal, appSchluessel).filter((v) => !process.env[v.name]);
+  // Ein Wert gilt als vorhanden, wenn er in der Umgebung ODER im Repo steht.
+  return bedarf(kanal, appSchluessel).filter((v) => !process.env[v.name] && !v.imRepo);
 }
 
 /**
@@ -164,10 +199,11 @@ export function bericht(paare) {
 export function zugaenge(appSchluessel) {
   const K = kuerzel(appSchluessel);
   return {
-    fbSeitenId: process.env[`FB_SEITEN_ID_${K}`],
+    // IDs: Umgebung schlaegt apps.json → meta. Beide sind oeffentliche Werte.
+    fbSeitenId: wertVon(`FB_SEITEN_ID_${K}`, appSchluessel, 'fbSeitenId'),
     // ⚠ Instagram nutzt DENSELBEN Token wie die Seite. Kein eigenes Geheimnis.
     fbToken: process.env[`FB_SEITEN_TOKEN_${K}`],
-    igKontoId: process.env[`IG_KONTO_ID_${K}`],
+    igKontoId: wertVon(`IG_KONTO_ID_${K}`, appSchluessel, 'igKontoId'),
     tiktokRefresh: process.env[`TIKTOK_REFRESH_TOKEN_${K}`],
     tiktokKey: process.env.TIKTOK_CLIENT_KEY,
     tiktokSecret: process.env.TIKTOK_CLIENT_SECRET,

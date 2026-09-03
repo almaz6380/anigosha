@@ -125,21 +125,62 @@ des angemeldeten Profils.
 
 Beide laufen ueber EINE App und EINEN Seiten-Token.
 
-1. Instagram mit der Facebook-Seite verbinden (Seite → Einstellungen →
-   Verknuepfte Konten).
-2. developers.facebook.com → App erstellen → Typ **Business**. Nur dieser Typ
-   bekommt Standard Access automatisch.
-3. Produkte: „Facebook Login for Business" und „Instagram".
-4. Graph API Explorer → App waehlen → Token erzeugen mit `pages_show_list`,
-   `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`,
-   `instagram_content_publish`.
-5. ⚠ **Langlebig machen, sonst ist alles Weitere in zwei Stunden tot:**
-   `GET /oauth/access_token?grant_type=fb_exchange_token&client_id=<APP_ID>&client_secret=<APP_SECRET>&fb_exchange_token=<TOKEN_AUS_4>`
-6. `GET /me/accounts` → je Seite `id` (= `FB_SEITEN_ID`) und `access_token`
-   (= `FB_SEITEN_TOKEN`). Nur ein aus dem LANGLEBIGEN Nutzer-Token abgeleiteter
-   Seiten-Token ist unbefristet.
-7. `GET /<FB_SEITEN_ID>?fields=instagram_business_account` → `IG_KONTO_ID`.
-   `IG_TOKEN` ist derselbe Wert wie `FB_SEITEN_TOKEN`.
+**Stand 03.09.2026: erledigt bis auf die fuenf Token.** Die Meta-App heisst
+**WELLapps** (App-ID `1808340180592380`, Typ Business), alle fuenf
+Berechtigungen stehen in beiden Anwendungsfaellen auf „Bereit zum Testen",
+und alle fuenf Seiten sind samt Instagram-Konto verknuepft. Seiten- und
+Instagram-IDs stehen in `apps.json` unter `meta` — sie sind oeffentlich.
+Offen ist je App nur `FB_SEITEN_TOKEN_<APP>`.
+
+**Der Weg, wie er wirklich funktioniert hat** (die Doku-Version oben aus dem
+August hatte drei Stellen, die anders laufen):
+
+1. developers.facebook.com → App → **Anwendungsfaelle** (nicht „Produkte" —
+   die gibt es bei neuen Apps nicht mehr). Zwei Anwendungsfaelle: „Instagram
+   API" und „Seiten verwalten". Je Anwendungsfall → **Berechtigungen und
+   Features** → bei jeder Zeile „Hinzufuegen":
+   `instagram_basic`, `instagram_content_publish`, `pages_read_engagement`
+   (Instagram API) und `pages_manage_posts` (Seiten verwalten).
+   ⚠ **Nicht** `instagram_business_basic` / `…_business_content_publish` —
+   das sind die Varianten fuer Instagram-Login, wir gehen ueber den
+   Seiten-Token. ⚠ Solange eine Berechtigung hier nicht hinzugefuegt ist,
+   **fehlt sie im Graph API Explorer einfach** — die Auswahlliste dort zeigt
+   nur, was die App darf. Genau das hat am 03.09. eine halbe Stunde gekostet.
+2. Graph API Explorer → Meta-App **WELLapps** → Berechtigungen anhaken →
+   „Generate Access Token" → im Facebook-Dialog **alle Seiten** freigeben.
+3. **Token pruefen, nicht annehmen:** Access Token Debugger → Token einfuegen.
+   Dort stehen „Ablaufdatum" und „Granulare Bereiche". Der Token aus dem
+   Business-Login war **direkt zwei Monate gueltig** — der
+   `fb_exchange_token`-Schritt entfiel. Steht dort „1 Stunde", erst
+   verlaengern (Knopf „Zugriffsschluessel verlaengern" unten im Debugger,
+   App-Geheimnis wird nicht gebraucht). Unter `pages_show_list` muessen **alle
+   fuenf Seiten-IDs** stehen. Fehlen welche, hat der Dialog sie nicht
+   freigegeben: facebook.com → Einstellungen → Business-Integrationen →
+   WELLapps → Entfernen, dann Schritt 2 wiederholen.
+4. ⚠ **`GET /me/accounts` kommt LEER zurueck** (`"data": []`), obwohl der
+   Debugger alle Seiten zeigt — bei Seiten, die ueber ein Business-Portfolio
+   laufen. Nicht daran verzweifeln, die Seite **direkt per ID** ansprechen:
+   `GET /<Seiten-ID>?fields=name,instagram_business_account,access_token`
+   → `access_token` ist der Seiten-Token (= `FB_SEITEN_TOKEN_<APP>`),
+   `instagram_business_account.id` die Instagram-ID. (`?ids=a,b,c` fuer alle
+   auf einmal gibt es in v26 nicht mehr — Fehler 100 „deprecated".)
+5. Nur ein aus einem LANGLEBIGEN Nutzer-Token abgeleiteter Seiten-Token ist
+   unbefristet. Deshalb Schritt 3 vor Schritt 4.
+
+**Zwei Fallen ohne Fehlermeldung:**
+
+- **Der Explorer merkt sich den Token je Geraet.** Ein am Handy erzeugter
+  Token steht nicht im Explorer am Mac; der fragt weiter mit dem alten. Erst
+  die Token-Anfaenge vergleichen, dann suchen.
+- **Facebook merkt sich die Seitenauswahl.** Beim zweiten „Generate Access
+  Token" fragt der Dialog nicht mehr nach Seiten. Wer nachbessern will, muss
+  die Business-Integration entfernen (facebook.com → Einstellungen →
+  „Business-Integrationen", NICHT „Apps und Websites" — dort steht eine
+  Business-App nicht) und den Dialog neu durchlaufen.
+
+**Es gibt zwei FullRep-Seiten.** Bespielt wird „FullRep – Fitness, Supplemente
+und Nutrition" (`1245653821967923`); die aeltere „FullRepapp"
+(`1336912066163023`) ist nicht freigegeben und bleibt liegen.
 
 ### B · TikTok
 
@@ -184,15 +225,26 @@ GitHub → Repo → Settings → Secrets and variables → **Actions**:
 | `TIKTOK_CLIENT_SECRET` | ebenda, wird nur einmal gezeigt |
 | `BLOB_TOKEN` | Vercel → Storage → Blob → `.env.local` |
 
-**Je App vier, also zwoelf** — `<APP>` ist `ANIGOSHA`, `MAHJONG` oder
-`WELLBOOKED`:
+**Je App zwei, also zehn** — `<APP>` ist `ANIGOSHA`, `MAHJONG`, `WELLBOOKED`,
+`FULLREP` oder `SWAPLY`:
 
 | Secret | woher |
 |---|---|
-| `FB_SEITEN_ID_<APP>` | `GET /me/accounts` → `id` der richtigen Seite |
-| `FB_SEITEN_TOKEN_<APP>` | ebenda → `access_token` derselben Seite |
-| `IG_KONTO_ID_<APP>` | `GET /<Seiten-ID>?fields=instagram_business_account` |
+| `FB_SEITEN_TOKEN_<APP>` | `GET /<Seiten-ID>?fields=access_token` mit dem langlebigen Nutzer-Token (Teil A, Schritt 4) |
 | `TIKTOK_REFRESH_TOKEN_<APP>` | OAuth je TikTok-Konto einmal |
+
+**Nicht mehr als Secret** (seit 03.09.2026): `FB_SEITEN_ID_<APP>` und
+`IG_KONTO_ID_<APP>`. Beides sind oeffentliche Werte und stehen in `apps.json`
+unter `meta`. Eine gesetzte Umgebungsvariable gleichen Namens gewinnt weiter —
+fuer einen Testlauf gegen eine andere Seite, ohne das Repo anzufassen.
+
+| App | Facebook-Seite | Instagram-Konto |
+|---|---|---|
+| Anigosha | `1251429691393243` | `17841433440494367` |
+| Mahjong Royale | `1269567446240752` | `17841440307927621` |
+| WELLbooked | `1195032197021198` | `17841428289091448` |
+| FullRep – Fitness, Supplemente und Nutrition | `1245653821967923` | `17841435733289216` |
+| Swaply | `1353158524539334` | `17841436704302336` |
 
 **Einen Wert gibt es NICHT:** ein eigenes `IG_TOKEN`. Instagram wird ueber den
 Weg „Facebook Login for Business" mit demselben SEITEN-Token angesprochen wie
