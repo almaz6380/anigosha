@@ -116,8 +116,11 @@
       "de",
       "en"
     ],
-    "kanaele": [],
-    "_kanaele_offen": "Die drei Profile sind noch nicht angelegt. Die Ausstattung dafuer liegt fertig in mypeak/store-assets/social/ (Avatar, FB-Titelbild, IG-Kacheln, TikTok-Cover, bios-de.md und bios-en.md). Sobald die Konten stehen, hier [\"tiktok\",\"facebook\",\"instagram\"] eintragen — erst dann druckt das Beiblatt die richtigen Hinweise zum Hochladen.",
+    "kanaele": [
+      "tiktok",
+      "facebook",
+      "instagram"
+    ],
     "posts_pro_tag": 2,
     "motor": {
       "reel": "node scripts/post-reel.mjs",
@@ -132,7 +135,33 @@
       "verbotene_medien": "keine Dosierungen, keine Diagnosen, keine Therapieempfehlungen",
       "store_link_in_caption": false,
       "_quellen_entfallen": "Quellenangaben stehen nicht mehr in Social-Media-Beitraegen. Apples 1.4.1-Ablehnung vom 29.07.2026 betraf medizinische Inhalte IN DER APP; dort (References.jsx) bleiben sie sichtbar. Josefs Entscheidung vom 29.08.2026.",
-    "_bildquelle_offen": "Die Uebungsfotos aus public/exercise-demos/ gehen NICHT in Werbung. Geprueft am 30.08.2026: free-exercise-db und die Quelle davor (wrkout/exercises.json) erklaeren beide die Unlicense, nennen aber nirgends die Herkunft der Fotos; die Dateien tragen kein Copyright-EXIF; die Issues #2 und #12 stellen genau diese Frage und sind seit Jahren unbeantwortet. Eine Unlicense-Erklaerung des Weiterverteilers ist keine Rechtekette. In der App bleiben die Fotos. Fuer Social liegt FOTO_BEREICHE in mypeak/scripts/social-daten.mjs leer — die Posts laufen typografisch. Ersatzquelle: store-assets/social/fotos/ mit HERKUNFT.md je Datei."
+      "_bildquelle_offen": "Die Uebungsfotos aus public/exercise-demos/ gehen NICHT in Werbung. Geprueft am 30.08.2026: free-exercise-db und die Quelle davor (wrkout/exercises.json) erklaeren beide die Unlicense, nennen aber nirgends die Herkunft der Fotos; die Dateien tragen kein Copyright-EXIF; die Issues #2 und #12 stellen genau diese Frage und sind seit Jahren unbeantwortet. Eine Unlicense-Erklaerung des Weiterverteilers ist keine Rechtekette. In der App bleiben die Fotos. Fuer Social liegt FOTO_BEREICHE in mypeak/scripts/social-daten.mjs leer — die Posts laufen typografisch. Ersatzquelle: store-assets/social/fotos/ mit HERKUNFT.md je Datei."
+    }
+  },
+  "swaply": {
+    "name": "Swaply",
+    "marke": "Swaply",
+    "nische": "Gewohnheiten tauschen statt abgewoehnen — Ausloeser und Belohnung bleiben, die Routine wird ersetzt",
+    "pfad": "/home/user/swaply",
+    "stores": {
+      "ios": true,
+      "android": true
+    },
+    "linkInBio": "getswaply.vercel.app/app",
+    "sprachen": [
+      "de",
+      "en",
+      "es"
+    ],
+    "kanaele": [],
+    "_kanaele_offen": "Die Facebook-Seite steht (03.09.2026 im Konto bestaetigt), es fehlt der BEITRAGS-GENERATOR. Anders als bei den vier anderen Apps gibt es in /home/user/swaply kein post-bild/post-reel, und motoren.mjs hat keinen swaply-Zweig. Solange beides fehlt, wuerde der Tageslauf hier abbrechen — deshalb bleibt kanaele leer. Sobald der Generator steht, hier [\"tiktok\",\"facebook\",\"instagram\"] eintragen.",
+    "posts_pro_tag": 2,
+    "motor": {},
+    "vorbereitung": [],
+    "regeln": {
+      "store_link_in_caption": false,
+      "verbotene_medien": "keine Diagnosen, keine Therapieversprechen, keine Suchtbehandlung — Swaply ist ein Gewohnheits-Werkzeug, kein Medizinprodukt. Auch keine Vorher-Nachher-Behauptungen ueber Menschen.",
+      "_ton": "Sachlich und ohne Schuldzuweisung. Die Zielgruppe hoert genug davon, dass sie sich zusammenreissen soll."
     }
   }
 }
