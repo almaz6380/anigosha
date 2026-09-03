@@ -153,15 +153,23 @@
       "en",
       "es"
     ],
-    "kanaele": [],
-    "_kanaele_offen": "Die Facebook-Seite steht (03.09.2026 im Konto bestaetigt), es fehlt der BEITRAGS-GENERATOR. Anders als bei den vier anderen Apps gibt es in /home/user/swaply kein post-bild/post-reel, und motoren.mjs hat keinen swaply-Zweig. Solange beides fehlt, wuerde der Tageslauf hier abbrechen — deshalb bleibt kanaele leer. Sobald der Generator steht, hier [\"tiktok\",\"facebook\",\"instagram\"] eintragen.",
+    "kanaele": [
+      "tiktok",
+      "facebook",
+      "instagram"
+    ],
     "posts_pro_tag": 2,
-    "motor": {},
-    "vorbereitung": [],
+    "motor": {
+      "bild": "node scripts/post-bild.mjs"
+    },
+    "vorbereitung": [
+      "npm i --no-save playwright"
+    ],
     "regeln": {
       "store_link_in_caption": false,
       "verbotene_medien": "keine Diagnosen, keine Therapieversprechen, keine Suchtbehandlung — Swaply ist ein Gewohnheits-Werkzeug, kein Medizinprodukt. Auch keine Vorher-Nachher-Behauptungen ueber Menschen.",
-      "_ton": "Sachlich und ohne Schuldzuweisung. Die Zielgruppe hoert genug davon, dass sie sich zusammenreissen soll."
+      "_ton": "Sachlich und ohne Schuldzuweisung. Die Zielgruppe hoert genug davon, dass sie sich zusammenreissen soll.",
+      "_nur_bilder": "Es gibt (noch) keinen Reel-Generator. ideen/swaply.json fuehrt nur medium: bild — wer Reels will, baut erst scripts/post-reel.mjs und ergaenzt dann die Weiche in motoren.mjs."
     }
   }
 }

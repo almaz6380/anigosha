@@ -23,7 +23,7 @@ import { join } from 'node:path';
 // Deshalb rendert jede App in ihr eigenes out/social/<datum>: relativ
 // uebergeben, wo angehaengt wird, absolut wo nicht. Eingesammelt wird
 // anschliessend am absoluten Ort.
-const HAENGT_AN_WURZEL = new Set(['mahjong', 'wellbooked', 'fullrep']);
+const HAENGT_AN_WURZEL = new Set(['mahjong', 'wellbooked', 'fullrep', 'swaply']);
 
 export function ausgabeOrt(appSchluessel, app, datum) {
   const rel = join('out', 'social', datum);
@@ -134,6 +134,19 @@ export function aufruf({ appSchluessel, app, post, wuerfel, out }) {
       schritte: [n(skript, '--format', post.format, '--lang', post.sprache,
         '--seed', String(post.seed), '--name', post.dateiname, '--out', out)],
       endung: post.medium === 'reel' ? '.mp4' : '.jpg',
+    };
+  }
+
+  if (appSchluessel === 'swaply') {
+    // ⚠ Nur Bildposts. Einen Reel-Generator gibt es in /home/user/swaply
+    // (noch) nicht; ideen/swaply.json fuehrt deshalb ausschliesslich
+    // medium: 'bild'. Kaeme spaeter einer dazu, gehoert hier dieselbe
+    // Weiche hin wie bei fullrep — und nicht vorher.
+    return {
+      schritte: [n('scripts/post-bild.mjs', '--format', post.format,
+        '--lang', post.sprache, '--seed', String(post.seed),
+        '--name', post.dateiname, '--out', out)],
+      endung: '.jpg',
     };
   }
 

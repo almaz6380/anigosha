@@ -62,6 +62,24 @@
       "schluessel": "wissensthema",
       "inhalt": "seed46250",
       "sprache": "de"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-03",
+      "winkel": "notfall",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed18599",
+      "sprache": "de"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-03",
+      "winkel": "tausch",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed22026",
+      "sprache": "en"
     }
   ]
 }
