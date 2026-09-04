@@ -1060,15 +1060,33 @@ Einrichtung: `tools/social/veroeffentlichen/README.md`. **Nichts geht ungelesen
 raus** — Facebook als Entwurf, TikTok in den Posteingang, Instagram erst beim
 Freigeben.
 
-**Meta ist eingerichtet bis auf die fünf Token.** App **WELLapps**
-(`1808340180592380`, Typ Business), fünf Berechtigungen auf „Bereit zum Testen",
-fünf Seiten mit fünf Instagram-Konten verknüpft. Seiten- und Instagram-IDs sind
-öffentlich und stehen in `apps.json` unter `meta`; als Secret fehlt je App nur
-noch `FB_SEITEN_TOKEN_<APP>`. TikTok (3 geteilte + 5 Refresh-Token) und
-`BLOB_TOKEN` sind noch gar nicht angefangen. Prüfen mit
-`node tools/social/posten.mjs --trocken` — das listet genau, was fehlt.
+**✅ Facebook und Instagram sind für alle fünf Apps fertig** (04.09.2026,
+gemessen). App **WELLapps** (`1808340180592380`, Typ Business), fünf
+Berechtigungen auf „Bereit zum Testen", fünf Seiten mit fünf Instagram-Konten
+verknüpft. Seiten- und Instagram-IDs sind öffentlich und stehen in `apps.json`
+unter `meta`; als Secret liegt je App `FB_SEITEN_TOKEN_<APP>`, dazu
+`BLOB_TOKEN` (Vercel-Blob-Store `social-bilder`, **Public**, fra1 — Instagram
+holt sich das Bild selbst ab, mit „Private" ginge es nicht).
+**Offen ist nur noch TikTok** (3 geteilte + 5 Refresh-Token).
 
-**Drei Dinge, die am 03.09. je eine halbe Stunde gekostet haben:**
+**Nachmessen statt hoffen:** Workflow **„Social-Zugaenge pruefen"**
+(`.github/workflows/social-zugaenge.yml`, Modus `live_pruefen: true`). Er sagt
+je App, ob der Token zur richtigen Seite gehört **und ob er je abläuft** — und
+sendet nichts. Ein Trockenlauf von `posten.mjs` kann das nicht: Er prüft nur,
+ob eine Variable gesetzt ist, und braucht fertige Tagesbeiträge.
+
+**⚠ Die teuerste Lehre (04.09., zwei komplette Durchgänge):** Ein
+Facebook-Token, der *jetzt* funktioniert, ist kein *haltbarer* Token. Alle fünf
+Seiten-Token starben zweimal zur vollen Stunde (12:00 und 16:00 UTC), obwohl
+die Prüfung sie kurz zuvor als gültig gemeldet hatte. Ursache: Der Knopf
+**„Zugriffsschlüssel verlängern"** im Access Token Debugger wurde nicht
+gedrückt — und zwar auf meinen Rat hin, weil dort „in ungefähr 2 Monaten"
+stand und ich daraus schloss, der Schritt entfalle. Der Nutzer-Token des
+Explorers hängt an einer Sitzung, die früher endet als sein Ablaufdatum; die
+Seiten-Token erben die Sitzung, nicht das Datum. **Immer verlängern, auch bei
+zwei Monaten** — danach meldet die Prüfung „läuft nie ab".
+
+**Weitere Dinge, die je eine halbe Stunde gekostet haben:**
 
 1. **Der Graph API Explorer zeigt nur Berechtigungen, die die App hat.** Fehlen
    welche in der Auswahlliste, sind sie unter App → Anwendungsfälle →
@@ -1079,9 +1097,14 @@ noch `FB_SEITEN_TOKEN_<APP>`. TikTok (3 geteilte + 5 Refresh-Token) und
    Business-Portfolio. Seiten direkt per ID abfragen, das trägt.
 3. **Der Explorer merkt sich den Token je Gerät.** Am Handy erzeugt heißt nicht
    am Mac vorhanden. Bei „geht plötzlich nicht mehr" zuerst die Token-Anfänge
-   vergleichen. Und: **erst im Debugger messen, dann erklären** — dort stehen
-   Laufzeit und freigegebene Seiten schwarz auf weiß; die drei Vermutungen
-   davor (Seiten fehlen, Dialog übersprungen, Token kurzlebig) waren alle falsch.
+   vergleichen. Und: **erst im Debugger messen, dann erklären** — die drei
+   Vermutungen davor (Seiten fehlen, Dialog übersprungen, Token kurzlebig)
+   waren alle falsch.
+4. **Ein neuer Token tötet die alten.** Zwischen dem Verlängern und dem letzten
+   eingetragenen Secret nie wieder „Generate Access Token" drücken, auch nicht
+   auf einem anderen Gerät.
+5. **Zwei FullRep-Seiten.** Bespielt wird „FullRep – Fitness, Supplemente und
+   Nutrition" (`1245653821967923`), nicht die ältere „FullRepapp".
 ## Oberflaeche: "Himmel ueberall" (Richtung A, 01.09.2026)
 
 Der Tageszeit-Himmel war die beste Idee der App und kam genau einmal vor — auf dem

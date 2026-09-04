@@ -148,15 +148,25 @@ August hatte drei Stellen, die anders laufen):
    nur, was die App darf. Genau das hat am 03.09. eine halbe Stunde gekostet.
 2. Graph API Explorer → Meta-App **WELLapps** → Berechtigungen anhaken →
    „Generate Access Token" → im Facebook-Dialog **alle Seiten** freigeben.
-3. **Token pruefen, nicht annehmen:** Access Token Debugger → Token einfuegen.
-   Dort stehen „Ablaufdatum" und „Granulare Bereiche". Der Token aus dem
-   Business-Login war **direkt zwei Monate gueltig** — der
-   `fb_exchange_token`-Schritt entfiel. Steht dort „1 Stunde", erst
-   verlaengern (Knopf „Zugriffsschluessel verlaengern" unten im Debugger,
-   App-Geheimnis wird nicht gebraucht). Unter `pages_show_list` muessen **alle
-   fuenf Seiten-IDs** stehen. Fehlen welche, hat der Dialog sie nicht
-   freigegeben: facebook.com → Einstellungen → Business-Integrationen →
-   WELLapps → Entfernen, dann Schritt 2 wiederholen.
+3. ⚠⚠ **VERLAENGERN — der eine Schritt, an dem alles haengt.** Access Token
+   Debugger → Token einfuegen → „Fehlerbehebung" → ganz unten den Knopf
+   **„Zugriffsschluessel verlaengern"** DRUECKEN. Er gibt darunter einen neuen,
+   laengeren Token aus; dieser kommt zurueck in das Feld „Zugriffstoken" des
+   Explorers. Das App-Geheimnis wird dabei nicht gebraucht.
+
+   ⚠ **Nicht darauf verlassen, was im Debugger als „Ablaufdatum" steht.** Hier
+   stand am 04.09. „in ungefaehr 2 Monaten", und diese Datei behauptete
+   daraufhin, der Verlaengerungsschritt entfalle. Das war falsch und hat einen
+   ganzen Tag gekostet: Die daraus abgeleiteten Seiten-Token starben nach
+   wenigen Stunden, ZWEIMAL, jeweils zur vollen Stunde (12:00 und 16:00 UTC).
+   Der Nutzer-Token des Explorers haengt an einer Sitzung, die frueher endet
+   als sein eigenes Ablaufdatum — und die Seiten-Token erben die Sitzung, nicht
+   das Datum. Also: immer druecken, auch wenn zwei Monate dastehen.
+
+   Waehrend du hier bist, unter „Granulare Bereiche" pruefen, dass bei
+   `pages_show_list` **alle fuenf Seiten-IDs** stehen. Fehlen welche, hat der
+   Dialog sie nicht freigegeben: facebook.com → Einstellungen →
+   Business-Integrationen → WELLapps → Entfernen, dann Schritt 2 wiederholen.
 4. ⚠ **`GET /me/accounts` kommt LEER zurueck** (`"data": []`), obwohl der
    Debugger alle Seiten zeigt — bei Seiten, die ueber ein Business-Portfolio
    laufen. Nicht daran verzweifeln, die Seite **direkt per ID** ansprechen:
@@ -164,8 +174,17 @@ August hatte drei Stellen, die anders laufen):
    → `access_token` ist der Seiten-Token (= `FB_SEITEN_TOKEN_<APP>`),
    `instagram_business_account.id` die Instagram-ID. (`?ids=a,b,c` fuer alle
    auf einmal gibt es in v26 nicht mehr — Fehler 100 „deprecated".)
-5. Nur ein aus einem LANGLEBIGEN Nutzer-Token abgeleiteter Seiten-Token ist
-   unbefristet. Deshalb Schritt 3 vor Schritt 4.
+
+   ⚠ Zwischen Schritt 3 und dem letzten Secret **NICHT** erneut auf „Generate
+   Access Token" druecken — auch nicht in einem anderen Browser oder auf einem
+   anderen Geraet. Jede neue Erzeugung beendet die alte Sitzung und toetet
+   damit alle bereits eingetragenen Seiten-Token.
+5. **Nachmessen, nicht hoffen.** Workflow „Social-Zugaenge pruefen" mit
+   `live_pruefen: true` starten. Bei jedem der fuenf muss stehen: **„laeuft nie
+   ab — richtig abgeleitet"**. Steht dort ein Datum, war Schritt 3 nicht
+   wirksam — dann ab Schritt 2 wiederholen. Ein Token, der JETZT funktioniert,
+   ist kein haltbarer Token; genau dieser Trugschluss hat am 04.09. zwei
+   komplette Durchgaenge gekostet.
 
 **Zwei Fallen ohne Fehlermeldung:**
 
