@@ -55,6 +55,37 @@ async function wemGehoert(token) {
   return d;
 }
 
+/**
+ * Wann laeuft dieser Token ab?
+ *
+ * ⚠ Das ist die Frage, an der es am 04.09.2026 gehangen hat. Ein Token, der
+ * JETZT funktioniert, sagt nichts darueber, ob er morgen noch gilt: Alle fuenf
+ * Seiten-Token waren um 12:58 UTC gueltig und um 12:25 UTC des naechsten
+ * Aufrufs abgelaufen („Session has expired"). Ein blosses „gehoert zur
+ * richtigen Seite" haette das nie gezeigt.
+ *
+ * Ein KORREKT abgeleiteter Seiten-Token laeuft NIE ab — Metas Doku:
+ * „Long-lived Page access tokens do not have an expiration date." Steht hier
+ * also irgendein Datum, stimmt etwas nicht, und zwar sofort und nicht erst,
+ * wenn der Tageslauf stillschweigend nichts mehr postet.
+ *
+ * @returns {Promise<{ewig: boolean, bis: Date|null}>}
+ */
+async function laeuftAb(token) {
+  // debug_token nimmt den zu pruefenden Token auch als eigene Vollmacht —
+  // das spart den App-Token und damit ein weiteres Geheimnis.
+  const url = `${GRAPH}/debug_token?input_token=${encodeURIComponent(token)}`;
+  const antwort = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  const d = await antwort.json();
+  if (d.error) throw new Error(d.error.message);
+  // `expires_at: 0` heisst „nie". Fehlt das Feld, sagt Facebook nichts zu —
+  // dann behaupten wir hier auch nichts.
+  const roh = d.data?.expires_at;
+  if (roh === 0) return { ewig: true, bis: null };
+  if (!roh) return { ewig: false, bis: null };
+  return { ewig: false, bis: new Date(roh * 1000) };
+}
+
 let alleGut = true;
 const zeilen = [];
 
@@ -77,6 +108,23 @@ for (const [schluessel, app] of Object.entries(APPS)) {
       const wer = await wemGehoert(z.fbToken);
       if (wer.id === z.fbSeitenId) {
         zeilen.push(`   ✓ gehoert zu „${wer.name}" — passt`);
+        // Gueltig ist nicht dasselbe wie haltbar — siehe laeuftAb().
+        try {
+          const f = await laeuftAb(z.fbToken);
+          if (f.ewig) {
+            zeilen.push('   ✓ laeuft nie ab — richtig abgeleitet');
+          } else {
+            alleGut = false;
+            zeilen.push(f.bis
+              ? `   ✗ laeuft ab am ${f.bis.toISOString().slice(0, 16).replace('T', ' ')} UTC`
+              : '   ✗ kein Ablaufdatum gemeldet — nicht als dauerhaft belegt');
+            zeilen.push('     Ein Seiten-Token aus einem LANGLEBIGEN Nutzer-Token laeuft nie');
+            zeilen.push('     ab. Hier ist er aus einer befristeten Sitzung abgeleitet und');
+            zeilen.push('     stirbt zum genannten Zeitpunkt. Neu ableiten, siehe README Teil A.');
+          }
+        } catch (e) {
+          zeilen.push(`   ? Haltbarkeit nicht pruefbar: ${e.message}`);
+        }
       } else {
         alleGut = false;
         zeilen.push(`   ✗ gehoert zu „${wer.name}" (${wer.id}) — VERTAUSCHT.`);
