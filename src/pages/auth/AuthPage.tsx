@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import AppShell from '../../components/AppShell';
 
 type Mode = 'login' | 'register';
 
@@ -42,11 +43,14 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-night-950">
-      <h1 className="text-4xl font-extrabold mb-1 bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent">
+    <AppShell className="flex flex-col items-center justify-center !px-6">
+      {/* In Tinte, nicht im Akzentverlauf: helles Violett auf hellem Blau hat
+          zu wenig Kontrast. Der Verlauf bleibt dem einen Akzent je Bildschirm
+          vorbehalten — hier ist das nichts, der Schriftzug IST der Bildschirm. */}
+      <h1 className="text-[44px] font-extrabold tracking-[-0.03em] leading-none mb-1.5">
         {t('common.appName')}
       </h1>
-      <p className="text-accent-400/70 mb-8 text-sm">Anime Quiz</p>
+      <p className="leise mb-8 text-sm">Anime Quiz</p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3">
         <input
@@ -56,7 +60,7 @@ export default function AuthPage() {
           placeholder={t('auth.email')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-xl bg-night-800 border border-night-700 px-4 py-3 outline-none focus:border-accent-500 placeholder:text-accent-400/40"
+          className="feld w-full px-4 py-3"
         />
         <input
           type="password"
@@ -66,10 +70,10 @@ export default function AuthPage() {
           placeholder={t('auth.password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-xl bg-night-800 border border-night-700 px-4 py-3 outline-none focus:border-accent-500 placeholder:text-accent-400/40"
+          className="feld w-full px-4 py-3"
         />
         {mode === 'register' && (
-          <p className="text-xs text-accent-400/60">{t('auth.passwordMin')}</p>
+          <p className="text-xs leise">{t('auth.passwordMin')}</p>
         )}
 
         {error && <p className="text-sm text-pink-400">{error}</p>}
@@ -78,7 +82,7 @@ export default function AuthPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-xl bg-accent-600 hover:bg-accent-500 disabled:opacity-50 py-3 font-semibold transition-colors"
+          className="knopf w-full py-3.5 disabled:opacity-50"
         >
           {busy ? t('common.loading') : mode === 'login' ? t('auth.login') : t('auth.register')}
         </button>
@@ -87,16 +91,16 @@ export default function AuthPage() {
       <div className="mt-6 flex flex-col items-center gap-2 text-sm">
         <button
           onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(null); setInfo(null); }}
-          className="text-accent-400 hover:text-accent-400/80"
+          className="font-semibold underline underline-offset-4"
         >
           {mode === 'login' ? t('auth.noAccount') : t('auth.haveAccount')}
         </button>
         {mode === 'login' && (
-          <button onClick={handleReset} className="text-accent-400/60 hover:text-accent-400">
+          <button onClick={handleReset} className="leise underline underline-offset-4">
             {t('auth.forgotPassword')}
           </button>
         )}
       </div>
-    </div>
+    </AppShell>
   );
 }

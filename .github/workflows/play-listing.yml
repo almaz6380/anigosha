@@ -65,14 +65,25 @@ jobs:
               # App-Symbol und Vorstellungsgrafik sind zwei getrennte Uploads;
               # jeder braucht seine eigene Edit-Transaktion.
               python3 scripts/play-upload.py \
-                --icon store-assets/android/icon-512.png "${GEMEINSAM[@]}"
+                --icon store-assets/icon/icon-512.png "${GEMEINSAM[@]}"
               echo
-              python3 scripts/play-upload.py \
-                --feature store-assets/android/feature-graphic.png "${GEMEINSAM[@]}"
+              if [ -f store-assets/icon/feature-graphic.png ]; then
+                python3 scripts/play-upload.py \
+                  --feature store-assets/icon/feature-graphic.png "${GEMEINSAM[@]}"
+              else
+                echo "::notice::Keine Vorstellungsgrafik im Repo — uebersprungen."
+              fi
               ;;
             *)
+              # Store-Bilder sind je Sprache eigene Bilder. Die Saetze liegen
+              # unter store-assets/play/<code>; fehlt die Sprache, wird der
+              # englische genommen (tools/store-shots-pruefstand.mjs erzeugt sie).
+              CODE="${LANG_INPUT%%-*}"
+              ORDNER="store-assets/play/$CODE"
+              [ -d "$ORDNER" ] || ORDNER="store-assets/play/en"
+              echo "Bilder aus $ORDNER"
               python3 scripts/play-upload.py \
-                --screenshots store-assets/android "${GEMEINSAM[@]}"
+                --screenshots "$ORDNER" "${GEMEINSAM[@]}"
               ;;
           esac
 

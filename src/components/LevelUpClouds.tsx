@@ -27,9 +27,12 @@ export default function LevelUpClouds({
     return () => clearTimeout(timer);
   }, [onDone, reduced]);
 
+  // text-violet-50 ist Absicht: Der Aufstieg legt IMMER einen dunklen Schleier
+  // ueber die Seite, erbt aber sonst die Tinte der Buehne — auf hellem Himmel
+  // stuende die Zahl sonst dunkel auf dunkel.
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden text-violet-50"
       role="status"
       aria-live="polite"
     >

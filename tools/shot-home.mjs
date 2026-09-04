@@ -1,9 +1,12 @@
 // Nimmt den Startbildschirm auf und prüft die Lesbarkeit rechnerisch.
 // Aufruf: node tools/shot-home.mjs [url]
-import { chromium } from 'playwright';
+import { browserStarten, netzVerlangen, vorschauSichern } from './pruefbrowser.mjs';
 import { readFileSync } from 'node:fs';
 
-const url = process.argv[2] ?? 'https://anigosha.vercel.app';
+const gewuenscht = process.argv[2] ?? 'https://anigosha.vercel.app';
+// Startet bei Bedarf einen Vorschau-Server und beendet ihn am Ende wieder.
+// Zeigt die URL nach draussen (Vercel), bleibt sie unveraendert.
+const { url, stoppen } = await vorschauSichern(gewuenscht);
 const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
 const supaUrl = env.match(/^VITE_SUPABASE_URL=(.+)$/m)[1].trim();
 const anon = env.match(/^VITE_SUPABASE_ANON_KEY=(.+)$/m)[1].trim();
@@ -14,7 +17,9 @@ const login = await (await fetch(`${supaUrl}/auth/v1/token?grant_type=password`,
   body: JSON.stringify({ email: 'solo-test@anibrain.local', password: 'TestPasswort123' }),
 })).json();
 
-const browser = await chromium.launch();
+const browser = await browserStarten();
+// Ohne Daten waere jeder Screenshot eine Luege — lieber hier abbrechen.
+await netzVerlangen(browser, supaUrl, stoppen);
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
 const page = await ctx.newPage();
 
@@ -78,3 +83,4 @@ for (const c of check) {
 console.log(schwach === 0 ? '\nAlle geprüften Texte ausreichend lesbar.' : `\n${schwach} Text(e) unter 4.5.`);
 
 await browser.close();
+await stoppen();

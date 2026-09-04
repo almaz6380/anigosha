@@ -25,14 +25,17 @@ Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Sp
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
-**Sprachen:** DE + EN zum Launch; **ES, FR und PT seit 18./19.08.2026 im Repo fertig**
-(Migrationen 0022–0062 + `es.json`/`fr.json`/`pt.json`), weitere Sprachen = reine
-Übersetzungspakete (UI: `src/i18n/locales/*.json`, Fragen: `question_translations`-Zeilen).
-⚠ Keine der drei ist live, solange die Migrationen nicht eingespielt sind — die
-Cloud-Sitzungen hatten keine DB-Schlüssel. **Reihenfolge zwingend:** 0022 (Constraints +
-RPCs + `seed_uebersetzung`) → 0023–0035 (ES) → 0036 (Constraints/RPCs um fr+pt) →
-0037–0049 (FR) → 0050–0062 (PT), je mit Trockenlauf. Eine Seed-Migration vor ihrer
-Sprach-Migration bricht am Check-Constraint ab.
+**Sprachen: DE, EN, ES, FR und PT sind LIVE** (Migrationen 0022–0063 eingespielt,
+UI in `src/i18n/locales/*.json`). Am 01.09.2026 nachgemessen: **804 Übersetzungen je
+Sprache, alle 12 Kategorien, keine fehlende Erklärung**, und `start_solo_session` wie
+`start_daily_challenge` liefern für jede der fünf die richtige Sprache.
+⚠ **Hier stand bis 01.09. das Gegenteil** („keine der drei ist live") — das war seit dem
+20.08. falsch, wie der Kommentar in `public/get.html` schon damals festhielt. Wer eine
+Aussage über den Sprachstand braucht, misst sie: `select lang, count(*) from
+question_translations group by lang`. Weitere Sprachen sind reine Übersetzungspakete.
+**Reihenfolge zwingend, falls eine dazukommt:** erst die Sprach-Migration (Constraints +
+RPCs + `seed_uebersetzung`), dann ihre Seed-Migrationen, je mit Trockenlauf. Eine
+Seed-Migration vor ihrer Sprach-Migration bricht am Check-Constraint ab.
 **Sprachweiche zentral in `appSprache()`** (`src/i18n/index.ts`) — sie ist die einzige
 Stelle, die Regionalcodes wie `pt-BR` auf unsere Codes abbildet; früher stand die
 de/en-Weiche viermal verstreut im Code, wodurch fremdsprachige Nutzer deutsche Fragen
@@ -418,13 +421,109 @@ Pruefung ist. Also:
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
 
-### M5 Release — Stand 07.08.2026, 17:00
+### Store-Bilder: je Sprache ein Satz, und wann sie hochduerfen (02.09.2026)
+
+Die Bilder lagen flach unter `store-assets/{ios,play,ipad}/` — ein einziger,
+deutscher Satz. Apple fuehrt aber sieben Sprachen (de-DE, en-US, es-ES, es-MX,
+fr-FR, pt-BR, pt-PT), Google sieben. Wer den flachen Satz hochlaedt, ersetzt
+lokalisierte Bilder durch deutsche. Sie liegen jetzt unter
+`<format>/<code>/` mit unserem Sprachcode; `asc.py` und der Play-Workflow
+bilden ab (`pt-BR` → `pt`) und fallen auf Englisch zurueck.
+
+Erzeugt werden sie aus dem Pruefstand:
+`SPRACHEN=de,en,es,fr,pt node tools/store-shots-pruefstand.mjs`.
+
+**Google Play am 02.09. fuer alle sieben Sprachen hochgeladen** (Workflow
+`Play-Eintrag aktualisieren`, `mode: screenshots`, je Sprache ein Lauf). Das
+ist gefahrlos: Loeschen und Hochladen liegen in EINER Edit-Transaktion, erst
+`commit_edit` macht sie sichtbar.
+
+**Bei Apple war das lange nicht so.** `setze_screenshots` loeschte erst alle
+alten Bilder und lud dann hoch — brach es dazwischen ab, stand die Version
+ohne Bildstrecke da. Einfach umdrehen geht nicht: Apple nimmt hoechstens 10
+Bilder je Satz, und 6 alte plus 5 neue sind 11.
+
+Seit 02.09. laeuft es **dreistufig** (`_tausche_bilder`): so viele neue
+hochladen, wie ohne Loeschen noch hineinpassen (bei 6 alten also 4), dann die
+alten entfernen, dann den Rest. Der Satz ist damit **zu keinem Zeitpunkt
+leer**, und die Reihenfolge bleibt erhalten — die zuerst hochgeladenen stehen
+nach dem Loeschen vorn, der Rest haengt sich hinten an.
+
+⚠ **Waehrend der Pruefung geht gar nichts — am 02.09. gemessen, nicht
+vermutet.** Der Lauf wurde bewusst erzwungen, waehrend 1.1 auf
+`WAITING_FOR_REVIEW` stand. Apple lehnte **jedes** Anlegen ab
+(*„Can't Create Screenshot while Waiting For Review"*) und **jedes Loeschen
+ebenso**. Ergebnis: nichts hochgeladen, nichts verloren, alle sieben Saetze
+unveraendert. Die Sperre ist deshalb **hart** und kennt kein `--trotzdem`
+mehr: Erzwingen kann dort nichts gewinnen.
+
+Der Weg ist: `aufraeumen` (zieht die Einreichung zurueck, Version geht auf
+`DEVELOPER_REJECTED`) → Bilder tauschen → `einreichen`. Preis: 1.1 verliert
+den Platz in der Pruefschlange und faengt von vorn an (1–3 Tage).
+**Am 02.09. genau so gemacht:** Einreichung `f6a46ed9` zurueckgezogen
+(`CANCELING` → `COMPLETE`), alle elf Saetze getauscht (5 von 5 hoch, 6 von 6
+alte weg), neu eingereicht als `32fd32e6` — `WAITING_FOR_REVIEW`. Der Kauf
+`anigosha_no_ads` ist `APPROVED` und musste diesmal nicht von Hand
+angehaengt werden; der Lauf ging komplett per API durch.
+
+**Kurz darauf noch einmal, fuer Build 17.** Der Layout-Fix fuer hohe Geraete
+kam nach Build 16, also fehlte er in der eingereichten Fassung. Ablauf:
+`aufraeumen` sofort ausloesen (nicht erst nach dem Bauen — das Zurueckziehen
+geht in Sekunden, der iOS-Build braucht neun Minuten, beides parallel spart
+eine Wartezeit), dann `build 17`, dann `einreichen`. **Merksatz: Ein Build
+laesst sich hochladen, waehrend die Version in Pruefung ist — nur das
+Zuweisen verlangt eine Version, die Apple nicht haelt.**
+
+**iPad war zuerst vergessen.** `BILDER` kannte nur `APP_IPHONE_67`, also
+trugen die iPad-Saetze nach dem ersten Tausch noch das alte Design — zwei
+Staende in derselben Version. Jetzt stehen beide iPad-Typen mit drin
+(`APP_IPAD_PRO_3GEN_129`, `APP_IPAD_PRO_129`), mit einem dritten Feld je
+Eintrag: ob ein fehlender Satz angelegt werden darf. iPhone ja, iPad nein —
+die gibt es nur auf de-DE und en-US, und Apple faellt fuer die uebrigen
+Sprachen darauf zurueck.
+
+**Zwei Fehler im Skript, die dabei aufgefallen sind und beide behoben sind.**
+`datei_hoch` und `api(..., fatal=False)` liefern beide einen Erfolgswert
+zurueck; `_tausche_bilder` wertete keinen davon aus. Es meldete „4 neue
+hochgeladen" und „6 alte geloescht", waehrend Apple elf von elf Aufrufen
+abgelehnt hatte. **Eine Zaehlung ueber Schleifendurchlaeufe statt ueber
+Erfolge ist keine Messung, sondern eine Behauptung** — und sie liess den Lauf
+gruen aussehen. Jetzt wird gezaehlt, was durchging, und wenn kein einziges
+neues Bild angenommen wurde, bleiben die alten stehen, statt geloescht zu
+werden.
+
+### ⚠ Versionsnummern laufen zwischen iOS und Android auseinander (02.09.2026)
+
+Beide Projekte fuehren ihre Nummern getrennt, und niemand haelt sie zusammen:
+
+| | Datei | Stand vor dem 02.09. |
+|---|---|---|
+| iOS | `ios/App/App.xcodeproj/project.pbxproj` | 1.1 / Build 16 (am 21.08. gesetzt) |
+| Android | `android/app/build.gradle` | **1.0 / versionCode 5** — nie nachgezogen |
+
+Der Play-Upload brach deshalb mit `403 "Version code 5 has already been used"` ab —
+der Build war da schon fertig, es kostete also fuenf Minuten Bauzeit fuer nichts.
+Am 02.09. auf **1.1 / versionCode 6** gehoben.
+
+**Merksatz:** Vor jedem Android-Release `grep versionCode android/app/build.gradle`
+gegen die zuletzt hochgeladene vc pruefen. Der Workflow zeigt die Nummer zwar im
+Schritt „Versionsnummer anzeigen", aber erst der Upload ganz am Ende faellt darueber.
+Dasselbe gilt fuer iOS: `CURRENT_PROJECT_VERSION` muss ueber der hoechsten bereits
+hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
+
+### M5 Release — Stand 02.09.2026 (per API gemessen, nicht fortgeschrieben)
 
 | | App Store | Google Play |
 |---|---|---|
-| Stand | 1.0 / Build **15** ohne ATT — **13.08., 14:57 in Pruefung** | **vc4 in Produktion**, alle Nutzer, live |
-| Kauf | `anigosha_no_ads` faehrt in derselben Uebermittlung mit | funktioniert, am Geraet bestaetigt |
-| Naechstes | Apples Antwort abwarten | erledigt |
+| Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
+| In Arbeit | **1.1 mit Build 17, am 02.09. eingereicht — WAITING_FOR_REVIEW** | **1.1 / vc7 am 02.09. auf `production`** |
+| Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
+
+⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
+Das war seit Apples Freigabe falsch, und die falsche Annahme haette beinahe dazu
+gefuehrt, eine laufende Pruefung zurueckzuziehen, die es gar nicht gab. **Vor jeder
+Aussage ueber den Store-Stand `mode: status` laufen lassen** — der Lauf dauert
+20 Sekunden und liest Versionen, Builds, Kaeufe und offene Einreichungen.
 
 **Der letzte Schritt bei Apple ging nur von Hand:** Die API kann Kaufprodukte
 nicht an eine Einreichung haengen (beide Wege geprueft, s. u.). In App Store
@@ -450,11 +549,22 @@ faengt nach dem Einreichen von vorn an (1–3 Tage).
 Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
-**Der Werbefrei-Satz in den Store-Beschreibungen fehlt noch — kommt mit 1.1**
-(Josefs Entscheidung vom 07.08.). Er wurde am 06.08. entfernt, weil der Kauf
-abgeschaltet war; jetzt funktioniert er und darf zurueck, DE+EN, in beiden
-Stores. Bei Apple sind die Texte bis zur Freigabe gesperrt, bei Google jederzeit
-aenderbar. Die Beschreibungen liegen NICHT im Repo, nur in den Store-Konsolen.
+**Store-Texte liegen jetzt im Repo: `store-assets/asc-texte.json`** (Apple) neben
+`store-assets/play-listing.<lang>.json` (Google). Gepflegt mit `mode: texte-sichern`
+(holen) und `mode: texte-schreiben` (zurueckschreiben, nur geaenderte Felder).
+
+**Warum das noetig wurde — drei Fehler, die nur deshalb monatelang unbemerkt
+blieben, weil die Apple-Texte nirgends im Repo standen** (gefunden am 02.09., alle
+behoben, bevor 1.1 eingereicht wurde):
+
+1. **`de-DE` und `pt-PT` hatten VERTAUSCHTE Beschreibungen.** Deutsche
+   App-Store-Besucher haetten einen portugiesischen Text gelesen.
+2. Der deutsche Text war zusaetzlich der Stand vor den neuen Sprachen und warb
+   mit „Deutsch und Englisch".
+3. Dieselbe veraltete Zeile stand in `en-US`.
+
+Der Werbefrei-Satz, den diese Datei bis zum 02.09. als offen fuehrte, stand in
+allen Beschreibungen laengst drin.
 
 ### In-App-Kauf: BEHOBEN und am Geraet bestaetigt (06./07.08.2026)
 
@@ -612,6 +722,92 @@ Befund praesentiert und waren falsch; jede kostete einen Build von ~25 Minuten.
 Der Geraetemitschnitt haette am ersten Tag dieselbe Eingrenzung geliefert.
 
 ## Umgebung / Werkzeuge
+
+### SessionStart-Hook: Cloud-Sitzungen einsatzbereit machen (01.09.2026)
+
+`.claude/hooks/session-start.sh` (registriert in `.claude/settings.json`) läuft **nur in
+Cloud-Sitzungen** (`$CLAUDE_CODE_REMOTE`), installiert bei Bedarf die Abhängigkeiten und
+baut über `env-schreiben.mjs` die `.env` zusammen.
+
+**Der Kniff: aus einer Variablen werden vier.** Hinterlegt ist nur
+`SUPABASE_ACCESS_ANIGOSHA` (Management-Token, `sbp_…`). Daraus gibt
+`GET /v1/projects/<ref>/api-keys?reveal=true` den Anon- und den Service-Role-Key heraus;
+die `.env` entsteht daraus. Es muss also **kein weiterer Schlüssel** in der Umgebung
+liegen — und es entsteht auch kein neuer Zugriff: Wer den Token hat, kommt ohnehin an
+den Service-Role-Key.
+
+**Vier Regeln, die im Skript stehen und dort bleiben müssen:**
+
+1. **Eine vorhandene `.env` wird nie angefasst.** Auf Josefs Rechner stünden dort echte
+   Werte, die die API gar nicht kennt (RevenueCat-Schlüssel); bei einem `resume` steht
+   dort schon das eigene Ergebnis.
+2. **Nie einen Schlüsselwert nach stdout.** Was ein SessionStart-Hook ausgibt, landet im
+   Sitzungskontext und damit im Protokoll. Das Skript meldet nur, *dass* es etwas gebaut hat.
+3. **Kein harter Abbruch.** Fehlt der Token oder antwortet die API mit einem Fehler, sagt
+   der Hook das und gibt 0 zurück. Eine Sitzung ohne Datenbank ist immer noch brauchbar.
+4. **`CLAUDE_CODE_REMOTE` ist in einer Cloud-Sitzung bereits gesetzt.** Wer den lokalen
+   Fall testen will, muss die Variable ausdrücklich entfernen
+   (`env -u CLAUDE_CODE_REMOTE …`) — sonst prüft man gar nichts.
+
+⚠ **`SUPABASE_ACCESS_ALMAZ` liegt ebenfalls in dieser Umgebung** und öffnet FullRep und
+WELLbooked. Für Anigosha wird sie nicht gebraucht; wenn die Umgebung nur diesem Projekt
+dienen soll, gehört sie dort raus.
+
+**Die Playwright-Werkzeuge** hängen an `tools/pruefbrowser.mjs` (01.09.2026). Der
+Helfer löst zwei Dinge: `browserStarten()` nimmt `CHROMIUM_PFAD`, sonst
+`/opt/pw-browsers/chromium` — nötig, weil das Repo Playwright 1.62.1 hält (erwartet
+Browser-Bauart 1234), das Abbild aber 1194 mitbringt; die Meldung lautet sonst
+„Executable doesn't exist" und rät zu einem 150-MB-Download. `vorschauSichern()` baut
+bei Bedarf und startet `vite preview`, statt in einen nichtssagenden Zeitablauf zu
+laufen.
+
+⚠ **Chromium kommt in einer Cloud-Sitzung NICHT ins Netz — Node schon.** Node folgt
+`HTTPS_PROXY`, der Browser nicht: Der Relay bricht jeden Tunnel aus Chromium ab
+(`ERR_CONNECTION_RESET`, im Proxy-Log `ws_closed_mid_exchange` nach ~39 Byte). Das gilt
+für **jeden** Host — mit example.com, Vercel und Supabase geprüft, nicht nur für einen.
+`--disable-http2` half nicht (Hypothese aufgestellt, gemessen, verworfen), und
+`proxy:` an `chromium.launch()` ebenso wenig; es bleibt trotzdem gesetzt, falls die
+Umgebung das eines Tages kann.
+
+Daraus folgt die Arbeitsteilung:
+
+| Werkzeug | in der Cloud |
+|---|---|
+| `check-theme-color` | **läuft** — es braucht keine Daten, nur die gerenderte Seite |
+| `shot-home`, `shot-levelup`, `store-shots` | brechen mit klarer Meldung ab (`netzVerlangen`) |
+
+Der Abbruch ist Absicht: Ohne Daten rendert die App eine leere Seite, und ein Screenshot
+davon sähe echt aus. Ein falsches Bild ist schlimmer als kein Bild. Auf Josefs Rechner
+laufen alle vier.
+
+**`check-theme-color` prüft seit „Himmel überall" etwas anderes als früher.** Damals trug
+nur der Startbildschirm den Himmel und die Solo-Seite MUSSTE auf Dunkelviolett
+zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jetzt im
+Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
+verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
+
+### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
+
+Beim Durchlaufen der Testskripte fiel auf, dass `0021_freundesduell.sql` nur **halb** in
+der Datenbank lag: Die Funktionen waren da (`create or replace function` war gelaufen),
+aber `matches.is_friendly` fehlte und der CHECK auf `push_outbox.kind` kannte
+`'challenge'` nicht. **Für echte Nutzer hiess das: „Freund herausfordern" schlug fehl** —
+`challenge_friend` lief an, griff auf die fehlende Spalte zu und warf.
+
+Am 01.09. nachgeholt: Trockenlauf (`begin` … `rollback`) sauber, echt eingespielt, danach
+`spalte=1` und der CHECK kennt `challenge`. `tools/test-freundesduell.mjs` ist von
+10 Fehlschlaegen auf **19/19 gruen** gesprungen.
+
+⚠ **`0021` ersetzt auch `apply_match_elo`, `duel_state`, `list_duels`, `get_duel_round`
+und `matches_notify`** — also den Kern der Duelllogik. Deshalb danach die ganze Suite
+nachgefahren, nicht nur den einen Test: solo 12, duel 19, joker/daily 15, push 23,
+push-versand 8, freundesduell 19 — alle gruen.
+
+**Merksatz:** Eine Migration kann teilweise durchlaufen. `create or replace function`
+gelingt, waehrend ein `alter table` in derselben Datei scheitert — und der Fehler faellt
+erst Wochen spaeter auf, weil der Client nur „Das hat nicht geklappt." zeigt. Nach jedem
+Einspielen **lesend nachzaehlen**, wie es unten steht, und die zugehoerigen Testskripte
+laufen lassen.
 
 ### Migrationen — Ablauf (Stand 28.07.2026)
 
@@ -886,11 +1082,105 @@ noch `FB_SEITEN_TOKEN_<APP>`. TikTok (3 geteilte + 5 Refresh-Token) und
    vergleichen. Und: **erst im Debugger messen, dann erklären** — dort stehen
    Laufzeit und freigegebene Seiten schwarz auf weiß; die drei Vermutungen
    davor (Seiten fehlen, Dialog übersprungen, Token kurzlebig) waren alle falsch.
+## Oberflaeche: "Himmel ueberall" (Richtung A, 01.09.2026)
+
+Der Tageszeit-Himmel war die beste Idee der App und kam genau einmal vor — auf dem
+Startbildschirm. Jede andere Seite war flaches `night-950`. Seit dem 01.09. ist er das
+Milieu der ganzen App.
+
+**Die eine Quelle: `useSky()` in `src/components/SkyBackground.tsx`.** Sie macht aus der
+Uhrzeit eine `.himmel-*`-Klasse; `AppShell` haengt sie an die `.buehne` und faerbt darueber
+Statusleiste und html-Hintergrund. Alles darunter erbt Tinte, Milchglas und Linien als
+CSS-Variablen. **In den Seiten steht deshalb keine einzige Tag/Nacht-Abfrage mehr.**
+Vorher baute `isNightSky()` in `HomePage.tsx` sechs Klassenstrings zusammen — bei neun
+Bildschirmen waere daraus derselbe Wildwuchs geworden, den die Sprachweiche schon einmal
+hatte. Wer das Aussehen aendert, aendert `useSky()` und die `.himmel-*`-Bloecke in
+`src/index.css`. Sonst nichts.
+
+| Baustein | Wo |
+|---|---|
+| Tageszeit → Aussehen | `useSky()` in `SkyBackground.tsx` |
+| Buehne + Kopfzeile | `src/components/AppShell.tsx` (`AppShell`, `PageHeader`) |
+| Tokens und Klassen | `src/index.css`, Block "Der Himmel als Milieu" |
+| Farbe je Serie | `src/lib/kategorien.ts` |
+
+**Klassen:** `.glas` (Karte), `.glas-stumm` (ohne Schatten, fuer zuruecktretende Zeilen),
+`.knopf` / `.knopf-rand` (Haupt-/Nebenaktion), `.notiz` + `.notiz-kante`
+("Wusstest du?"), `.rubrik`, `.leise`, `.fein`, `.feld`, `.akzent-flaeche`,
+`.akzent-text`.
+
+**Vier Dinge, die hier Zeit gekostet haben:**
+
+1. **Alles Eigene muss in `@layer components`.** Ungeschichtet nach
+   `@import "tailwindcss"` schlaegt es jede Tailwind-Utility — `.glas` mit Radius 22 haette
+   jedes `rounded-[18px]` an einer Antwortoption ueberstimmt. Tailwind v4 legt seine
+   Utilities in eine Ebene, und ungeschichtetes CSS sticht jede Ebene.
+2. **Outfit ist eine variable Schrift mit Vorgabewert 100 (Thin).** Ohne
+   `font-weight: 100 900` im `@font-face` faellt die ganze App auf Thin zurueck und sieht
+   ausgeblichen aus. Die Datei liegt als `public/fonts/outfit.woff2` und ist dieselbe,
+   die die Reels benutzen (`tools/reels/assets/outfit.woff2`) — bewusst lokal statt ueber
+   Google Fonts.
+3. **Die Hauptaktion ist keine Farbe, sondern volle Tinte.** Violett→Pink erscheint
+   hoechstens einmal je Bildschirm. Vorher war der Verlauf ueberall und wog deshalb nichts.
+4. **Wer etwas baut, das einen dunklen Schleier ueber die Buehne legt** (wie
+   `LevelUpClouds`), muss die Schriftfarbe selbst setzen. Sonst erbt es die Tinte der
+   Buehne und steht tagsueber dunkel auf dunkel.
+
+**Live seit 01.09.2026 (PR #6) — aber NUR im Web.** ⚠ Ab jetzt sehen
+anigosha.vercel.app und die Store-Apps unterschiedlich aus: Capacitor buendelt die
+Web-Dateien ins App-Paket, iOS und Android tragen also weiter das alte
+Dunkelviolett, bis ein neuer Release-Build hochgeladen ist. Wer Screenshots oder
+Store-Bilder vergleicht, vergleicht sonst zwei Staende. Das gilt auch fuer die
+Reels: Deren Aussehen kommt aus `tools/reels/`, nicht aus der App.
+
+**Hohe Geraete: das untere Drittel blieb leer (02.09.2026).** Auf einem iPhone
+6,9" (956 pt) endete der Startbildschirm nach zwei Dritteln, darunter nur Himmel.
+Zwei Versuche davor waren falsch und stehen hier, damit sie niemand wiederholt:
+ein leerer Abstandshalter verschob das Loch nur in die Mitte, und reines `grow`
+zog es in die Heldenkarte hinein (Text mittig, viel Luft darueber und darunter).
+
+Richtig ist die gedeckelte Fassung: Die Karte waechst bis `max-h-[300px]` und
+wird dabei zum Plakat — Sonne oben, Text und Knopf unten (`justify-end`). Was
+dann noch uebrig ist, verteilt `justify-between` an der Buehne auf die
+Zwischenraeume. Auf der Kategorienseite macht `auto-rows-fr` (Deckel 780 px)
+dasselbe mit den zwoelf Kacheln.
+
+**`grow` waechst nur, es schrumpft nie** — deshalb bleibt ein iPhone SE (667 pt)
+unveraendert bei den natuerlichen Hoehen. Gemessen wird mit `mess.mjs`-Art
+Skripten gegen den Pruefstand: 6,9", 14 und SE, alle Seiten, `scrollt` und
+Restraum unten.
+
+**Duell und Bestenliste sind bewusst NICHT gestreckt.** Das sind Datenlisten —
+im Pruefstand mit vier Attrappen-Zeilen sehen sie leer aus, mit echten Daten
+laufen sie ueber. Dort Hoehe zu erfinden hiesse, einen leeren Zustand zu
+polstern.
+
+**Was der Entwurf vorsah und bewusst NICHT umgesetzt wurde:** "67 Fragen" unter jeder
+Kategorie. `fetchCategories` liefert keine Zaehlungen — die Fragen-Tabelle ist fuer
+Clients gesperrt (siehe Kommentar in `src/lib/solo.ts`). Die Zahl waere erfunden gewesen.
+
+**Pruefen ohne Datenbank:** Cloud-Sitzungen haben keine `.env`, also rendert keine
+angemeldete Seite. Ein Pruefstand mit Attrappen fuer `AuthContext` und die `lib/*`-Module
+(Vite-Alias auf `/^.*\/lib\/solo$/` usw., eigener `root`) zeigt alle Bildschirme in
+Chromium. Drei Fallen dabei: Der Pruefstand muss **im Repo** liegen (sonst findet Vite
+React nicht), sein CSS braucht ein `@source "../src"` (sonst erzeugt Tailwind keine
+einzige Utility aus `src/` und die Seiten sehen aus wie unformatiertes HTML), und der
+Alias-Regex muss die GANZE Angabe fassen — Vite ersetzt nur den Treffer.
+Die Stunde laesst sich ueber `Date.prototype.getHours` festnageln, um beide Himmel zu
+pruefen.
+
+**Der Pruefstand liegt seit 02.09. im Repo** — `.pruefstand/` plus
+`vite.pruefstand.config.ts`; die drei Fallen stehen als Kommentar in der Konfig.
+Starten mit `npx vite --config vite.pruefstand.config.ts --port 4501`. Er ist die
+Grundlage der Store-Screenshots (`tools/store-shots-pruefstand.mjs`) und der
+einzige Weg, angemeldete Bildschirme ohne Datenbank zu sehen.
 
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)
-- Dunkles Violett/Pink-Design (Tailwind-Theme in `src/index.css`: night-*/accent-*/pink-*), bewusst anders als MyPeak-Gold
+- Oberflaeche siehe "Himmel ueberall" oben: `AppShell` + `.glas`/`.knopf`, keine Tag/Nacht-Abfrage
+  in den Seiten. Die night-*/accent-*/pink-*-Farben bleiben als Basis im Theme (Akzent, Nachthimmel),
+  bewusst anders als MyPeak-Gold
 - Supabase-Migrationen nummeriert in `supabase/migrations/`, idempotent (drop policy if exists …)
 - Wiederverwendungs-Vorlagen: `~/Projects/mypeak/src/lib/ads.js` (AdMob+UMP), `revenuecat.js`, `~/Projects/wellbooked/src/lib/push-client.ts`
 - KEIN Commit/Deploy ohne ausdrückliche Freigabe von Josef
@@ -946,6 +1236,8 @@ Produktnummern über `nummer`, Trockenlauf über `dry_run`):
 | `build` | weist Build `nummer` der offenen Version zu |
 | `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
 | `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
+| `texte-sichern` | liest nur: alle Store-Texte nach `store-assets/asc-texte.json` (und ins Protokoll) |
+| `texte-schreiben` | schreibt diese Datei zurueck — nur geaenderte Felder, fehlende Sprachen bleiben |
 | `aufraeumen` | zieht festhaengende Einreichungen zurueck (auch laufende!) |
 | `einreichen` | Version zur Pruefung — **bricht ab, wenn ein Kaufprodukt einreichbar waere**, denn anhaengen kann die API es nicht (s. u.) |
 

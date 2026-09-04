@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { ArrowLeft, Bell, BellOff, Sparkles } from 'lucide-react';
+import { Bell, BellOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
+import AppShell, { PageHeader } from '../components/AppShell';
 import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, webPushMoeglich } from '../lib/push';
 import {
   kaeufeWiederherstellen,
@@ -53,30 +54,37 @@ function PushSchalter() {
   }
 
   return (
-    <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {an ? <Bell size={20} className="text-accent-400" /> : <BellOff size={20} className="text-accent-400/50" />}
-          <div>
-            <div className="text-sm">{t('push.titel')}</div>
-            <div className="text-xs text-accent-400/60">{t('push.text')}</div>
-          </div>
+    <div className="glas p-5 flex flex-col gap-3">
+      <div className="flex items-center gap-3.5">
+        {an ? (
+          <Bell size={22} className="shrink-0 text-accent-600" strokeWidth={2} />
+        ) : (
+          <BellOff size={22} className="shrink-0 fein" strokeWidth={2} />
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="text-[15px] font-semibold">{t('push.titel')}</div>
+          <div className="text-xs leise">{t('push.text')}</div>
         </div>
+        {/* Ein Schieber statt eines Knopfes mit wechselndem Text: „Aktiv" sah
+            aus wie eine Aufforderung, obwohl es ein Zustand war. */}
         <button
           onClick={umschalten}
           disabled={busy || !moeglich}
-          className={`shrink-0 px-4 py-2 rounded-xl border transition-colors disabled:opacity-40 ${
-            an ? 'bg-accent-600 border-accent-500' : 'bg-night-800 border-night-700 hover:border-accent-500'
-          }`}
+          role="switch"
+          aria-checked={an}
+          aria-label={t('push.titel')}
+          className="w-[46px] h-[27px] rounded-full relative shrink-0 transition-colors disabled:opacity-40"
+          style={{ background: an ? 'var(--knopf-flaeche)' : 'var(--spur)' }}
         >
-          {an ? t('push.aktiv') : t('push.einschalten')}
+          <span
+            className="absolute top-[3px] w-[21px] h-[21px] rounded-full bg-white transition-[left] shadow"
+            style={{ left: an ? 22 : 3 }}
+          />
         </button>
       </div>
 
-      {braucht_homescreen() && (
-        <div className="text-xs text-accent-400/60 mt-3">{t('push.homescreen')}</div>
-      )}
-      {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
+      {braucht_homescreen() && <div className="text-xs leise">{t('push.homescreen')}</div>}
+      {hinweis && <div className="text-xs leise">{hinweis}</div>}
     </div>
   );
 }
@@ -148,43 +156,42 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
   }
 
   return (
-    <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
-      <div className="flex items-center gap-3 mb-3">
-        <Sparkles size={20} className={frei ? 'text-accent-400' : 'text-accent-400/50'} />
-        <div>
-          <div className="text-sm">{t('kauf.titel')}</div>
-          <div className="text-xs text-accent-400/60">
-            {frei ? t('kauf.aktiv') : t('kauf.text')}
-          </div>
+    <div className="glas p-5">
+      <div className="flex items-center gap-3.5">
+        <Sparkles size={22} className={`shrink-0 ${frei ? 'text-accent-600' : 'fein'}`} strokeWidth={2} />
+        <div className="flex-1 min-w-0">
+          <div className="text-[15px] font-semibold">{t('kauf.titel')}</div>
+          <div className="text-xs leise">{frei ? t('kauf.aktiv') : t('kauf.text')}</div>
         </div>
       </div>
 
       {!frei && (
-        <div className="flex gap-2">
+        <div className="flex gap-2.5 mt-3.5">
           <button
             onClick={() => tun('kaufen')}
             disabled={busy}
-            className="flex-1 px-4 py-2 rounded-xl bg-accent-600 border border-accent-500 disabled:opacity-40"
+            className="flex-1 knopf py-3 text-[15px] disabled:opacity-40"
           >
             {preis ? `${t('kauf.kaufen')} — ${preis}` : t('kauf.kaufen')}
           </button>
           <button
             onClick={() => tun('wiederherstellen')}
             disabled={busy}
-            className="px-4 py-2 rounded-xl bg-night-800 border border-night-700 hover:border-accent-500 disabled:opacity-40 text-sm"
+            className="knopf-rand px-4 py-3 text-sm disabled:opacity-40"
           >
             {t('kauf.wiederherstellen')}
           </button>
         </div>
       )}
 
-      {hinweis && <div className="text-xs text-accent-400/70 mt-3">{hinweis}</div>}
+      {hinweis && <div className="text-xs leise mt-3">{hinweis}</div>}
     </div>
   );
 }
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { profile, signOut, deleteAccount } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
@@ -213,111 +220,111 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-dvh bg-night-950 px-5 pt-10 pb-8 max-w-md mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <Link to="/" aria-label={t('common.back')}>
-          <ArrowLeft className="w-6 h-6 text-accent-400" />
-        </Link>
-        <h1 className="text-2xl font-bold">{t('profile.title')}</h1>
-      </div>
+    <AppShell className="flex flex-col gap-3">
+      <PageHeader onBack={() => navigate('/')} title={t('profile.title')} />
 
-      <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
-        <div className="text-lg font-semibold mb-3">{profile?.username}</div>
-        <div className="grid grid-cols-4 gap-2 text-center">
+      <div className="glas p-5 mt-2">
+        <div className="flex items-center gap-3.5">
+          <div className="w-[46px] h-[46px] rounded-full akzent-flaeche text-white flex items-center justify-center text-[19px] font-bold shrink-0">
+            {(profile?.username ?? '?').slice(0, 1).toUpperCase()}
+          </div>
+          <div className="text-[19px] font-bold tracking-[-0.01em] truncate">{profile?.username}</div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 text-center mt-4">
           <div>
-            <div className="text-xl font-bold text-accent-400">{profile?.xp ?? 0}</div>
-            <div className="text-xs text-accent-400/60">{t('profile.xp')}</div>
+            <div className="text-[21px] font-extrabold tracking-[-0.03em] tabular-nums">{profile?.xp ?? 0}</div>
+            <div className="rubrik mt-0.5">{t('profile.xp')}</div>
           </div>
           <div>
-            <div className="text-xl font-bold text-accent-400">{profile?.elo ?? 1000}</div>
-            <div className="text-xs text-accent-400/60">{t('profile.elo')}</div>
+            <div className="text-[21px] font-extrabold tracking-[-0.03em] tabular-nums">{profile?.elo ?? 1000}</div>
+            <div className="rubrik mt-0.5">{t('profile.elo')}</div>
           </div>
           <div>
-            <div className="text-xl font-bold text-accent-400">
+            <div className="text-[21px] font-extrabold tracking-[-0.03em] tabular-nums">
               {levelProgress(profile?.xp ?? 0).level}
             </div>
-            <div className="text-xs text-accent-400/60">{t('profile.level')}</div>
+            <div className="rubrik mt-0.5">{t('profile.level')}</div>
           </div>
           <div>
-            <div className="text-xl font-bold text-pink-400">{profile?.streak_current ?? 0}</div>
-            <div className="text-xs text-accent-400/60">{t('profile.streak')}</div>
+            <div className="text-[21px] font-extrabold tracking-[-0.03em] tabular-nums text-pink-500">
+              {profile?.streak_current ?? 0}
+            </div>
+            <div className="rubrik mt-0.5">{t('profile.streak')}</div>
           </div>
         </div>
+
         {(profile?.streak_best ?? 0) > 0 && (
-          <div className="text-xs text-accent-400/50 text-center mt-3">
+          <div
+            className="text-xs leise text-center mt-3.5 pt-3"
+            style={{ borderTop: '1px solid var(--spur)' }}
+          >
             {t('profile.streakBest')}: {profile?.streak_best}
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl bg-night-900 border border-night-700 p-5 mb-4">
-        <div className="text-sm text-accent-400/60 mb-2">{t('profile.language')}</div>
+      <div className="glas p-5">
+        <div className="rubrik">{t('profile.language')}</div>
         {/* flex-wrap ist Pflicht: Ab fuenf Sprachen passt die Reihe nicht mehr
             in die Kartenbreite und liefe sonst rechts hinaus. */}
-        <div className="flex flex-wrap gap-2">
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => changeLanguage(lang.code)}
-              className={`px-4 py-2 rounded-xl border transition-colors ${
-                // Ueber appSprache() vergleichen, nicht ueber i18n.language:
-                // Letzteres kann 'pt-BR' sein und traefe dann keinen Knopf.
-                appSprache() === lang.code
-                  ? 'bg-accent-600 border-accent-500'
-                  : 'bg-night-800 border-night-700 hover:border-accent-500'
-              }`}
-            >
-              {lang.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-2 mt-2.5">
+          {LANGUAGES.map((lang) => {
+            // Ueber appSprache() vergleichen, nicht ueber i18n.language:
+            // Letzteres kann 'pt-BR' sein und traefe dann keinen Knopf.
+            const gewaehlt = appSprache() === lang.code;
+            return (
+              <button
+                key={lang.code}
+                onClick={() => changeLanguage(lang.code)}
+                className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold ${gewaehlt ? 'knopf' : 'knopf-rand'}`}
+              >
+                {lang.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <PushSchalter />
       <WerbungEntfernen userId={profile?.id ?? null} />
 
-      <button
-        onClick={abmelden}
-        className="w-full rounded-xl bg-night-800 border border-night-700 py-3 mb-3 hover:border-accent-500 transition-colors"
-      >
+      <button onClick={abmelden} className="knopf-rand py-3.5 mt-2 text-[15px]">
         {t('profile.logout')}
       </button>
 
       {!confirmDelete ? (
         <button
           onClick={() => setConfirmDelete(true)}
-          className="w-full rounded-xl border border-pink-500/40 text-pink-400 py-3 hover:bg-pink-500/10 transition-colors"
+          className="py-3.5 rounded-full text-[15px] font-semibold text-pink-500 border border-pink-500/40"
         >
           {t('profile.deleteAccount')}
         </button>
       ) : (
-        <div className="rounded-2xl border border-pink-500/40 p-5">
-          <div className="font-semibold text-pink-400 mb-1">{t('profile.deleteConfirmTitle')}</div>
-          <p className="text-sm text-accent-400/70 mb-4">{t('profile.deleteConfirmText')}</p>
-          {deleteError && <p className="text-sm text-pink-400 mb-2">{t('profile.deleteError')}</p>}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setConfirmDelete(false)}
-              className="flex-1 rounded-xl bg-night-800 border border-night-700 py-2.5"
-            >
+        <div className="glas p-5" style={{ borderColor: 'rgba(236,72,153,0.4)' }}>
+          <div className="font-bold text-pink-500 mb-1">{t('profile.deleteConfirmTitle')}</div>
+          <p className="text-sm leise mb-4">{t('profile.deleteConfirmText')}</p>
+          {deleteError && <p className="text-sm text-pink-500 mb-2">{t('profile.deleteError')}</p>}
+          <div className="flex gap-2.5">
+            <button onClick={() => setConfirmDelete(false)} className="flex-1 knopf-rand py-2.5 text-sm">
               {t('common.cancel')}
             </button>
             <button
               onClick={handleDelete}
               disabled={busy}
-              className="flex-1 rounded-xl bg-pink-500 disabled:opacity-50 py-2.5 font-semibold"
+              className="flex-1 rounded-full bg-pink-500 text-white py-2.5 text-sm font-semibold disabled:opacity-50"
             >
               {busy ? t('common.loading') : t('profile.deleteConfirmButton')}
             </button>
           </div>
         </div>
       )}
-      <div className="mt-8 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-accent-400/50">
+
+      <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs leise">
         <Link to="/legal/impressum">{t('legal.imprint')}</Link>
         <Link to="/legal/datenschutz">{t('legal.privacy')}</Link>
         <Link to="/legal/agb">{t('legal.terms')}</Link>
       </div>
-
-    </div>
+    </AppShell>
   );
 }

@@ -1,106 +1,121 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Swords, Brain, Trophy, User, CalendarDays, Flame } from 'lucide-react';
+import { Swords, Brain, Trophy, User, ArrowRight, ChevronRight, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import SkyBackground, { isNightSky, skyGradient, skyTopColor } from '../components/SkyBackground';
-import { useThemeColor } from '../hooks/useThemeColor';
+import AppShell from '../components/AppShell';
+import { useSky } from '../components/SkyBackground';
 import { levelProgress } from '../lib/level';
 
-const cards = [
-  { to: '/solo', icon: Brain, title: 'home.solo', sub: 'home.soloSub' },
-  { to: '/duel', icon: Swords, title: 'home.duel', sub: 'home.duelSub' },
-  { to: '/leaderboard', icon: Trophy, title: 'home.leaderboard', sub: 'home.leaderboardSub' },
-  { to: '/profile', icon: User, title: 'home.profile', sub: 'home.profileSub' },
+/** Die drei Nebenziele. Solo und die Challenge stehen bewusst darüber:
+ *  Im alten 2x2-Raster wog „Profil" genauso viel wie die Kernschleife. */
+const nebenziele = [
+  { to: '/duel', icon: Swords, title: 'home.duel' },
+  { to: '/leaderboard', icon: Trophy, title: 'home.leaderboard' },
+  { to: '/profile', icon: User, title: 'home.profile' },
 ];
 
 export default function HomePage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-
-  // Bei Tag steht dunkle Schrift auf hellem Himmel, nachts umgekehrt.
-  // Ohne diese Umschaltung wäre der Startbildschirm tagsüber unlesbar —
-  // die globale Textfarbe (#ede9fe) ist für dunkle Seiten gemacht.
-  const night = isNightSky();
-  // Ohne das steht über dem Himmel ein dunkler Balken: iOS färbt die
-  // Statusleiste nach theme-color, und die stand fest auf Dunkelviolett.
-  // Zwei Werte: die oberste Farbe für die Statusleiste, der ganze Verlauf für
-  // alles, was unter oder neben der Seite sichtbar wird.
-  useThemeColor(skyTopColor(), skyGradient());
-  const ink = night ? 'text-violet-50' : 'text-slate-900';
-  const inkSoft = night ? 'text-violet-200/80' : 'text-slate-700';
-  const inkFaint = night ? 'text-violet-200/60' : 'text-slate-600';
-  const card = night
-    ? 'bg-night-900/70 border-night-700 hover:border-accent-500'
-    : 'bg-white/70 border-white/60 hover:border-white';
-  const iconTint = night ? 'text-accent-400' : 'text-violet-700';
-
+  const { phase } = useSky();
   const lvl = levelProgress(profile?.xp ?? 0);
+  const streak = profile?.streak_current ?? 0;
+
+  // Der Gruß folgt derselben Uhr wie der Himmel — das ist die Stelle, an der
+  // die Tageszeit zu Worten wird.
+  const gruss = {
+    morning: 'home.greetingMorning',
+    day: 'home.greetingDay',
+    evening: 'home.greetingEvening',
+    night: 'home.greetingNight',
+  }[phase];
 
   return (
-    <div className={`relative min-h-dvh px-5 pt-10 pb-8 max-w-md mx-auto ${ink}`}>
-      <SkyBackground />
-
-      <h1
-        className={
-          night
-            ? 'text-3xl font-extrabold bg-gradient-to-r from-accent-400 to-pink-400 bg-clip-text text-transparent'
-            : 'text-3xl font-extrabold text-slate-900 drop-shadow-sm'
-        }
-      >
-        {t('common.appName')}
-      </h1>
-      <p className={`mt-1 ${inkSoft}`}>{t('home.greeting', { name: profile?.username ?? '' })}</p>
-
-      {/* Level mit Fortschritt — gibt der Zahl vor dem Aufstieg eine Bedeutung */}
-      <div className={`mt-5 mb-6 rounded-2xl border backdrop-blur-md p-4 ${card}`}>
-        <div className="flex items-baseline justify-between">
-          <span className="font-semibold">{t('level.title', { level: lvl.level })}</span>
-          <span className={`text-xs tabular-nums ${inkFaint}`}>
-            {lvl.inLevel} / {lvl.needed} XP
-          </span>
+    <AppShell className="flex flex-col gap-3.5 justify-between">
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[13px] font-medium uppercase tracking-[0.08em] leise truncate">
+            {t(gruss, { name: profile?.username ?? '' })}
+          </p>
+          <h1 className="text-[38px] font-extrabold tracking-[-0.03em] leading-none mt-0.5">
+            {t('common.appName')}
+          </h1>
         </div>
-        <div className={`mt-2 h-2 rounded-full overflow-hidden ${night ? 'bg-night-800' : 'bg-slate-900/10'}`}>
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-accent-500 to-pink-400 transition-[width] duration-700"
-            style={{ width: `${Math.max(3, lvl.ratio * 100)}%` }}
-          />
+        {streak > 0 && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glas text-sm font-bold text-pink-500 shrink-0">
+            <Flame className="w-[15px] h-[15px]" strokeWidth={2.2} />
+            {streak}
+          </div>
+        )}
+      </div>
+
+      {/* Level — die Zahl steht jetzt als Ziffer daneben statt nur im Fließtext */}
+      <div className="glas px-4 py-3.5 flex items-center gap-3.5">
+        <div className="text-3xl font-extrabold leading-none tracking-[-0.04em]">{lvl.level}</div>
+        <div className="flex-1">
+          <div className="flex items-baseline justify-between mb-1.5">
+            <span className="text-[13px] font-semibold leise">{t('profile.level')}</span>
+            <span className="text-xs font-medium fein tabular-nums">
+              {lvl.inLevel} / {lvl.needed} XP
+            </span>
+          </div>
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--spur)' }}>
+            <div
+              className="h-full rounded-full akzent-flaeche transition-[width] duration-700"
+              style={{ width: `${Math.max(3, lvl.ratio * 100)}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      <Link
-        to="/daily"
-        className={`block rounded-2xl border backdrop-blur-md p-5 mb-4 transition-colors ${card}`}
-      >
-        <div className="flex items-center gap-3">
-          <CalendarDays className={`w-8 h-8 shrink-0 ${iconTint}`} />
-          <div className="flex-1">
-            <div className="font-semibold">{t('home.daily')}</div>
-            <div className={`text-xs mt-0.5 ${inkFaint}`}>{t('home.dailySub')}</div>
+      {/* Die Tägliche Challenge ist der Held der Seite — sie ist der Grund
+          wiederzukommen, stand aber als schmale Zeile über dem Raster. */}
+      {/* Auf einem hohen Geraet (iPhone 6,9": 956 pt) blieb das untere Drittel
+          leer. Ein leerer Abstandshalter haette das Loch nur verschoben, reines
+          `grow` es in die Karte hineingezogen. Deshalb beides gedeckelt: Die
+          Karte waechst bis 300 px und wird dabei zum Plakat — der Text sitzt
+          unten (`justify-end`), oben stehen Sonne und Wolke. Was dann noch
+          uebrig ist, verteilt `justify-between` an der Buehne auf die
+          Zwischenraeume. `grow` waechst nur und schrumpft nie: auf einem SE
+          (667 pt) bleibt alles bei der natuerlichen Hoehe. */}
+      <Link to="/daily" className="glas p-5 relative overflow-hidden grow max-h-[300px] flex flex-col justify-end">
+        <div
+          aria-hidden
+          className="absolute -right-7 -top-7 w-[116px] h-[116px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(255,214,120,0.55), rgba(255,214,120,0))' }}
+        />
+        <div className="relative">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-amber-600">
+            {t('home.dailyKicker')}
+          </p>
+          <div className="mt-1 text-2xl font-bold tracking-[-0.02em] leading-tight">
+            {t('home.daily')}
           </div>
-          {(profile?.streak_current ?? 0) > 0 && (
-            <div className={`flex items-center gap-1 text-sm font-semibold ${night ? 'text-pink-400' : 'text-pink-600'}`}>
-              <Flame className="w-4 h-4" />
-              {profile?.streak_current}
-            </div>
-          )}
+          <div className="mt-1 text-sm leise">{t('daily.sub')}</div>
+          <div className="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 knopf text-[15px]">
+            {t('home.dailyGo')}
+            <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
+          </div>
         </div>
       </Link>
 
-      <div className="grid grid-cols-2 gap-4">
-        {cards.map(({ to, icon: Icon, title, sub }) => (
-          <Link
-            key={to}
-            to={to}
-            className={`rounded-2xl border backdrop-blur-md p-5 flex flex-col gap-3 transition-colors ${card}`}
-          >
-            <Icon className={`w-8 h-8 ${iconTint}`} />
-            <div>
-              <div className="font-semibold">{t(title)}</div>
-              <div className={`text-xs mt-0.5 ${inkFaint}`}>{t(sub)}</div>
-            </div>
+      <Link to="/solo" className="glas px-5 py-4 flex items-center gap-4">
+        <Brain className="w-[30px] h-[30px] shrink-0 text-accent-600" strokeWidth={1.9} />
+        <div className="flex-1 min-w-0">
+          <div className="text-lg font-bold tracking-[-0.01em]">{t('home.solo')}</div>
+          <div className="text-[13px] leise truncate">{t('home.soloSub')}</div>
+        </div>
+        <ChevronRight className="w-[18px] h-[18px] fein shrink-0" strokeWidth={2.4} />
+      </Link>
+
+      <div className="grid grid-cols-3 gap-2.5">
+        {nebenziele.map(({ to, icon: Icon, title }) => (
+          <Link key={to} to={to} className="glas py-4 px-2.5 flex flex-col items-center gap-2 text-center">
+            <Icon className="w-6 h-6 text-accent-600" strokeWidth={1.9} />
+            <span className="text-[13px] font-semibold leading-tight">{t(title)}</span>
           </Link>
         ))}
       </div>
-    </div>
+    </AppShell>
   );
 }

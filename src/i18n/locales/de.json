@@ -46,17 +46,18 @@
     "daily": "Tägliche Challenge"
   },
   "home": {
-    "greeting": "Hey {{name}}!",
+    "greetingMorning": "Guten Morgen, {{name}}",
+    "greetingDay": "Hallo, {{name}}",
+    "greetingEvening": "Guten Abend, {{name}}",
+    "greetingNight": "Noch wach, {{name}}?",
     "solo": "Solo-Quiz",
     "soloSub": "Kategorien, Schwierigkeit, XP",
     "duel": "Duell",
-    "duelSub": "Rundenbasiert gegen andere",
     "leaderboard": "Bestenliste",
-    "leaderboardSub": "Die besten Otakus weltweit",
     "profile": "Profil",
-    "profileSub": "Statistiken & Einstellungen",
     "daily": "Tägliche Challenge",
-    "dailySub": "5 Fragen, jeden Tag neu"
+    "dailyKicker": "Heute",
+    "dailyGo": "Jetzt spielen"
   },
   "profile": {
     "title": "Profil",
@@ -99,7 +100,8 @@
     "shareText": "Ich habe {{correct}} von {{total}} Fragen zu {{category}} richtig beantwortet! Schaffst du mehr?",
     "fiftyFifty": "50:50 — zwei Antworten entfernen",
     "streakDays_one": "{{count}} Tag in Folge",
-    "streakDays_other": "{{count}} Tage in Folge"
+    "streakDays_other": "{{count}} Tage in Folge",
+    "chooseSeries": "Wähle eine Serie"
   },
   "daily": {
     "title": "Tägliche Challenge",
@@ -134,7 +136,10 @@
       "running": "Gegen {{name}} läuft schon ein Duell. Spiel es erst zu Ende.",
       "tooMany": "Das waren viele Herausforderungen auf einmal. Versuch es in einer Stunde nochmal.",
       "unknown": "Das hat nicht geklappt. Versuch es nochmal."
-    }
+    },
+    "play": "Spielen",
+    "finished": "Beendet",
+    "format": "4 Runden à 3 Fragen"
   },
   "legal": {
     "imprint": "Impressum",
@@ -164,5 +169,8 @@
     "danke": "Werbung ist ab sofort aus. Danke!",
     "nichtsGefunden": "Es wurde kein früherer Kauf gefunden.",
     "abgebrochen": "Kauf nicht abgeschlossen."
+  },
+  "leaderboard": {
+    "kicker": "Weltweit · nach Elo"
   }
 }

@@ -57,3 +57,6 @@ __pycache__/
 # Arbeitsdateien von tools/migrationen.mjs (Trockenlauf-Ketten)
 migration-lauf.sql
 migration-vorpruefung.sql
+
+# Vite-Cache des Pruefstands
+.pruefstand/.vite

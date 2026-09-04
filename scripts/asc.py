@@ -39,11 +39,42 @@ WURZEL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 30 fuer subtitle).
 NAMEN = {}
 
+# Die Store-Texte je Sprache, die asc-texte.json fuehrt und zurueckschreibt.
+FELDER = ('description', 'whatsNew', 'promotionalText', 'keywords',
+          'supportUrl', 'marketingUrl')
+
 # Welcher Ordner in welchen Screenshot-Typ gehoert. 1320x2868 ist das
 # iPhone-6,9"-Format, 2048x2732 das iPad-12,9".
+# Drittes Feld: ob ein fehlender Satz angelegt werden darf. Fuer das iPhone
+# ja — der ist Pflicht. Fuer das iPad nein: Sie existieren nur auf de-DE und
+# en-US, und Apple faellt fuer die uebrigen Sprachen ohnehin darauf zurueck.
+# Dort neue Saetze anzulegen waere eine Ausweitung, die niemand bestellt hat.
 BILDER = [
-    ('store-assets/ios', 'APP_IPHONE_67'),
+    ('store-assets/ios', 'APP_IPHONE_67', True),
+    ('store-assets/ipad', 'APP_IPAD_PRO_3GEN_129', False),
+    ('store-assets/ipad', 'APP_IPAD_PRO_129', False),
 ]
+
+
+def bilder_ordner(basis, locale):
+    """Der Bilderordner fuer eine ASC-Sprache.
+
+    Store-Bilder sind je Sprache eigene Bilder — wer nur den deutschen Satz
+    hochlaedt, zeigt englischen Besuchern eine deutsche Oberflaeche. Die
+    Saetze liegen unter <basis>/<code> (tools/store-shots-pruefstand.mjs
+    erzeugt sie). Fehlt die Sprache, faellt es auf Englisch zurueck und erst
+    danach auf die alte flache Ablage direkt unter <basis>.
+    """
+    code = locale.split('-')[0].lower()
+    for kandidat in (os.path.join(basis, code), os.path.join(basis, 'en'), basis):
+        voll = os.path.join(WURZEL, kandidat)
+        if not os.path.isdir(voll):
+            continue
+        pfade = sorted(os.path.join(voll, f) for f in os.listdir(voll)
+                       if f.endswith('.png') and f[0].isdigit())
+        if pfade:
+            return kandidat, pfade
+    return basis, []
 
 # ── In dieser Kopie nicht konfiguriert ─────────────────────────────────────
 # Diese Befehle tragen in MyPeaks Fassung fest verdrahtete Texte (Store-Namen,
@@ -369,10 +400,92 @@ def kauf_einreichen(tok):
             print('    zur Pruefung geschickt')
 
 
+# Waehrend die Version bei Apple liegt, ist ihre Bildstrecke heikel.
+IN_PRUEFUNG = {'WAITING_FOR_REVIEW', 'IN_REVIEW', 'PENDING_APPLE_RELEASE',
+               'PENDING_DEVELOPER_RELEASE', 'PROCESSING_FOR_APP_STORE'}
+
+# Apple laesst hoechstens 10 Bilder je Satz zu. Die Zahl steht hier, weil sie
+# den ganzen Ablauf unten bestimmt.
+MAX_BILDER = 10
+
+
+def _tausche_bilder(tok, sid, alt_ids, pfade):
+    """Alte Bilder durch neue ersetzen, ohne den Satz je zu leeren.
+
+    Der naive Weg — erst alles loeschen, dann hochladen — hinterlaesst bei
+    einem Abbruch eine Version ganz ohne Bildstrecke. Der umgekehrte Weg geht
+    nicht in einem Rutsch: 6 alte plus 5 neue sind 11, und Apple nimmt nur 10.
+
+    Deshalb dreistufig: so viele neue hochladen, wie ohne Loeschen noch
+    hineinpassen; dann die alten entfernen; dann den Rest hochladen. Die
+    Reihenfolge bleibt dabei erhalten, weil die zuerst hochgeladenen neuen
+    Bilder nach dem Loeschen vorn stehen und der Rest hinten angehaengt wird.
+    Bricht es irgendwo ab, steht im Satz immer noch etwas.
+    """
+    platz = max(0, MAX_BILDER - len(alt_ids))
+    zuerst, danach = pfade[:platz], pfade[platz:]
+
+    if TROCKEN:
+        for p in zuerst:
+            print(f'    [trocken] hoch (vor dem Loeschen) {os.path.basename(p)}')
+        for i in alt_ids:
+            print(f'    [trocken] alt loeschen {i}')
+        for p in danach:
+            print(f'    [trocken] hoch (nach dem Loeschen) {os.path.basename(p)}')
+        return
+
+    def hoch(p):
+        return datei_hoch(tok, 'appScreenshots', p, {
+            'appScreenshotSet': {
+                'data': {'type': 'appScreenshotSets', 'id': sid}}})
+
+    # Der Rueckgabewert von datei_hoch MUSS ausgewertet werden. Am 02.09. tat
+    # das hier nichts, und weil Apple waehrend WAITING_FOR_REVIEW zwar das
+    # Loeschen erlaubt, aber kein Anlegen ("Can't Create Screenshot while
+    # Waiting For Review"), scheiterten alle Uploads still — geloescht wurde
+    # trotzdem. Ergebnis: sieben Sprachen ohne ein einziges Bild.
+    geschafft = sum(1 for p in zuerst if hoch(p))
+    if zuerst:
+        print(f'    {geschafft} von {len(zuerst)} neuen hochgeladen')
+    if zuerst and geschafft == 0:
+        print('    Kein einziges neues Bild angenommen — alte bleiben stehen.')
+        return
+    # Auch hier den Erfolg zaehlen, nicht die Schleifendurchlaeufe: api() mit
+    # fatal=False schluckt den Fehler stumm, und eine Zeile "6 alte geloescht"
+    # ueber sechs abgelehnten DELETEs ist schlimmer als gar keine Meldung.
+    weg = 0
+    for i in alt_ids:
+        res = api(tok, f'appScreenshots/{i}', 'DELETE', fatal=False)
+        if isinstance(res, dict) and res.get('_fehler'):
+            print(f'    FEHLER beim Loeschen von {i}: {fehler_text(res)}')
+        else:
+            weg += 1
+    if alt_ids:
+        print(f'    {weg} von {len(alt_ids)} alten geloescht')
+    rest = sum(1 for p in danach if hoch(p))
+    if danach:
+        print(f'    {rest} von {len(danach)} weiteren hochgeladen')
+
+
 def setze_screenshots(tok):
     aid = app_id(tok)
     v = offene_version(tok, aid)
-    print(f'  Version {v["attributes"]["versionString"]}')
+    zustand = v['attributes'].get('appStoreState')
+    print(f'  Version {v["attributes"]["versionString"]}  Zustand {zustand}')
+    # HARTE Sperre, kein --trotzdem. Am 02.09. gemessen: Waehrend
+    # WAITING_FOR_REVIEW erlaubt Apple das LOESCHEN von Screenshots, verweigert
+    # aber jedes Anlegen ("Can't Create Screenshot while Waiting For Review").
+    # Ein erzwungener Lauf kann die Bildstrecke also nur zerstoeren, nie
+    # ersetzen — genau das ist an dem Tag passiert, in allen sieben Sprachen.
+    # Der Weg ist: Einreichung zurueckziehen (--aufraeumen), Bilder tauschen,
+    # neu einreichen.
+    if zustand in IN_PRUEFUNG and not TROCKEN:
+        sys.exit(
+            f'Version {v["attributes"]["versionString"]} steht auf {zustand}. '
+            'Apple laesst dabei Loeschen zu, aber kein Hochladen — ein Lauf '
+            'wuerde die Bildstrecke leeren.\n'
+            'Erst --aufraeumen (zieht die Einreichung zurueck), dann die '
+            'Bilder, dann --einreichen.')
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
     for loc in locs.get('data', []):
         lc = loc['attributes']['locale']
@@ -380,25 +493,24 @@ def setze_screenshots(tok):
         sets = api(tok, f'appStoreVersionLocalizations/{loc["id"]}/appScreenshotSets')
         vorhanden = {s['attributes']['screenshotDisplayType']: s['id']
                      for s in sets.get('data', [])}
-        for ordner, typ in BILDER:
-            pfade = sorted(
-                os.path.join(WURZEL, ordner, f)
-                for f in os.listdir(os.path.join(WURZEL, ordner))
-                if f.endswith('.png') and f[0].isdigit())
+        for basis, typ, anlegen_erlaubt in BILDER:
+            ordner, pfade = bilder_ordner(basis, lc)
             if not pfade:
-                print(f'    {typ}: keine Bilder in {ordner}')
+                print(f'    {typ}: keine Bilder in {basis}')
                 continue
+            if len(pfade) > MAX_BILDER:
+                print(f'    {typ}: {len(pfade)} Bilder in {ordner} — Apple '
+                      f'nimmt nur {MAX_BILDER}. Uebersprungen.')
+                continue
+            print(f'    {typ}: {len(pfade)} Bilder aus {ordner}')
             sid = vorhanden.get(typ)
+            alt_ids = []
             if sid:
                 alt = api(tok, f'appScreenshotSets/{sid}/appScreenshots')
-                for s in alt.get('data', []):
-                    if TROCKEN:
-                        print(f'    [trocken] alt loeschen {s["id"]}')
-                    else:
-                        api(tok, f'appScreenshots/{s["id"]}', 'DELETE',
-                            fatal=False)
-                if not TROCKEN and alt.get('data'):
-                    print(f'    {typ}: {len(alt["data"])} alte geloescht')
+                alt_ids = [s['id'] for s in alt.get('data', [])]
+            elif not anlegen_erlaubt:
+                print(f'    {typ}: kein Satz vorhanden — nicht angelegt')
+                continue
             elif TROCKEN:
                 print(f'    [trocken] Set {typ} anlegen')
                 sid = 'TROCKEN'
@@ -415,10 +527,7 @@ def setze_screenshots(tok):
                     continue
                 sid = neu['data']['id']
                 print(f'    Set {typ} angelegt')
-            for p in pfade:
-                datei_hoch(tok, 'appScreenshots', p, {
-                    'appScreenshotSet': {
-                        'data': {'type': 'appScreenshotSets', 'id': sid}}})
+            _tausche_bilder(tok, sid, alt_ids, pfade)
 
 
 def setze_abo_screenshot(tok):
@@ -1145,6 +1254,100 @@ def exportfrage(tok, wert=False):
         print('  gesetzt')
 
 
+
+def texte_lesen(tok):
+    """Liest die Store-Texte der offenen Version. Aendert nichts.
+
+    Die Beschreibungen liegen bewusst NICHT im Repo, sondern nur in der
+    Konsole — wer sie aendern will, muss also erst sehen, was dort steht.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    print(f'  Version {v["attributes"]["versionString"]} '
+          f'({v["attributes"].get("appStoreState")})')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        print(f'\n  ── {a["locale"]} ──')
+        for feld in ('description', 'whatsNew', 'promotionalText', 'keywords'):
+            wert = a.get(feld)
+            if wert is None or wert == '':
+                print(f'    {feld}: (leer)')
+            else:
+                einzeilig = wert.replace('\n', ' ⏎ ')
+                print(f'    {feld}: {einzeilig[:300]}'
+                      f'{"…" if len(einzeilig) > 300 else ""}')
+
+
+def texte_sichern(tok):
+    """Schreibt alle Store-Texte der offenen Version nach store-assets/asc-texte.json.
+
+    Und gibt sie zusaetzlich vollstaendig aus: In GitHub Actions ist das
+    Protokoll der einzige Weg, an die Datei heranzukommen.
+
+    Warum ueberhaupt: Die Apple-Texte lagen bisher NUR in der Konsole. Damit war
+    weder pruefbar noch nachvollziehbar, was dort steht — genau so blieben in 1.1
+    die Beschreibungen von de-DE und pt-PT monatelang vertauscht.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    daten = {}
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        daten[a['locale']] = {f: a.get(f) for f in FELDER}
+    ziel = os.path.join(WURZEL, 'store-assets', 'asc-texte.json')
+    os.makedirs(os.path.dirname(ziel), exist_ok=True)
+    with open(ziel, 'w', encoding='utf-8') as f:
+        json.dump(daten, f, ensure_ascii=False, indent=2, sort_keys=True)
+        f.write('\n')
+    print(f'  {len(daten)} Sprachen nach store-assets/asc-texte.json geschrieben\n')
+    print('── Datei-Inhalt ──')
+    print(json.dumps(daten, ensure_ascii=False, indent=2, sort_keys=True))
+
+
+def texte_schreiben(tok):
+    """Schreibt store-assets/asc-texte.json zurueck in die offene Version.
+
+    Nur Felder, die sich unterscheiden. Sprachen, die in der Datei fehlen,
+    bleiben unangetastet; `null` bedeutet ebenfalls „nicht anfassen".
+    """
+    quelle = os.path.join(WURZEL, 'store-assets', 'asc-texte.json')
+    if not os.path.exists(quelle):
+        sys.exit('  store-assets/asc-texte.json fehlt — erst --texte-sichern laufen lassen.')
+    with open(quelle, encoding='utf-8') as f:
+        soll = json.load(f)
+
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    print(f'  Version {v["attributes"]["versionString"]} '
+          f'({v["attributes"].get("appStoreState")})')
+    locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    for loc in locs.get('data', []):
+        a = loc['attributes']
+        wunsch = soll.get(a['locale'])
+        if not wunsch:
+            print(f'  {a["locale"]}: nicht in der Datei — uebersprungen')
+            continue
+        aendern = {f: wunsch[f] for f in FELDER
+                   if wunsch.get(f) is not None and wunsch.get(f) != a.get(f)}
+        if not aendern:
+            print(f'  {a["locale"]}: steht schon richtig')
+            continue
+        print(f'  {a["locale"]}: {", ".join(sorted(aendern))}')
+        if TROCKEN:
+            continue
+        res = api(tok, f'appStoreVersionLocalizations/{loc["id"]}', 'PATCH', {
+            'data': {'type': 'appStoreVersionLocalizations', 'id': loc['id'],
+                     'attributes': aendern},
+        }, fatal=False)
+        if res.get('_fehler'):
+            print(f'    FEHLER: {fehler_text(res)}')
+        else:
+            print('    gesetzt')
+
+
+
 def zeige_status(tok):
     aid = app_id(tok)
 
@@ -1239,6 +1442,12 @@ def main():
                    help='Was blockiert die Einreichung? (liest nur)')
     p.add_argument('--abo-namen', action='store_true',
                    help='Abo-Anzeigenamen von MyPeak auf FullRep ziehen')
+    p.add_argument('--texte-lesen', action='store_true',
+                   help='Store-Texte der offenen Version zeigen (liest nur)')
+    p.add_argument('--texte-sichern', action='store_true',
+                   help='Store-Texte nach store-assets/asc-texte.json holen (liest nur)')
+    p.add_argument('--texte-schreiben', action='store_true',
+                   help='store-assets/asc-texte.json in die offene Version zurueckschreiben')
     p.add_argument('--einreichungen', action='store_true',
                    help='alle Einreichungen samt Zustand und Elementen zeigen')
     p.add_argument('--aufraeumen', action='store_true',
@@ -1274,7 +1483,8 @@ def main():
 
     tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
-           a.warum, a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
+           a.warum, a.texte_lesen, a.texte_sichern, a.texte_schreiben,
+           a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
     if not any(tat):
@@ -1314,6 +1524,12 @@ def main():
         diagnose(tok)
     if a.abo_namen:
         abo_namen(tok)
+    if a.texte_lesen:
+        texte_lesen(tok)
+    if a.texte_sichern:
+        texte_sichern(tok)
+    if a.texte_schreiben:
+        texte_schreiben(tok)
     if a.einreichungen:
         zeige_einreichungen(tok)
     if a.aufraeumen:

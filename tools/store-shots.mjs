@@ -2,11 +2,14 @@
 //   Apple: 440×956 · DSF 3 = 1320×2868 (iPhone 6,9", deckt kleinere Geraete ab)
 //   Play:  360×720 · DSF 3 = 1080×2160 (Play verlangt Seitenverhaeltnis <= 2:1)
 // Aufruf: node tools/store-shots.mjs [ziel-ordner] [url]
-import { chromium } from 'playwright';
+import { browserStarten, netzVerlangen, vorschauSichern } from './pruefbrowser.mjs';
 import { readFileSync, mkdirSync } from 'node:fs';
 
 const outDir = process.argv[2] ?? `${process.env.HOME}/Desktop/Anigosha-Store`;
-const url = process.argv[3] ?? 'https://anigosha.vercel.app';
+const gewuenscht = process.argv[3] ?? 'https://anigosha.vercel.app';
+// Startet bei Bedarf einen Vorschau-Server und beendet ihn am Ende wieder.
+// Zeigt die URL nach draussen (Vercel), bleibt sie unveraendert.
+const { url, stoppen } = await vorschauSichern(gewuenscht);
 const lang = process.env.SHOT_LANG ?? 'de'; // 'de' | 'en'
 
 const env = readFileSync(new URL('../.env', import.meta.url), 'utf8');
@@ -39,7 +42,9 @@ const SCREENS = [
   { file: '5-profil', path: '/profile' },
 ];
 
-const browser = await chromium.launch();
+const browser = await browserStarten();
+// Ohne Daten waere jeder Screenshot eine Luege — lieber hier abbrechen.
+await netzVerlangen(browser, supaUrl, stoppen);
 
 for (const fmt of FORMATS) {
   const dir = `${outDir}/${fmt.name}`;
@@ -81,4 +86,5 @@ for (const fmt of FORMATS) {
 }
 
 await browser.close();
+await stoppen();
 console.log(`\nFertig: ${outDir}`);
