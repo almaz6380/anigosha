@@ -1067,7 +1067,20 @@ verknüpft. Seiten- und Instagram-IDs sind öffentlich und stehen in `apps.json`
 unter `meta`; als Secret liegt je App `FB_SEITEN_TOKEN_<APP>`, dazu
 `BLOB_TOKEN` (Vercel-Blob-Store `social-bilder`, **Public**, fra1 — Instagram
 holt sich das Bild selbst ab, mit „Private" ginge es nicht).
-**Offen ist nur noch TikTok** (3 geteilte + 5 Refresh-Token).
+**TikTok ist bewusst geparkt** (04.09.2026). App **WELLapps Social** ist
+angelegt, Produkte und Redirect-URI gesetzt, Domain über eine Signaturdatei
+(`public/tiktok<token>.txt` — ⚠ nicht löschen) verifiziert. Dann kam die Wand:
+**TikTok lässt die App nicht einmal speichern, bevor ein Demo-Video des
+fertigen Ablaufs hochgeladen ist**, und ungeprüfte Apps müssen den Ablauf laut
+TikToks eigenem Text erst in einer Sandbox vorführen. Also Sandbox → Video →
+Prüfung → Produktion; mehrere Stunden plus Wartezeit. Facebook und Instagram
+tragen den Kanal derweil. Weiterweg, Fallen und der fertige Einreichungstext
+stehen in `tools/social/veroeffentlichen/README.md`, Teil B.
+
+Vorbereitet liegt schon: Workflow **„TikTok-Zugang holen"** (der Tausch
+Code → Refresh-Token braucht einen POST mit dem App-Geheimnis und geht deshalb
+nicht im Browser) und die Landeseite `/tiktok-fertig`, die den Code nach der
+Anmeldung mit Kopierknopf anzeigt statt ihn in der Adresszeile zu verstecken.
 
 **Nachmessen statt hoffen:** Workflow **„Social-Zugaenge pruefen"**
 (`.github/workflows/social-zugaenge.yml`, Modus `live_pruefen: true`). Er sagt

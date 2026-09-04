@@ -203,12 +203,79 @@ und Nutrition" (`1245653821967923`); die aeltere „FullRepapp"
 
 ### B · TikTok
 
+**Stand 04.09.2026: App angelegt, Domain verifiziert — und dann gegen die
+App-Pruefung gelaufen. Bewusst geparkt, siehe unten.**
+
+Angelegt ist: App **WELLapps Social** (Individual, Entwicklerkonto ueber ein
+TikTok-Konto), Produkte **Login Kit** + **Content Posting API** (Direct Post
+AUS), Redirect URI `https://anigosha.vercel.app/tiktok-fertig`, Domain
+`https://anigosha.vercel.app/` verifiziert.
+
+**⚠ Die Wand: TikTok laesst die App nicht einmal SPEICHERN, solange kein
+Demo-Video hochgeladen ist**, das den fertigen Ablauf zeigt. Und aus ihrem
+eigenen Text: *„If your app has not been approved before, you are required to
+use a sandbox environment … to demonstrate the integration."* Also erst
+Sandbox zum Laufen bringen, daraus das Video, dann Pruefung, dann Produktion.
+Das sind mehrere Stunden plus Wartezeit — kein Nebenbei-Schritt.
+
+Facebook und Instagram tragen den Kanal derweil; deshalb ist TikTok geparkt
+und nicht halbfertig eingereicht.
+
+**Vier Dinge, die beim Einrichten Zeit gekostet haben:**
+
+1. **„Account doesn't exist" beim Login** heisst nicht, dass das TikTok-Konto
+   fehlt: Das ENTWICKLERKONTO ist ein eigenes und muss ueber „Sign up" erst
+   angelegt werden.
+2. **Berechtigungen stehen NICHT unter „Add scopes".** Dort liegen nur
+   Zusatzrechte (user.info.profile, video.list). `video.upload` und
+   `user.info.basic` kommen automatisch MIT den Produkten. Wer sie in der
+   Scope-Liste sucht, sucht vergebens.
+3. **Die Domain-Pruefung geht nur ueber „URL prefix" (Signaturdatei)**, nicht
+   ueber „Domain" (DNS): `vercel.app` gehoert Vercel, nicht uns. Die Datei
+   liegt als `public/tiktok<token>.txt` im Repo. ⚠ Nicht loeschen.
+4. **Der verifizierte Prefix traegt einen Schraegstrich am Ende.** Steht im
+   Feld „Web/Desktop URL" die Adresse OHNE, bleibt sie rot — dasselbe
+   Zeichen, dieselbe halbe Stunde.
+
+**Wenn es weitergeht — die Reihenfolge:**
+
+1. Reiter **Sandbox** (oben neben „Production"), Sandbox anlegen und die
+   eigenen TikTok-Konten als Zielnutzer eintragen.
+2. Client Key und Secret der Sandbox als `TIKTOK_CLIENT_KEY` /
+   `TIKTOK_CLIENT_SECRET` hinterlegen.
+3. Workflow **„TikTok-Zugang holen"**, Schritt `link` → anmelden → Schritt
+   `tausch` → Refresh-Token. Je Konto einmal.
+4. Einen Beitrag hochladen, den Ablauf dabei als Video aufnehmen.
+5. Video und Erklaertext in „App review" hochladen, einreichen.
+6. Nach der Freigabe dieselben drei Schritte gegen die Produktions-App
+   wiederholen — die Sandbox-Token gelten dort NICHT.
+
+**Text fuer das Feld „Explain how each product and scope works"** (1000
+Zeichen; liegt hier, damit er beim Einreichen nicht neu erfunden wird):
+
+> The app publishes marketing content for our own five mobile apps to our own
+> five TikTok accounts. No third-party accounts are involved and the app is
+> not offered to other users.
+>
+> Login Kit (user.info.basic): used once per account, by the account owner, to
+> authorize the app and obtain a refresh token. We only read the open_id to
+> map each token to the correct account.
+>
+> Content Posting API (video.upload): a scheduled job renders short videos
+> from our own app content and uploads them to the creator inbox as drafts.
+> Direct Post is deliberately disabled — a human opens the TikTok app and
+> decides whether to publish. Nothing is ever posted without that step.
+
+**Die urspruengliche Kurzfassung:**
+
 1. developers.tiktok.com → Manage apps → App erstellen.
 2. Produkt „Content Posting API". Direct Post NICHT aktivieren — wir laden in
    den Entwurfs-Posteingang.
-3. Scope `video.upload`.
+3. Scope `video.upload` (kommt mit dem Produkt, s. o.).
 4. Client Key und Client Secret notieren (das Secret wird nur einmal gezeigt).
-5. Einmalig OAuth durchlaufen → **Refresh-Token**.
+5. Einmalig OAuth durchlaufen → **Refresh-Token**. Dafuer gibt es den Workflow
+   „TikTok-Zugang holen"; der Tausch Code → Token braucht einen POST mit dem
+   App-Geheimnis und geht deshalb nicht im Browser.
 
 ⚠ **Nicht den Access-Token hinterlegen.** Er haelt laut Doku „24 hours after
 initial issuance" und waere am naechsten Tag tot. Der Code holt sich vor jedem
