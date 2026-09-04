@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>TikTok-Zugang — Code</title>
+<!--
+  Landeseite fuer die TikTok-Anmeldung.
+
+  ⚠ WARUM ES DIESE SEITE GIBT: TikTok leitet nach der Bestaetigung hierher
+  zurueck und haengt den `code` an die Adresse. Ohne diese Seite laedt an
+  dieser Stelle die Quiz-App, und der Code muesste aus der Adresszeile
+  geklaubt werden — auf dem Handy zwischen zwei langen Parametern. Hier steht
+  er gross und ist mit einem Tipp kopiert.
+
+  ⚠ Der Code ist KEIN Geheimnis von Dauer: Er gilt wenige Minuten und genau
+  einmal. Trotzdem steht er nur hier im Browser — die Seite schickt ihn
+  nirgendwohin, es gibt keinen Server dahinter und keine Auswertung.
+
+  ⚠ Reine Typografie, kein Aufbau aus der App: Diese Seite muss auch dann
+  laden, wenn am Build etwas kaputt ist — sonst haengt der ganze Ablauf.
+-->
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px; background: #06171c; color: #eefaf7;
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .karte { max-width: 560px; width: 100%; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+  p { color: #9dbcbb; margin: 0 0 20px; }
+  .code {
+    background: #0d2229; border: 1px solid #1e424a; border-radius: 14px;
+    padding: 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 15px; word-break: break-all; user-select: all; cursor: pointer;
+  }
+  button {
+    margin-top: 14px; width: 100%; padding: 14px; border: 0; border-radius: 12px;
+    background: #eefaf7; color: #06171c; font-size: 16px; font-weight: 600;
+    cursor: pointer;
+  }
+  .fehler { color: #ff6b5e; }
+  .fein { font-size: 14px; color: #9dbcbb; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="karte" id="karte"></div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const fehler = p.get('error') || p.get('error_description');
+  const k = document.getElementById('karte');
+
+  if (code) {
+    k.innerHTML = '<h1>Code erhalten</h1>'
+      + '<p>Kopieren und im Workflow „TikTok-Zugang holen" bei '
+      + '<b>schritt = tausch</b> einsetzen.</p>'
+      + '<div class="code" id="c"></div>'
+      + '<button id="b">Kopieren</button>'
+      + '<p class="fein">Er gilt nur wenige Minuten und genau einmal. '
+      + 'Laeuft er ab, den Schritt „link" einfach wiederholen.</p>';
+    // textContent statt innerHTML: Der Wert kommt aus der Adresszeile und
+    // darf niemals als HTML ausgefuehrt werden.
+    document.getElementById('c').textContent = code;
+    document.getElementById('b').onclick = async (e) => {
+      try {
+        await navigator.clipboard.writeText(code);
+        e.target.textContent = 'Kopiert';
+      } catch {
+        // Ohne Zwischenablage-Recht (aelteres iOS, kein HTTPS-Kontext) bleibt
+        // das Markieren von Hand — user-select: all macht einen Tipp daraus.
+        e.target.textContent = 'Bitte von Hand markieren';
+      }
+    };
+  } else {
+    k.innerHTML = '<h1 class="fehler">Kein Code in der Adresse</h1>'
+      + '<p>TikTok hat die Anmeldung nicht abgeschlossen. '
+      + 'Den Schritt „link" erneut ausfuehren.</p>';
+    if (fehler) {
+      const d = document.createElement('div');
+      d.className = 'code';
+      d.textContent = fehler;
+      k.appendChild(d);
+    }
+  }
+</script>
+</body>
+</html>

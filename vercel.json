@@ -6,6 +6,10 @@
       "destination": "/get.html"
     },
     {
+      "source": "/tiktok-fertig",
+      "destination": "/tiktok-fertig.html"
+    },
+    {
       "source": "/((?!assets/|favicon|icons|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
