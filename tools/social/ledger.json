@@ -80,6 +80,24 @@
       "schluessel": "kategorie",
       "inhalt": "seed22026",
       "sprache": "en"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-05",
+      "winkel": "fandom",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed93318",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-05",
+      "winkel": "frage-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed23535",
+      "sprache": "de"
     }
   ]
 }
