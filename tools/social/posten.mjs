@@ -39,7 +39,7 @@ import { ladeApps } from './waehlen.mjs';
 import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang, frischerToken } from './veroeffentlichen/tiktok.mjs';
-import { hochladen } from './veroeffentlichen/blob.mjs';
+import { hochladen, merklisteAblegen } from './veroeffentlichen/blob.mjs';
 import { captionAus } from './vorflug.mjs';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -196,6 +196,10 @@ async function tiktokToken(appSchluessel) {
   return r.token;
 }
 
+// Was Instagram spaeter freigeben soll, je App. Wird am Ende als Merkliste
+// abgelegt — siehe merklisteAblegen() fuer den Grund.
+const merkliste = new Map();
+
 let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
@@ -238,7 +242,14 @@ for (const p of posten) {
         console.log(r.trocken
           ? `   ▸ instagram  wuerde das Bild ablegen unter ${r.pfad}`
           : `   ✓ instagram  Bild liegt bereit — Container entsteht beim Freigeben`);
-        if (!r.trocken) console.log(`     ${r.url}`);
+        if (!r.trocken) {
+          console.log(`     ${r.url}`);
+          if (!merkliste.has(p.app)) merkliste.set(p.app, []);
+          merkliste.get(p.app).push({
+            datei: basename(p.medium), url: r.url, blobPfad: r.pfad,
+            text: p.text, istVideo,
+          });
+        }
         offen += 1;
       }
     } catch (e) {
@@ -246,6 +257,18 @@ for (const p of posten) {
     }
   }
   console.log();
+}
+
+// ⚠ Erst NACH allen Beitraegen, und nur bei einem echten Lauf: Die Liste ist
+// die Verabredung mit dem Freigabelauf. Waere sie schon nach dem ersten
+// Beitrag geschrieben, stuende beim Abbruch mittendrin eine unvollstaendige
+// da, die vollstaendig aussieht.
+for (const [appSchluessel, eintraege] of merkliste) {
+  if (!eintraege.length) continue;
+  const r = await merklisteAblegen({
+    datum: DATUM, appSchluessel, eintraege, token: zugaenge(appSchluessel).blobToken,
+  });
+  console.log(`Merkliste fuer die Freigabe: ${eintraege.length} Beitrag(e) → ${r.pfad}`);
 }
 
 console.log(ECHT

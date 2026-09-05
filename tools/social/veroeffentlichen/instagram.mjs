@@ -39,6 +39,39 @@ export async function containerAnlegen({ kontoId, token, bildUrl, text, istReel,
   return { containerId: daten.id };
 }
 
+/**
+ * Schritt 1b: warten, bis der Container fertig verarbeitet ist.
+ *
+ * ⚠ Nur scheinbar ueberfluessig. Bei einem BILD ist der Container sofort
+ * benutzbar; bei einem REEL laedt Instagram das Video erst von der Adresse
+ * herunter und kodiert es. Wer sofort veroeffentlicht, bekommt „Media ID is
+ * not available" — eine Meldung, die nach einem falschen Container aussieht,
+ * obwohl er nur noch nicht fertig ist.
+ *
+ * Deshalb fragen statt raten: `status_code` ist IN_PROGRESS, FINISHED,
+ * ERROR oder EXPIRED.
+ */
+export async function aufBereitWarten({ containerId, token, maxSekunden = 300 }) {
+  const bis = Date.now() + maxSekunden * 1000;
+  let zuletzt = 'unbekannt';
+
+  while (Date.now() < bis) {
+    const antwort = await fetch(
+      `${GRAPH}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(token)}`,
+    );
+    const daten = await antwort.json();
+    zuletzt = daten.status_code ?? zuletzt;
+
+    if (zuletzt === 'FINISHED') return { bereit: true };
+    if (zuletzt === 'ERROR' || zuletzt === 'EXPIRED') {
+      throw new Error(`Instagram: Container ${zuletzt} — ${daten.status ?? 'ohne naehere Angabe'}`);
+    }
+    await new Promise((r) => setTimeout(r, 5000));
+  }
+  throw new Error(`Instagram: Container nach ${maxSekunden}s noch ${zuletzt}. `
+    + 'Nicht veroeffentlicht — lieber gar nichts als ein halber Beitrag.');
+}
+
 /** Schritt 2: veroeffentlichen. Erst hier wird der Beitrag sichtbar. */
 export async function veroeffentlichen({ kontoId, token, containerId, trocken }) {
   if (trocken) return { trocken: true, containerId };
