@@ -1193,9 +1193,35 @@ Leitplanken-Probe (`lauf.mjs --pruefung`) grün, Tageslauf für Anigosha erzeugt
 ✅ **Die Transportfrage ist gelöst** (siehe Abschnitt darüber): Die Zugangsdaten
 liegen in den GitHub-Secrets, die Dateien entstehen dort, wo die Repos liegen —
 der Tageslauf-Workflow bringt beides zusammen, indem er die vier
-Schwester-Repos mit auscheckt. **Nur für Anigosha erprobt**; die anderen vier
-sind ungetestet, ihre Motoren brauchen mehr als nur Playwright (Mahjong etwa
-einen laufenden `vite preview`).
+Schwester-Repos mit auscheckt.
+
+**TikTok ist inzwischen für alle fünf Apps am echten Konto gemessen** (05.09.,
+Läufe #11 und #13): Anigosha, Mahjong Royale und FullRep zuerst, Swaply und
+WELLbooked! nach dem Reel-Generator. Jeder Entwurf liegt im Posteingang der
+jeweiligen TikTok-App; öffentlich ist keiner.
+
+⚠ **Zwei Fehler, die dabei aufgefallen sind — beide behoben, beide lehrreich:**
+
+1. **Der Motor eines Repos muss auf dessen STANDARDZWEIG liegen.** Swaplys
+   `scripts/social-daten.mjs` und `scripts/post-bild.mjs` standen nur auf
+   `claude/swaply-icon-farben`; der Workflow checkt den Standardzweig aus, also
+   fehlten sie („Cannot find module"). **Lokal war alles da — genau deshalb
+   fiel es erst im Lauf auf.** Ein `ls` im Arbeitsverzeichnis beweist nichts
+   über den Zustand des Repos. Notbehelf: die Eingabe `zweige`
+   (`swaply=claude/swaply-icon-farben`). Sie gehört wieder weg, sobald der
+   Zweig zusammengeführt ist — was von einem Feature-Zweig gerendert wird,
+   entspricht nicht dem, was in jenem Repo gilt.
+   ⚠ **Swaplys Zweig bringt außerdem eine Farbumstellung der App mit.** Ihn
+   zusammenzuführen ist deshalb keine reine Aufräumarbeit.
+2. **Eine gescheiterte App riss die übrigen mit.** `set -e` beendete die
+   Schleife beim ersten Fehlschlag; WELLbooked! kam nie dran und **sah aus, als
+   wäre es ebenfalls kaputt**. Jetzt läuft jede App für sich, der Versand
+   überspringt die nicht gerenderten, und ein letzter Schritt färbt den Lauf
+   trotzdem rot. Ein grüner Haken heißt weiterhin: alles Angeforderte ist
+   passiert.
+
+Ungetestet bleibt nur der Weg über alle fünf **gleichzeitig** (`apps: alle`) —
+Mahjongs Motor braucht dabei einen laufenden `vite preview`.
 
 **Instagram ist zudem nur halb fertig.** `posten.mjs` legt das Bild im Blob ab;
 Container und Veröffentlichung (`veroeffentlichen/instagram.mjs`) haben Code,
