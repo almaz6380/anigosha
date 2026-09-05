@@ -310,8 +310,17 @@ async function tageslauf() {
         // „✗ }" da — der eigentliche Grund (ERR_CONNECTION_REFUSED) lag
         // mittendrin. Deshalb die erste Zeile suchen, die wie ein Grund
         // aussieht.
+        //
+        // ⚠ Und die erste Zeile, die „Error" ENTHAELT, ist auch nicht der
+        // Grund: Node druckt vor der Meldung die schuldige QUELLZEILE. Im
+        // Workflow stand deshalb als ganze Diagnose „const err = new
+        // Error(message);" — richtig zitiert, vollkommen nutzlos. Zuerst
+        // also die Kopfzeile einer Ausnahme suchen („TypeError: …",
+        // „Error [ERR_MODULE_NOT_FOUND]: …"), die steht am Zeilenanfang.
         const roh = (e.stderr?.toString() || e.message).trim().split('\n');
-        const grund = roh.find((z) => /Error|error:|✗|refused|ENOENT|not found|Cannot/i.test(z))
+        const kopfzeile = /^(?:[A-Z][\w$]*Error|Error)(?: \[[^\]]+\])?: /;
+        const grund = roh.find((z) => kopfzeile.test(z.trim()))
+          ?? roh.find((z) => /error:|✗|refused|ENOENT|not found|Cannot find/i.test(z))
           ?? roh.find((z) => z.trim() && !/^\s*[{}^)]/.test(z))
           ?? roh[0];
         console.log(`     ✗ ${grund.slice(0, 220)}`);
