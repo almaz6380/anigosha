@@ -120,6 +120,12 @@ jobs:
       # („Cannot find package"), Lauf 2 dann nur noch am Reel, weil
       # ffmpeg-static fehlte — das Bild braucht es nicht. Deshalb hier
       # dasselbe --no-save, und zwar bevor irgendetwas rendert.
+      #
+      # ⚠⚠ BEIDE IN EINEM AUFRUF. Zwei Aufrufe nacheinander heben sich auf:
+      # npm raeumt bei jeder Installation weg, was nicht in package.json steht
+      # — und --no-save traegt es dort ja gerade nicht ein. In Lauf 3 hat das
+      # zweite `npm i --no-save ffmpeg-static` das eben installierte playwright
+      # wieder entfernt, und der Fehler von Lauf 1 war zurueck.
       - name: Abhaengigkeiten
         run: |
           set -e
@@ -128,8 +134,9 @@ jobs:
             echo "━━ $ordner"
             cd "$SOCIAL_WURZEL/$ordner"
             npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+            npm i --no-save --no-audit --no-fund playwright ffmpeg-static
             for paket in playwright ffmpeg-static; do
-              [ -d "node_modules/$paket" ] || npm i --no-save --no-audit --no-fund "$paket"
+              [ -d "node_modules/$paket" ] || { echo "✗ $paket fehlt in $ordner"; exit 1; }
             done
           done
 
