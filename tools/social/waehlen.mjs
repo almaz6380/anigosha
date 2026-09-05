@@ -25,7 +25,7 @@
 // so kann das Repo das Rezept statt des Videos speichern.
 
 import { readFileSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
@@ -64,8 +64,28 @@ export function saat(...teile) {
 }
 
 // --- Laden ------------------------------------------------------------------
+// ⚠ apps.json fuehrt ABSOLUTE Pfade (/home/user/mahjong-app). Das ist auf
+// Josefs Rechner und in einer Cloud-Sitzung richtig — dort liegen die fuenf
+// Repos genau so nebeneinander. Ein GitHub-Runner checkt sie aber unter
+// $GITHUB_WORKSPACE aus, und dort gaebe es /home/user gar nicht.
+//
+// Deshalb diese eine Weiche: Steht SOCIAL_WURZEL, wird nur der VORDERE Teil
+// des Pfades ersetzt, der Ordnername bleibt. Aus /home/user/mahjong-app wird
+// <wurzel>/mahjong-app. Der Workflow checkt die Repos genau unter diesen
+// Namen aus.
+//
+// Absichtlich keine Pfade in apps.json aendern: Die Datei beschreibt die
+// gewohnte Arbeitsumgebung, und die soll ohne Umgebungsvariable weiter
+// funktionieren.
 export function ladeApps() {
-  return JSON.parse(readFileSync(join(HIER, 'apps.json'), 'utf8'));
+  const roh = JSON.parse(readFileSync(join(HIER, 'apps.json'), 'utf8'));
+  const wurzel = process.env.SOCIAL_WURZEL;
+  if (!wurzel) return roh;
+  for (const [k, app] of Object.entries(roh.apps ?? roh)) {
+    if (k.startsWith('_') || !app?.pfad) continue;
+    app.pfad = join(wurzel, basename(app.pfad));
+  }
+  return roh;
 }
 
 export function ladeWinkel(app) {

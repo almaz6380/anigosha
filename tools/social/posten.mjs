@@ -35,6 +35,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { ladeApps } from './waehlen.mjs';
 import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang, frischerToken } from './veroeffentlichen/tiktok.mjs';
@@ -49,7 +50,11 @@ const ECHT = hat('echt');
 const DATUM = wert('datum', new Date().toISOString().slice(0, 10));
 const NUR_APP = wert('app', null);
 
-const APPS = JSON.parse(readFileSync(join(HIER, 'apps.json'), 'utf8'));
+// ⚠ Ueber ladeApps(), NICHT direkt aus der Datei: Nur so greift die
+// SOCIAL_WURZEL-Weiche (siehe waehlen.mjs). Wer hier wieder selbst liest,
+// baut auf einem Runner Pfade zusammen, die es nicht gibt — und posten.mjs
+// meldet dann seelenruhig „Nichts zu posten", statt zu scheitern.
+const APPS = ladeApps();
 
 // --- Was liegt fuer diesen Tag bereit? --------------------------------------
 //

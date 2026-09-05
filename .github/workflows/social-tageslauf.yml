@@ -1,0 +1,199 @@
+name: Social-Tageslauf
+
+# Erzeugt die Tagesbeitraege und laedt sie als ENTWURF in die Kanaele.
+#
+# ⚠ Warum dieser Workflow ueberhaupt existiert — die Transportfrage:
+# Die Zugangsdaten liegen in den GitHub-Secrets und duerfen nirgends sonst
+# hin. Die fertigen Videos entstehen dort, wo die fuenf Repos liegen. Bis
+# hierher trafen sich beide nirgends: Eine Cloud-Sitzung hat die Repos, aber
+# keine Secrets; ein Workflow hatte die Secrets, aber nur `anigosha`.
+# Dieser Lauf checkt die vier Schwester-Repos mit aus und bringt beides
+# zusammen.
+#
+# ⚠ `modus: echt` sendet WIRKLICH — allerdings ueberall nur als Entwurf:
+# Facebook `published=false`, TikTok in den Posteingang der App. Instagram
+# bekommt nur das Bild an eine oeffentliche Adresse gelegt; der Container
+# entsteht erst beim Freigeben, weil er nach 24 Stunden verfaellt.
+# Oeffentlich wird nichts ohne einen Menschen.
+
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: 'Welche Apps? Kommagetrennt (anigosha,mahjong,wellbooked,fullrep,swaply) oder alle'
+        type: string
+        default: anigosha
+      modus:
+        description: 'trocken = nur zeigen, was passieren wuerde · echt = Entwuerfe hochladen'
+        type: choice
+        options: [trocken, echt]
+        default: trocken
+      datum:
+        description: 'Anderer Tag als heute (JJJJ-MM-TT), leer = heute'
+        type: string
+        required: false
+
+# ⚠ Schreibrecht nur fuer den Ledger (siehe letzter Schritt). Ohne ihn
+# wiederholt der naechste Lauf dieselben Winkel — die Rotation lebt davon,
+# dass der Lauf sein eigenes Ergebnis zurueckschreibt.
+permissions:
+  contents: write
+
+jobs:
+  lauf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      # Die fuenf Repos liegen hier nebeneinander, genau wie unter /home/user.
+      # ladeApps() ersetzt damit den vorderen Teil der Pfade aus apps.json.
+      SOCIAL_WURZEL: ${{ github.workspace }}
+      # Ein gemeinsamer Browser-Ort fuer alle Repos — sonst laedt jedes seinen
+      # eigenen Chromium (5 × 150 MB).
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
+
+    steps:
+      - name: anigosha auschecken
+        uses: actions/checkout@v4
+        with:
+          path: anigosha
+
+      # ⚠ Die vier Schwester-Repos sind privat; der eingebaute GITHUB_TOKEN
+      # gilt nur fuer dieses Repo. REPOS_TOKEN ist ein fein granularer Token
+      # mit Contents:Read auf genau diese vier.
+      - name: mahjong-app auschecken
+        if: contains(inputs.apps, 'mahjong') || inputs.apps == 'alle'
+        uses: actions/checkout@v4
+        with:
+          repository: almaz6380/mahjong-app
+          token: ${{ secrets.REPOS_TOKEN }}
+          path: mahjong-app
+
+      - name: wellbooked auschecken
+        if: contains(inputs.apps, 'wellbooked') || inputs.apps == 'alle'
+        uses: actions/checkout@v4
+        with:
+          repository: almaz6380/wellbooked
+          token: ${{ secrets.REPOS_TOKEN }}
+          path: wellbooked
+
+      # ⚠ Das Repo heisst MyPeak, der Ordner muss mypeak heissen — apps.json
+      # fuehrt fullrep unter /home/user/mypeak, und ladeApps() nimmt den
+      # Ordnernamen woertlich.
+      - name: MyPeak (FullRep) auschecken
+        if: contains(inputs.apps, 'fullrep') || inputs.apps == 'alle'
+        uses: actions/checkout@v4
+        with:
+          repository: almaz6380/MyPeak
+          token: ${{ secrets.REPOS_TOKEN }}
+          path: mypeak
+
+      - name: swaply auschecken
+        if: contains(inputs.apps, 'swaply') || inputs.apps == 'alle'
+        uses: actions/checkout@v4
+        with:
+          repository: almaz6380/swaply
+          token: ${{ secrets.REPOS_TOKEN }}
+          path: swaply
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Was liegt vor?
+        run: |
+          echo "Apps: ${{ inputs.apps }} · Modus: ${{ inputs.modus }}"
+          ls -d "$SOCIAL_WURZEL"/*/ 2>/dev/null
+
+      # Je ausgewaehlter App die Abhaengigkeiten. `npm ci` verlangt eine
+      # passende Lockdatei; weicht sie ab, ist `npm install` besser als ein
+      # Abbruch — gerendert wird mit dem, was das Repo mitbringt.
+      - name: Abhaengigkeiten
+        run: |
+          set -e
+          for ordner in anigosha mahjong-app wellbooked mypeak swaply; do
+            [ -f "$SOCIAL_WURZEL/$ordner/package.json" ] || continue
+            echo "━━ $ordner"
+            (cd "$SOCIAL_WURZEL/$ordner" && (npm ci --no-audit --no-fund || npm install --no-audit --no-fund))
+          done
+
+      # ⚠ Einmal zentral, nicht je Repo: PLAYWRIGHT_BROWSERS_PATH zeigt fuer
+      # alle auf denselben Ordner.
+      - name: Chromium fuer Playwright
+        run: cd "$SOCIAL_WURZEL/anigosha" && npx playwright install --with-deps chromium
+
+      - name: Beitraege erzeugen
+        working-directory: anigosha
+        run: |
+          set -e
+          DATUM_ARG=""
+          [ -n "${{ inputs.datum }}" ] && DATUM_ARG="--datum ${{ inputs.datum }}"
+          if [ "${{ inputs.apps }}" = "alle" ]; then
+            node tools/social/lauf.mjs --echt $DATUM_ARG
+          else
+            IFS=',' read -ra LISTE <<< "${{ inputs.apps }}"
+            for a in "${LISTE[@]}"; do
+              node tools/social/lauf.mjs --echt --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG
+            done
+          fi
+
+      - name: In die Kanaele
+        working-directory: anigosha
+        env:
+          FB_SEITEN_TOKEN_ANIGOSHA: ${{ secrets.FB_SEITEN_TOKEN_ANIGOSHA }}
+          FB_SEITEN_TOKEN_MAHJONG: ${{ secrets.FB_SEITEN_TOKEN_MAHJONG }}
+          FB_SEITEN_TOKEN_WELLBOOKED: ${{ secrets.FB_SEITEN_TOKEN_WELLBOOKED }}
+          FB_SEITEN_TOKEN_FULLREP: ${{ secrets.FB_SEITEN_TOKEN_FULLREP }}
+          FB_SEITEN_TOKEN_SWAPLY: ${{ secrets.FB_SEITEN_TOKEN_SWAPLY }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN_ANIGOSHA: ${{ secrets.TIKTOK_REFRESH_TOKEN_ANIGOSHA }}
+          TIKTOK_REFRESH_TOKEN_MAHJONG: ${{ secrets.TIKTOK_REFRESH_TOKEN_MAHJONG }}
+          TIKTOK_REFRESH_TOKEN_WELLBOOKED: ${{ secrets.TIKTOK_REFRESH_TOKEN_WELLBOOKED }}
+          TIKTOK_REFRESH_TOKEN_FULLREP: ${{ secrets.TIKTOK_REFRESH_TOKEN_FULLREP }}
+          TIKTOK_REFRESH_TOKEN_SWAPLY: ${{ secrets.TIKTOK_REFRESH_TOKEN_SWAPLY }}
+          BLOB_TOKEN: ${{ secrets.BLOB_TOKEN }}
+        run: |
+          set -e
+          DATUM_ARG=""
+          [ -n "${{ inputs.datum }}" ] && DATUM_ARG="--datum ${{ inputs.datum }}"
+          FLAGGE="--trocken"
+          [ "${{ inputs.modus }}" = "echt" ] && FLAGGE="--echt"
+          if [ "${{ inputs.apps }}" = "alle" ]; then
+            node tools/social/posten.mjs $FLAGGE $DATUM_ARG
+          else
+            IFS=',' read -ra LISTE <<< "${{ inputs.apps }}"
+            for a in "${LISTE[@]}"; do
+              node tools/social/posten.mjs $FLAGGE --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG
+            done
+          fi
+
+      # Damit sich das Ergebnis auch ohne Kanal ansehen laesst — und damit ein
+      # fehlgeschlagener Versand nicht bedeutet, dass die Arbeit weg ist.
+      - name: Beitraege als Artefakt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tagespaket
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ github.workspace }}/*/out/social/**
+
+      # ⚠ Der Ledger ist das Gedaechtnis der Rotation: Ohne ihn waehlt der
+      # naechste Lauf dieselben Winkel. Er wird deshalb nur nach einem ECHTEN
+      # Lauf zurueckgeschrieben — ein Trockenlauf hat nichts veroeffentlicht
+      # und darf keinen Winkel verbrauchen.
+      #
+      # [skip ci] haelt Vercel davon ab, fuer eine reine Datenzeile die ganze
+      # Web-App neu zu bauen.
+      - name: Ledger zurueckschreiben
+        if: inputs.modus == 'echt'
+        working-directory: anigosha
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/social/ledger.json
+          git diff --cached --quiet && { echo "Ledger unveraendert."; exit 0; }
+          git commit -m "Social: Ledger vom Tageslauf ${{ inputs.datum || 'heute' }} [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
