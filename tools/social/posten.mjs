@@ -50,6 +50,14 @@ const ECHT = hat('echt');
 const DATUM = wert('datum', new Date().toISOString().slice(0, 10));
 const NUR_APP = wert('app', null);
 
+// ⚠ --kanal ist fuer den Fall gebaut, der am 05.09. eingetreten ist: Zwei von
+// drei Kanaelen liefen durch, der dritte scheiterte. Ein einfacher zweiter
+// Lauf haette die geglueckten Beitraege ein zweites Mal angelegt — zwei
+// gleiche Entwuerfe auf der Seite, und niemand weiss mehr, welcher der neue
+// ist. Mit `--kanal instagram` wird nur der offene nachgeholt.
+const NUR_KANAELE = (wert('kanal', '') || '')
+  .split(',').map((s) => s.trim()).filter(Boolean);
+
 // ⚠ Ueber ladeApps(), NICHT direkt aus der Datei: Nur so greift die
 // SOCIAL_WURZEL-Weiche (siehe waehlen.mjs). Wer hier wieder selbst liest,
 // baut auf einem Runner Pfade zusammen, die es nicht gibt — und posten.mjs
@@ -106,7 +114,11 @@ function tagesposten() {
       const medium = ['.mp4', '-feed.jpg', '.jpg'].map((e) => join(ordner, stamm + e))
         .find(existsSync);
       if (!medium) continue;
-      raus.push({ app: k, name: app.name, kanaele: app.kanaele, medium,
+      const kanaele = NUR_KANAELE.length
+        ? app.kanaele.filter((x) => NUR_KANAELE.includes(x))
+        : app.kanaele;
+      if (!kanaele.length) continue;
+      raus.push({ app: k, name: app.name, kanaele, medium,
         text: captionAus(beiblatt).trim() });
     }
   }
