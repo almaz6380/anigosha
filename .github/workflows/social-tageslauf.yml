@@ -109,11 +109,17 @@ jobs:
       # passende Lockdatei; weicht sie ab, ist `npm install` besser als ein
       # Abbruch — gerendert wird mit dem, was das Repo mitbringt.
       #
-      # ⚠ playwright steht in KEINEM der Repos in package.json — es wird dort
-      # bewusst mit `npm i --no-save playwright` geholt, damit ein 150-MB-Paket
-      # nicht an jeder Installation haengt. `npm ci` bringt es deshalb nicht
-      # mit, und der erste Lauf hier scheiterte an genau dieser Zeile:
-      # „Cannot find package 'playwright'". Also hier dasselbe --no-save.
+      # ⚠ ZWEI Pakete stehen in KEINEM der Repos in package.json, weil sie
+      # gross sind und nur die Werkzeuge sie brauchen — geholt werden sie dort
+      # mit `npm i --no-save`:
+      #
+      #   playwright     rendert jede Seite (Bilder wie Reels)
+      #   ffmpeg-static  baut aus den Frames das MP4 (nur Reels)
+      #
+      # `npm ci` bringt beide nicht mit. Lauf 1 scheiterte an playwright
+      # („Cannot find package"), Lauf 2 dann nur noch am Reel, weil
+      # ffmpeg-static fehlte — das Bild braucht es nicht. Deshalb hier
+      # dasselbe --no-save, und zwar bevor irgendetwas rendert.
       - name: Abhaengigkeiten
         run: |
           set -e
@@ -122,8 +128,9 @@ jobs:
             echo "━━ $ordner"
             cd "$SOCIAL_WURZEL/$ordner"
             npm ci --no-audit --no-fund || npm install --no-audit --no-fund
-            node -e "process.exit(require('fs').existsSync('node_modules/playwright')?0:1)" \
-              || npm i --no-save --no-audit --no-fund playwright
+            for paket in playwright ffmpeg-static; do
+              [ -d "node_modules/$paket" ] || npm i --no-save --no-audit --no-fund "$paket"
+            done
           done
 
       # ⚠ Erst NACH der Installation: Der Browser muss zu der Playwright-
