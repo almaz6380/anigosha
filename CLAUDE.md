@@ -1137,6 +1137,52 @@ zwei Monaten** — danach meldet die Prüfung „läuft nie ab".
 5. **Zwei FullRep-Seiten.** Bespielt wird „FullRep – Fitness, Supplemente und
    Nutrition" (`1245653821967923`), nicht die ältere „FullRepapp".
 
+### Die ersten Beiträge sind draußen (05.09.2026) — als Entwürfe
+
+Workflow **„Social-Tageslauf"** (`.github/workflows/social-tageslauf.yml`) checkt
+die vier Schwester-Repos mit aus (Secret `REPOS_TOKEN`, Contents:Read) und führt
+`lauf.mjs --echt` und `posten.mjs` in einem Durchgang aus. Eingaben: `apps`,
+`modus` (trocken/echt), `datum`, `kanaele`.
+
+Erster echter Lauf für Anigosha, gemessen: **TikTok-Posteingang ✓, zwei
+Facebook-Entwürfe ✓** (`1446449490719798`, `122111821611442878`), **Instagram-
+Dateien öffentlich abgelegt ✓** (HTTP 200, `video/mp4` 4,3 MB und `image/jpeg`
+110 kB). Nichts davon ist öffentlich — Facebook `published=false`, TikTok im
+Entwurfs-Posteingang, Instagram wartet ohnehin auf die Freigabe.
+
+**Vier Läufe bis dahin, und jeder deckte etwas Echtes auf:**
+
+1. **`playwright` fehlte.** Es steht in keinem `package.json` (150 MB), wird
+   sonst per `npm i --no-save` geholt — `npm ci` bringt es nicht mit.
+2. **Der Lauf wurde trotzdem grün.** Das war der schlimmere Fehler: ein Haken,
+   hinter dem nichts steht. `lauf.mjs --echt` endet jetzt mit 1, wenn kein
+   einziger Beitrag entstanden ist.
+3. **`ffmpeg-static` fehlte** — dieselbe Sorte, deshalb fiel nur das Reel aus.
+   Sichtbar war das nicht: Als ganze Diagnose stand `const err = new
+   Error(message);` da, weil die Auswertung die erste Zeile nahm, die „Error"
+   *enthält* — und Node druckt vor der Meldung die schuldige Quellzeile.
+4. ⚠ **Zwei `npm i --no-save`-Aufrufe heben sich auf.** npm räumt bei jeder
+   Installation weg, was nicht in `package.json` steht — und `--no-save` trägt
+   es dort gerade nicht ein. Der zweite Aufruf löschte das eben installierte
+   `playwright`. **Beide Pakete gehören in EINEN Aufruf.**
+
+**Der Vercel-CLI taugt nicht mehr für die Instagram-Ablage.** CLI 59 antwortet
+auf `blob put --rw-token …` mit *„No existing credentials found. Please run
+`vercel login` or pass --token"* — der Blob-Token allein genügt ihr nicht.
+Deshalb `@vercel/blob` als devDependency und `put()` als Strom. Die alte
+Begründung gegen das SDK (ein `npm install` räumt die `--no-save`-Pakete weg)
+ist eingetreten und richtig — der Workflow fängt sie mit Punkt 4 ab.
+
+**`--kanal` holt einen einzelnen Kanal nach**, ohne die geglückten zu
+verdoppeln. Ohne den Filter hätte der Instagram-Nachlauf zwei weitere
+Facebook-Entwürfe angelegt, und niemand wüsste mehr, welcher der neue ist.
+
+⚠ **Ein 502 vom API-Aufruf heißt nicht, dass der Lauf nicht startete.** Am
+05.09. war er durchgekommen, der Wiederholungsversuch startete einen zweiten.
+Folgenlos, weil nur Instagram lief und Blob überschreibt — bei `modus: echt`
+ohne Filter wären es doppelte Entwürfe gewesen. Vor jedem Wiederholen erst die
+Lauf-Liste ansehen.
+
 ### Stand 05.09.2026, gemessen — und die eine Lücke, die noch offen ist
 
 Prüflauf über alle fünf Apps und drei Kanäle: **15 von 15 vollständig**, jeder
@@ -1144,21 +1190,12 @@ Facebook-Token gehört nachweislich zur richtigen Seite und läuft nie ab.
 Leitplanken-Probe (`lauf.mjs --pruefung`) grün, Tageslauf für Anigosha erzeugt,
 `posten.mjs --trocken` plant beide Beiträge korrekt.
 
-⚠ **Trotzdem kann noch niemand posten, und der Grund ist keine Zugangsfrage,
-sondern eine Transportfrage:** Die Zugangsdaten liegen in den GitHub-Secrets,
-die erzeugten Dateien liegen auf der Maschine, die sie gerendert hat. Beides
-trifft sich bisher nirgends.
-
-* Eine **Cloud-Sitzung** hat alle fünf Repos und rendert in Minuten — aber
-  keine Secrets, und die gehören auch nicht in eine Sitzung.
-* Ein **GitHub-Workflow** hat die Secrets — aber nur das Repo `anigosha`
-  ausgecheckt. `apps.json` zeigt auf `/home/user/mahjong-app`, `/wellbooked`,
-  `/mypeak`, `/swaply`; ohne die vier Repos rendert er nichts.
-
-Der Weg dahin ist ein Tageslauf-Workflow, der die vier Schwester-Repos
-mit auscheckt (dafür braucht es **ein** neues Secret: einen Token mit Lesezugriff
-auf sie) und danach `lauf.mjs --echt` und `posten.mjs --echt` in einem Lauf
-ausführt. Erst damit ist auch der spätere Tageszeitplan möglich.
+✅ **Die Transportfrage ist gelöst** (siehe Abschnitt darüber): Die Zugangsdaten
+liegen in den GitHub-Secrets, die Dateien entstehen dort, wo die Repos liegen —
+der Tageslauf-Workflow bringt beides zusammen, indem er die vier
+Schwester-Repos mit auscheckt. **Nur für Anigosha erprobt**; die anderen vier
+sind ungetestet, ihre Motoren brauchen mehr als nur Playwright (Mahjong etwa
+einen laufenden `vite preview`).
 
 **Instagram ist zudem nur halb fertig.** `posten.mjs` legt das Bild im Blob ab;
 Container und Veröffentlichung (`veroeffentlichen/instagram.mjs`) haben Code,
