@@ -11,7 +11,12 @@
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Wurzel von anigosha — von hier laufen die Werkzeuge, die nicht im Repo der
+// jeweiligen App liegen (siehe der Zweig fuer swaply/wellbooked weiter unten).
+const ANIGOSHA = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 // ⚠ Die vier Repos behandeln --out NICHT gleich.
 //
@@ -109,6 +114,32 @@ export function aufruf({ appSchluessel, app, post, wuerfel, out }) {
       schritte: [n('scripts/post-bild.mjs', '--format', post.format, '--level', level4,
         '--seed', String(post.seed), '--name', post.dateiname, '--out', out)],
       endung: '.jpg',
+    };
+  }
+
+  // ⚠ Swaply und WELLbooked! haben KEINEN eigenen Reel-Generator in ihrem
+  // Repo — anders als die drei anderen. Der Grund ist ein Zugangsrecht, kein
+  // technischer: Dieser Arbeitsplatz darf dort nur lesen, ein Generator waere
+  // nicht einzuchecken. Er liegt deshalb hier und wird von hier aufgerufen;
+  // seine INHALTE liest er trotzdem aus dem jeweiligen Repo.
+  //
+  // Wer dort Schreibzugriff hat, verschiebt ihn — dann faellt dieser Zweig weg.
+  if ((appSchluessel === 'swaply' || appSchluessel === 'wellbooked') && post.medium === 'reel') {
+    return {
+      schritte: [{
+        cmd: 'node',
+        args: ['tools/social/reels-fremd/make-reel.mjs', '--marke', appSchluessel,
+          '--format', post.format ?? post.winkel, '--lang', post.sprache,
+          '--seed', String(post.seed), '--name', post.dateiname,
+          // ⚠ ABSOLUTER Zielpfad. `out` kommt fuer diese beiden Apps relativ
+          // herein (sie haengen ihn sonst an ihre eigene Wurzel, siehe
+          // ausgabeOrt). Dieses Skript laeuft aber in anigosha — relativ
+          // uebergeben landete das Reel in anigosha/out/ und waere fuer
+          // posten.mjs unauffindbar.
+          '--out', isAbsolute(out) ? out : join(app.pfad, out)],
+        cwd: ANIGOSHA,
+      }],
+      endung: '.mp4',
     };
   }
 
