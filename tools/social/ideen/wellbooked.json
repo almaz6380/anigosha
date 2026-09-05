@@ -5,20 +5,21 @@
     {
       "id": "bauchbinde",
       "medium": "reel",
-      "format": "bild-reel",
-      "status": "neu",
+      "format": "ablauf",
+      "status": "vorhanden",
       "haken": "Einzeiler im Hausstil — DM Sans Bold 64 px, weiss auf 50 % Schwarz, Mitte y=1501",
       "schluessel": "aussage",
       "zielgruppe": "b2b",
       "sprachen": [
         "de"
       ],
-      "_offen": "bild-reel.py existiert, aber der Adapter dafuer fehlt noch"
+      "_offen": "bild-reel.py existiert, aber der Adapter dafuer fehlt noch",
+      "_hinweis": "Reel als Dreischritt SUCHEN - BUCHEN - ENTSPANNEN."
     },
     {
       "id": "zahl-gross",
-      "medium": "reel",
-      "format": "bild-reel",
+      "medium": "bild",
+      "format": "anzeige",
       "status": "neu",
       "haken": "Eine Zahl gross (--gross): 0 % Provision auf Folgebuchungen. Zahl GELESEN aus constants.ts, nie aus dem Gedaechtnis",
       "schluessel": "kennzahl",
@@ -27,43 +28,47 @@
       "sprachen": [
         "de"
       ],
-      "_offen": "bild-reel.py existiert, aber der Adapter dafuer fehlt noch"
+      "_offen": "bild-reel.py existiert, aber der Adapter dafuer fehlt noch",
+      "_hinweis": "War als Reel geplant, zeigt aber eine Kennzahl. Der Reel-Generator zeigt bewusst KEINE Zahlen (sie muessten aus constants.ts gelesen werden, sonst veralten sie) — deshalb Bild."
     },
     {
       "id": "kalender-clip",
       "medium": "reel",
-      "format": "bild-reel",
-      "status": "neu",
+      "format": "kategorie-loop",
+      "status": "vorhanden",
       "haken": "Echte Kalenderaufnahme aus /kalender-demo — kein Mockup, das echte Produkt. Staerkster B2B-Beweis, den es gibt",
       "schluessel": "screen",
       "zielgruppe": "b2b",
       "sprachen": [
         "de"
-      ]
+      ],
+      "_hinweis": "Reel als Kategorien-Schleife."
     },
     {
       "id": "last-minute",
       "medium": "reel",
-      "format": "bild-reel",
-      "status": "neu",
+      "format": "kategorie-loop",
+      "status": "vorhanden",
       "haken": "Das Alleinstellungsmerkmal: freier Termin heute, guenstiger. 'Too Good To Go fuer Wellness' — verstaendlich in einem Satz",
       "schluessel": "kategorie",
       "zielgruppe": "b2c",
       "sprachen": [
         "de"
-      ]
+      ],
+      "_hinweis": "Reel als Kategorien-Schleife."
     },
     {
       "id": "mythos",
       "medium": "reel",
-      "format": "bild-reel",
-      "status": "neu",
+      "format": "ablauf",
+      "status": "vorhanden",
       "haken": "Verbreitete Annahme ueber Terminbuchung widerlegen. Widerspruch haelt laenger als Zustimmung",
       "schluessel": "aussage",
       "zielgruppe": "b2b",
       "sprachen": [
         "de"
-      ]
+      ],
+      "_hinweis": "Reel als Dreischritt SUCHEN - BUCHEN - ENTSPANNEN."
     },
     {
       "id": "kategorie-karte",

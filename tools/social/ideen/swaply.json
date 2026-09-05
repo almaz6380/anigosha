@@ -10,7 +10,11 @@
       "status": "vorhanden",
       "haken": "Der Kern der App auf einer Karte: die alte Routine durchgestrichen, darunter gross die Ersatzroutine. Die Blickfuehrung macht die Aussage, kein erklaerender Satz. 7 Kategorien x 5 Ersatzroutinen = 35 Paare je Sprache",
       "schluessel": "kategorie",
-      "sprachen": ["de", "en", "es"]
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
     },
     {
       "id": "ausloeser",
@@ -19,7 +23,11 @@
       "status": "vorhanden",
       "haken": "Ausloeser und Belohnung nebeneinander, darunter der Satz „Du willst nicht die Routine. Du willst die Belohnung.\" Das ist der Post, der erklaert, WARUM Abgewoehnen scheitert — der staerkste Aufhaenger fuer Menschen, die es schon zehnmal versucht haben",
       "schluessel": "kategorie",
-      "sprachen": ["de", "en", "es"]
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
     },
     {
       "id": "notfall",
@@ -28,7 +36,11 @@
       "status": "vorhanden",
       "haken": "Die Sofort-Hilfe aus der App als nummerierte Schritte. Der einzige Winkel, der ohne Vorwissen ueber die App nuetzt — deshalb der beste Einstieg fuer neue Zuschauer und das beste Speicher-Motiv",
       "schluessel": "kategorie",
-      "sprachen": ["de", "en", "es"]
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
     },
     {
       "id": "regel",
@@ -37,7 +49,37 @@
       "status": "vorhanden",
       "haken": "Die goldene Regel in drei Zeilen: Ausloeser bleibt, Belohnung bleibt, nur die Routine wird getauscht. Bewusst ohne Kategorie, weil die Regel fuer alle gilt — das Motiv fuer die Profil-Anheftung",
       "schluessel": "regel",
-      "sprachen": ["de", "en", "es"]
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
+    },
+    {
+      "id": "tausch-loop",
+      "medium": "reel",
+      "format": "tausch-loop",
+      "schluessel": "kategorie",
+      "_hinweis": "Reel-Fassung des Kernwinkels: alte Routine durchgestrichen, drei Ersatzhandlungen einzeln. Generator liegt in anigosha (tools/social/reels-fremd) — Grund steht dort.",
+      "status": "vorhanden",
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
+    },
+    {
+      "id": "notfall-loop",
+      "medium": "reel",
+      "format": "notfall-loop",
+      "schluessel": "kategorie",
+      "_hinweis": "Die Sofort-Hilfe Schritt fuer Schritt. Der Winkel, der ohne Vorwissen nuetzt.",
+      "status": "vorhanden",
+      "sprachen": [
+        "de",
+        "en",
+        "es"
+      ]
     }
   ]
 }
