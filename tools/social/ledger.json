@@ -125,6 +125,33 @@
       "schluessel": "studie",
       "inhalt": "seed29861",
       "sprache": "de"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-05",
+      "winkel": "tausch-loop",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed97384",
+      "sprache": "en"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-05",
+      "winkel": "notfall",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed67866",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-09-05",
+      "winkel": "mythos",
+      "medium": "reel",
+      "schluessel": "aussage",
+      "inhalt": "seed34551",
+      "sprache": "de"
     }
   ]
 }
