@@ -13,7 +13,7 @@
 // dem Rendern nachsieht, hat 20 Minuten pro Antwort bezahlt.
 
 import { execFileSync, spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -175,7 +175,18 @@ if (hat('pruefung')) {
 } else if (hat('trocken')) {
   trockenlauf();
 } else {
-  await tageslauf();
+  const bericht = await tageslauf();
+
+  // ⚠ Ein echter Lauf, bei dem KEIN Beitrag entstanden ist, ist ein
+  // Fehlschlag und muss sich auch so verhalten. Vorher endete er mit 0 —
+  // der erste Lauf im Workflow meldete deshalb „erfolgreich", obwohl beide
+  // Renderaufrufe an einem fehlenden Paket gescheitert waren. Ein gruener
+  // Haken, hinter dem nichts steht, ist schlimmer als ein roter.
+  if (hat('echt') && bericht.length
+      && !bericht.some((b) => b.dateien?.length && !b.verworfen && !b.fehler)) {
+    console.error('\n✗ Kein einziger Beitrag ist entstanden.');
+    process.exit(1);
+  }
 }
 
 // --------------------------------------------------- Vorschau-Server (Mahjong)
@@ -210,6 +221,20 @@ async function starteVorschau(app) {
   }
   kind.kill();
   throw new Error('Vorschau-Server kam nicht hoch (20 s gewartet)');
+}
+
+// ⚠ CHROMIUM_PFAD nur setzen, wenn dort auch wirklich ein Browser liegt.
+//
+// Vorher stand hier ein festes `?? '/opt/pw-browsers/chromium'`. Das ist der
+// Pfad im Abbild der Cloud-Sitzung und dort goldrichtig — auf einem
+// GitHub-Runner gibt es ihn nicht. Ein gesetzter, aber falscher Pfad ist
+// schlimmer als gar keiner: Playwright nimmt ihn als `executablePath` und
+// scheitert, statt seinen eigenen, frisch installierten Browser zu finden.
+function browserUmgebung() {
+  const gesetzt = process.env.CHROMIUM_PFAD;
+  if (gesetzt) return { CHROMIUM_PFAD: gesetzt };
+  const imAbbild = '/opt/pw-browsers/chromium';
+  return existsSync(imAbbild) ? { CHROMIUM_PFAD: imAbbild } : {};
 }
 
 // ------------------------------------------------------------------ Tageslauf
@@ -276,7 +301,7 @@ async function tageslauf() {
         for (const s of plan.schritte) {
           execFileSync(s.cmd, s.args, {
             cwd: s.cwd, stdio: 'pipe',
-            env: { ...process.env, CHROMIUM_PFAD: process.env.CHROMIUM_PFAD ?? '/opt/pw-browsers/chromium' },
+            env: { ...process.env, ...browserUmgebung() },
           });
         }
       } catch (e) {
