@@ -27,14 +27,62 @@
  *
  * Die vier Repos schreiben zwei Stile: „CAPTION ZUM KOPIEREN" mit
  * Unterstrichen (Anigosha) und „## Caption (kopieren)" (die uebrigen).
+ *
+ * --- ⚠ Am 05.09.2026 zweimal danebengegriffen, beide Male teuer ------------
+ *
+ * 1. **Der Zierrand.** Die Reel-Beiblaetter schreiben die Ueberschrift als
+ *    „── CAPTION ZUM KOPIEREN ──────". Die Suche verlangte sie am
+ *    ZEILENANFANG, fand also nichts — und dann griff `return beiblatt`: im
+ *    Zweifel ALLES. Der Facebook-Entwurf trug daraufhin das komplette
+ *    Beiblatt, samt Abschnitt „ENTHALTENE FRAGEN (Faktencheck)" mit den
+ *    richtigen Antworten. Ein Quiz, das die Loesungen mitliefert.
+ * 2. **Das Ende.** Beim Bild wurde der Anfang gefunden, das Ende nicht:
+ *    „ZUR KONTROLLE (nicht posten)" enthaelt Kleinbuchstaben, gesucht wurde
+ *    aber eine Ueberschrift NUR aus Grossbuchstaben.
+ *
+ * Daraus zwei Regeln, die hier bleiben:
+ *
+ * **Im Zweifel NICHTS zurueckgeben, nicht alles.** Ein leerer Text faellt
+ * sofort auf und wird von posten.mjs abgelehnt; ein zu langer sieht aus wie
+ * ein Text und geht raus.
+ *
+ * **Das Ende ist jede Abschnittsgrenze**, nicht eine bestimmte Schreibweise:
+ * eine Zierlinie, eine unterstrichene Ueberschrift, ein `##`.
  */
 export function captionAus(beiblatt) {
   if (!beiblatt) return '';
-  const start = beiblatt.search(/^(##\s*Caption|CAPTION ZUM KOPIEREN)/im);
-  if (start === -1) return beiblatt;
-  const rest = beiblatt.slice(start).replace(/^.*\n(-{3,}\n)?/, '');
-  const ende = rest.search(/^(##\s|[A-ZÄÖÜ ]{6,}\n-{3,})/m);
-  return ende === -1 ? rest : rest.slice(0, ende);
+
+  // Ueberschrift, auch mit Zierrand davor.
+  //
+  // ⚠ `[ \t…]`, NICHT `[\s…]`: `\s` schluckt auch den Zeilenumbruch, der
+  // Treffer begaenne dann eine Zeile zu frueh — und die Ueberschrift bliebe
+  // im Ergebnis stehen, statt entfernt zu werden.
+  const start = beiblatt.search(/^[ \t─═—=-]*(?:##\s*Caption|CAPTION ZUM KOPIEREN)/im);
+  if (start === -1) return '';
+
+  // Die Ueberschriftszeile selbst weg, und eine etwaige Unterstreichung.
+  const rest = beiblatt.slice(start).replace(/^.*\n(?:[-=─═]{3,}\n)?/, '');
+
+  // Ende: die naechste Abschnittsgrenze, in welcher Schreibweise auch immer.
+  const ende = rest.search(/^(?:##\s|[─═—]{2,}|[^\n]{3,}\n[-=]{3,}\s*$)/m);
+  return (ende === -1 ? rest : rest.slice(0, ende)).trim();
+}
+
+/**
+ * Sieht dieser Text nach einem Beiblatt statt nach einer Caption aus?
+ *
+ * ⚠ Das Rettungsnetz unter captionAus(). Beide Fehler oben waeren hier
+ * haengengeblieben, bevor irgendetwas hochgeladen wurde. Ein Netz ist kein
+ * Ersatz fuer die Reparatur — aber die naechste Beiblatt-Aenderung in einem
+ * der fuenf Repos kommt bestimmt, und sie wird niemandem auffallen.
+ */
+export function riechtNachBeiblatt(text) {
+  const verraeter = [
+    /ZUR KONTROLLE/i, /nicht posten/i, /VOR DEM POSTEN/i,
+    /Faktencheck/i, /→\s*richtig:/, /CAPTION ZUM KOPIEREN/i, /^Format:\s/m,
+    /Store-Satz im Bild/i,
+  ];
+  return verraeter.find((r) => r.test(text))?.source ?? null;
 }
 
 /** Ein Befund. `hart: true` verwirft den Post. */
