@@ -96,5 +96,100 @@
       "de": "Kostenlos · Kein Konto · Alles bleibt auf deinem Gerät",
       "en": "Free · No account · Everything stays on your device"
     }
+  },
+  "anigosha": {
+    "name": "Anigosha",
+    "wortmarke": "Anigosha",
+    "_farben_quelle": "Aus src/index.css dieses Repos — die echten CSS-Variablen (night-950, accent-500/400, pink-400). Dunkler Grund, der Violett-Pink-Verlauf NUR als Akzent: In der App kommt er hoechstens einmal je Bildschirm vor, und genau das gibt ihm sein Gewicht.",
+    "verlauf": [
+      "#8b5cf6",
+      "#c084fc",
+      "#f472b6"
+    ],
+    "schrift": "#f5f0ff",
+    "gedaempft": "#b7a9d6",
+    "kontrast": "#0f0a1e",
+    "grund": "#0f0a1e",
+    "grundTief": "#2a1650",
+    "weich": "#d9cbff",
+    "linie": "rgba(255,255,255,.14)",
+    "mint": "#c9b6ff",
+    "stores": {
+      "ios": true,
+      "android": true
+    },
+    "spruch": {
+      "de": "Das Anime-Quiz für echte Fans",
+      "en": "The anime quiz for real fans"
+    },
+    "spruchZeilen": {
+      "de": [
+        "Das Anime-Quiz",
+        "für echte",
+        "Fans"
+      ],
+      "en": [
+        "The anime quiz",
+        "for real",
+        "fans"
+      ]
+    },
+    "dreiklang": {
+      "de": [
+        "One Piece",
+        "Naruto",
+        "Attack on Titan",
+        "Demon Slayer",
+        "Jujutsu Kaisen",
+        "My Hero Academia"
+      ],
+      "en": [
+        "One Piece",
+        "Naruto",
+        "Attack on Titan",
+        "Demon Slayer",
+        "Jujutsu Kaisen",
+        "My Hero Academia"
+      ]
+    },
+    "leiste": {
+      "de": [
+        "RATEN",
+        "DUELLIEREN",
+        "AUFSTEIGEN"
+      ],
+      "en": [
+        "GUESS",
+        "DUEL",
+        "LEVEL UP"
+      ]
+    },
+    "zusatz": {
+      "de": "804 Fragen · 12 Serien · Duelle gegen echte Gegner",
+      "en": "804 questions · 12 series · duels against real opponents"
+    },
+    "bios": {
+      "de": {
+        "tiktok": "Anime-Quiz für echte Fans 🏆 3 Fragen täglich — wie viele schaffst du?",
+        "instagram": "Das Anime-Quiz für echte Fans 🏆\n804 Fragen · 12 Serien · Duelle gegen echte Gegner\nGratis im App Store und bei Google Play\n👇 Hier laden",
+        "facebook": "Das Anime-Quiz für echte Fans — 804 Fragen, 12 Serien und Duelle gegen echte Gegner."
+      },
+      "en": {
+        "tiktok": "Anime quiz for real fans 🏆 3 questions a day — how many can you get?",
+        "instagram": "The anime quiz for real fans 🏆\n804 questions · 12 series · duels against real opponents\nFree on the App Store and Google Play\n👇 Get it here",
+        "facebook": "The anime quiz for real fans — 804 questions, 12 series and duels against real opponents."
+      }
+    },
+    "links": {
+      "appstore": "https://apps.apple.com/app/id6797757350",
+      "play": "https://play.google.com/store/apps/details?id=at.gallab.animequiz",
+      "bio": "https://anigosha.vercel.app/get",
+      "_hinweis": "anigosha.vercel.app/get erkennt die Plattform selbst und leitet weiter — ein Link fuer beide Stores. Genau dafuer wurde die Seite gebaut."
+    },
+    "mittel": {
+      "icon": "marken-mittel/anigosha/icon.png",
+      "display": "marken-mittel/anigosha/outfit.woff2",
+      "body": "marken-mittel/anigosha/outfit.woff2"
+    }
   }
 }
