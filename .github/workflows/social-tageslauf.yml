@@ -32,6 +32,10 @@ on:
         description: 'Anderer Tag als heute (JJJJ-MM-TT), leer = heute'
         type: string
         required: false
+      kanaele:
+        description: 'Nur diese Kanaele (facebook,tiktok,instagram) — leer = alle. Fuer das Nachholen eines einzelnen'
+        type: string
+        required: false
 
 # ⚠ Schreibrecht nur fuer den Ledger (siehe letzter Schritt). Ohne ihn
 # wiederholt der naechste Lauf dieselben Winkel — die Rotation lebt davon,
@@ -182,14 +186,16 @@ jobs:
           set -e
           DATUM_ARG=""
           [ -n "${{ inputs.datum }}" ] && DATUM_ARG="--datum ${{ inputs.datum }}"
+          KANAL_ARG=""
+          [ -n "${{ inputs.kanaele }}" ] && KANAL_ARG="--kanal ${{ inputs.kanaele }}"
           FLAGGE="--trocken"
           [ "${{ inputs.modus }}" = "echt" ] && FLAGGE="--echt"
           if [ "${{ inputs.apps }}" = "alle" ]; then
-            node tools/social/posten.mjs $FLAGGE $DATUM_ARG
+            node tools/social/posten.mjs $FLAGGE $DATUM_ARG $KANAL_ARG
           else
             IFS=',' read -ra LISTE <<< "${{ inputs.apps }}"
             for a in "${LISTE[@]}"; do
-              node tools/social/posten.mjs $FLAGGE --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG
+              node tools/social/posten.mjs $FLAGGE --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG $KANAL_ARG
             done
           fi
 
