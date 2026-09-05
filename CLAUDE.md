@@ -1052,7 +1052,7 @@ noch ein Trending-Sound darüberpasst.
 KI-generierten (dieselbe Regel wie für die App). Anime-Titel als Text sind in Reels und
 Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keywords.
 
-## Social-Automatik für alle fünf Apps — `tools/social/` (Stand 03.09.2026)
+## Social-Automatik für alle fünf Apps — `tools/social/` (Stand 05.09.2026)
 
 Ein Orchestrator (`lauf.mjs` erzeugt, `posten.mjs` lädt als Entwurf hoch) für
 Anigosha, Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige
@@ -1067,15 +1067,33 @@ verknüpft. Seiten- und Instagram-IDs sind öffentlich und stehen in `apps.json`
 unter `meta`; als Secret liegt je App `FB_SEITEN_TOKEN_<APP>`, dazu
 `BLOB_TOKEN` (Vercel-Blob-Store `social-bilder`, **Public**, fra1 — Instagram
 holt sich das Bild selbst ab, mit „Private" ginge es nicht).
-**TikTok ist bewusst geparkt** (04.09.2026). App **WELLapps Social** ist
-angelegt, Produkte und Redirect-URI gesetzt, Domain über eine Signaturdatei
-(`public/tiktok<token>.txt` — ⚠ nicht löschen) verifiziert. Dann kam die Wand:
-**TikTok lässt die App nicht einmal speichern, bevor ein Demo-Video des
-fertigen Ablaufs hochgeladen ist**, und ungeprüfte Apps müssen den Ablauf laut
-TikToks eigenem Text erst in einer Sandbox vorführen. Also Sandbox → Video →
-Prüfung → Produktion; mehrere Stunden plus Wartezeit. Facebook und Instagram
-tragen den Kanal derweil. Weiterweg, Fallen und der fertige Einreichungstext
-stehen in `tools/social/veroeffentlichen/README.md`, Teil B.
+**✅ TikTok ist für alle fünf Konten eingerichtet** (05.09.2026, gemessen).
+App **WELLapps Social**, Domain über eine Signaturdatei
+(`public/tiktok<token>.txt` — ⚠ nicht löschen) verifiziert. Die fünf
+Refresh-Token liegen als `TIKTOK_REFRESH_TOKEN_<APP>`, jeder mit eigener
+`open_id` — geholt über den Workflow „TikTok-Zugang holen".
+
+⚠ **Das gilt nur in der Sandbox**, und die Sandbox hat einen **eigenen
+Client Key** (Präfix `sbaw…`, hier `sbawfim8jjhnn7axno`) — der Produktions-Key
+funktioniert dort nicht und die Fehlermeldung nennt nur „client_key". Zugang
+bekommt ausschließlich, wer als **Target User** eingetragen ist und die
+Einladung in seiner TikTok-App angenommen hat. Für den Produktivbetrieb fehlt
+weiterhin die App Review mit Demo-Video; Text dafür in
+`tools/social/veroeffentlichen/README.md`, Teil B.
+
+**Drei Dinge, die beim Holen der fünf Zugänge Zeit gekostet haben:**
+
+1. **Je Konto ein FRISCHES privates Browserfenster.** Ein normales Fenster
+   nimmt das zuletzt angemeldete TikTok-Konto, und der Zugang landet still
+   beim falschen — auffallen würde das erst beim Posten. Im Dialog steht der
+   Kontoname; er ist die einzige Kontrolle, die vorher greift.
+2. **Der `code` gilt ein bis zwei Minuten und genau einmal.** Der erste
+   Versuch scheiterte mit `invalid_grant: Authorization code is expired`, weil
+   zwischen Bestätigen und Einlösen zu viel Zeit lag. Also: kopieren und
+   sofort einlösen, nicht dazwischen noch etwas anderes tun.
+3. **GitHub zeigt einem nicht angemeldeten Browser für ein privates Repo 404**
+   statt „kein Zugriff". Im privaten Fenster sieht die Secrets-Seite deshalb
+   aus, als gäbe es sie nicht — sie gehört ins normale Fenster.
 
 Vorbereitet liegt schon: Workflow **„TikTok-Zugang holen"** (der Tausch
 Code → Refresh-Token braucht einen POST mit dem App-Geheimnis und geht deshalb
@@ -1118,6 +1136,37 @@ zwei Monaten** — danach meldet die Prüfung „läuft nie ab".
    auf einem anderen Gerät.
 5. **Zwei FullRep-Seiten.** Bespielt wird „FullRep – Fitness, Supplemente und
    Nutrition" (`1245653821967923`), nicht die ältere „FullRepapp".
+
+### Stand 05.09.2026, gemessen — und die eine Lücke, die noch offen ist
+
+Prüflauf über alle fünf Apps und drei Kanäle: **15 von 15 vollständig**, jeder
+Facebook-Token gehört nachweislich zur richtigen Seite und läuft nie ab.
+Leitplanken-Probe (`lauf.mjs --pruefung`) grün, Tageslauf für Anigosha erzeugt,
+`posten.mjs --trocken` plant beide Beiträge korrekt.
+
+⚠ **Trotzdem kann noch niemand posten, und der Grund ist keine Zugangsfrage,
+sondern eine Transportfrage:** Die Zugangsdaten liegen in den GitHub-Secrets,
+die erzeugten Dateien liegen auf der Maschine, die sie gerendert hat. Beides
+trifft sich bisher nirgends.
+
+* Eine **Cloud-Sitzung** hat alle fünf Repos und rendert in Minuten — aber
+  keine Secrets, und die gehören auch nicht in eine Sitzung.
+* Ein **GitHub-Workflow** hat die Secrets — aber nur das Repo `anigosha`
+  ausgecheckt. `apps.json` zeigt auf `/home/user/mahjong-app`, `/wellbooked`,
+  `/mypeak`, `/swaply`; ohne die vier Repos rendert er nichts.
+
+Der Weg dahin ist ein Tageslauf-Workflow, der die vier Schwester-Repos
+mit auscheckt (dafür braucht es **ein** neues Secret: einen Token mit Lesezugriff
+auf sie) und danach `lauf.mjs --echt` und `posten.mjs --echt` in einem Lauf
+ausführt. Erst damit ist auch der spätere Tageszeitplan möglich.
+
+**Instagram ist zudem nur halb fertig.** `posten.mjs` legt das Bild im Blob ab;
+Container und Veröffentlichung (`veroeffentlichen/instagram.mjs`) haben Code,
+aber keinen Aufrufer — bewusst, weil ein Container nach 24 Stunden verfällt und
+deshalb erst beim Freigeben entstehen darf. Es fehlt also noch die Freigabe-
+Seite fürs Handy. Facebook (Entwurf) und TikTok (Posteingang) sind dagegen
+durchgängig fertig.
+
 ## Oberflaeche: "Himmel ueberall" (Richtung A, 01.09.2026)
 
 Der Tageszeit-Himmel war die beste Idee der App und kam genau einmal vor — auf dem
