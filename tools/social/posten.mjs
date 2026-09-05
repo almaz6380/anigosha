@@ -40,7 +40,7 @@ import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnis
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang, frischerToken } from './veroeffentlichen/tiktok.mjs';
 import { hochladen, merklisteAblegen } from './veroeffentlichen/blob.mjs';
-import { captionAus } from './vorflug.mjs';
+import { captionAus, riechtNachBeiblatt } from './vorflug.mjs';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const wert = (n, s) => { const i = process.argv.indexOf(`--${n}`); return i === -1 ? s : process.argv[i + 1]; };
@@ -146,6 +146,26 @@ if (!posten.length) {
 const gebraucht = [...new Map(
   posten.map((p) => [p.app, { app: p.app, kanaele: p.kanaele }]),
 ).values()];
+// ⚠ Das Rettungsnetz unter captionAus(). Am 05.09. trug ein Facebook-Entwurf
+// das ganze Beiblatt — mit den richtigen Antworten des Quiz. Aufgefallen ist
+// das nur, weil jemand hingesehen hat. Ab jetzt faellt es hier auf, VOR dem
+// Hochladen, und der Lauf bricht ab, statt die Haelfte zu posten.
+const verdaechtig = posten
+  .map((p) => ({ p, grund: p.text.trim() ? riechtNachBeiblatt(p.text) : 'leerer Text' }))
+  .filter((x) => x.grund);
+
+if (verdaechtig.length) {
+  console.error('✗ Abbruch: Bei diesen Beitraegen ist der Text kein Caption-Text:\n');
+  for (const { p, grund } of verdaechtig) {
+    console.error(`  ${p.name} · ${basename(p.medium)}`);
+    console.error(`    Verraeter: ${grund}`);
+    console.error(`    Anfang:    ${p.text.slice(0, 90).replace(/\n/g, ' ⏎ ')}\n`);
+  }
+  console.error('  Wahrscheinlich hat sich das Beiblatt-Format eines Repos geaendert');
+  console.error('  und captionAus() findet die Ueberschrift nicht mehr.');
+  process.exit(1);
+}
+
 const g = geheimBericht(gebraucht);
 console.log('Zugangsdaten');
 console.log(g.text || '  (keine noetig)');
