@@ -43,7 +43,7 @@
 import { createReadStream } from 'node:fs';
 import { basename } from 'node:path';
 
-import { put, del } from '@vercel/blob';
+import { put, del, list } from '@vercel/blob';
 
 /**
  * Laedt eine Datei oeffentlich hoch und gibt ihre Adresse zurueck.
@@ -71,6 +71,51 @@ export async function hochladen({ datei, token, praefix, trocken }) {
     addRandomSuffix: false,
   });
   return { url, pfad };
+}
+
+/**
+ * Legt eine Merkliste ab (JSON) und liest sie wieder.
+ *
+ * ⚠ Warum ueberhaupt eine Liste? Instagram wird nicht im Tageslauf
+ * veroeffentlicht, sondern spaeter bei der Freigabe. Dazwischen liegen
+ * Stunden und zwei verschiedene Laeufe auf verschiedenen Maschinen. Der
+ * Freigabelauf muesste sonst alles neu rendern, nur um an die Bildtexte zu
+ * kommen — vier Minuten fuer etwas, das schon fertig war.
+ *
+ * ⚠ Sie liegt im selben Speicher wie die Bilder und ist damit oeffentlich
+ * lesbar. Das ist vertretbar: Sie enthaelt genau das, was ohnehin gleich
+ * veroeffentlicht wird — Bildadresse und Bildtext. Zugangsdaten stehen NICHT
+ * darin und duerfen dort nie landen.
+ *
+ * Je App eine eigene Datei, weil posten.mjs je App einmal laeuft; eine
+ * gemeinsame wuerde sich beim zweiten Aufruf selbst ueberschreiben.
+ */
+export async function merklisteAblegen({ datum, appSchluessel, eintraege, token }) {
+  const pfad = `social/${datum}/freigabe-${appSchluessel}.json`;
+  const { url } = await put(pfad, JSON.stringify({ datum, app: appSchluessel, eintraege }, null, 2), {
+    access: 'public',
+    token,
+    allowOverwrite: true,
+    addRandomSuffix: false,
+    contentType: 'application/json',
+  });
+  return { url, pfad };
+}
+
+/** Alle Merklisten eines Tages, je App eine. */
+export async function merklistenLesen({ datum, token }) {
+  const { blobs } = await list({ prefix: `social/${datum}/freigabe-`, token });
+  const raus = [];
+  for (const b of blobs) {
+    if (!b.pathname.endsWith('.json')) continue;
+    // ⚠ Ohne Cache-Umgehung liefert der CDN die Fassung von vor dem letzten
+    // Schreiben — und ein eben veroeffentlichter Beitrag saehe wieder offen
+    // aus. Das waere ein doppelter Beitrag.
+    const antwort = await fetch(`${b.url}?frisch=${Date.now()}`, { cache: 'no-store' });
+    if (!antwort.ok) continue;
+    raus.push({ ...(await antwort.json()), pfad: b.pathname });
+  }
+  return raus;
 }
 
 /**
