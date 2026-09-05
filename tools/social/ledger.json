@@ -98,6 +98,33 @@
       "schluessel": "fragen-ids",
       "inhalt": "seed23535",
       "sprache": "de"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-09-05",
+      "winkel": "figur-des-tages",
+      "medium": "reel",
+      "schluessel": "figur",
+      "inhalt": "seed27796",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-05",
+      "winkel": "uebung-loop",
+      "medium": "reel",
+      "schluessel": "uebung",
+      "inhalt": "seed16474",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-05",
+      "winkel": "studien-fakt",
+      "medium": "bild",
+      "schluessel": "studie",
+      "inhalt": "seed29861",
+      "sprache": "de"
     }
   ]
 }
