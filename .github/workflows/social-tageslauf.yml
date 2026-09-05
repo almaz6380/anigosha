@@ -36,6 +36,10 @@ on:
         description: 'Nur diese Kanaele (facebook,tiktok,instagram) — leer = alle. Fuer das Nachholen eines einzelnen'
         type: string
         required: false
+      zweige:
+        description: 'Andere Zweige der Schwester-Repos, z. B. swaply=claude/xy — leer = Standardzweig'
+        type: string
+        required: false
 
 # ⚠ Schreibrecht nur fuer den Ledger (siehe letzter Schritt). Ohne ihn
 # wiederholt der naechste Lauf dieselben Winkel — die Rotation lebt davon,
@@ -57,6 +61,37 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
 
     steps:
+      # ⚠ Warum es diesen Schritt gibt (05.09.2026, Lauf #12):
+      # Der Motor eines Repos muss auf dessen STANDARDZWEIG liegen, sonst
+      # checkt dieser Workflow ihn nicht mit aus. Bei Swaply lagen
+      # `scripts/social-daten.mjs` und `scripts/post-bild.mjs` nur auf einem
+      # Feature-Zweig — der Lauf brach mit „Cannot find module" ab, obwohl
+      # lokal alles da war. Das ist kein Fehler der Automatik, sondern ein
+      # nicht zusammengefuehrter Zweig.
+      #
+      # Bis er zusammengefuehrt ist, laesst sich hier ein anderer Zweig
+      # angeben. ⚠ Das ist ein Notbehelf: Was von einem Feature-Zweig
+      # gerendert wird, entspricht nicht dem, was in dem Repo als gueltig
+      # gilt. Sobald der Zweig in main ist, gehoert die Angabe wieder weg.
+      - name: Zweige bestimmen
+        id: zweige
+        env:
+          ZWEIGE: ${{ inputs.zweige }}
+        run: |
+          set -e
+          for repo in mahjong wellbooked fullrep swaply; do
+            wert=""
+            IFS=',' read -ra PAARE <<< "$ZWEIGE"
+            for eintrag in "${PAARE[@]}"; do
+              schluessel="$(echo "${eintrag%%=*}" | tr -d ' ')"
+              [ "$schluessel" = "$repo" ] || continue
+              wert="$(echo "${eintrag#*=}" | tr -d ' ')"
+            done
+            echo "$repo=$wert" >> "$GITHUB_OUTPUT"
+            [ -n "$wert" ] && echo "⚠ $repo wird von Zweig „$wert\" gerendert, nicht vom Standardzweig."
+          done
+          true
+
       - name: anigosha auschecken
         uses: actions/checkout@v4
         with:
@@ -70,6 +105,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: almaz6380/mahjong-app
+          ref: ${{ steps.zweige.outputs.mahjong }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: mahjong-app
 
@@ -78,6 +114,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: almaz6380/wellbooked
+          ref: ${{ steps.zweige.outputs.wellbooked }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: wellbooked
 
@@ -89,6 +126,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: almaz6380/MyPeak
+          ref: ${{ steps.zweige.outputs.fullrep }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: mypeak
 
@@ -97,6 +135,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: almaz6380/swaply
+          ref: ${{ steps.zweige.outputs.swaply }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: swaply
 
@@ -151,19 +190,32 @@ jobs:
       - name: Chromium fuer Playwright
         run: cd "$SOCIAL_WURZEL/anigosha" && npx playwright install --with-deps chromium
 
+      # ⚠ Eine gescheiterte App darf die anderen nicht mitreissen (Lauf #12:
+      # Swaply brach ab, WELLbooked! kam deshalb gar nicht mehr dran und sah
+      # aus, als waere es ebenfalls kaputt). Gescheiterte Apps werden gemerkt
+      # und ganz am Ende gemeldet — die geglueckten laufen inzwischen durch
+      # bis in die Kanaele.
       - name: Beitraege erzeugen
         working-directory: anigosha
+        env:
+          APPS: ${{ inputs.apps }}
+          DATUM: ${{ inputs.datum }}
         run: |
-          set -e
           DATUM_ARG=""
-          [ -n "${{ inputs.datum }}" ] && DATUM_ARG="--datum ${{ inputs.datum }}"
-          if [ "${{ inputs.apps }}" = "alle" ]; then
-            node tools/social/lauf.mjs --echt $DATUM_ARG
+          [ -n "$DATUM" ] && DATUM_ARG="--datum $DATUM"
+          : > "$RUNNER_TEMP/gescheitert.txt"
+          if [ "$APPS" = "alle" ]; then
+            node tools/social/lauf.mjs --echt $DATUM_ARG || echo "alle" >> "$RUNNER_TEMP/gescheitert.txt"
           else
-            IFS=',' read -ra LISTE <<< "${{ inputs.apps }}"
+            IFS=',' read -ra LISTE <<< "$APPS"
             for a in "${LISTE[@]}"; do
-              node tools/social/lauf.mjs --echt --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG
+              app="$(echo "$a" | tr -d ' ')"
+              node tools/social/lauf.mjs --echt --app "$app" $DATUM_ARG \
+                || echo "$app" >> "$RUNNER_TEMP/gescheitert.txt"
             done
+          fi
+          if [ -s "$RUNNER_TEMP/gescheitert.txt" ]; then
+            echo "⚠ Nicht gerendert: $(tr '\n' ' ' < "$RUNNER_TEMP/gescheitert.txt")"
           fi
 
       - name: In die Kanaele
@@ -182,20 +234,28 @@ jobs:
           TIKTOK_REFRESH_TOKEN_FULLREP: ${{ secrets.TIKTOK_REFRESH_TOKEN_FULLREP }}
           TIKTOK_REFRESH_TOKEN_SWAPLY: ${{ secrets.TIKTOK_REFRESH_TOKEN_SWAPLY }}
           BLOB_TOKEN: ${{ secrets.BLOB_TOKEN }}
+          APPS: ${{ inputs.apps }}
+          DATUM: ${{ inputs.datum }}
+          KANAELE: ${{ inputs.kanaele }}
+          MODUS: ${{ inputs.modus }}
         run: |
-          set -e
           DATUM_ARG=""
-          [ -n "${{ inputs.datum }}" ] && DATUM_ARG="--datum ${{ inputs.datum }}"
+          [ -n "$DATUM" ] && DATUM_ARG="--datum $DATUM"
           KANAL_ARG=""
-          [ -n "${{ inputs.kanaele }}" ] && KANAL_ARG="--kanal ${{ inputs.kanaele }}"
+          [ -n "$KANAELE" ] && KANAL_ARG="--kanal $KANAELE"
           FLAGGE="--trocken"
-          [ "${{ inputs.modus }}" = "echt" ] && FLAGGE="--echt"
-          if [ "${{ inputs.apps }}" = "alle" ]; then
-            node tools/social/posten.mjs $FLAGGE $DATUM_ARG $KANAL_ARG
+          [ "$MODUS" = "echt" ] && FLAGGE="--echt"
+          if [ "$APPS" = "alle" ]; then
+            node tools/social/posten.mjs $FLAGGE $DATUM_ARG $KANAL_ARG \
+              || echo "alle (Versand)" >> "$RUNNER_TEMP/gescheitert.txt"
           else
-            IFS=',' read -ra LISTE <<< "${{ inputs.apps }}"
+            IFS=',' read -ra LISTE <<< "$APPS"
             for a in "${LISTE[@]}"; do
-              node tools/social/posten.mjs $FLAGGE --app "$(echo "$a" | tr -d ' ')" $DATUM_ARG $KANAL_ARG
+              app="$(echo "$a" | tr -d ' ')"
+              # Was gar nicht gerendert wurde, braucht keinen Versandversuch.
+              grep -qx "$app" "$RUNNER_TEMP/gescheitert.txt" && continue
+              node tools/social/posten.mjs $FLAGGE --app "$app" $DATUM_ARG $KANAL_ARG \
+                || echo "$app (Versand)" >> "$RUNNER_TEMP/gescheitert.txt"
             done
           fi
 
@@ -228,3 +288,15 @@ jobs:
           git diff --cached --quiet && { echo "Ledger unveraendert."; exit 0; }
           git commit -m "Social: Ledger vom Tageslauf ${{ inputs.datum || 'heute' }} [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
+
+      # ⚠ Ganz zum Schluss, damit eine gescheiterte App die uebrigen weder am
+      # Versand noch am Ledger hindert — der Lauf wird trotzdem rot. Ein
+      # gruener Haken muss heissen: alles, was angefordert war, ist auch
+      # passiert.
+      - name: Gescheitertes melden
+        if: always()
+        run: |
+          [ -s "$RUNNER_TEMP/gescheitert.txt" ] || { echo "Alle angeforderten Apps sind durch."; exit 0; }
+          echo "✗ Nicht durchgelaufen:"
+          sed 's/^/   /' "$RUNNER_TEMP/gescheitert.txt"
+          exit 1
