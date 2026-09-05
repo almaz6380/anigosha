@@ -4,21 +4,29 @@
 // entgegen. Instagram nicht: „We will cURL your image using the passed in URL
 // so it must be on a public server."
 //
-// --- Warum der Vercel-CLI und nicht das SDK ---------------------------------
+// --- Warum jetzt doch das SDK und nicht der CLI ------------------------------
 //
-// Drei Wege standen zur Wahl, zwei fallen aus:
+// Hier stand bis zum 05.09.2026 die Begruendung fuer `npx vercel blob put`:
+// Das SDK haette ein `npm install` gebraucht, und das raeumt die per
+// `--no-save` installierten Pakete (playwright, ffmpeg-static) weg.
 //
-//   @vercel/blob (npm)  Waere der uebliche Weg — scheitert hier an einer
-//                       Eigenheit dieses Repos: Playwright und ffmpeg-static
-//                       sind per `--no-save` installiert und stehen NICHT in
-//                       der package.json. Jedes `npm install` raeumt sie weg
-//                       und legt damit den Tageslauf lahm. Steht so in
-//                       CLAUDE.md, und es ist dort schon einmal passiert.
-//   REST/HTTP           Vercel dokumentiert keine. Eine nachgebaute Route
-//                       waere eine Wette darauf, dass sich nichts aendert.
-//   vercel blob put     Dokumentiert, braucht keine Installation ins Projekt
-//                       (npx holt den CLI), und der CLI ist hier ohnehin im
-//                       Einsatz (`npx vercel env pull`). Also dieser.
+// Der erste echte Tageslauf hat den CLI-Weg widerlegt. Vercel CLI 59 antwortet
+// auf `blob put --rw-token …` mit:
+//
+//   Error: No existing credentials found. Please run `vercel login` or pass "--token"
+//
+// Der Blob-Token allein genuegt ihr nicht mehr; sie will zusaetzlich eine
+// Konto-Anmeldung. Auf einem Runner gibt es die nicht, und ein weiteres
+// Geheimnis nur fuer einen Bild-Upload waere der falsche Preis.
+//
+// Also `@vercel/blob` als devDependency — damit ist es in package.json und
+// `npm ci` bringt es mit. Die alte Sorge bleibt trotzdem richtig und ist im
+// Workflow beruecksichtigt: playwright und ffmpeg-static werden NACH `npm ci`
+// nachinstalliert, in EINEM Aufruf.
+//
+// REST/HTTP direkt bleibt ausgeschlossen: Vercel dokumentiert die Route nicht,
+// und die API-Version steckt in einem Kopf-Feld, das sich mit dem SDK
+// mitbewegt. Nachbauen hiesse wetten, dass sich nichts aendert.
 //
 // --- Kosten -----------------------------------------------------------------
 //
@@ -32,14 +40,10 @@
 // geloescht (`del()` ist gratis). Der Freibetrag gilt geteilt ueber alle
 // Vercel-Dienste des Kontos — bei diesen Groessen ohne Belang.
 
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
+import { createReadStream } from 'node:fs';
 import { basename } from 'node:path';
 
-const lauf = promisify(execFile);
-
-/** Der CLI schreibt die Adresse nach stdout. Wir fischen sie heraus. */
-const URL_MUSTER = /https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/\S+/i;
+import { put, del } from '@vercel/blob';
 
 /**
  * Laedt eine Datei oeffentlich hoch und gibt ihre Adresse zurueck.
@@ -54,22 +58,18 @@ export async function hochladen({ datei, token, praefix, trocken }) {
   const pfad = `${praefix}/${basename(datei)}`;
   if (trocken) return { trocken: true, pfad };
 
-  // --allow-overwrite, weil ein zweiter Lauf desselben Tages sonst abbricht.
-  // --add-random-suffix bewusst NICHT: Der Pfad soll vorhersagbar bleiben,
+  // allowOverwrite, weil ein zweiter Lauf desselben Tages sonst abbricht.
+  // addRandomSuffix bewusst NICHT: Der Pfad soll vorhersagbar bleiben,
   // damit `aufraeumen` ihn spaeter wiederfindet.
-  const { stdout, stderr } = await lauf('npx', [
-    '--yes', 'vercel', 'blob', 'put', datei,
-    '--access', 'public',
-    '--pathname', pfad,
-    '--allow-overwrite',
-    '--rw-token', token,
-  ], { maxBuffer: 8 * 1024 * 1024 });
-
-  const url = (stdout + stderr).match(URL_MUSTER)?.[0];
-  if (!url) {
-    throw new Error('Vercel Blob: keine Adresse in der Ausgabe gefunden.\n'
-      + `${(stdout + stderr).slice(0, 400)}`);
-  }
+  //
+  // Als Strom, nicht als Puffer: Ein Reel sind vier Megabyte, und die muessen
+  // nicht erst vollstaendig in den Speicher.
+  const { url } = await put(pfad, createReadStream(datei), {
+    access: 'public',
+    token,
+    allowOverwrite: true,
+    addRandomSuffix: false,
+  });
   return { url, pfad };
 }
 
@@ -85,7 +85,7 @@ export async function hochladen({ datei, token, praefix, trocken }) {
  */
 export async function aufraeumen({ url, token }) {
   try {
-    await lauf('npx', ['--yes', 'vercel', 'blob', 'del', url, '--rw-token', token]);
+    await del(url, { token });
     return true;
   } catch {
     // Ein misslungenes Aufraeumen darf einen gelungenen Beitrag nicht zum
