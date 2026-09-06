@@ -1,10 +1,16 @@
 import UIKit
 import Capacitor
+import AppTrackingTransparency
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+
+    /// Merker, damit zwei Vordergrund-Wechsel kurz hintereinander nicht zwei
+    /// Dialoge anfordern. Wird in der Rueckmeldung wieder geloescht: Kam kein
+    /// Dialog, soll der naechste Wechsel es erneut versuchen duerfen.
+    private var trackingAbfrageLaeuft = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -26,7 +32,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        frageNachTracking()
+    }
+
+    // MARK: - App Tracking Transparency
+    //
+    //  Zurueck seit 1.1.1 (06.09.2026) — dieselbe Fassung wie in Commit b534db5,
+    //  die am 13.08. der Entscheidung „ATT ganz raus" gewichen war. Die
+    //  Kehrtwende ist bewusst: Ohne ATT gibt es keine IDFA, und jede
+    //  iOS-Anzeige war seither nicht-personalisiert (`npa: 1`) — das ist der
+    //  halbe bis dreiviertel eCPM. Drei Dinge muessen dafuer ZUSAMMEN stimmen,
+    //  sonst kommt Apples Ablehnung 2.1 vom 12.08. wieder:
+    //    1. NSUserTrackingUsageDescription in der Info.plist,
+    //    2. dieser Aufruf hier — nativ, nicht ueber das AdMob-Plugin,
+    //    3. die Datenschutzangabe in App Store Connect auf „Tracking: ja"
+    //       (nur von Hand, Rolle Admin/Account Holder).
+    //
+    //  Warum nativ: `AdMob.requestTrackingAuthorization()` ruft
+    //  `ATTrackingManager` auf Capacitors Hintergrund-Warteschlange auf, und
+    //  der Aufruf lief frueher waehrend die App noch nicht `.active` war — in
+    //  beiden Faellen zeigt iOS nichts und antwortet still mit notDetermined.
+    //  Genau das hat der Pruefer am 12.08. gesehen. Hier ist beides
+    //  ausgeschlossen: `applicationDidBecomeActive` heisst aktiv,
+    //  `DispatchQueue.main` heisst Hauptthread. ads.ts wartet auf die Antwort,
+    //  bevor es das AdMob-SDK startet — so verlangt es Google.
+    private func frageNachTracking() {
+        guard !trackingAbfrageLaeuft else { return }
+        // Schon beantwortet (auch „abgelehnt") — iOS zeigt den Dialog dann
+        // ohnehin kein zweites Mal, die Antwort aendert man in den Einstellungen.
+        guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
+        trackingAbfrageLaeuft = true
+
+        // Kleiner Abstand: Beim Kaltstart kommt didBecomeActive, waehrend das
+        // Fenster noch aufgebaut wird. Ein Dialog in genau diesem Moment hat
+        // niemanden, der ihn zeigen koennte.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard UIApplication.shared.applicationState == .active else {
+                self?.trackingAbfrageLaeuft = false
+                return
+            }
+            ATTrackingManager.requestTrackingAuthorization { _ in
+                self?.trackingAbfrageLaeuft = false
+            }
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

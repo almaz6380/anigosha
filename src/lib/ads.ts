@@ -25,26 +25,18 @@ import { Capacitor } from '@capacitor/core';
 // und WELLbooked.
 const USE_TEST_ADS = false;
 
-// ── Kein Tracking, nur nicht-personalisierte Werbung (13.08.2026) ──────────
-//  Anigosha erklaert in der App-Datenschutzangabe KEIN Tracking und fragt
-//  deshalb auch nicht per App Tracking Transparency. Damit ist Apples
-//  Richtlinie 2.1 gegenstandslos, an der 1.0 (Build 12) am 12.08. gescheitert
-//  ist — wo kein Tracking erklaert wird, verlangt Apple keinen ATT-Dialog.
+// ── Personalisierte Werbung wieder an (1.1.1, 06.09.2026) ──────────────────
+//  Vom 13.08. bis 1.1 lief jede Anzeige mit `npa: 1`, weil Anigosha nach
+//  Apples Ablehnung 2.1 kein Tracking mehr erklaerte. Der Preis war der halbe
+//  bis dreiviertel eCPM auf BEIDEN Plattformen. Jetzt entscheidet wieder die
+//  Einwilligung: UMP (DSGVO) liefert den Consent-String, das SDK liest ihn
+//  selbst; auf iOS kommt die ATT-Antwort dazu, nativ aus dem AppDelegate
+//  (`frageNachTracking`). Ein festes `npa` gibt es nicht mehr.
 //
-//  Das ist eine bewusste Entscheidung mit Preis: personalisierte Werbung
-//  bringt spuerbar mehr Erloes. Wer sie zurueckholen will, braucht dreierlei
-//  gleichzeitig, sonst kommt dieselbe Ablehnung wieder:
-//    1. NSUserTrackingUsageDescription zurueck in ios/App/App/Info.plist,
-//    2. die ATT-Abfrage nativ im AppDelegate (NICHT ueber die Capacitor-
-//       Bruecke — das Plugin ruft ATTrackingManager auf einer Hintergrund-
-//       Warteschlange auf, dort erscheint kein Dialog; Fassung siehe
-//       Commit b534db5),
-//    3. in App Store Connect die Datenschutzangabe wieder auf Tracking.
-//
-//  `npa: 1` geht an jede Anzeigenanfrage. Es ist die Zusage an Google, die
-//  Daten nicht zur Personalisierung zu nutzen — genau das, was die
-//  Datenschutzangabe „kein Tracking" behauptet. Beides muss zusammenpassen.
-const NPA = true;
+//  ⚠ Drei Dinge muessen fuer iOS zusammen stimmen, sonst kommt die Ablehnung
+//  wieder: NSUserTrackingUsageDescription in der Info.plist, die native
+//  ATT-Abfrage im AppDelegate und die Datenschutzangabe in App Store Connect
+//  auf „Tracking: ja" (nur von Hand aenderbar).
 
 // Offizielle Test-IDs von Google (öffentlich dokumentiert)
 const TEST = {
@@ -143,6 +135,34 @@ async function runConsentFlow() {
   }
 }
 
+/**
+ * Wartet auf die Antwort zum ATT-Dialog — fragt aber selbst NICHT.
+ *
+ * Gefragt wird nativ im AppDelegate (`frageNachTracking`). Von hier aus ging
+ * es nicht: Capacitor führt Plugin-Aufrufe auf einer Hintergrund-Warteschlange
+ * aus, und `ATTrackingManager` zeigt dort nichts an. Genau daran ist 1.0
+ * (Build 12) am 12.08.2026 an Richtlinie 2.1 gescheitert — der Dialog kam nie.
+ *
+ * Gewartet wird trotzdem, denn Google verlangt die ATT-Antwort VOR dem Start
+ * des Anzeigen-SDK; sonst gilt die Sitzung als nicht personalisierbar. Nach
+ * spätestens sechs Sekunden geht es ohnehin weiter — eine hängende Abfrage
+ * darf die Werbung nicht dauerhaft blockieren.
+ */
+async function warteAufTrackingAntwort() {
+  if (Capacitor.getPlatform() !== 'ios') return;
+  for (let versuch = 0; versuch < 20; versuch += 1) {
+    try {
+      const { status } = await AdMob.trackingAuthorizationStatus();
+      if (status !== 'notDetermined') return;
+    } catch (e) {
+      console.warn('ATT-Status nicht lesbar:', e);
+      return;
+    }
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  console.warn('ATT blieb unbeantwortet — Werbung startet ohne Personalisierung.');
+}
+
 /** Für die Einstellungen: Einwilligung nachträglich ändern (DSGVO-Pflicht). */
 export function canChangeAdConsent() {
   return isNative && ready;
@@ -164,6 +184,7 @@ export async function initAds() {
   try {
     const mod = await import('@capacitor-community/admob');
     AdMob = mod.AdMob;
+    await warteAufTrackingAntwort();
     await AdMob.initialize({ initializeForTesting: USE_TEST_ADS });
     await runConsentFlow();
     ready = true;
@@ -184,7 +205,7 @@ export async function maybeShowInterstitial() {
   if (Date.now() - lastShownAt < MIN_GAP_MS) return;
 
   try {
-    await AdMob.prepareInterstitial({ adId: ids().interstitial, npa: NPA });
+    await AdMob.prepareInterstitial({ adId: ids().interstitial });
     await AdMob.showInterstitial();
     lastShownAt = Date.now();
   } catch (e) {
@@ -221,7 +242,7 @@ export async function maybeShowInterstitialOnce(key: string) {
 export async function showRewardedAd(): Promise<boolean> {
   if (!ready) return false;
   try {
-    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded, npa: NPA });
+    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
     const reward = await AdMob.showRewardVideoAd();
     return !!reward;
   } catch (e) {
