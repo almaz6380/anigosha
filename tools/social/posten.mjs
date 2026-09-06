@@ -31,7 +31,7 @@
 // Schnittstellen hergeben. Sie zu verstecken haette bedeutet, fuer Instagram
 // etwas zu versprechen, das es nicht gibt.
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, appendFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -220,11 +220,24 @@ async function tiktokToken(appSchluessel) {
 // abgelegt — siehe merklisteAblegen() fuer den Grund.
 const merkliste = new Map();
 
+// ⚠ Was bei TikTok landet, landet OHNE Text.
+//
+// Der Aufruf, mit dem wir hochladen (`inbox/video/init`), hat schlicht kein
+// Feld dafuer — Titel, Beschreibung und Hashtags gibt es dort nicht. Ein
+// Textfeld kennt nur der Direktversand, und den duerfen ungepruefte Apps
+// nicht benutzen (ihre Beitraege blieben privat, siehe tiktok.mjs).
+//
+// Der Text ist also da, er kommt nur nicht durch die Leitung. Damit er
+// trotzdem am Handy zum Kopieren bereitsteht, sammeln wir ihn hier und
+// schreiben ihn am Ende in die Zusammenfassung des Workflow-Laufs.
+const nachzutragen = [];
+
 let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
   const istVideo = /\.(mp4|mov)$/i.test(p.medium);
   const z = zugaenge(p.app);
+  let inTiktok = false;
 
   for (const kanal of p.kanaele) {
     try {
@@ -247,6 +260,9 @@ for (const p of posten) {
           ? `   ▸ tiktok     wuerde ${r.mb} MB in den Posteingang laden`
           : `   ✓ tiktok     im Posteingang (${r.mb} MB) — freigeben in der TikTok-App`);
         fertig += r.trocken ? 0 : 1;
+        // Auch im Trockenlauf: Dann ist die Zusammenfassung die Vorschau auf
+        // den Text, der sonst nirgends zu sehen waere.
+        inTiktok = true;
 
       } else if (kanal === 'instagram') {
         // Instagram bekommt hier NUR das Bild an eine oeffentliche Adresse
@@ -276,6 +292,7 @@ for (const p of posten) {
       console.log(`   ✗ ${kanal.padEnd(10)} ${e.message}`);
     }
   }
+  if (inTiktok) nachzutragen.push({ name: p.name, datei: basename(p.medium), text: p.text });
   console.log();
 }
 
@@ -289,6 +306,48 @@ for (const [appSchluessel, eintraege] of merkliste) {
     datum: DATUM, appSchluessel, eintraege, token: zugaenge(appSchluessel).blobToken,
   });
   console.log(`Merkliste fuer die Freigabe: ${eintraege.length} Beitrag(e) → ${r.pfad}`);
+}
+
+// Die Texte zu den TikTok-Entwuerfen in die Zusammenfassung des Laufs.
+//
+// ⚠ Warum dorthin und nicht ins Protokoll: Josef arbeitet vom Handy. Die
+// Zusammenfassung ist die erste Seite eines Laufs, das Protokoll liegt
+// darunter und laesst sich dort kaum markieren. Ein Codeblock bekommt in
+// GitHub ausserdem einen Kopierknopf — genau das, was hier gebraucht wird.
+//
+// ⚠ Nur bei einem echten Lauf und nur fuer TikTok. Facebook und Instagram
+// tragen ihren Text selbst; sie hier mit aufzuzaehlen hiesse, zum Kopieren
+// einzuladen, was schon drin steht.
+if (nachzutragen.length && process.env.GITHUB_STEP_SUMMARY) {
+  // ⚠ Der Workflow ruft dieses Skript je App EINMAL auf, alle schreiben in
+  // dieselbe Datei. Die Ueberschrift darf deshalb nur beim ersten Mal
+  // dazukommen — sonst steht sie fuenfmal da.
+  const ueberschrift = `## Text fuer die TikTok-Entwuerfe (${DATUM})`;
+  const schonDa = existsSync(process.env.GITHUB_STEP_SUMMARY)
+    && readFileSync(process.env.GITHUB_STEP_SUMMARY, 'utf8').includes(ueberschrift);
+
+  const zeilen = schonDa ? [] : [
+    ueberschrift,
+    '',
+    ECHT
+      ? 'TikToks Posteingang nimmt keinen Text an — hier zum Kopieren, bevor du in der App auf Posten tippst.'
+      : 'Trockenlauf: So wuerde der Text lauten. Hochgeladen wurde nichts.',
+    '',
+  ];
+  for (const e of nachzutragen) {
+    // Ein Caption-Text mit ``` darin wuerde den Block sprengen; laenger
+    // eingezaeunt bleibt er heil.
+    const zaun = e.text.includes('```') ? '````' : '```';
+    zeilen.push(`### ${e.name}`, `<sub>${e.datei}</sub>`, '',
+      zaun, e.text || '(kein Text erzeugt)', zaun, '');
+  }
+  try {
+    appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${zeilen.join('\n')}\n`);
+    console.log(`Texte fuer ${nachzutragen.length} TikTok-Entwurf/-Entwuerfe stehen in der Zusammenfassung.`);
+  } catch (e) {
+    // Ein misslungener Merkzettel darf keinen geglueckten Versand rot faerben.
+    console.log(`⚠ Zusammenfassung nicht geschrieben: ${e.message}`);
+  }
 }
 
 console.log(ECHT
