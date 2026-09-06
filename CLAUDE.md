@@ -439,6 +439,20 @@ loesen. Commit `0218b43`:
 
 `tools/test-werbung.mjs` 22/22 gruen, `tsc` gruen. Swift in der Cloud nicht kompiliert.
 
+**Ausgeliefert am 06.09., 19:44 UTC — beides ueber die Workflows, per Protokoll gemessen:**
+
+| | Stand |
+|---|---|
+| Android | **1.1.1 / vc8 in Produktion, an alle Nutzer** (`Android Release` Lauf 34055524853, Edit committet) |
+| iOS | **Build 18 hochgeladen** (`iOS Release` Lauf 34055523314, `UPLOAD SUCCEEDED`) — **nicht zugewiesen, nicht eingereicht** |
+| Web | `main` traegt die app-ads.txt, Vercel deployt sie mit dem Merge |
+
+⚠ **Warum iOS haengt:** 1.1 (Build 17, Einreichung `f813c500`) steht noch auf
+`WAITING_FOR_REVIEW`. Build 18 laesst sich erst zuweisen, wenn Apple 1.1 freigibt
+oder die Einreichung zurueckgezogen wird (`aufraeumen`, kostet die Warteposition).
+Danach: Version 1.1.1 anlegen bzw. umbenennen → `build 18` → Josefs Datenschutz-Angabe
+(s. o.) → `texte-schreiben` (marketingUrl + whatsNew) → `einreichen`.
+
 ⚠ **Der eine Schritt, den nur Josef machen kann, und OHNE den die iOS-Einreichung
 abgelehnt wird:** App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
 „Ja, wir verwenden Geraete-IDs fuer Tracking“. Die App fragt jetzt wieder per ATT,
