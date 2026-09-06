@@ -43,7 +43,7 @@ bekommen hätten. Rechtstexte bleiben DE/EN (alles außer DE sieht Englisch).
 **Portugiesisch ist pt-BR** unter dem Code `pt`: Brasilien ist der weitaus größte
 lusophone Anime-Markt, Portugal versteht pt-BR, ein zweiter Code wäre doppelte Pflege.
 Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
-**Monetarisierung:** AdMob (Interstitial + Rewarded) + IAP „Werbung entfernen" (RevenueCat)
+**Monetarisierung:** AdMob (Interstitial + Rewarded, personalisiert per UMP + ATT seit 1.1.1) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 
 ## Kern-Features (V1)
@@ -420,6 +420,38 @@ Pruefung ist. Also:
 **Ergebnis 13.08., 14:57:** Uebermittlung `2784e1a7-e7fc-4f6f-8196-5b57de8c838e`
 auf `WAITING_FOR_REVIEW`, beide Elemente `READY_FOR_REVIEW`. Die alte
 `26268de2` steht auf `COMPLETE` mit `REMOVED`-Elementen.
+
+### Kehrtwende zurueck: ATT nativ, personalisierte Werbung wieder an (06.09.2026, 1.1.1)
+
+Anlass war Josefs eCPM-Vergleich der vier Apps. Anigosha lief seit dem 13.08. auf
+`npa: 1` auf BEIDEN Plattformen, hatte nur eine SKAdNetwork-ID in der Info.plist und
+keine app-ads.txt — drei Bremsen uebereinander. Josef hat entschieden, alle drei zu
+loesen. Commit `0218b43`:
+
+| | Aenderung |
+|---|---|
+| `AppDelegate.swift` | `frageNachTracking()` bei `applicationDidBecomeActive` — die Fassung aus `b534db5`, nativ auf dem Hauptthread |
+| `Info.plist` | `NSUserTrackingUsageDescription` wieder drin, SKAdNetworkItems 1 → **59** (Googles Liste vom 06.09. + neun aeltere aus Swaply) |
+| `src/lib/ads.ts` | `NPA`-Konstante weg, kein `npa` mehr an den Anfragen; UMP-Consent entscheidet. `warteAufTrackingAntwort()` (max. 6 s) vor `AdMob.initialize` |
+| `public/app-ads.txt` | neu, kontoweite Zeile wie bei den drei anderen Apps |
+| `store-assets/asc-texte.json` | `marketingUrl` = anigosha.vercel.app in allen sieben Sprachen (dort sucht Googles Crawler die app-ads.txt) + whatsNew fuer 1.1.1 |
+| Versionen | iOS 1.1.1 / Build 18, Android 1.1.1 / vc8 |
+
+`tools/test-werbung.mjs` 22/22 gruen, `tsc` gruen. Swift in der Cloud nicht kompiliert.
+
+⚠ **Der eine Schritt, den nur Josef machen kann, und OHNE den die iOS-Einreichung
+abgelehnt wird:** App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
+„Ja, wir verwenden Geraete-IDs fuer Tracking“. Die App fragt jetzt wieder per ATT,
+und Apple prueft die Angabe gegen das Binary. Reihenfolge: erst Build 18 zuweisen,
+dann die Angabe veroeffentlichen, dann einreichen (Henne-Ei-Beschreibung im Abschnitt
+vom 13.08.).
+
+⚠ **`marketingUrl` und `whatsNew` gehen erst nach der Freigabe von 1.1 rein** —
+Apple sperrt die Versionsfelder waehrend der Pruefung (409). Danach:
+`asc.yml` Modus `texte-schreiben`. Und **die Play-Console kennt kein Website-Feld
+per Skript**: Play Console → Store-Praesenz → Store-Einstellungen → Kontaktdaten →
+Website = https://anigosha.vercel.app, sonst findet der Crawler die app-ads.txt fuer
+Android nicht.
 
 ### Store-Bilder: je Sprache ein Satz, und wann sie hochduerfen (02.09.2026)
 
