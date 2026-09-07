@@ -232,12 +232,21 @@ const merkliste = new Map();
 // schreiben ihn am Ende in die Zusammenfassung des Workflow-Laufs.
 const nachzutragen = [];
 
+// Was die Freigabe-Seite spaeter anzeigt: je App alle Beitraege des Tages mit
+// dem Ergebnis JEDES Kanals — nicht nur der Instagram-Teil.
+//
+// ⚠ Getrennt von `merkliste`. Die entscheidet, was Instagram noch zu tun hat;
+// diese hier ist reine Ansicht. Sie darf nie zur Grundlage einer
+// Veroeffentlichung werden.
+const uebersicht = new Map();
+
 let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
   const istVideo = /\.(mp4|mov)$/i.test(p.medium);
   const z = zugaenge(p.app);
   let inTiktok = false;
+  const spur = { datei: basename(p.medium), text: p.text, istVideo, kanaele: {} };
 
   for (const kanal of p.kanaele) {
     try {
@@ -250,9 +259,14 @@ for (const p of posten) {
           ? `   ▸ facebook   wuerde ${r.art}-Entwurf anlegen (${r.zeichen} Zeichen Text)`
           : `   ✓ facebook   Entwurf ${r.id} — freigeben in der Meta Business Suite`);
         fertig += r.trocken ? 0 : 1;
+        spur.kanaele.facebook = { stand: r.trocken ? 'trocken' : 'entwurf', id: r.id ?? null };
 
       } else if (kanal === 'tiktok') {
-        if (!istVideo) { console.log('   – tiktok     uebersprungen (kein Video)'); continue; }
+        if (!istVideo) {
+          console.log('   – tiktok     uebersprungen (kein Video)');
+          spur.kanaele.tiktok = { stand: 'uebersprungen', grund: 'kein Video' };
+          continue;
+        }
         const r = await inPosteingang({
           token: await tiktokToken(p.app), datei: p.medium, trocken: !ECHT,
         });
@@ -263,6 +277,7 @@ for (const p of posten) {
         // Auch im Trockenlauf: Dann ist die Zusammenfassung die Vorschau auf
         // den Text, der sonst nirgends zu sehen waere.
         inTiktok = true;
+        spur.kanaele.tiktok = { stand: r.trocken ? 'trocken' : 'posteingang' };
 
       } else if (kanal === 'instagram') {
         // Instagram bekommt hier NUR das Bild an eine oeffentliche Adresse
@@ -285,13 +300,18 @@ for (const p of posten) {
             datei: basename(p.medium), url: r.url, blobPfad: r.pfad,
             text: p.text, istVideo,
           });
+          spur.url = r.url;
         }
+        spur.kanaele.instagram = { stand: r.trocken ? 'trocken' : 'wartet' };
         offen += 1;
       }
     } catch (e) {
       console.log(`   ✗ ${kanal.padEnd(10)} ${e.message}`);
+      spur.kanaele[kanal] = { stand: 'fehler', meldung: e.message };
     }
   }
+  if (!uebersicht.has(p.app)) uebersicht.set(p.app, { name: p.name, posten: [] });
+  uebersicht.get(p.app).posten.push(spur);
   if (inTiktok) nachzutragen.push({ name: p.name, datei: basename(p.medium), text: p.text });
   console.log();
 }
@@ -300,12 +320,21 @@ for (const p of posten) {
 // die Verabredung mit dem Freigabelauf. Waere sie schon nach dem ersten
 // Beitrag geschrieben, stuende beim Abbruch mittendrin eine unvollstaendige
 // da, die vollstaendig aussieht.
-for (const [appSchluessel, eintraege] of merkliste) {
-  if (!eintraege.length) continue;
+// ⚠ Ueber die UEBERSICHT laufen, nicht ueber die Merkliste: Eine App, die
+// heute nur ein TikTok-Video hat, steht in `merkliste` gar nicht — sie
+// waere auf der Freigabe-Seite unsichtbar, und zwar so, dass es aussieht,
+// als haette es fuer sie keinen Lauf gegeben.
+// ⚠ Nur bei einem echten Lauf. Bisher ergab sich das von selbst, weil die
+// Merkliste im Trockenlauf leer blieb; die Uebersicht fuellt sich dagegen
+// IMMER. Ohne diese Zeile wuerde ein Trockenlauf in den Blob-Speicher
+// schreiben — und „trocken" heisst: es geht nichts raus, auch nicht dorthin.
+for (const [appSchluessel, u] of ECHT ? uebersicht : []) {
+  const eintraege = merkliste.get(appSchluessel) ?? [];
   const r = await merklisteAblegen({
-    datum: DATUM, appSchluessel, eintraege, token: zugaenge(appSchluessel).blobToken,
+    datum: DATUM, appSchluessel, name: u.name, eintraege, uebersicht: u.posten,
+    token: zugaenge(appSchluessel).blobToken,
   });
-  console.log(`Merkliste fuer die Freigabe: ${eintraege.length} Beitrag(e) → ${r.pfad}`);
+  console.log(`Merkliste: ${u.posten.length} Beitrag(e), davon ${eintraege.length} fuer Instagram offen → ${r.pfad}`);
 }
 
 // Die Texte zu den TikTok-Entwuerfen in die Zusammenfassung des Laufs.

@@ -90,9 +90,17 @@ export async function hochladen({ datei, token, praefix, trocken }) {
  * Je App eine eigene Datei, weil posten.mjs je App einmal laeuft; eine
  * gemeinsame wuerde sich beim zweiten Aufruf selbst ueberschreiben.
  */
-export async function merklisteAblegen({ datum, appSchluessel, eintraege, token }) {
+export async function merklisteAblegen({ datum, appSchluessel, eintraege, uebersicht, token, name }) {
   const pfad = `social/${datum}/freigabe-${appSchluessel}.json`;
-  const { url } = await put(pfad, JSON.stringify({ datum, app: appSchluessel, eintraege }, null, 2), {
+  // ⚠ `eintraege` ist der Vertrag mit freigeben.mjs und bleibt unangetastet:
+  // Dort steht, was Instagram noch offen hat, und dort wird vermerkt, was
+  // veroeffentlicht ist. `uebersicht` liegt bewusst DANEBEN statt darin —
+  // sie ist nur zum Ansehen (Freigabe-Seite) und darf die Logik, die wirklich
+  // etwas veroeffentlicht, nicht beeinflussen. Wer beides vermischt, riskiert
+  // beim naechsten Umbau einen doppelten Instagram-Beitrag.
+  const inhalt = { datum, app: appSchluessel, name: name ?? appSchluessel, eintraege };
+  if (uebersicht) inhalt.uebersicht = uebersicht;
+  const { url } = await put(pfad, JSON.stringify(inhalt, null, 2), {
     access: 'public',
     token,
     allowOverwrite: true,

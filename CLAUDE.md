@@ -1301,6 +1301,36 @@ jeweiligen TikTok-App; öffentlich ist keiner.
 Ungetestet bleibt nur der Weg über alle fünf **gleichzeitig** (`apps: alle`) —
 Mahjongs Motor braucht dabei einen laufenden `vite preview`.
 
+### Freigabe-Seite fürs Handy — `freigabe-app/` (07.09.2026)
+
+Eine kleine Seite, die die Entwürfe eines Tages zeigt (Video/Bild, Text zum
+Kopieren, je Kanal der Stand) und Instagram von dort freigeben lässt. Sie ersetzt
+den Weg über GitHub Actions. Einrichtung: `freigabe-app/README.md`.
+
+**Eigenes Vercel-Projekt mit Root Directory `freigabe-app`**, bewusst nicht auf
+anigosha.vercel.app: Dort prüfen Apple und Google die Spiel-App.
+
+⚠ **Die Vercel-Funktion kennt KEINE Zugangsdaten der Netzwerke** — weder
+Instagram noch Facebook noch TikTok, auch nicht den Blob-Token. Sie prüft das
+Passwort und startet den Workflow `social-freigabe.yml`; alles, was wirklich
+veröffentlicht, läuft in GitHub Actions. Die Geheimnisse bleiben damit an einer
+Stelle, und ein Fehler in der Seite kann höchstens einen Lauf auslösen, den man
+ohnehin von Hand auslösen könnte. Ihr GitHub-Token braucht genau ein Recht:
+`Actions: Read and write` auf `almaz6380/anigosha`.
+
+⚠ **Die Merkliste im Blob trägt jetzt zwei Dinge:** `eintraege` (was Instagram
+noch offen hat — der Vertrag mit `freigeben.mjs`) und daneben `uebersicht` (alle
+Beiträge mit dem Ergebnis jedes Kanals, reine Anzeige). Sie sind bewusst
+getrennt: Wer die Anzeige zur Grundlage einer Veröffentlichung macht, riskiert
+einen doppelten Instagram-Beitrag. **Und `freigeben.mjs` muss `uebersicht` beim
+Zurückschreiben mitreichen** — sonst löscht das erste Veröffentlichen die
+Anzeige, und zwar genau für die Tage, an denen etwas passiert ist.
+
+⚠ **Ein Trockenlauf legt keine Merkliste ab.** Früher ergab sich das von selbst,
+weil die Merkliste dann leer blieb; die Übersicht füllt sich dagegen immer.
+Ohne die ausdrückliche Sperre schriebe ein Probelauf in den Blob-Speicher —
+und „trocken" heißt: es geht nichts raus, auch nicht dorthin.
+
 **Instagram ist zudem nur halb fertig.** `posten.mjs` legt das Bild im Blob ab;
 Container und Veröffentlichung (`veroeffentlichen/instagram.mjs`) haben Code,
 aber keinen Aufrufer — bewusst, weil ein Container nach 24 Stunden verfällt und

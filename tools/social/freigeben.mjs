@@ -122,10 +122,16 @@ for (const liste of listen) {
   // Die Merkliste sofort nach JEDER App zurueckschreiben, nicht erst ganz am
   // Ende: Bricht der Lauf bei der naechsten App ab, ist die Sperre gegen den
   // doppelten Beitrag fuer diese hier trotzdem gesetzt.
+  //
+  // ⚠ `uebersicht` und `name` MUESSEN mitgereicht werden. Sie stehen in
+  // derselben Datei, gehoeren aber nicht diesem Werkzeug — sie sind die
+  // Anzeige der Freigabe-Seite. Wer sie hier weglaesst, loescht sie beim
+  // ersten Veroeffentlichen: Die Seite waere danach leer, und zwar genau fuer
+  // die Tage, an denen etwas passiert ist.
   if (geaendert) {
     await merklisteAblegen({
-      datum: DATUM, appSchluessel: liste.app,
-      eintraege: liste.eintraege, token: z.blobToken,
+      datum: DATUM, appSchluessel: liste.app, name: liste.name,
+      eintraege: liste.eintraege, uebersicht: liste.uebersicht, token: z.blobToken,
     });
   }
   console.log();
