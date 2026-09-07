@@ -1140,9 +1140,24 @@ Refresh-Token liegen als `TIKTOK_REFRESH_TOKEN_<APP>`, jeder mit eigener
 Client Key** (Präfix `sbaw…`, hier `sbawfim8jjhnn7axno`) — der Produktions-Key
 funktioniert dort nicht und die Fehlermeldung nennt nur „client_key". Zugang
 bekommt ausschließlich, wer als **Target User** eingetragen ist und die
-Einladung in seiner TikTok-App angenommen hat. Für den Produktivbetrieb fehlt
-weiterhin die App Review mit Demo-Video; Text dafür in
+Einladung in seiner TikTok-App angenommen hat.
+
+✅ **Die App Review ist am 07.09.2026 um 18:46 eingereicht.** Demo-Video
+(45,5 s) liegt in `tools/social/tiktok-demo/fertig/`, gebaut aus zwei
+Bildschirmaufnahmen — Zustimmungsdialog am Mac, Entwurf im Posteingang am
+iPhone. Einzelheiten und alle eingetragenen Feldwerte in
 `tools/social/veroeffentlichen/README.md`, Teil B.
+
+⚠ **Die Falle dabei: Sandbox und Produktion sind zwei getrennte
+Konfigurationen.** Der Reiter „Production | Sandbox" sieht aus wie eine
+Ansicht, ist aber ein eigener Datensatz. Die ganze Einrichtung seit dem
+04.09. stand in der Sandbox; die Produktionsseite war **leer** und musste
+komplett neu ausgefüllt werden. Das sieht wie Datenverlust aus und ist
+keiner.
+
+**Nach der Freigabe:** Client Key und Secret der Produktion in die Secrets,
+dann je Konto „TikTok-Zugang holen" erneut laufen lassen — die fünf
+Sandbox-Refresh-Token gelten in der Produktion nicht.
 
 **Drei Dinge, die beim Holen der fünf Zugänge Zeit gekostet haben:**
 

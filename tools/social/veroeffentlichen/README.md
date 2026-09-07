@@ -237,15 +237,46 @@ und nicht halbfertig eingereicht.
    Feld „Web/Desktop URL" die Adresse OHNE, bleibt sie rot — dasselbe
    Zeichen, dieselbe halbe Stunde.
 
-**Stand 07.09.2026: Schritte 1–4 sind erledigt, das Demo-Video liegt fertig
-im Repo** (`tools/social/tiktok-demo/fertig/tiktok-demo.mp4`, 45,5 s). Offen
-ist nur noch Schritt 5 — das Hochladen und Einreichen in „App review".
+**✅ Stand 07.09.2026, 18:46: Die App ist zur Pruefung eingereicht.** Alle
+fuenf Schritte sind durch; das Demo-Video liegt im Repo
+(`tools/social/tiktok-demo/fertig/tiktok-demo.mp4`, 45,5 s).
 
-⚠ **Schritt 5 geht nur von Hand.** `developers.tiktok.com/apps/` antwortet
-ohne angemeldete Sitzung mit 401; es gibt keine API dafuer und aus einer
-Claude-Sitzung heraus keine Anmeldung. Der Text dafuer steht unten, das
-Video im Repo — beides ist vorbereitet, damit der Schritt nur noch Klicken
-ist.
+⚠ **Schritt 5 ging nur von Hand.** `developers.tiktok.com/apps/` antwortet
+ohne angemeldete Sitzung mit 401 (gemessen); eine API dafuer gibt es nicht.
+Vorbereitet war deshalb alles, was den Schritt auf Klicken reduziert.
+
+**⚠ Die groesste Falle beim Einreichen: Sandbox und Produktion sind zwei
+getrennte Konfigurationen.** Der Reiter oben („Production | Sandbox") sieht
+aus wie eine Ansicht, ist aber ein eigener Datensatz. Alles, was seit dem
+04.09. eingerichtet wurde, stand in der Sandbox — die Produktionsseite war
+LEER und musste komplett neu ausgefuellt werden. Das sieht beim ersten
+Blick wie Datenverlust aus und ist keiner.
+
+Was die Produktionsseite braucht (Sandbox-Werte gelten dort NICHT):
+
+| Feld | Wert |
+|---|---|
+| App icon | `tools/social/kanal/fertig/tiktok/wellapps-social-1024.png` |
+| Category | Productivity |
+| Description | „Publishes short marketing videos for our own five mobile apps to our own five TikTok accounts as drafts." |
+| Terms of Service URL | https://anigosha.vercel.app/legal/agb |
+| Privacy Policy URL | https://anigosha.vercel.app/legal/datenschutz |
+| Platforms | nur **Web**, Web/Desktop-URL `https://anigosha.vercel.app/` ⚠ mit Schraegstrich |
+| Login Kit → Redirect URI | `https://anigosha.vercel.app/tiktok-fertig` |
+| Content Posting API | Direct Post **aus** |
+| Scopes | nur `user.info.basic` und `video.upload` |
+
+⚠ **„Verify domains" bei der Content Posting API ist NICHT noetig.** Das
+gilt nur fuer `pull_by_url`. Wir schicken die Datei direkt
+(`push_by_file` / FILE_UPLOAD).
+
+Beim Absenden fragt ein Fenster nach einem Grund (120 Zeichen). Eingetragen:
+*„First submission. We publish marketing videos for our own five apps to our
+own five TikTok accounts as drafts."*
+
+**Wenn die Freigabe da ist:** Client Key und Secret der PRODUKTION in die
+Secrets, dann je Konto den Workflow „TikTok-Zugang holen" erneut laufen
+lassen. Die fuenf Sandbox-Refresh-Token gelten in der Produktion NICHT.
 
 **Wenn es weitergeht — die Reihenfolge:**
 
