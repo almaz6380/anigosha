@@ -17,6 +17,15 @@ name: Social-Tageslauf
 # Oeffentlich wird nichts ohne einen Menschen.
 
 on:
+  # ⚠ 05:00 UTC = 07:00 im Sommer, 06:00 im Winter. GitHub kennt nur UTC;
+  # die Uhrzeit wandert also mit der Zeitumstellung um eine Stunde. Das ist
+  # hier egal — die Entwuerfe sollen nur vor dem Fruehstueck dastehen.
+  #
+  # ⚠ Ein geplanter Lauf hat KEINE Eingabefelder: `inputs.*` ist dann leer.
+  # Die Werte dafuer setzt der Schritt „Lauf planen" weiter unten. Wer hier
+  # etwas aendert, muss dort nachsehen.
+  schedule:
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       apps:
@@ -50,7 +59,10 @@ permissions:
 jobs:
   lauf:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # ⚠ Grosszuegig, weil `apps: alle` fuenf Repos installiert, Mahjong baut
+    # und zehn Beitraege rendert. Ein Abbruch mittendrin liesse halb
+    # hochgeladene Tage zurueck.
+    timeout-minutes: 60
 
     env:
       # Die fuenf Repos liegen hier nebeneinander, genau wie unter /home/user.
@@ -61,24 +73,50 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
 
     steps:
-      # ⚠ Warum es diesen Schritt gibt (05.09.2026, Lauf #12):
-      # Der Motor eines Repos muss auf dessen STANDARDZWEIG liegen, sonst
-      # checkt dieser Workflow ihn nicht mit aus. Bei Swaply lagen
-      # `scripts/social-daten.mjs` und `scripts/post-bild.mjs` nur auf einem
-      # Feature-Zweig — der Lauf brach mit „Cannot find module" ab, obwohl
-      # lokal alles da war. Das ist kein Fehler der Automatik, sondern ein
-      # nicht zusammengefuehrter Zweig.
-      #
-      # Bis er zusammengefuehrt ist, laesst sich hier ein anderer Zweig
-      # angeben. ⚠ Das ist ein Notbehelf: Was von einem Feature-Zweig
-      # gerendert wird, entspricht nicht dem, was in dem Repo als gueltig
-      # gilt. Sobald der Zweig in main ist, gehoert die Angabe wieder weg.
-      - name: Zweige bestimmen
-        id: zweige
+      # ⚠ Ein geplanter Lauf hat keine Eingabefelder — `inputs.*` ist leer.
+      # Deshalb entscheidet dieser Schritt EINMAL, was gilt, und alle
+      # folgenden lesen nur noch seine Ausgaben. Wer stattdessen `inputs.*`
+      # direkt liest, baut einen Schritt, der von Hand laeuft und nach
+      # Zeitplan stillschweigend nichts tut.
+      - name: Lauf planen
+        id: plan
         env:
-          ZWEIGE: ${{ inputs.zweige }}
+          E_APPS: ${{ inputs.apps }}
+          E_MODUS: ${{ inputs.modus }}
+          E_DATUM: ${{ inputs.datum }}
+          E_KANAELE: ${{ inputs.kanaele }}
+          E_ZWEIGE: ${{ inputs.zweige }}
+          GEPLANT: ${{ github.event_name == 'schedule' }}
         run: |
           set -e
+          if [ "$GEPLANT" = "true" ]; then
+            # ⚠ Der Zeitplan-Notbehelf: Swaplys Motor liegt noch nicht auf
+            # dessen Standardzweig (siehe unten). Ohne diese Zeile faellt
+            # Swaply jeden Morgen aus. Sie gehoert weg, sobald der Zweig
+            # zusammengefuehrt ist — die Warnung unten erinnert taeglich daran.
+            APPS="alle"; MODUS="echt"; KANAELE=""
+            ZWEIGE="swaply=claude/swaply-icon-farben"
+          else
+            APPS="${E_APPS:-anigosha}"; MODUS="${E_MODUS:-trocken}"
+            KANAELE="$E_KANAELE"; ZWEIGE="$E_ZWEIGE"
+          fi
+          {
+            echo "apps=$APPS"
+            echo "modus=$MODUS"
+            echo "datum=$E_DATUM"
+            echo "kanaele=$KANAELE"
+          } >> "$GITHUB_OUTPUT"
+          echo "Apps: $APPS · Modus: $MODUS · Kanaele: ${KANAELE:-alle} · ausgeloest von ${{ github.event_name }}"
+
+          # ⚠ Warum es die Zweig-Angabe gibt (05.09.2026, Lauf #12):
+          # Der Motor eines Repos muss auf dessen STANDARDZWEIG liegen, sonst
+          # checkt dieser Workflow ihn nicht mit aus. Bei Swaply lagen
+          # `scripts/social-daten.mjs` und `scripts/post-bild.mjs` nur auf
+          # einem Feature-Zweig — der Lauf brach mit „Cannot find module" ab,
+          # obwohl lokal alles da war.
+          #
+          # ⚠ Notbehelf: Was von einem Feature-Zweig gerendert wird, entspricht
+          # nicht dem, was in jenem Repo gilt.
           for repo in mahjong wellbooked fullrep swaply; do
             wert=""
             IFS=',' read -ra PAARE <<< "$ZWEIGE"
@@ -88,7 +126,10 @@ jobs:
               wert="$(echo "${eintrag#*=}" | tr -d ' ')"
             done
             echo "$repo=$wert" >> "$GITHUB_OUTPUT"
-            [ -n "$wert" ] && echo "⚠ $repo wird von Zweig „$wert\" gerendert, nicht vom Standardzweig."
+            if [ -n "$wert" ]; then
+              echo "⚠ $repo wird vom Zweig „$wert\" gerendert, nicht vom Standardzweig."
+              echo "> ⚠ **$repo** laeuft auf dem Notbehelf-Zweig \`$wert\`. Sobald er in main ist, gehoert die Angabe raus." >> "$GITHUB_STEP_SUMMARY"
+            fi
           done
           true
 
@@ -101,20 +142,20 @@ jobs:
       # gilt nur fuer dieses Repo. REPOS_TOKEN ist ein fein granularer Token
       # mit Contents:Read auf genau diese vier.
       - name: mahjong-app auschecken
-        if: contains(inputs.apps, 'mahjong') || inputs.apps == 'alle'
+        if: contains(steps.plan.outputs.apps, 'mahjong') || steps.plan.outputs.apps == 'alle'
         uses: actions/checkout@v4
         with:
           repository: almaz6380/mahjong-app
-          ref: ${{ steps.zweige.outputs.mahjong }}
+          ref: ${{ steps.plan.outputs.mahjong }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: mahjong-app
 
       - name: wellbooked auschecken
-        if: contains(inputs.apps, 'wellbooked') || inputs.apps == 'alle'
+        if: contains(steps.plan.outputs.apps, 'wellbooked') || steps.plan.outputs.apps == 'alle'
         uses: actions/checkout@v4
         with:
           repository: almaz6380/wellbooked
-          ref: ${{ steps.zweige.outputs.wellbooked }}
+          ref: ${{ steps.plan.outputs.wellbooked }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: wellbooked
 
@@ -122,20 +163,20 @@ jobs:
       # fuehrt fullrep unter /home/user/mypeak, und ladeApps() nimmt den
       # Ordnernamen woertlich.
       - name: MyPeak (FullRep) auschecken
-        if: contains(inputs.apps, 'fullrep') || inputs.apps == 'alle'
+        if: contains(steps.plan.outputs.apps, 'fullrep') || steps.plan.outputs.apps == 'alle'
         uses: actions/checkout@v4
         with:
           repository: almaz6380/MyPeak
-          ref: ${{ steps.zweige.outputs.fullrep }}
+          ref: ${{ steps.plan.outputs.fullrep }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: mypeak
 
       - name: swaply auschecken
-        if: contains(inputs.apps, 'swaply') || inputs.apps == 'alle'
+        if: contains(steps.plan.outputs.apps, 'swaply') || steps.plan.outputs.apps == 'alle'
         uses: actions/checkout@v4
         with:
           repository: almaz6380/swaply
-          ref: ${{ steps.zweige.outputs.swaply }}
+          ref: ${{ steps.plan.outputs.swaply }}
           token: ${{ secrets.REPOS_TOKEN }}
           path: swaply
 
@@ -145,7 +186,7 @@ jobs:
 
       - name: Was liegt vor?
         run: |
-          echo "Apps: ${{ inputs.apps }} · Modus: ${{ inputs.modus }}"
+          echo "Apps: ${{ steps.plan.outputs.apps }} · Modus: ${{ steps.plan.outputs.modus }}"
           ls -d "$SOCIAL_WURZEL"/*/ 2>/dev/null
 
       # Je ausgewaehlter App die Abhaengigkeiten. `npm ci` verlangt eine
@@ -195,11 +236,41 @@ jobs:
       # aus, als waere es ebenfalls kaputt). Gescheiterte Apps werden gemerkt
       # und ganz am Ende gemeldet — die geglueckten laufen inzwischen durch
       # bis in die Kanaele.
+      # ⚠ Mahjong ist die einzige App, deren Reel nicht gezeichnet, sondern
+      # ABGEFILMT wird: `record-solitaire.mjs` spielt eine Partie in einem
+      # echten Browser und nimmt sie auf. Dafuer braucht es die gebaute App
+      # unter http://localhost:5199 — das Skript startet den Server NICHT
+      # selbst, es erwartet ihn (`--server`, Vorgabe Port 5199).
+      #
+      # Deshalb faellt Mahjongs Reel ohne diesen Schritt aus, und zwar erst
+      # mitten im Lauf. Bis zum 07.09. war das der einzige Grund, warum
+      # `apps: alle` nie durchgetestet war.
+      #
+      # ⚠ `continue-on-error`: Ein misslungener Bau darf die vier anderen
+      # Apps nicht aufhalten. Faellt der Server aus, scheitert nur Mahjongs
+      # Reel — und der letzte Schritt faerbt den Lauf trotzdem rot.
+      - name: Mahjong-Vorschau starten
+        if: contains(steps.plan.outputs.apps, 'mahjong') || steps.plan.outputs.apps == 'alle'
+        continue-on-error: true
+        working-directory: mahjong-app
+        run: |
+          npm run build
+          nohup npx vite preview --port 5199 --strictPort > "$RUNNER_TEMP/mahjong-preview.log" 2>&1 &
+          # Warten, bis er antwortet — ein festes `sleep` ist entweder zu
+          # kurz (und der erste Aufruf laeuft ins Leere) oder verschenkt Zeit.
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://localhost:5199 && { echo "✓ Vorschau laeuft (nach ${i}s)"; exit 0; }
+            sleep 1
+          done
+          echo "✗ Vorschau antwortet nicht — Mahjongs Reel wird ausfallen:"
+          tail -20 "$RUNNER_TEMP/mahjong-preview.log" || true
+          exit 1
+
       - name: Beitraege erzeugen
         working-directory: anigosha
         env:
-          APPS: ${{ inputs.apps }}
-          DATUM: ${{ inputs.datum }}
+          APPS: ${{ steps.plan.outputs.apps }}
+          DATUM: ${{ steps.plan.outputs.datum }}
         run: |
           DATUM_ARG=""
           [ -n "$DATUM" ] && DATUM_ARG="--datum $DATUM"
@@ -234,10 +305,10 @@ jobs:
           TIKTOK_REFRESH_TOKEN_FULLREP: ${{ secrets.TIKTOK_REFRESH_TOKEN_FULLREP }}
           TIKTOK_REFRESH_TOKEN_SWAPLY: ${{ secrets.TIKTOK_REFRESH_TOKEN_SWAPLY }}
           BLOB_TOKEN: ${{ secrets.BLOB_TOKEN }}
-          APPS: ${{ inputs.apps }}
-          DATUM: ${{ inputs.datum }}
-          KANAELE: ${{ inputs.kanaele }}
-          MODUS: ${{ inputs.modus }}
+          APPS: ${{ steps.plan.outputs.apps }}
+          DATUM: ${{ steps.plan.outputs.datum }}
+          KANAELE: ${{ steps.plan.outputs.kanaele }}
+          MODUS: ${{ steps.plan.outputs.modus }}
         run: |
           DATUM_ARG=""
           [ -n "$DATUM" ] && DATUM_ARG="--datum $DATUM"
@@ -279,14 +350,14 @@ jobs:
       # [skip ci] haelt Vercel davon ab, fuer eine reine Datenzeile die ganze
       # Web-App neu zu bauen.
       - name: Ledger zurueckschreiben
-        if: inputs.modus == 'echt'
+        if: steps.plan.outputs.modus == 'echt'
         working-directory: anigosha
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add tools/social/ledger.json
           git diff --cached --quiet && { echo "Ledger unveraendert."; exit 0; }
-          git commit -m "Social: Ledger vom Tageslauf ${{ inputs.datum || 'heute' }} [skip ci]"
+          git commit -m "Social: Ledger vom Tageslauf ${{ steps.plan.outputs.datum || 'heute' }} [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
 
       # ⚠ Ganz zum Schluss, damit eine gescheiterte App die uebrigen weder am
