@@ -7,6 +7,7 @@ name: App Store Connect
 #   status          liest nur
 #   name            Anzeigename + Untertitel auf FullRep
 #   build           Build 4 der offenen Version zuweisen
+#   versionsnummer  offene Version umbenennen (Eingabe nummer, z. B. 1.1.1)
 #   screenshots     iPhone- + iPad-Bilder ersetzen
 #   abo-screenshot  Paywall-Bild an alle Abos (gegen "Missing Metadata")
 #   abo-namen       Abo-Anzeigenamen MyPeak -> FullRep
@@ -34,6 +35,7 @@ on:
         options:
           - status
           - build
+          - versionsnummer
           - testflight
           - sandbox
           - kauf-einreichen
@@ -53,7 +55,7 @@ on:
           - pruefnotiz
         default: status
       nummer:
-        description: 'Build-Nummer (nur fuer build/testflight)'
+        description: 'Build-Nummer (build/testflight) bzw. Versionsnummer (versionsnummer)'
         type: string
         default: ''
       dry_run:
@@ -94,7 +96,7 @@ jobs:
 
           # --build und --testflight brauchen eine Nummer, die uebrigen nicht.
           # Der Trockenlauf gilt nur fuer die schreibenden Befehle.
-          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ]; then
+          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ] || [ "$MODE" = "versionsnummer" ]; then
             if [ -z "$NUMMER" ]; then
               echo "::error::Modus $MODE braucht die Eingabe 'nummer'."
               exit 1

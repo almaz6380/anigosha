@@ -275,6 +275,40 @@ def setze_build(tok, nummer):
 
 
 
+def setze_versionsnummer(tok, nummer):
+    """Die offene Version umbenennen (z. B. 1.1 -> 1.1.1). Vorlage: Swaply.
+
+    Warum das gebraucht wird: ASC laesst immer nur EINE bearbeitbare Version zu.
+    Wird eine Einreichung zurueckgezogen, faellt dieselbe Version auf
+    DEVELOPER_REJECTED zurueck — sie traegt dann aber noch die alte Nummer, und
+    ein Build laesst sich nur zuweisen, wenn seine CFBundleShortVersionString
+    zur Versionsnummer passt. Ohne diesen Befehl muesste jemand sie von Hand in
+    der Konsole aendern.
+
+    Apple nimmt den PATCH nur an, solange die Version bearbeitbar ist; steckt
+    sie im Review, kommt ein Fehler statt einer stillen Nicht-Aenderung.
+    """
+    aid = app_id(tok)
+    v = offene_version(tok, aid)
+    alt = v['attributes'].get('versionString')
+    zustand = v['attributes'].get('appStoreState')
+    if alt == nummer:
+        print(f'  Version steht schon auf {nummer} ({zustand})')
+        return
+    print(f'  Version {alt} ({zustand}) -> {nummer}')
+    if TROCKEN:
+        print('  [trocken] wuerde umbenannt')
+        return
+    res = api(tok, f'appStoreVersions/{v["id"]}', 'PATCH', {
+        'data': {'type': 'appStoreVersions', 'id': v['id'],
+                 'attributes': {'versionString': nummer}},
+    }, fatal=False)
+    if res.get('_fehler'):
+        print(f'  FEHLER: {fehler_text(res)}')
+    else:
+        print(f'  gesetzt: {res["data"]["attributes"].get("versionString")}')
+
+
 def testflight_zuweisen(tok, nummer):
     """Build der/den internen TestFlight-Gruppe(n) zuweisen.
 
@@ -1428,6 +1462,8 @@ def main():
                    help='Anzeigename + Untertitel auf FullRep setzen')
     p.add_argument('--build', metavar='NR',
                    help='Diesen Build der offenen Version zuweisen')
+    p.add_argument('--versionsnummer', metavar='NR',
+                   help='Offene Version umbenennen, z. B. 1.1.1')
     p.add_argument('--testflight', metavar='NR',
                    help='Diesen Build der internen TestFlight-Gruppe zuweisen')
     p.add_argument('--sandbox', action='store_true',
@@ -1481,7 +1517,7 @@ def main():
     TROCKEN = a.dry_run
     TROTZDEM = a.trotzdem
 
-    tat = [a.status, a.name, a.build, a.testflight, a.sandbox, a.kauf_einreichen,
+    tat = [a.status, a.name, a.build, a.versionsnummer, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
            a.warum, a.texte_lesen, a.texte_sichern, a.texte_schreiben,
            a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
@@ -1510,6 +1546,8 @@ def main():
         setze_namen(tok)
     if a.build:
         setze_build(tok, a.build)
+    if a.versionsnummer:
+        setze_versionsnummer(tok, a.versionsnummer)
     if a.testflight:
         testflight_zuweisen(tok, a.testflight)
     if a.sandbox:
