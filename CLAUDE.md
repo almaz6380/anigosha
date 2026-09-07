@@ -444,14 +444,33 @@ loesen. Commit `0218b43`:
 | | Stand |
 |---|---|
 | Android | **1.1.1 / vc8 in Produktion, an alle Nutzer** (`Android Release` Lauf 34055524853, Edit committet) |
-| iOS | **Build 18 hochgeladen** (`iOS Release` Lauf 34055523314, `UPLOAD SUCCEEDED`) — **nicht zugewiesen, nicht eingereicht** |
-| Web | `main` traegt die app-ads.txt, Vercel deployt sie mit dem Merge |
+| iOS | **1.1.1 / Build 18 zugewiesen, Texte gesetzt — Einreichung haengt an der Datenschutz-Angabe** (s. u.) |
+| Web | app-ads.txt live unter anigosha.vercel.app (`text/plain`, gemessen 06.09.) |
 
-⚠ **Warum iOS haengt:** 1.1 (Build 17, Einreichung `f813c500`) steht noch auf
-`WAITING_FOR_REVIEW`. Build 18 laesst sich erst zuweisen, wenn Apple 1.1 freigibt
-oder die Einreichung zurueckgezogen wird (`aufraeumen`, kostet die Warteposition).
-Danach: Version 1.1.1 anlegen bzw. umbenennen → `build 18` → Josefs Datenschutz-Angabe
-(s. o.) → `texte-schreiben` (marketingUrl + whatsNew) → `einreichen`.
+**iOS-Weg am 07.09. (Josefs Entscheidung: nicht auf 1.1 warten, sondern zurueckziehen):**
+`aufraeumen` (1.1/Build 17, Einreichung `f813c500` → `CANCELING`) → 4 Minuten →
+**`versionsnummer 1.1.1`** (neuer Modus, Vorlage Swaply — Build 18 traegt 1.1.1, und
+die Version hiess nach dem Rueckzug noch 1.1) → `build 18` (`VALID`, zugewiesen) →
+`texte-schreiben` (whatsNew in allen sieben Sprachen; `marketingUrl` stand schon
+richtig) → `einreichen`.
+
+⚠ **`einreichen` scheitert zweimal mit demselben Wortlaut:** *„appStoreVersions …
+is not in valid state.: This resource cannot be reviewed, please check associated
+errors to see why."* `warum` findet nichts: Build VALID, Exportfrage beantwortet,
+alle sieben Sprachen vollstaendig, Alterseinstufung gesetzt, Version auf
+`PREPARE_FOR_SUBMISSION`. Der leere Entwurf `c9093b28` bleibt liegen; `einreichen`
+benutzt ihn wieder.
+
+**Der Kandidat, den die API nicht zeigt: die App-Datenschutz-Angabe.** Build 18
+traegt wieder `NSUserTrackingUsageDescription`, ASC steht seit dem 13.08. auf
+„kein Tracking" — dieselbe Unstimmigkeit, die ASC am 13.08. in der Gegenrichtung
+blockiert hat (dort: „kein Tracking" nicht veroeffentlichbar, solange ein Build mit
+dem Schluessel haengt). Sie steht in der Oberflaeche als Fehler an der Version, per
+API ist sie unsichtbar. **Josefs Schritt:** App Store Connect → App-Datenschutz →
+Kennungen → Geraete-ID → „Ja, wir verwenden Geraete-IDs fuer Tracking" →
+veroeffentlichen. Danach `asc.yml` Modus `einreichen` erneut — der Entwurf wird
+wiederverwendet. Zeigt die Versionsseite in ASC daneben einen anderen roten
+Hinweis, ist der es.
 
 ⚠ **Der eine Schritt, den nur Josef machen kann, und OHNE den die iOS-Einreichung
 abgelehnt wird:** App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
@@ -460,12 +479,10 @@ und Apple prueft die Angabe gegen das Binary. Reihenfolge: erst Build 18 zuweise
 dann die Angabe veroeffentlichen, dann einreichen (Henne-Ei-Beschreibung im Abschnitt
 vom 13.08.).
 
-⚠ **`marketingUrl` und `whatsNew` gehen erst nach der Freigabe von 1.1 rein** —
-Apple sperrt die Versionsfelder waehrend der Pruefung (409). Danach:
-`asc.yml` Modus `texte-schreiben`. Und **die Play-Console kennt kein Website-Feld
-per Skript**: Play Console → Store-Praesenz → Store-Einstellungen → Kontaktdaten →
-Website = https://anigosha.vercel.app, sonst findet der Crawler die app-ads.txt fuer
-Android nicht.
+⚠ **Die Play-Console kennt kein Website-Feld per Skript**: Play Console →
+Store-Praesenz → Store-Einstellungen → Kontaktdaten → Website =
+https://anigosha.vercel.app, sonst findet der Crawler die app-ads.txt fuer Android
+nicht. (`marketingUrl` und `whatsNew` bei Apple sind seit 07.09. gesetzt.)
 
 ### Store-Bilder: je Sprache ein Satz, und wann sie hochduerfen (02.09.2026)
 
@@ -562,7 +579,7 @@ hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 | | App Store | Google Play |
 |---|---|---|
 | Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1 mit Build 17, am 02.09. eingereicht — WAITING_FOR_REVIEW** | **1.1 / vc7 am 02.09. auf `production`** |
+| In Arbeit | **1.1.1 mit Build 18** (1.1/Build 17 am 07.09. zurueckgezogen) — Einreichung haengt an der Datenschutz-Angabe, s. Abschnitt 06.09. | **1.1.1 / vc8 seit 06.09. auf `production`** |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
