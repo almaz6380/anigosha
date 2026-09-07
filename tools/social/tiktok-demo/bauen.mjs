@@ -26,12 +26,22 @@
 // wird, waere in einer Pruefung eine Taeuschung — und das Risiko traegt das
 // Entwicklerkonto.
 
-import { readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 import { videoSenke, lauf, FFMPEG } from '../../reels/encode.mjs';
+
+/** Laenge und Format einer fertigen Datei — aus ffmpegs eigenem Kopf gelesen. */
+function gemessen(datei) {
+  const roh = spawnSync(FFMPEG, ['-i', datei], { encoding: 'utf8' }).stderr ?? '';
+  const dauer = roh.match(/Duration: (\d+):(\d+):(\d+\.\d+)/);
+  const bild = roh.match(/Video: .*?, (\d+x\d+)[^,]*, .*?([\d.]+) fps/);
+  const sek = dauer ? (+dauer[1] * 3600 + +dauer[2] * 60 + +dauer[3]).toFixed(1) : '?';
+  return `${sek} s · ${bild?.[1] ?? '?'} · ${bild?.[2] ?? '?'} fps`;
+}
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const WURZEL = resolve(HIER, '..', '..', '..');
@@ -44,6 +54,29 @@ const HOEHE = 1920;
 const ZIEL_ORDNER = join(WURZEL, 'out', 'tiktok-demo');
 const CLIP1 = wert('clip1', null);
 const CLIP2 = wert('clip2', null);
+
+// ⚠ Zuschnitt der beiden Aufnahmen — gemessen an den Aufnahmen vom
+// 05./07.09.2026, nicht geschaetzt. Wer neue macht, prueft die Werte nach
+// (Einzelbilder ziehen und ansehen) oder setzt sie ueber die Schalter.
+//
+// Warum ueberhaupt zugeschnitten wird, Punkt fuer Punkt:
+//
+// clip1 (Mac, quer 1280×800): Ohne `crop` faellt eine Querformat-Aufnahme in
+//   einem 9:16-Rahmen auf einen schmalen Streifen zusammen — der
+//   Zustimmungsdialog waere zwar da, aber kaum zu lesen. Der Ausschnitt
+//   behaelt bewusst die Adresszeile („tiktok.com"): Sie ist der Beleg, dass
+//   der Dialog von TikTok kommt und nicht nachgebaut ist.
+//   ⚠ `bis` schneidet VOR der Landeseite mit dem OAuth-Code ab. Der Code ist
+//   laengst verbraucht und einmalig, aber ein Zugangscode gehoert in kein
+//   Video, das aus dem Haus geht.
+//
+// clip2 (iPhone, hochkant): Die ersten Sekunden sind der Startbildschirm der
+//   TikTok-App und die ladende Liste — nichts, was etwas beweist. Kein
+//   `crop`, das Bild ist ohnehin hochkant.
+const ZUSCHNITT = {
+  clip1: { von: wert('von1', 5.5), bis: wert('bis1', 12.3), crop: wert('crop1', '520:700:380:0') },
+  clip2: { von: wert('von2', 6.0), bis: wert('bis2', null), crop: wert('crop2', null) },
+};
 
 // Die Schrift wird eingebettet, weil `setContent`-Seiten keinen Origin haben
 // und `file://` dort nicht laedt — dieselbe Regel wie bei den Reels.
@@ -230,13 +263,75 @@ if (CLIP1 && CLIP2) {
   // gebracht und dazwischengeschnitten. Ohne Angleichen weigert sich der
   // concat-Filter bei abweichender Groesse oder Bildrate.
   console.log('Setze die Aufnahmen ein …');
-  const teile = [geruest, resolve(CLIP1), resolve(CLIP2)];
-  for (const t of teile) {
+  for (const t of [geruest, resolve(CLIP1), resolve(CLIP2)]) {
     if (!existsSync(t)) { console.error(`✗ fehlt: ${t}`); process.exit(1); }
   }
-  console.log('⚠ Noch nicht gebaut: Das Zusammenfuegen kommt, sobald die zwei');
-  console.log('  Aufnahmen wirklich vorliegen — die Schnittpunkte haengen davon ab,');
-  console.log('  wie lang sie sind. Bis dahin ist das Geruest die Vorschau.');
+
+  // Jede Aufnahme folgt auf IHRE Erklaerkarte, nicht davor und nicht
+  // irgendwo: Erst sagt das Video, was gleich zu sehen ist, dann zeigt es
+  // das Echte. Die Schnittpunkte sind deshalb das Ende der Karten 3 und 5
+  // und ergeben sich aus SZENEN — nicht aus abgetippten Sekunden, die beim
+  // naechsten Umbau still falsch waeren.
+  const endeNach = (i) => SZENEN.slice(0, i + 1).reduce((s, x) => s + x.sek, 0);
+  const nachKarte3 = endeNach(2);
+  const nachKarte5 = endeNach(4);
+  const gesamtSek = endeNach(SZENEN.length - 1);
+
+  // ⚠ Die Aufnahmen kommen von zwei verschiedenen Geraeten und haben weder
+  // das Format noch die Bildrate des Geruests (Mac quer, iPhone hochkant
+  // und hoeher als 9:16). Passend gerechnet statt gestreckt: einpassen und
+  // schwarz auffuellen. Ein verzerrtes TikTok-Fenster saehe in einer
+  // Pruefung nach Bastelei aus.
+  const anpassen = `scale=${BREITE}:${HOEHE}:force_original_aspect_ratio=decrease,`
+    + `pad=${BREITE}:${HOEHE}:(ow-iw)/2:(oh-ih)/2:black,setsar=1,fps=${FPS},format=yuv420p`;
+  const kodieren = ['-c:v', 'libx264', '-profile:v', 'high', '-preset', 'medium',
+    '-crf', '20', '-pix_fmt', 'yuv420p', '-r', String(FPS), '-movflags', '+faststart'];
+
+  const teilPfad = (n) => join(ZIEL_ORDNER, `teil-${n}.mp4`);
+
+  // Fuenf Stuecke: Karten 1–3, Aufnahme 1, Karten 4–5, Aufnahme 2, Karte 6.
+  const stuecke = [
+    { name: 'a', quelle: geruest, von: 0, bis: nachKarte3 },
+    { name: 'b', quelle: resolve(CLIP1), ...ZUSCHNITT.clip1 },
+    { name: 'c', quelle: geruest, von: nachKarte3, bis: nachKarte5 },
+    { name: 'd', quelle: resolve(CLIP2), ...ZUSCHNITT.clip2 },
+    { name: 'e', quelle: geruest, von: nachKarte5, bis: gesamtSek },
+  ];
+
+  for (const s of stuecke) {
+    const args = ['-y'];
+    // ⚠ `-ss` VOR `-i`: Danach spult ffmpeg Bild fuer Bild und braucht bei
+    // einer 60-fps-Aufnahme spuerbar laenger.
+    if (s.von != null) args.push('-ss', String(s.von));
+    // ⚠ Dauer (`-t`), nicht Endzeitpunkt (`-to`). Zusammen mit einem `-ss`
+    // davor ist bei `-to` nicht eindeutig, worauf sich der Wert bezieht —
+    // auf den Dateianfang oder auf die Sprungmarke. `-t` ist es immer.
+    if (s.bis != null) args.push('-t', String(Number(s.bis) - Number(s.von ?? 0)));
+    args.push('-i', s.quelle, '-an',
+      '-vf', s.crop ? `crop=${s.crop},${anpassen}` : anpassen,
+      ...kodieren, teilPfad(s.name));
+    await lauf(args);
+    console.log(`   ${s.name}: ${gemessen(teilPfad(s.name))}`);
+  }
+
+  // ⚠ Der concat-DEMUXER (nicht der Filter): Alle fuenf Stuecke sind eben
+  // mit denselben Werten kodiert worden, also laesst sich ohne zweites
+  // Umkodieren aneinanderhaengen — das spart einen Qualitaetsverlust.
+  const liste = join(ZIEL_ORDNER, 'teile.txt');
+  writeFileSync(liste, stuecke.map((s) => `file '${teilPfad(s.name)}'`).join('\n'));
+
+  const ziel = join(ZIEL_ORDNER, 'tiktok-demo.mp4');
+  await lauf(['-y', '-f', 'concat', '-safe', '0', '-i', liste, '-c', 'copy',
+    '-movflags', '+faststart', ziel]);
+
+  for (const s of stuecke) rmSync(teilPfad(s.name), { force: true });
+  rmSync(liste, { force: true });
+
+  // ⚠ Nachmessen statt melden. Ein „fertig" ohne Probe ist eine Behauptung.
+  // ffmpeg-static bringt kein ffprobe mit, also wird die Laenge aus dem
+  // Kopf der ffmpeg-Ausgabe gelesen — sie steht dort woertlich.
+  console.log(`\n✓ ${ziel}`);
+  console.log(`   ${gemessen(ziel)} · Geruest ${gesamtSek} s + zwei Aufnahmen, stumm`);
 } else {
   console.log('\nOhne --clip1/--clip2: Die zwei TikTok-Szenen sind Platzhalter.');
   console.log('So ist das Video ansehbar, aber NICHT einreichbar.');
