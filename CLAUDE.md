@@ -444,7 +444,7 @@ loesen. Commit `0218b43`:
 | | Stand |
 |---|---|
 | Android | **1.1.1 / vc8 in Produktion, an alle Nutzer** (`Android Release` Lauf 34055524853, Edit committet) |
-| iOS | **1.1.1 / Build 18 zugewiesen, Texte gesetzt — Einreichung haengt an der Datenschutz-Angabe** (s. u.) |
+| iOS | **1.1.1 / Build 18 eingereicht** — Einreichung `c9093b28`, `WAITING_FOR_REVIEW`, 07.09. 11:38 UTC |
 | Web | app-ads.txt live unter anigosha.vercel.app (`text/plain`, gemessen 06.09.) |
 
 **iOS-Weg am 07.09. (Josefs Entscheidung: nicht auf 1.1 warten, sondern zurueckziehen):**
@@ -461,23 +461,22 @@ alle sieben Sprachen vollstaendig, Alterseinstufung gesetzt, Version auf
 `PREPARE_FOR_SUBMISSION`. Der leere Entwurf `c9093b28` bleibt liegen; `einreichen`
 benutzt ihn wieder.
 
-**Der Kandidat, den die API nicht zeigt: die App-Datenschutz-Angabe.** Build 18
-traegt wieder `NSUserTrackingUsageDescription`, ASC steht seit dem 13.08. auf
-„kein Tracking" — dieselbe Unstimmigkeit, die ASC am 13.08. in der Gegenrichtung
-blockiert hat (dort: „kein Tracking" nicht veroeffentlichbar, solange ein Build mit
-dem Schluessel haengt). Sie steht in der Oberflaeche als Fehler an der Version, per
-API ist sie unsichtbar. **Josefs Schritt:** App Store Connect → App-Datenschutz →
-Kennungen → Geraete-ID → „Ja, wir verwenden Geraete-IDs fuer Tracking" →
-veroeffentlichen. Danach `asc.yml` Modus `einreichen` erneut — der Entwurf wird
-wiederverwendet. Zeigt die Versionsseite in ASC daneben einen anderen roten
-Hinweis, ist der es.
+**Die Ursache war die App-Datenschutz-Angabe — bestaetigt, nicht vermutet.** Build 18
+traegt wieder `NSUserTrackingUsageDescription`, ASC stand seit dem 13.08. auf „kein
+Tracking". Die Seite App-Datenschutz zeigte dazu einen roten Kasten (*„Deine App
+enthaelt NSUserTrackingUsageDescription … Gib an, welche Datentypen Benutzer:innen
+verfolgen"*), den die API nirgends ausgibt. Josef hat am 07.09. Geraete-ID →
+Bearbeiten → „Wird fuer Tracking-Zwecke verwendet" gesetzt und veroeffentlicht;
+der dritte `einreichen`-Lauf ging danach sofort durch (Entwurf `c9093b28`
+wiederverwendet, Version angehaengt, `WAITING_FOR_REVIEW`).
 
-⚠ **Der eine Schritt, den nur Josef machen kann, und OHNE den die iOS-Einreichung
-abgelehnt wird:** App Store Connect → App-Datenschutz → Kennungen → Geraete-ID →
-„Ja, wir verwenden Geraete-IDs fuer Tracking“. Die App fragt jetzt wieder per ATT,
-und Apple prueft die Angabe gegen das Binary. Reihenfolge: erst Build 18 zuweisen,
-dann die Angabe veroeffentlichen, dann einreichen (Henne-Ei-Beschreibung im Abschnitt
-vom 13.08.).
+**Merksatz:** *„is not in valid state … check associated errors"* bei vollstaendigen
+Metadaten heisst: auf der Versions- oder Datenschutzseite in ASC nachsehen. Die
+App-Datenschutz-Angabe muss zum Binary passen, in BEIDE Richtungen — und sie ist
+nur von Hand aenderbar.
+
+✅ **Datenschutz-Angabe am 07.09. von Josef auf „Tracking: ja" gesetzt** (Geraete-ID →
+„Wird fuer Tracking-Zwecke verwendet"). Ohne sie nahm ASC die Einreichung nicht an, s. u.
 
 ⚠ **Die Play-Console kennt kein Website-Feld per Skript**: Play Console →
 Store-Praesenz → Store-Einstellungen → Kontaktdaten → Website =
@@ -579,7 +578,7 @@ hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 | | App Store | Google Play |
 |---|---|---|
 | Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1.1 mit Build 18** (1.1/Build 17 am 07.09. zurueckgezogen) — Einreichung haengt an der Datenschutz-Angabe, s. Abschnitt 06.09. | **1.1.1 / vc8 seit 06.09. auf `production`** |
+| In Arbeit | **1.1.1 mit Build 18, am 07.09. eingereicht — WAITING_FOR_REVIEW** (1.1/Build 17 zurueckgezogen) | **1.1.1 / vc8 seit 06.09. auf `production`** |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
