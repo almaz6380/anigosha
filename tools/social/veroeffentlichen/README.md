@@ -237,6 +237,16 @@ und nicht halbfertig eingereicht.
    Feld „Web/Desktop URL" die Adresse OHNE, bleibt sie rot — dasselbe
    Zeichen, dieselbe halbe Stunde.
 
+**Stand 07.09.2026: Schritte 1–4 sind erledigt, das Demo-Video liegt fertig
+im Repo** (`tools/social/tiktok-demo/fertig/tiktok-demo.mp4`, 45,5 s). Offen
+ist nur noch Schritt 5 — das Hochladen und Einreichen in „App review".
+
+⚠ **Schritt 5 geht nur von Hand.** `developers.tiktok.com/apps/` antwortet
+ohne angemeldete Sitzung mit 401; es gibt keine API dafuer und aus einer
+Claude-Sitzung heraus keine Anmeldung. Der Text dafuer steht unten, das
+Video im Repo — beides ist vorbereitet, damit der Schritt nur noch Klicken
+ist.
+
 **Wenn es weitergeht — die Reihenfolge:**
 
 1. Reiter **Sandbox** (oben neben „Production"), Sandbox anlegen und die
