@@ -478,10 +478,11 @@ nur von Hand aenderbar.
 ✅ **Datenschutz-Angabe am 07.09. von Josef auf „Tracking: ja" gesetzt** (Geraete-ID →
 „Wird fuer Tracking-Zwecke verwendet"). Ohne sie nahm ASC die Einreichung nicht an, s. u.
 
-⚠ **Die Play-Console kennt kein Website-Feld per Skript**: Play Console →
-Store-Praesenz → Store-Einstellungen → Kontaktdaten → Website =
-https://anigosha.vercel.app, sonst findet der Crawler die app-ads.txt fuer Android
-nicht. (`marketingUrl` und `whatsNew` bei Apple sind seit 07.09. gesetzt.)
+✅ **Play-Website-Feld steht bereits auf https://anigosha.vercel.app** (07.09. in der
+Console nachgesehen: Mehr Nutzer gewinnen → App-Praesenz im Play Store → Play
+Store-Einstellungen → Kontaktdaten). Der Crawler findet die app-ads.txt damit fuer
+Android; AdMob meldet „autorisiert" erst nach dem naechsten Crawl (~24 h).
+`marketingUrl` und `whatsNew` bei Apple sind seit 07.09. gesetzt. Nichts mehr offen.
 
 ### Store-Bilder: je Sprache ein Satz, und wann sie hochduerfen (02.09.2026)
 
