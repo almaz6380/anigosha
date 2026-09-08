@@ -1,18 +1,29 @@
 // TikTok: Video in den Entwurfs-Posteingang des Kontos laden.
 //
-// ⚠ DIE WICHTIGSTE TATSACHE ZUERST. Aus TikToks eigener Doku:
+// ⚠ EINE STELLE, DIE HIER SCHON EINMAL FALSCH STAND (korrigiert 07.09.2026).
 //
-//     „All content posted by unaudited clients will be restricted to
+// Aus TikToks Doku zum DIREKTVERSAND:
+//
+//     „all content uploaded via this endpoint will be restricted to
 //      private viewing mode."
 //
-// Solange TikTok die App nicht geprueft hat, ist JEDER automatisch gepostete
-// Clip privat — sichtbar fuer niemanden. Automatisches oeffentliches Posten
-// ist damit nicht „noch nicht eingebaut", sondern von TikTok gesperrt.
+// „this endpoint" ist Direct Post — NICHT der Posteingang, den wir benutzen.
+// Hier stand bis zum 07.09. die Verallgemeinerung „jeder automatisch gepostete
+// Clip ist privat", und die ist so nicht belegt: Die Doku zu
+// `/v2/post/publish/inbox/video/init/` sagt dazu gar nichts. Sie sagt nur:
+// „users must click on inbox notifications to continue the editing flow in
+// TikTok and complete the post."
 //
-// Deshalb geht dieser Weg bewusst NICHT ueber den Direktversand, sondern ueber
-// den Posteingang: Das Video landet als Entwurf in Josefs TikTok-App, er
-// tippt dort auf Veroeffentlichen. Das umgeht die Sperre nicht — es macht sie
-// belanglos, weil ein Mensch den letzten Schritt ohnehin tun soll.
+// **Was daraus folgt und was nicht.** Ein Entwurf, den ein Mensch in der App
+// fertigstellt, ist allem Anschein nach ein gewoehnlicher Beitrag. Bewiesen
+// ist das nicht — das sagt erst der erste veroeffentlichte Entwurf. Wer es
+// wissen will, sieht nach dem Posten im Profil nach, ob der Beitrag oeffentlich
+// steht.
+//
+// Der Weg ueber den Posteingang bleibt trotzdem der richtige, aber aus einem
+// anderen Grund als dem hier frueher genannten: Ein Mensch soll den letzten
+// Schritt ohnehin tun (siehe posten.mjs). Die Pruefung braucht es erst, wenn
+// das WEGFALLEN soll — dann greift beim Direktversand die Sperre oben wirklich.
 //
 // TikTok nimmt die Datei direkt entgegen (FILE_UPLOAD), es braucht also
 // keinen oeffentlichen Host. Der zweite Weg (PULL_FROM_URL) verlangt eine bei

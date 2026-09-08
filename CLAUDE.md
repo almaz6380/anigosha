@@ -1142,6 +1142,17 @@ funktioniert dort nicht und die Fehlermeldung nennt nur „client_key". Zugang
 bekommt ausschließlich, wer als **Target User** eingetragen ist und die
 Einladung in seiner TikTok-App angenommen hat.
 
+⚠ **Korrektur vom 07.09.2026: „Alles bleibt privat, bis die App geprüft ist"
+war falsch.** Der Satz aus TikToks Doku — *„all content uploaded via this
+endpoint will be restricted to private viewing mode"* — steht beim
+**Direktversand**, nicht beim Posteingang, den wir benutzen. Die Doku zu
+`/v2/post/publish/inbox/video/init/` sagt dazu nichts; sie sagt nur, dass der
+Nutzer den Beitrag in der App fertigstellt. Ein so veröffentlichter Entwurf ist
+allem Anschein nach ein gewöhnlicher Beitrag. **Bewiesen ist es nicht** — das
+sagt erst der erste veröffentlichte Entwurf. Die Prüfung braucht es erst, wenn
+der Mensch WEGFALLEN soll; dort greift die Sperre wirklich.
+Lehre: eine Aussage über einen Endpunkt gilt nicht für den Nachbarendpunkt.
+
 ✅ **Die App Review ist am 07.09.2026 um 18:46 eingereicht.** Demo-Video
 (45,5 s) liegt in `tools/social/tiktok-demo/fertig/`, gebaut aus zwei
 Bildschirmaufnahmen — Zustimmungsdialog am Mac, Entwurf im Posteingang am
