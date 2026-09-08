@@ -152,6 +152,78 @@
       "schluessel": "aussage",
       "inhalt": "seed34551",
       "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-08",
+      "winkel": "ladder",
+      "medium": "reel",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed73126",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-08",
+      "winkel": "frage-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed26210",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-09-08",
+      "winkel": "fakt",
+      "medium": "reel",
+      "schluessel": "fakt-index",
+      "inhalt": "seed46468",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-09-08",
+      "winkel": "last-minute",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed68687",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-08",
+      "winkel": "uebung-loop",
+      "medium": "reel",
+      "schluessel": "uebung",
+      "inhalt": "seed93329",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-08",
+      "winkel": "wissens-karte",
+      "medium": "bild",
+      "schluessel": "wissensthema",
+      "inhalt": "seed34513",
+      "sprache": "de"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-08",
+      "winkel": "tausch-loop",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed32113",
+      "sprache": "es"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-08",
+      "winkel": "tausch",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed75623",
+      "sprache": "de"
     }
   ]
 }
