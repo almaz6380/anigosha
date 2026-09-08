@@ -80,6 +80,115 @@ export async function frischerToken({ clientKey, clientSecret, refreshToken }) {
 }
 
 /**
+ * Was das Konto beim Direktversand ueberhaupt darf.
+ *
+ * ⚠ Dieser Aufruf ist NICHT optional. TikTok verlangt ihn vor jedem
+ * Direktversand, und der `privacy_level`, den wir gleich mitschicken, MUSS aus
+ * dieser Antwort stammen — sonst antwortet die API mit
+ * `privacy_level_option_mismatch`. Er ist zugleich die einzige ehrliche
+ * Auskunft darueber, ob das Konto ueberhaupt oeffentlich posten darf.
+ */
+export async function kontoAuskunft({ token }) {
+  const antwort = await fetch(`${API}/post/publish/creator_info/query/`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json; charset=UTF-8' },
+  });
+  const daten = await antwort.json();
+  if (!antwort.ok || daten.error?.code !== 'ok') {
+    throw new Error(`TikTok (Kontoauskunft) ${antwort.status}: `
+      + `${daten.error?.message ?? JSON.stringify(daten).slice(0, 300)}`);
+  }
+  return daten.data;
+}
+
+/**
+ * Direktversand: das Video geht OHNE Zutun eines Menschen auf das Konto.
+ *
+ * ⚠ Das braucht den Scope `video.publish` — `video.upload` (Posteingang)
+ * genuegt NICHT. Und aus TikToks Doku, hier woertlich zutreffend:
+ *
+ *     „All content posted by unaudited clients will be restricted to private
+ *      viewing mode."
+ *
+ * Solange die App nicht geprueft ist, bleibt ein so gepostetes Video also
+ * privat — und bei einem oeffentlichen Konto kommt nicht einmal das, sondern
+ * der Fehler `unaudited_client_can_only_post_to_private_accounts`.
+ *
+ * Anders als beim Posteingang ist die Sperre hier real. Deshalb steht dieser
+ * Weg in posten.mjs auf einem Schalter, der erst nach der Freigabe umgelegt
+ * wird.
+ */
+export async function direktPosten({ token, datei, titel, trocken }) {
+  const { statSync, readFileSync } = await import('node:fs');
+  const groesse = statSync(datei).size;
+
+  // TikTok schneidet laengere Beschreibungen ab; lieber selbst und sichtbar.
+  const text = String(titel ?? '').slice(0, 2200);
+
+  // ⚠ Ein Trockenlauf fasst das Netz nicht an. Sonst braeuchte er einen
+  // gueltigen Token, um zu sagen, was er tun WUERDE — und scheiterte auf
+  // einem Rechner ohne Zugangsdaten an etwas, das gar nicht sein Thema ist.
+  if (trocken) {
+    return { trocken: true, groesse, mb: (groesse / 1024 / 1024).toFixed(1),
+      zeichen: text.length };
+  }
+
+  // ⚠ Erst fragen, dann posten — und die Antwort wirklich auswerten. Ein fest
+  // eingetragenes „PUBLIC_TO_EVERYONE" waere geraten; bei einem privaten Konto
+  // steht es gar nicht zur Wahl, und TikTok antwortet mit
+  // `privacy_level_option_mismatch`.
+  const auskunft = await kontoAuskunft({ token });
+  const moeglich = auskunft.privacy_level_options ?? [];
+  if (!moeglich.includes('PUBLIC_TO_EVERYONE')) {
+    throw new Error('TikTok laesst fuer dieses Konto kein oeffentliches Posten zu '
+      + `(moeglich: ${moeglich.join(', ') || 'nichts'}). Das ist der uebliche Stand, `
+      + 'solange die App nicht geprueft ist.');
+  }
+
+  const init = await fetch(`${API}/post/publish/video/init/`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json; charset=UTF-8' },
+    body: JSON.stringify({
+      post_info: {
+        title: text,
+        privacy_level: 'PUBLIC_TO_EVERYONE',
+        disable_comment: false,
+        disable_duet: false,
+        disable_stitch: false,
+      },
+      source_info: {
+        source: 'FILE_UPLOAD',
+        video_size: groesse,
+        chunk_size: groesse,
+        total_chunk_count: 1,
+      },
+    }),
+  });
+  const initDaten = await init.json();
+  if (!init.ok || initDaten.error?.code !== 'ok') {
+    throw new Error(`TikTok (Direktversand init) ${init.status}: `
+      + `${initDaten.error?.message ?? JSON.stringify(initDaten).slice(0, 300)}`);
+  }
+
+  const { upload_url: url, publish_id: id } = initDaten.data;
+  const hoch = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'video/mp4',
+      'Content-Length': String(groesse),
+      'Content-Range': `bytes 0-${groesse - 1}/${groesse}`,
+    },
+    body: readFileSync(datei),
+  });
+  if (!hoch.ok) {
+    throw new Error(`TikTok (Direktversand Upload) ${hoch.status}: `
+      + `${(await hoch.text()).slice(0, 200)}`);
+  }
+
+  return { publishId: id, mb: (groesse / 1024 / 1024).toFixed(1), zeichen: text.length };
+}
+
+/**
  * Laedt ein Video in den Entwurfs-Posteingang.
  *
  * Zwei Schritte: Upload-Adresse anfordern, dann die Datei dorthin schieben.

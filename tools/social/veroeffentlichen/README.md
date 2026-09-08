@@ -8,33 +8,58 @@ node tools/social/posten.mjs --echt        # wirklich hochladen
 Der Trockenlauf **braucht keinen einzigen Zugang** und sagt genau, welcher Wert
 fehlt und wo er herkommt. Er ist der richtige erste Schritt.
 
-## Die Grundregel
+## Die Grundregel — seit 07.09.2026 eine andere
 
-**Nichts geht ungelesen raus.** Alles landet als Entwurf, Josef gibt frei.
-Entscheidung vom 30.08.2026, und sie passt zur Sache: Die Beitraege tragen
-Saetze wie „Laut Studien".
+**Volle Automatik: Facebook und Instagram posten oeffentlich, ohne dass jemand
+mitliest.** Josefs Entscheidung vom 07.09.2026.
 
-## Die drei Kanaele koennen nicht dasselbe
+⚠ Sie **ersetzt** die Regel vom 30.08. („Nichts geht ungelesen raus, alles
+landet als Entwurf"). Deren Begruendung war gut — die Beitraege tragen Saetze
+wie „Laut Studien" — und ist nicht falsch geworden, sondern ueberstimmt. Wer
+das je zurueckdreht, dreht eine Entscheidung zurueck, kein Versehen.
 
-| | Entwurf? | Datei direkt? | Freigabe wo? |
+**Der Schalter steht an genau einer Stelle:** `AUTOMATIK` oben in
+`posten.mjs`. Wer wissen will, was heute wirklich passiert, liest dort.
+
+| | Wie es rausgeht | Stand |
+|---|---|---|
+| **Facebook** | `published=true` — sofort oeffentlich | aktiv |
+| **Instagram** | Blob → Container → veroeffentlichen, alles im selben Lauf | aktiv |
+| **TikTok** | Direktversand (`video.publish`) | **wartet auf die Pruefung** |
+
+### ⚠ TikTok: zwei Wege, und nur einer geht ohne Menschen
+
+| | Scope | Was passiert | Braucht Pruefung? |
 |---|---|---|---|
-| **Facebook** | ✅ echter Entwurf (`published=false`) | ✅ ja | Meta Business Suite |
-| **TikTok** | ✅ Posteingang der App | ✅ ja | TikTok-App |
-| **Instagram** | ❌ **gibt es nicht** | ❌ **nein** | siehe unten |
+| Posteingang | `video.upload` | Entwurf in der App, ein Mensch postet | nein |
+| Direktversand | `video.publish` | die Automatik postet selbst | **ja** |
 
-Diese Ungleichheit ist keine Nachlaessigkeit, sondern das, was die
-Schnittstellen hergeben.
-
-### ⚠ TikTok: automatisch oeffentlich geht gar nicht
-
-Aus TikToks Doku, woertlich:
+Aus TikToks Doku zum **Direktversand**, woertlich:
 
 > All content posted by unaudited clients will be restricted to private
 > viewing mode.
 
-Solange TikTok die App nicht geprueft hat, ist **jeder** automatisch gepostete
-Clip privat — sichtbar fuer niemanden. Der Weg ueber den Posteingang umgeht das
-nicht, er macht es belanglos: Ein Mensch tippt ohnehin auf Veroeffentlichen.
+Dort gilt der Satz wirklich, und bei einem oeffentlichen Konto kommt nicht
+einmal ein privater Beitrag heraus, sondern der Fehler
+`unaudited_client_can_only_post_to_private_accounts`.
+
+⚠ **Fuer den Posteingang gilt er NICHT** — das stand hier bis zum 07.09.
+falsch. Die Doku zu `/v2/post/publish/inbox/video/init/` sagt dazu nichts.
+
+Der Posteingang-Weg bleibt im Code und ist mit einer Zeile in `AUTOMATIK`
+wieder aktiv. Er ist der Rueckfallweg, falls die Pruefung den Direktversand
+nicht durchlaesst.
+
+## Die drei Kanaele koennen nicht dasselbe
+
+| | Datei direkt? | Besonderheit |
+|---|---|---|
+| **Facebook** | ✅ ja | ein Feld entscheidet ueber Entwurf oder oeffentlich |
+| **TikTok** | ✅ ja | zwei getrennte Endpunkte, siehe oben |
+| **Instagram** | ❌ **nein** | nur oeffentliche Links, und der Container verfaellt |
+
+Diese Ungleichheit ist keine Nachlaessigkeit, sondern das, was die
+Schnittstellen hergeben.
 
 ### ⚠ Instagram: kein Entwurf, und keine Dateien
 
@@ -49,9 +74,14 @@ Also: Das Bild muss **oeffentlich erreichbar** sein, bevor der Container
 entsteht — Instagram nimmt keine hochgeladene Datei. Und der Container
 **verfaellt nach 24 Stunden**.
 
-Deshalb legt `posten.mjs` fuer Instagram bewusst **nichts** an. Der Container
-entsteht erst beim Freigeben. Ein am Morgen erzeugter waere am Abend tot, und
-der Fehler saehe aus wie ein kaputter Zugang.
+⚠ **Seit dem 07.09.2026 legt `posten.mjs` den Container SOFORT an und
+veroeffentlicht gleich.** Das war vorher verboten, und die Begruendung war
+richtig: Zwischen dem naechtlichen Lauf und der Freigabe lagen Stunden, und ein
+am Morgen erzeugter Container waere am Abend tot gewesen. Genau dieser Abstand
+faellt mit der vollen Automatik weg — hier vergehen Sekunden.
+
+Der Weg ueber die Merkliste bleibt im Code (`AUTOMATIK.instagram = false`) und
+ist der Rueckfall, falls wieder jemand mitlesen soll.
 
 **Geloest ueber Vercel Blob** (Entscheidung vom 30.08.2026). `posten.mjs` legt
 das Bild oeffentlich ab und merkt sich die Adresse; der Container entsteht
@@ -302,10 +332,29 @@ Zeichen; liegt hier, damit er beim Einreichen nicht neu erfunden wird):
 > authorize the app and obtain a refresh token. We only read the open_id to
 > map each token to the correct account.
 >
-> Content Posting API (video.upload): a scheduled job renders short videos
-> from our own app content and uploads them to the creator inbox as drafts.
-> Direct Post is deliberately disabled — a human opens the TikTok app and
-> decides whether to publish. Nothing is ever posted without that step.
+> Content Posting API (video.publish): a scheduled job renders short videos
+> from our own app content and posts them to the account that authorized it.
+> Before every post we call /v2/post/publish/creator_info/query/ and use a
+> privacy_level returned by that call. All media and text are produced by us;
+> no third-party content is involved.
+
+⚠ **Dieser Text ist der Stand vom 07.09.2026, NACH Josefs Entscheidung fuer
+die volle Automatik.** Die erste Einreichung (18:46 desselben Tages) trug den
+Vorgaengertext mit dem Satz *„Direct Post is deliberately disabled"* — sie
+beschreibt also das Gegenteil dessen, was wir jetzt wollen. Wird sie so
+genehmigt, ist die App fuer den falschen Weg freigeschaltet und muss ein
+zweites Mal eingereicht werden.
+
+⚠ **Und ein Risiko, das man kennen sollte, bevor man wartet:** TikToks
+Richtlinie zum Direktversand geht von einer Oberflaeche aus, in der der
+Creator die Privatsphaere-Stufe selbst waehlt (*„must correctly display the
+creator account's privacy level options and honor the users' choice"*). Ein
+Zeitplan auf einem Server hat keine Oberflaeche. Wir erfuellen den technischen
+Teil — wir fragen `creator_info` ab und nehmen einen Wert aus dessen Antwort —
+aber ob TikTok das fuer eine reine Eigenwerbung-Automatik ohne UI durchgehen
+laesst, ist offen. Kommt eine Ablehnung, ist das der wahrscheinlichste Grund,
+und der Rueckfallweg ist der Posteingang (`video.upload`), der weiterhin im
+Code steht und mit einer Zeile wieder aktiv ist.
 
 **Die urspruengliche Kurzfassung:**
 

@@ -1117,11 +1117,20 @@ Captions unproblematisch; die Einschränkung gilt nur für Store-Titel und -Keyw
 
 ## Social-Automatik für alle fünf Apps — `tools/social/` (Stand 05.09.2026)
 
-Ein Orchestrator (`lauf.mjs` erzeugt, `posten.mjs` lädt als Entwurf hoch) für
-Anigosha, Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige
-Einrichtung: `tools/social/veroeffentlichen/README.md`. **Nichts geht ungelesen
-raus** — Facebook als Entwurf, TikTok in den Posteingang, Instagram erst beim
-Freigeben.
+Ein Orchestrator (`lauf.mjs` erzeugt, `posten.mjs` sendet) für Anigosha,
+Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige Einrichtung:
+`tools/social/veroeffentlichen/README.md`.
+
+⚠ **Seit 07.09.2026: volle Automatik.** Facebook und Instagram posten
+öffentlich, ohne dass jemand mitliest. Das **ersetzt** die Regel vom 30.08.
+(„Nichts geht ungelesen raus"), deren Begründung — die Beiträge tragen Sätze
+wie „Laut Studien" — nicht falsch geworden, sondern überstimmt ist. Wer das je
+zurückdreht, dreht eine Entscheidung zurück, kein Versehen.
+
+**Der Schalter steht an genau einer Stelle: `AUTOMATIK` oben in `posten.mjs`.**
+TikTok steht dort noch auf Posteingang — der Direktversand (`video.publish`)
+braucht eine geprüfte App und antwortet sonst mit
+`unaudited_client_can_only_post_to_private_accounts`.
 
 **✅ Facebook und Instagram sind für alle fünf Apps fertig** (04.09.2026,
 gemessen). App **WELLapps** (`1808340180592380`, Typ Business), fünf
