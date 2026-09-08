@@ -42,7 +42,8 @@ import { fileURLToPath } from 'node:url';
 import { ladeApps } from './waehlen.mjs';
 import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnisse.mjs';
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
-import { inPosteingang, direktPosten, frischerToken } from './veroeffentlichen/tiktok.mjs';
+import { inPosteingang, direktPosten, kontoAuskunft, frischerToken }
+  from './veroeffentlichen/tiktok.mjs';
 import { hochladen, merklisteAblegen } from './veroeffentlichen/blob.mjs';
 import { containerAnlegen, aufBereitWarten, veroeffentlichen as igVeroeffentlichen }
   from './veroeffentlichen/instagram.mjs';
@@ -403,9 +404,38 @@ for (const p of posten) {
 // schreiben — und „trocken" heisst: es geht nichts raus, auch nicht dorthin.
 for (const [appSchluessel, u] of ECHT ? uebersicht : []) {
   const eintraege = merkliste.get(appSchluessel) ?? [];
+
+  // ⚠ Die Kontoauskunft von TikTok gehoert in die Merkliste, weil die
+  // Freigabe-Seite sie braucht: TikTok verlangt, dass die Privatsphaere-
+  // Optionen, die dem Menschen angezeigt werden, aus `creator_info` stammen —
+  // und die Seite selbst hat keine TikTok-Zugangsdaten (und soll auch keine).
+  //
+  // ⚠ Sie ist eine Momentaufnahme. Vor dem Posten wird SIE NOCH EINMAL
+  // abgefragt (siehe direktPosten); was hier steht, ist nur die Vorlage fuer
+  // die Anzeige. Wer sich allein darauf verliesse, postete mit veralteten
+  // Optionen und bekaeme `privacy_level_option_mismatch`.
+  let tiktok = null;
+  if (u.posten.some((p) => p.kanaele?.tiktok)) {
+    try {
+      const a = await kontoAuskunft({ token: await tiktokToken(appSchluessel) });
+      tiktok = {
+        nickname: a.creator_nickname,
+        username: a.creator_username,
+        avatar: a.creator_avatar_url,
+        privacyOptionen: a.privacy_level_options ?? [],
+        maxSekunden: a.max_video_post_duration_sec,
+        stand: new Date().toISOString(),
+      };
+    } catch (e) {
+      // Kein Grund, den ganzen Lauf zu verlieren — die Seite zeigt dann
+      // eben, dass TikTok gerade nicht antwortet.
+      console.log(`   ⚠ TikTok-Kontoauskunft fuer ${appSchluessel}: ${e.message}`);
+    }
+  }
+
   const r = await merklisteAblegen({
     datum: DATUM, appSchluessel, name: u.name, eintraege, uebersicht: u.posten,
-    token: zugaenge(appSchluessel).blobToken,
+    tiktok, token: zugaenge(appSchluessel).blobToken,
   });
   console.log(`Merkliste: ${u.posten.length} Beitrag(e), davon ${eintraege.length} fuer Instagram offen → ${r.pfad}`);
 }

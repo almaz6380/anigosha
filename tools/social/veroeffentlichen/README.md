@@ -333,28 +333,46 @@ Zeichen; liegt hier, damit er beim Einreichen nicht neu erfunden wird):
 > map each token to the correct account.
 >
 > Content Posting API (video.publish): a scheduled job renders short videos
-> from our own app content and posts them to the account that authorized it.
-> Before every post we call /v2/post/publish/creator_info/query/ and use a
-> privacy_level returned by that call. All media and text are produced by us;
-> no third-party content is involved.
+> from our own app content and prepares them. It never posts on its own.
+> The account owner opens our web page, which shows for every post: the
+> TikTok account nickname, the privacy level options returned by
+> /v2/post/publish/creator_info/query/ with no preselected value, separate
+> unchecked toggles for Comment, Duet and Stitch, an unchecked commercial
+> content disclosure, and the Music Usage Confirmation notice. Only after the
+> owner picks a privacy level and confirms do we call the publish endpoint,
+> with exactly the values chosen. All media and text are our own.
 
-⚠ **Dieser Text ist der Stand vom 07.09.2026, NACH Josefs Entscheidung fuer
-die volle Automatik.** Die erste Einreichung (18:46 desselben Tages) trug den
-Vorgaengertext mit dem Satz *„Direct Post is deliberately disabled"* — sie
-beschreibt also das Gegenteil dessen, was wir jetzt wollen. Wird sie so
-genehmigt, ist die App fuer den falschen Weg freigeschaltet und muss ein
-zweites Mal eingereicht werden.
+⚠ **Dieser Text ist der Stand vom 07.09.2026 abends, NACH der Entscheidung
+fuer den Direktversand.** Die Einreichung von 18:46 desselben Tages trug den
+Vorgaengertext („Direct Post is deliberately disabled") und beschreibt damit
+das Gegenteil. Sie gehoert ersetzt.
 
-⚠ **Und ein Risiko, das man kennen sollte, bevor man wartet:** TikToks
-Richtlinie zum Direktversand geht von einer Oberflaeche aus, in der der
-Creator die Privatsphaere-Stufe selbst waehlt (*„must correctly display the
-creator account's privacy level options and honor the users' choice"*). Ein
-Zeitplan auf einem Server hat keine Oberflaeche. Wir erfuellen den technischen
-Teil — wir fragen `creator_info` ab und nehmen einen Wert aus dessen Antwort —
-aber ob TikTok das fuer eine reine Eigenwerbung-Automatik ohne UI durchgehen
-laesst, ist offen. Kommt eine Ablehnung, ist das der wahrscheinlichste Grund,
-und der Rueckfallweg ist der Posteingang (`video.upload`), der weiterhin im
-Code steht und mit einer Zeile wieder aktiv ist.
+**Warum der Text so lang von der Oberflaeche redet:** Weil genau daran die
+Pruefung haengt. TikToks Richtlinie sagt woertlich:
+
+> API Clients must only start sending content materials to TikTok after the
+> user has expressly consented to the upload.
+
+Vollautomatisches Posten ist bei TikTok also nicht schwierig, sondern
+**untersagt**. Was TikTok vor jedem Beitrag angezeigt haben will, steht in der
+Freigabe-Seite (`freigabe-app/`), und jedes Element davon ist eine Auflage:
+
+| Element | Auflage |
+|---|---|
+| Kontoname | „so users are aware of which TikTok account the content will be uploaded to" |
+| Sichtbarkeit | aus `creator_info`, **ohne Voreinstellung** |
+| Kommentare / Duett / Stitch | einzeln, **alle zuerst aus** |
+| Werbekennzeichnung | Schalter, **aus** |
+| Music Usage Confirmation | Satz vor dem Knopf |
+
+⚠ **Wer dort etwas vorbelegt oder weglaesst, macht aus einer erlaubten
+Integration eine unerlaubte.** Deshalb bricht auch `tiktok-posten.mjs` ab,
+wenn keine Sichtbarkeit mitkommt — eine Voreinstellung im Code waere genau der
+Verstoss.
+
+**Der Rueckfallweg bleibt:** `AUTOMATIK.tiktok = false` in `posten.mjs` legt
+das Video wieder in den Posteingang. Der braucht nur `video.upload` und keine
+Pruefung.
 
 **Die urspruengliche Kurzfassung:**
 

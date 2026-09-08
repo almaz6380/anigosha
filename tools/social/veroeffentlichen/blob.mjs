@@ -90,7 +90,7 @@ export async function hochladen({ datei, token, praefix, trocken }) {
  * Je App eine eigene Datei, weil posten.mjs je App einmal laeuft; eine
  * gemeinsame wuerde sich beim zweiten Aufruf selbst ueberschreiben.
  */
-export async function merklisteAblegen({ datum, appSchluessel, eintraege, uebersicht, token, name }) {
+export async function merklisteAblegen({ datum, appSchluessel, eintraege, uebersicht, tiktok, token, name }) {
   const pfad = `social/${datum}/freigabe-${appSchluessel}.json`;
   // ⚠ `eintraege` ist der Vertrag mit freigeben.mjs und bleibt unangetastet:
   // Dort steht, was Instagram noch offen hat, und dort wird vermerkt, was
@@ -100,6 +100,8 @@ export async function merklisteAblegen({ datum, appSchluessel, eintraege, uebers
   // beim naechsten Umbau einen doppelten Instagram-Beitrag.
   const inhalt = { datum, app: appSchluessel, name: name ?? appSchluessel, eintraege };
   if (uebersicht) inhalt.uebersicht = uebersicht;
+  // Kontoauskunft fuer die TikTok-Oberflaeche der Freigabe-Seite.
+  if (tiktok) inhalt.tiktok = tiktok;
   const { url } = await put(pfad, JSON.stringify(inhalt, null, 2), {
     access: 'public',
     token,

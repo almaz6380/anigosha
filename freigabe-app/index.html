@@ -50,6 +50,21 @@
   .kopfleiste input { flex: 1; }
   .hinweis { font-size: 13px; color: var(--leise); margin-top: 8px; }
   [hidden] { display: none !important; }
+
+  /* TikTok-Block. Er sieht bewusst nach Formular aus: TikTok verlangt, dass
+     der Mensch hier aktiv waehlt, und das soll man sehen. */
+  .tt { border-top: 1px solid var(--rand); margin-top: 12px; padding-top: 12px; }
+  .tt h4 { margin: 0 0 2px; font-size: 14px; }
+  .tt .konto { font-size: 12px; color: var(--leise); margin: 0 0 10px; }
+  .tt label { display: flex; gap: 9px; align-items: flex-start; font-size: 14px;
+    padding: 7px 0; cursor: pointer; }
+  .tt input[type=radio], .tt input[type=checkbox] {
+    width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--akzent); flex: none; }
+  .tt .gruppe { margin-bottom: 4px; }
+  .tt .titel { font-size: 12px; color: var(--leise); text-transform: uppercase;
+    letter-spacing: .04em; margin: 12px 0 2px; }
+  .tt .recht { font-size: 12px; color: var(--leise); margin: 12px 0 10px; }
+  .tt .recht a { color: var(--leise); }
 </style>
 </head>
 <body>
@@ -102,13 +117,15 @@ const STAND_TEXT = {
   entwurf: 'Entwurf liegt bereit',
   posteingang: 'im Posteingang',
   wartet: 'wartet auf dich',
+  veroeffentlicht: 'veröffentlicht',
   uebersprungen: 'übersprungen',
   fehler: 'Fehler',
   trocken: 'nur Probelauf',
 };
 
 function markeFuer(kanal, stand, eintrag) {
-  const gut = stand === 'entwurf' || stand === 'posteingang' || eintrag?.veroeffentlicht;
+  const gut = ['entwurf', 'posteingang', 'veroeffentlicht'].includes(stand)
+    || eintrag?.veroeffentlicht;
   const schlecht = stand === 'fehler';
   const text = eintrag?.veroeffentlicht
     ? `${KANAL_NAME[kanal]}: veröffentlicht`
@@ -155,7 +172,100 @@ function postKarte(post, liste) {
   };
   knoepfe.append(kopieren);
   k.append(knoepfe);
+
+  // ⚠ Nur wenn TikTok fuer diesen Beitrag ueberhaupt ansteht und noch nicht
+  // gepostet ist. Ein zweiter Beitrag laesst sich nicht zurueckholen.
+  const tt = post.kanaele?.tiktok;
+  if (post.istVideo && tt && tt.stand !== 'veroeffentlicht' && liste.tiktok) {
+    k.append(tiktokBlock(post, liste));
+  }
   return k;
+}
+
+// Die Oberflaeche, die TikTok fuer den Direktversand vorschreibt.
+//
+// ⚠ JEDES Element hier ist eine Auflage, keine Designentscheidung:
+//   · der Kontoname, damit klar ist, wohin gepostet wird
+//   · die Sichtbarkeit OHNE Voreinstellung — der Mensch muss waehlen
+//   · Kommentare/Duett/Stitch, alle ZUERST AUS
+//   · Werbekennzeichnung, aus
+//   · der Satz zur Music Usage Confirmation vor dem Knopf
+// Wer hier etwas vorbelegt oder weglaesst, macht aus einer erlaubten
+// Integration eine unerlaubte.
+function tiktokBlock(post, liste) {
+  const box = el('div', 'tt');
+  box.append(el('h4', null, 'Auf TikTok posten'));
+  box.append(el('p', 'konto', `Konto: ${liste.tiktok.nickname || liste.tiktok.username || '—'}`));
+
+  const name = `tt-${liste.app}-${post.datei}`;
+  const gewaehlt = { privacy: null, erlaubt: new Set(), werbung: new Set() };
+
+  const BEZEICHNUNG = {
+    PUBLIC_TO_EVERYONE: 'Öffentlich',
+    MUTUAL_FOLLOW_FRIENDS: 'Freunde (gegenseitig gefolgt)',
+    FOLLOWER_OF_CREATOR: 'Follower',
+    SELF_ONLY: 'Nur ich',
+  };
+
+  box.append(el('p', 'titel', 'Wer darf es sehen?'));
+  const gruppe = el('div', 'gruppe');
+  for (const stufe of liste.tiktok.privacyOptionen ?? []) {
+    const l = el('label');
+    const r = document.createElement('input');
+    r.type = 'radio'; r.name = name; r.value = stufe;
+    // ⚠ Kein `checked`. Genau darauf besteht TikTok: „no default value".
+    r.onchange = () => { gewaehlt.privacy = stufe; knopf.disabled = false; };
+    l.append(r, document.createTextNode(BEZEICHNUNG[stufe] ?? stufe));
+    gruppe.append(l);
+  }
+  box.append(gruppe);
+
+  box.append(el('p', 'titel', 'Erlauben'));
+  for (const [schluessel, text] of [['kommentare', 'Kommentare'], ['duett', 'Duett'], ['stitch', 'Stitch']]) {
+    const l = el('label');
+    const c = document.createElement('input');
+    c.type = 'checkbox';           // ⚠ ohne `checked` — alle drei zuerst aus
+    c.onchange = () => (c.checked ? gewaehlt.erlaubt.add(schluessel) : gewaehlt.erlaubt.delete(schluessel));
+    l.append(c, document.createTextNode(text));
+    box.append(l);
+  }
+
+  box.append(el('p', 'titel', 'Werbekennzeichnung'));
+  for (const [schluessel, text] of [
+    ['eigene', 'Bewirbt meine eigene Marke'],
+    ['fremde', 'Bezahlte Partnerschaft'],
+  ]) {
+    const l = el('label');
+    const c = document.createElement('input');
+    c.type = 'checkbox';
+    c.onchange = () => (c.checked ? gewaehlt.werbung.add(schluessel) : gewaehlt.werbung.delete(schluessel));
+    l.append(c, document.createTextNode(text));
+    box.append(l);
+  }
+
+  box.append(el('p', 'recht',
+    'Mit dem Posten stimmst du TikToks Music Usage Confirmation zu.'));
+
+  const knopf = el('button', null, 'Auf TikTok posten');
+  knopf.disabled = true;           // erst nach der Wahl der Sichtbarkeit
+  knopf.onclick = async () => {
+    knopf.disabled = true; knopf.textContent = 'Wird gepostet …';
+    try {
+      await ruf('tiktok', {
+        datum: liste.datum, app: liste.app, datei: post.datei,
+        privacy: gewaehlt.privacy,
+        erlaubt: [...gewaehlt.erlaubt],
+        werbung: [...gewaehlt.werbung],
+      });
+      knopf.textContent = 'Läuft — dauert etwa eine Minute';
+      setTimeout(laden, 60000);
+    } catch (e) {
+      knopf.disabled = false; knopf.textContent = 'Auf TikTok posten';
+      alert(`Ging nicht: ${e.message}`);
+    }
+  };
+  box.append(knopf);
+  return box;
 }
 
 function appBlock(liste, datum) {

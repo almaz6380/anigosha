@@ -118,7 +118,7 @@ export async function kontoAuskunft({ token }) {
  * Weg in posten.mjs auf einem Schalter, der erst nach der Freigabe umgelegt
  * wird.
  */
-export async function direktPosten({ token, datei, titel, trocken }) {
+export async function direktPosten({ token, datei, titel, wahl, trocken }) {
   const { statSync, readFileSync } = await import('node:fs');
   const groesse = statSync(datei).size;
 
@@ -130,19 +130,27 @@ export async function direktPosten({ token, datei, titel, trocken }) {
   // einem Rechner ohne Zugangsdaten an etwas, das gar nicht sein Thema ist.
   if (trocken) {
     return { trocken: true, groesse, mb: (groesse / 1024 / 1024).toFixed(1),
-      zeichen: text.length };
+      zeichen: text.length, wahl };
   }
 
-  // ⚠ Erst fragen, dann posten — und die Antwort wirklich auswerten. Ein fest
-  // eingetragenes „PUBLIC_TO_EVERYONE" waere geraten; bei einem privaten Konto
-  // steht es gar nicht zur Wahl, und TikTok antwortet mit
-  // `privacy_level_option_mismatch`.
+  // ⚠ Die Wahl kommt vom Menschen, nicht aus dem Code. TikToks Richtlinie
+  // verlangt das ausdruecklich: Der Creator waehlt die Privatsphaere-Stufe
+  // selbst, ohne Voreinstellung. Ein hier fest eingetragener Wert waere
+  // genau der Verstoss, wegen dem die Pruefung fehlschlaegt.
+  if (!wahl?.privacy) {
+    throw new Error('Ohne gewaehlte Privatsphaere-Stufe wird nicht gepostet. '
+      + 'Sie muss aus der Oberflaeche kommen — TikTok verbietet eine Voreinstellung.');
+  }
+
+  // ⚠ NOCH EINMAL fragen, unmittelbar vor dem Posten. Die Oberflaeche hat die
+  // Auswahl aus einer Auskunft von vorhin gebaut; aendert der Nutzer inzwischen
+  // seine Kontoeinstellungen, antwortet TikTok sonst mit
+  // `privacy_level_option_mismatch` — und die Meldung sagt nicht, warum.
   const auskunft = await kontoAuskunft({ token });
   const moeglich = auskunft.privacy_level_options ?? [];
-  if (!moeglich.includes('PUBLIC_TO_EVERYONE')) {
-    throw new Error('TikTok laesst fuer dieses Konto kein oeffentliches Posten zu '
-      + `(moeglich: ${moeglich.join(', ') || 'nichts'}). Das ist der uebliche Stand, `
-      + 'solange die App nicht geprueft ist.');
+  if (!moeglich.includes(wahl.privacy)) {
+    throw new Error(`TikTok laesst „${wahl.privacy}" fuer dieses Konto nicht (mehr) zu `
+      + `(moeglich: ${moeglich.join(', ') || 'nichts'}). Nichts gepostet.`);
   }
 
   const init = await fetch(`${API}/post/publish/video/init/`, {
@@ -151,10 +159,18 @@ export async function direktPosten({ token, datei, titel, trocken }) {
     body: JSON.stringify({
       post_info: {
         title: text,
-        privacy_level: 'PUBLIC_TO_EVERYONE',
-        disable_comment: false,
-        disable_duet: false,
-        disable_stitch: false,
+        privacy_level: wahl.privacy,
+        // ⚠ Umgekehrte Logik, und das ist eine echte Falle: In der Oberflaeche
+        // heisst das Haekchen „Kommentare erlauben", die API kennt aber
+        // `disable_comment`. Wer das eins zu eins durchreicht, schaltet genau
+        // das ab, was der Nutzer angehakt hat.
+        disable_comment: !wahl.kommentare,
+        disable_duet: !wahl.duett,
+        disable_stitch: !wahl.stitch,
+        // Werbekennzeichnung. Beide standardmaessig aus; `brand_content_toggle`
+        // ist bezahlte Partnerschaft, `brand_organic_type` die eigene Marke.
+        brand_content_toggle: Boolean(wahl.fremdeMarke),
+        brand_organic_type: Boolean(wahl.eigeneMarke),
       },
       source_info: {
         source: 'FILE_UPLOAD',

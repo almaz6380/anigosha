@@ -131,7 +131,8 @@ for (const liste of listen) {
   if (geaendert) {
     await merklisteAblegen({
       datum: DATUM, appSchluessel: liste.app, name: liste.name,
-      eintraege: liste.eintraege, uebersicht: liste.uebersicht, token: z.blobToken,
+      eintraege: liste.eintraege, uebersicht: liste.uebersicht,
+      tiktok: liste.tiktok, token: z.blobToken,
     });
   }
   console.log();
