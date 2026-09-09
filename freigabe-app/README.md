@@ -35,6 +35,8 @@ enthalten Bildadresse und Bildtext, also genau das, was ohnehin gleich
 veröffentlicht wird. Zugangsdaten stehen dort nicht und dürfen dort nie
 landen. Das Passwort schützt also die Bedienung, nicht die Bilder.
 
+✅ **Eingerichtet am 09.09.2026: https://wellapps-freigabe.vercel.app**
+
 ## Einrichten (einmalig, ~5 Minuten)
 
 **1. Neues Vercel-Projekt.** vercel.com → Add New → Project → Repository

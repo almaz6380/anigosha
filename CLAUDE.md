@@ -1327,6 +1327,9 @@ Eine kleine Seite, die die Entwürfe eines Tages zeigt (Video/Bild, Text zum
 Kopieren, je Kanal der Stand) und Instagram von dort freigeben lässt. Sie ersetzt
 den Weg über GitHub Actions. Einrichtung: `freigabe-app/README.md`.
 
+✅ **Live seit 09.09.2026: https://wellapps-freigabe.vercel.app** (gemessen:
+Seite 200, Serverfunktion antwortet, Passwortprüfung greift).
+
 **Eigenes Vercel-Projekt mit Root Directory `freigabe-app`**, bewusst nicht auf
 anigosha.vercel.app: Dort prüfen Apple und Google die Spiel-App.
 
