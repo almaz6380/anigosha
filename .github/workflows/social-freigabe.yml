@@ -38,6 +38,10 @@ on:
         description: 'Welcher Tag (JJJJ-MM-TT), leer = heute'
         type: string
         required: false
+      datei:
+        description: 'Nur DIESEN Beitrag — leer = alle offenen der App'
+        type: string
+        required: false
 
 jobs:
   freigeben:
@@ -68,4 +72,5 @@ jobs:
           MODUS: ${{ inputs.modus }}
           APPS: ${{ inputs.apps }}
           DATUM: ${{ inputs.datum }}
+          DATEI: ${{ inputs.datei }}
         run: node tools/social/freigeben.mjs

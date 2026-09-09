@@ -135,9 +135,17 @@ export default async function handler(req, res) {
       }
       // ⚠ Nur bekannte App-Schluessel weiterreichen (siehe oben).
       const nurApp = APPS.includes(app) ? app : '';
+      // `datei` ist optional: Mit ihr wird genau EIN Beitrag freigegeben (so
+      // arbeitet die Seite), ohne sie alles Offene der App (so laesst sich der
+      // Lauf von Hand als Sammelfreigabe benutzen).
+      const nurDatei = DATEINAME.test(String(datei ?? '')) ? String(datei) : '';
+      if (datei && !nurDatei) {
+        res.status(400).json({ fehler: 'Unerwarteter Dateiname.' });
+        return;
+      }
       await laufStarten(token, WORKFLOW,
-        { modus: 'veroeffentlichen', datum: tag, apps: nurApp });
-      res.status(200).json({ gestartet: true, datum: tag, app: nurApp || 'alle' });
+        { modus: 'veroeffentlichen', datum: tag, apps: nurApp, datei: nurDatei });
+      res.status(200).json({ gestartet: true, datum: tag, app: nurApp || 'alle', datei: nurDatei });
       return;
     }
 
