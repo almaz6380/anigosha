@@ -14,6 +14,17 @@ Gebaut, damit der Weg über GitHub Actions entfällt.
 | **Facebook** | ✅ Knopf „Auf Facebook veröffentlichen" (zwei Tipper). |
 | **TikTok** | Knopf ist gebaut, wirkt aber erst nach TikToks App-Prüfung — bis dahin liegt der Beitrag im Posteingang der App und wird dort fertiggestellt. |
 
+Dazu hat jeder Beitrag einen **`Ablehnen`**-Knopf (ebenfalls zwei Tipper). Er
+verwirft ihn und fordert gleich einen Ersatz an — der Tageslauf läuft mit einer
+anderen Saat noch einmal für diese App und braucht dafür etwa zehn Minuten. Der
+abgelehnte Beitrag bleibt durchgestrichen stehen, damit am Abend nachvollziehbar
+ist, was verworfen wurde.
+
+⚠ **Was schon öffentlich ist, lässt sich nicht ablehnen** — dort erscheint der
+Knopf nicht. Zurückholen geht nur durch Löschen im jeweiligen Netzwerk. Ein
+TikTok-Entwurf, der schon im Posteingang der App liegt, muss ebenfalls dort
+verworfen werden.
+
 ⚠ **Facebook legt seit dem 09.09.2026 keinen Entwurf mehr an.** Der Tageslauf
 legt nur die gerenderte Datei öffentlich ab; der Beitrag entsteht erst, wenn du
 hier drückst. Grund: Ein vorhandener Entwurf lässt sich per API nicht

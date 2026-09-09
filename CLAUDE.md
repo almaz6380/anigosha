@@ -1131,6 +1131,29 @@ Freigabe-Seite, Beitrag für Beitrag, per Knopfdruck.
 | Instagram | Datei ablegen, vormerken | ✅ Knopf |
 | TikTok | in den Posteingang der App | Knopf gebaut, wirkt erst nach TikToks Prüfung |
 
+**Ablehnen und Ersatz** (09.09.2026): Jeder Beitrag hat auf der Seite einen
+`Ablehnen`-Knopf. Er vermerkt ihn als verworfen, nimmt seinen Instagram-Eintrag
+aus `eintraege` und löst gleich danach einen **Nachlauf** aus — den Tageslauf
+mit `variante: N`.
+
+⚠ **Drei Dinge, die daran hängen und leicht zu übersehen sind:**
+
+1. **`waehlePosts` war rein deterministisch aus (Datum, App).** Ein zweiter Lauf
+   desselben Tages brachte denselben Beitrag zurück. `variante` geht deshalb in
+   die Saat — und **nur** dorthin, das `datum` bleibt.
+2. **`lauf.mjs` wirft die Ledger-Zeilen von heute bei einer Variante NICHT weg.**
+   Sonst zöge der Nachlauf als Erstes wieder den eben abgelehnten Winkel.
+3. **`posten.mjs` ergänzt die Merkliste, statt sie zu ersetzen.** Der Nachlauf
+   rendert nur den einen neuen Beitrag; ein Überschreiben hätte die übrigen
+   Beiträge des Tages mitsamt ihrem Stand gelöscht — auch die veröffentlichten,
+   und mit ihnen die Sperre gegen einen doppelten Beitrag.
+
+⚠ **Was schon öffentlich ist, lässt sich nicht ablehnen.** Der Knopf erscheint
+dann gar nicht, und `ablehnen.mjs` bricht ab. Ein „abgelehnt" über einem
+laufenden Beitrag wäre eine Lüge in der Anzeige; löschen geht nur im Netzwerk
+selbst. Ein TikTok-Entwurf im Posteingang muss ebenfalls dort verworfen werden —
+die API kann ihn nicht zurückholen.
+
 **Zwei Sperren, nicht eine:**
 
 | Wo | Was |
