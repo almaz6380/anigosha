@@ -10,9 +10,17 @@ Gebaut, damit der Weg über GitHub Actions entfällt.
 
 | Kanal | hier |
 |---|---|
-| **Instagram** | Knopf „Auf Instagram veröffentlichen". Der einzige Kanal, der wirklich auf eine Freigabe wartet — Instagram kennt keine Entwürfe. |
-| **Facebook** | nur ansehen. Der Entwurf liegt schon auf der Seite; freigegeben wird er in der Meta Business Suite. |
-| **TikTok** | nur ansehen, Text zum Kopieren. TikToks Posteingang nimmt keinen Text an, und veröffentlichen kann ihn nur ein Mensch in der App. |
+| **Instagram** | ✅ Knopf „Auf Instagram veröffentlichen". |
+| **Facebook** | ✅ Knopf „Auf Facebook veröffentlichen" (zwei Tipper). |
+| **TikTok** | Knopf ist gebaut, wirkt aber erst nach TikToks App-Prüfung — bis dahin liegt der Beitrag im Posteingang der App und wird dort fertiggestellt. |
+
+⚠ **Facebook legt seit dem 09.09.2026 keinen Entwurf mehr an.** Der Tageslauf
+legt nur die gerenderte Datei öffentlich ab; der Beitrag entsteht erst, wenn du
+hier drückst. Grund: Ein vorhandener Entwurf lässt sich per API nicht
+zuverlässig nachträglich veröffentlichen (ein unveröffentlichtes Foto geht
+einen anderen Weg als ein Feed-Beitrag), und wer beides baut, bekommt am Ende
+zwei Sachen auf der Seite. In der Meta Business Suite steht deshalb nichts mehr
+— die Vorschau ist diese Seite.
 
 ## Wie sie gebaut ist
 

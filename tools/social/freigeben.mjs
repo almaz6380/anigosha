@@ -25,7 +25,7 @@
 // weg. Statt vier Minuten neu zu rendern, liest dieses Werkzeug die Merkliste,
 // die posten.mjs im selben Speicher abgelegt hat.
 
-import { merklistenLesen, merklisteAblegen, aufraeumen } from './veroeffentlichen/blob.mjs';
+import { merklistenLesen, merklisteAblegen, aufraeumen, nochGebraucht } from './veroeffentlichen/blob.mjs';
 import { containerAnlegen, aufBereitWarten, veroeffentlichen } from './veroeffentlichen/instagram.mjs';
 import { zugaenge } from './veroeffentlichen/geheimnisse.mjs';
 
@@ -112,7 +112,17 @@ for (const liste of listen) {
       // Containers; wer vorher loescht, bekommt einen Container, der ins Leere
       // greift. Und misslingt das Aufraeumen, bleibt der Beitrag trotzdem
       // gueltig — es kostet nur ein paar Kilobyte.
-      await aufraeumen({ url: e.url, token: z.blobToken });
+      //
+      // ⚠ Und nur, wenn kein anderer Kanal die Datei noch braucht. Seit dem
+      // 09.09.2026 entsteht auch der Facebook-Beitrag erst bei der Freigabe,
+      // und TikTok postet von hier aus direkt — beide lesen aus demselben
+      // Speicher. Wer hier blind loescht, laesst den naechsten Knopfdruck ins
+      // Leere greifen.
+      if (nochGebraucht({ liste, datei: e.datei })) {
+        console.log('        (Datei bleibt liegen — ein anderer Kanal ist noch offen)');
+      } else {
+        await aufraeumen({ url: e.url, token: z.blobToken });
+      }
     } catch (err) {
       fehler += 1;
       console.log(`        ✗ ${err.message}`);

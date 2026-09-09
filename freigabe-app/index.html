@@ -171,6 +171,40 @@ function postKarte(post, liste) {
     }
   };
   knoepfe.append(kopieren);
+
+  // Facebook: ein Knopf, sonst nichts zu waehlen — der Beitrag entsteht aus
+  // genau der Datei und dem Text, die hier darueber stehen.
+  //
+  // ⚠ Zwei Tipper, nicht einer. Der Beitrag ist danach oeffentlich, und auf
+  // einem Handy sitzt ein Fehltipp schnell. Zurueckholen kann ihn nur Loeschen.
+  if (post.kanaele?.facebook?.stand === 'wartet') {
+    const fb = el('button', null, 'Auf Facebook veröffentlichen');
+    let sicher = false;
+    fb.onclick = async () => {
+      if (!sicher) {
+        sicher = true;
+        fb.textContent = 'Wirklich? Nochmal tippen';
+        // Nach zehn Sekunden zurueck — sonst steht die scharfe Fassung des
+        // Knopfes noch da, wenn man spaeter zufaellig hintippt.
+        setTimeout(() => {
+          if (!sicher) return;
+          sicher = false; fb.textContent = 'Auf Facebook veröffentlichen';
+        }, 10000);
+        return;
+      }
+      sicher = false;
+      fb.disabled = true; fb.textContent = 'Wird veröffentlicht …';
+      try {
+        await ruf('facebook', { datum: liste.datum, app: liste.app, datei: post.datei });
+        fb.textContent = 'Läuft — dauert etwa eine Minute';
+      } catch (e) {
+        fb.disabled = false;
+        fb.textContent = `Fehler: ${e.message}`;
+      }
+    };
+    knoepfe.append(fb);
+  }
+
   k.append(knoepfe);
 
   // ⚠ Nur wenn TikTok fuer diesen Beitrag ueberhaupt ansteht und noch nicht

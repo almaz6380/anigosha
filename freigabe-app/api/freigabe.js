@@ -33,6 +33,11 @@ const APPS = ['anigosha', 'mahjong', 'wellbooked', 'fullrep', 'swaply'];
 const REPO = 'almaz6380/anigosha';
 const WORKFLOW = 'social-freigabe.yml';
 const WORKFLOW_TIKTOK = 'social-tiktok-posten.yml';
+const WORKFLOW_FACEBOOK = 'social-facebook-posten.yml';
+
+// ⚠ Der Dateiname geht als Workflow-Eingabe weiter und landet dort in einer
+// Shell-Umgebung. Nur zulassen, was unsere Werkzeuge auch erzeugen.
+const DATEINAME = /^[A-Za-z0-9._-]{1,120}\.(mp4|mov|jpg|jpeg|png)$/;
 
 // ⚠ Fest, nicht durchgereicht. Diese Werte landen als Workflow-Eingabe in
 // einer Shell-Zeile; alles, was nicht aus dieser Liste stammt, hat dort nichts
@@ -131,6 +136,27 @@ export default async function handler(req, res) {
       await laufStarten(token, WORKFLOW,
         { modus: 'veroeffentlichen', datum: tag, apps: nurApp });
       res.status(200).json({ gestartet: true, datum: tag, app: nurApp || 'alle' });
+      return;
+    }
+
+    // Facebook: EIN Beitrag. Anders als bei Instagram und TikTok gibt es hier
+    // nichts zu waehlen — der Beitrag entsteht aus Datei und Text, so wie er
+    // auf der Seite steht.
+    if (aktion === 'facebook') {
+      if (!token) {
+        res.status(500).json({ fehler: 'GITHUB_TOKEN ist in Vercel nicht gesetzt.' });
+        return;
+      }
+      if (!APPS.includes(app)) {
+        res.status(400).json({ fehler: 'Unbekannte App.' });
+        return;
+      }
+      if (!DATEINAME.test(String(datei ?? ''))) {
+        res.status(400).json({ fehler: 'Unerwarteter Dateiname.' });
+        return;
+      }
+      await laufStarten(token, WORKFLOW_FACEBOOK, { app, datei, datum: tag });
+      res.status(200).json({ gestartet: true, datum: tag, app, datei });
       return;
     }
 

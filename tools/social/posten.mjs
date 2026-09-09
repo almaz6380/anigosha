@@ -279,6 +279,29 @@ const nachzutragen = [];
 // Veroeffentlichung werden.
 const uebersicht = new Map();
 
+/**
+ * Legt die Datei EINMAL oeffentlich ab und merkt sich die Adresse an `spur`.
+ *
+ * ⚠ Zwei Kanaele brauchen sie inzwischen: Instagram holt das Bild von dort ab
+ * (seine API nimmt keine Dateien), und seit 09.09.2026 auch Facebook — dessen
+ * Beitrag entsteht erst bei der Freigabe, und die laeuft auf einer anderen
+ * Maschine, auf der die gerenderte Datei laengst weg ist.
+ *
+ * Ohne diese Klammer laedt jeder Kanal dieselbe Datei erneut hoch. Das ginge
+ * (der Pfad ist vorhersagbar, `allowOverwrite` steht), kostet aber bei einem
+ * Reel vier Megabyte Bandbreite fuer nichts.
+ */
+async function abgelegt(spur, p, z) {
+  const pfad = `social/${DATUM}/${basename(p.medium)}`;
+  if (spur.url) return { url: spur.url, pfad };
+  const r = await hochladen({
+    datei: p.medium, token: z.blobToken,
+    praefix: `social/${DATUM}`, trocken: !ECHT,
+  });
+  if (r.url) spur.url = r.url;
+  return r;
+}
+
 let fertig = 0, offen = 0;
 for (const p of posten) {
   console.log(`━━ ${p.name} · ${basename(p.medium)}`);
@@ -290,21 +313,42 @@ for (const p of posten) {
   for (const kanal of p.kanaele) {
     try {
       if (kanal === 'facebook') {
-        const direkt = AUTOMATIK.facebook;
-        const r = await entwurfAnlegen({
-          seitenId: z.fbSeitenId, token: z.fbToken,
-          datei: p.medium, text: p.text, veroeffentlicht: direkt, trocken: !ECHT,
-        });
-        console.log(r.trocken
-          ? `   ▸ facebook   wuerde ${r.art} ${direkt ? 'OEFFENTLICH posten' : 'als Entwurf anlegen'} (${r.zeichen} Zeichen Text)`
-          : (direkt
-            ? `   ✓ facebook   veroeffentlicht — Beitrag ${r.id}`
-            : `   ✓ facebook   Entwurf ${r.id} — freigeben in der Meta Business Suite`));
-        fertig += r.trocken ? 0 : 1;
-        spur.kanaele.facebook = {
-          stand: r.trocken ? 'trocken' : (direkt ? 'veroeffentlicht' : 'entwurf'),
-          id: r.id ?? null,
-        };
+        if (AUTOMATIK.facebook) {
+          const r = await entwurfAnlegen({
+            seitenId: z.fbSeitenId, token: z.fbToken,
+            datei: p.medium, text: p.text, veroeffentlicht: true, trocken: !ECHT,
+          });
+          console.log(r.trocken
+            ? `   ▸ facebook   wuerde ${r.art} OEFFENTLICH posten (${r.zeichen} Zeichen Text)`
+            : `   ✓ facebook   veroeffentlicht — Beitrag ${r.id}`);
+          fertig += r.trocken ? 0 : 1;
+          spur.kanaele.facebook = {
+            stand: r.trocken ? 'trocken' : 'veroeffentlicht', id: r.id ?? null,
+          };
+        } else {
+          // ⚠ Hier entsteht BEWUSST kein Facebook-Entwurf mehr (bis 09.09.2026
+          // legte dieser Zweig einen an, `published=false`).
+          //
+          // Grund: Josef gibt jetzt auf der Freigabe-Seite frei, und ein
+          // Entwurf laesst sich per API nicht zuverlaessig nachtraeglich
+          // veroeffentlichen — fuer ein unveroeffentlichtes Foto ist der Weg
+          // ein anderer als fuer einen Feed-Beitrag. Wer beides baut (Entwurf
+          // JETZT, Beitrag BEI DER FREIGABE), bekommt am Ende zwei Sachen auf
+          // der Seite: den liegengebliebenen Entwurf und den neuen Beitrag.
+          //
+          // Also derselbe Weg wie bei Instagram: Datei oeffentlich ablegen,
+          // vormerken, und der Beitrag entsteht erst beim Freigeben — aus
+          // genau dieser Datei und genau diesem Text.
+          const r = await abgelegt(spur, p, z);
+          if (r.trocken) {
+            console.log(`   ▸ facebook   wuerde die Datei ablegen unter ${r.pfad}`);
+            spur.kanaele.facebook = { stand: 'trocken' };
+          } else {
+            console.log('   ✓ facebook   liegt bereit — freigeben auf der Freigabe-Seite');
+            spur.kanaele.facebook = { stand: 'wartet' };
+          }
+          offen += 1;
+        }
 
       } else if (kanal === 'tiktok') {
         if (!istVideo) {
@@ -338,10 +382,7 @@ for (const p of posten) {
         // ⚠ Beides zugleich waere ein Fehler: Der Container verfaellt nach 24
         // Stunden. Einer, der morgens entsteht und abends freigegeben wird,
         // kann tot sein, und die Meldung saehe aus wie ein kaputter Zugang.
-        const r = await hochladen({
-          datei: p.medium, token: z.blobToken,
-          praefix: `social/${DATUM}`, trocken: !ECHT,
-        });
+        const r = await abgelegt(spur, p, z);
         if (r.trocken) {
           console.log(`   ▸ instagram  wuerde das Bild ablegen unter ${r.pfad}`
             + (AUTOMATIK.instagram ? ' und OEFFENTLICH posten' : ''));

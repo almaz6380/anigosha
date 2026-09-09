@@ -138,6 +138,35 @@ export async function merklistenLesen({ datum, token }) {
  * Loeschen ist gratis und haelt den Speicher bei nahezu null. Ohne das waeren
  * es nach einem Jahr rund 400 MB toter Bilder.
  */
+/**
+ * Braucht noch irgendein Kanal diese Datei?
+ *
+ * ⚠ Seit es drei Wege gibt, die aus dem Blob-Speicher lesen (Instagram beim
+ * Freigeben, Facebook beim Freigeben, TikTok beim Direktversand), darf der
+ * erste von ihnen die Datei nicht mehr einfach wegraeumen. Wer das tut, nimmt
+ * den beiden anderen die Grundlage — und ihr Fehler liest sich dann wie ein
+ * kaputter Zugang („Video nicht erreichbar: HTTP 404"), obwohl nur zu frueh
+ * geloescht wurde.
+ *
+ * Gefragt wird gegen die frisch gelesene Merkliste, nicht gegen den Speicher:
+ * Was dort noch offen steht, ist noch offen.
+ */
+export function nochGebraucht({ liste, datei }) {
+  const offenBeiInstagram = (liste.eintraege ?? [])
+    .some((e) => e.datei === datei && !e.veroeffentlicht);
+  const post = (liste.uebersicht ?? []).find((p) => p.datei === datei);
+  const offenBeiFacebook = post?.kanaele?.facebook?.stand === 'wartet';
+  // Ein Beitrag im TikTok-Posteingang laesst sich von der Freigabe-Seite aus
+  // immer noch direkt posten — dafuer braucht es die Datei.
+  //
+  // ⚠ „uebersprungen" zaehlt NICHT: Das heisst, der Beitrag ist kein Video,
+  // und die Freigabe-Seite bietet fuer ihn gar keinen TikTok-Knopf an. Wer das
+  // mitzaehlt, raeumt die Datei nie wieder weg.
+  const offenBeiTiktok = ['posteingang', 'wartet']
+    .includes(post?.kanaele?.tiktok?.stand);
+  return Boolean(offenBeiInstagram || offenBeiFacebook || offenBeiTiktok);
+}
+
 export async function aufraeumen({ url, token }) {
   try {
     await del(url, { token });

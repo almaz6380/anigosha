@@ -1122,9 +1122,14 @@ Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige Einrichtung:
 `tools/social/veroeffentlichen/README.md`.
 
 🚫 **NICHTS geht ohne Josefs Freigabe raus. Stand 09.09.2026, und das ist die
-geltende Regel.** Facebook legt Entwürfe an (`published=false`), TikTok lädt in
-den Posteingang, Instagram legt nur die Datei ab und wartet auf den Knopf in
-der Freigabe-Seite.
+geltende Regel.** Der Tageslauf bereitet vor; veröffentlicht wird auf der
+Freigabe-Seite, Beitrag für Beitrag, per Knopfdruck.
+
+| Kanal | Tageslauf | Freigabe-Seite |
+|---|---|---|
+| Facebook | Datei ablegen, `wartet` vormerken — **kein Entwurf mehr** | ✅ Knopf (zwei Tipper) |
+| Instagram | Datei ablegen, vormerken | ✅ Knopf |
+| TikTok | in den Posteingang der App | Knopf gebaut, wirkt erst nach TikToks Prüfung |
 
 **Zwei Sperren, nicht eine:**
 
