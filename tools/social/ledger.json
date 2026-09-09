@@ -224,6 +224,78 @@
       "schluessel": "kategorie",
       "inhalt": "seed75623",
       "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-09",
+      "winkel": "fandom",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed99562",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-09",
+      "winkel": "schwierigkeitsleiter",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed87038",
+      "sprache": "en"
+    },
+    {
+      "app": "mahjong",
+      "datum": "2026-09-09",
+      "winkel": "blumen-falle",
+      "medium": "reel",
+      "schluessel": "level",
+      "inhalt": "seed84553",
+      "sprache": "en"
+    },
+    {
+      "app": "wellbooked",
+      "datum": "2026-09-09",
+      "winkel": "bauchbinde",
+      "medium": "reel",
+      "schluessel": "aussage",
+      "inhalt": "seed59560",
+      "sprache": "de"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-09",
+      "winkel": "quick-fakt",
+      "medium": "reel",
+      "schluessel": "wissensthema",
+      "inhalt": "seed52525",
+      "sprache": "en"
+    },
+    {
+      "app": "fullrep",
+      "datum": "2026-09-09",
+      "winkel": "rezept-karte",
+      "medium": "bild",
+      "schluessel": "rezept",
+      "inhalt": "seed38494",
+      "sprache": "en"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-09",
+      "winkel": "notfall-loop",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed88306",
+      "sprache": "en"
+    },
+    {
+      "app": "swaply",
+      "datum": "2026-09-09",
+      "winkel": "ausloeser",
+      "medium": "bild",
+      "schluessel": "kategorie",
+      "inhalt": "seed40287",
+      "sprache": "es"
     }
   ]
 }
