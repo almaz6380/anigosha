@@ -17,15 +17,26 @@ name: Social-Tageslauf
 # Oeffentlich wird nichts ohne einen Menschen.
 
 on:
-  # ⚠ 05:00 UTC = 07:00 im Sommer, 06:00 im Winter. GitHub kennt nur UTC;
-  # die Uhrzeit wandert also mit der Zeitumstellung um eine Stunde. Das ist
-  # hier egal — die Entwuerfe sollen nur vor dem Fruehstueck dastehen.
+  # ⚠ DER ZEITPLAN IST AUS — abgeschaltet am 09.09.2026 auf Josefs Wort.
+  #
+  # Er lief an dem Morgen zum ersten Mal mit eingeschalteter Automatik und
+  # postete auf allen fuenf Konten oeffentlich, ohne dass jemand mitgelesen
+  # hatte. Die Automatik selbst steht seither in `posten.mjs` fest auf `false`;
+  # der Zeitplan ist zusaetzlich aus, damit ueberhaupt nichts mehr unbeaufsichtigt
+  # anlaeuft. Zwei Sperren, nicht eine.
+  #
+  # Wieder einschalten heisst: die drei Zeilen unten entkommentieren — und das
+  # braucht Josefs ausdrueckliches Wort, nicht bloss den Eindruck, es sei
+  # inzwischen sicher.
   #
   # ⚠ Ein geplanter Lauf hat KEINE Eingabefelder: `inputs.*` ist dann leer.
-  # Die Werte dafuer setzt der Schritt „Lauf planen" weiter unten. Wer hier
-  # etwas aendert, muss dort nachsehen.
-  schedule:
-    - cron: '0 5 * * *'
+  # Die Werte dafuer setzt der Schritt „Lauf planen" weiter unten — der Zweig
+  # bleibt stehen, damit ein wieder eingeschalteter Zeitplan nicht still
+  # nichts tut.
+  #
+  # 05:00 UTC = 07:00 im Sommer, 06:00 im Winter.
+  # schedule:
+  #   - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       apps:

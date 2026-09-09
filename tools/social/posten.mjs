@@ -11,10 +11,10 @@
 //
 // --- Entwurf oder oeffentlich? Siehe AUTOMATIK weiter unten ------------------
 //
-// Bis zum 07.09.2026 ging hier ALLES nur als Entwurf raus — Josefs
-// Entscheidung vom 30.08., mit einer guten Begruendung (die Beitraege tragen
-// Saetze wie „Laut Studien"). Am 07.09. hat er sie ausdruecklich umgestossen:
-// volle Automatik, Facebook und Instagram posten oeffentlich.
+// Hier geht ALLES nur als Entwurf raus. Oeffentlich wird ein Beitrag erst,
+// wenn Josef ihn freigibt. Das war bis zum 07.09.2026 so, wurde an dem Tag
+// auf volle Automatik umgestellt — und am 09.09. nach dem ersten
+// Zeitplan-Lauf sofort wieder zurueckgenommen.
 //
 // Der Schalter dafuer steht an EINER Stelle, gleich unten. Wer wissen will,
 // was heute wirklich passiert, liest dort — nicht hier.
@@ -72,21 +72,29 @@ const NUR_KANAELE = (wert('kanal', '') || '')
 // `true` heisst: Der Beitrag geht OEFFENTLICH, ohne dass ihn jemand gelesen
 // hat. Kein Entwurf, keine zweite Ansicht, kein Zurueck ausser Loeschen.
 //
-// Bis zum 07.09.2026 stand hier ueberall Entwurf, und die Begruendung war
-// gut: Die Beitraege tragen Saetze wie „Laut Studien". Am 07.09. hat Josef
-// das ausdruecklich geaendert — er will die volle Automatik. Die Begruendung
-// von damals ist damit nicht falsch geworden, sie ist ueberstimmt. Wer das
-// hier je zurueckdreht, dreht eine Entscheidung zurueck, nicht ein Versehen.
+// STAND 09.09.2026: ALLES AUS. Ohne Josefs Freigabe geht nichts raus.
 //
-// ⚠ TikTok steht bewusst noch auf `false`. Nicht aus Vorsicht, sondern weil
-// es sonst gar nicht ginge: Direktversand braucht den Scope `video.publish`,
-// und solange TikTok die App nicht geprueft hat, antwortet die API mit
-// `unaudited_client_can_only_post_to_private_accounts`. Nach der Freigabe ist
-// es genau diese eine Zeile.
+// Die Geschichte dazu, damit sie niemand ein zweites Mal durchlaeuft:
+// Bis zum 30.08. ging alles als Entwurf raus, mit guter Begruendung (die
+// Beitraege tragen Saetze wie „Laut Studien"). Am 07.09. hat Josef das
+// ausdruecklich umgestossen und die volle Automatik verlangt. Am 09.09. um
+// 11:20 lief der erste Zeitplan-Lauf damit durch und postete auf allen fuenf
+// Konten oeffentlich — Facebook und Instagram, ungelesen. Josef hat das
+// sofort und unmissverstaendlich zurueckgenommen.
+//
+// ⚠ DIESE DREI WERTE STEHEN FEST UND KOMMEN NICHT MEHR AUS DER UMGEBUNG.
+// Vorher stand hier `process.env.AUTO_FACEBOOK !== 'aus'` — also „an, solange
+// niemand widerspricht". Eine vergessene Variable in einem Workflow reichte
+// damit fuer einen oeffentlichen Beitrag. Die Voreinstellung einer
+// folgenschweren Sache gehoert auf „passiert nicht", nicht auf „passiert,
+// wenn niemand aufpasst".
+//
+// Wer das je wieder aufdreht, braucht dafuer Josefs ausdrueckliches Wort zu
+// GENAU DIESEN ZEILEN — nicht zu „Automatik" im Allgemeinen.
 const AUTOMATIK = {
-  facebook: process.env.AUTO_FACEBOOK !== 'aus',
-  instagram: process.env.AUTO_INSTAGRAM !== 'aus',
-  tiktok: process.env.AUTO_TIKTOK === 'an',
+  facebook: false,
+  instagram: false,
+  tiktok: false,
 };
 
 // ⚠ Ueber ladeApps(), NICHT direkt aus der Datei: Nur so greift die

@@ -1121,15 +1121,42 @@ Ein Orchestrator (`lauf.mjs` erzeugt, `posten.mjs` sendet) für Anigosha,
 Mahjong Royale, WELLbooked!, FullRep und Swaply. Vollständige Einrichtung:
 `tools/social/veroeffentlichen/README.md`.
 
-⚠ **Seit 07.09.2026: volle Automatik.** Facebook und Instagram posten
-öffentlich, ohne dass jemand mitliest. Das **ersetzt** die Regel vom 30.08.
-(„Nichts geht ungelesen raus"), deren Begründung — die Beiträge tragen Sätze
-wie „Laut Studien" — nicht falsch geworden, sondern überstimmt ist. Wer das je
-zurückdreht, dreht eine Entscheidung zurück, kein Versehen.
+🚫 **NICHTS geht ohne Josefs Freigabe raus. Stand 09.09.2026, und das ist die
+geltende Regel.** Facebook legt Entwürfe an (`published=false`), TikTok lädt in
+den Posteingang, Instagram legt nur die Datei ab und wartet auf den Knopf in
+der Freigabe-Seite.
 
-**Der Schalter steht an genau einer Stelle: `AUTOMATIK` oben in `posten.mjs`.**
-TikTok steht dort noch auf Posteingang — der Direktversand (`video.publish`)
-braucht eine geprüfte App und antwortet sonst mit
+**Zwei Sperren, nicht eine:**
+
+| Wo | Was |
+|---|---|
+| `AUTOMATIK` oben in `posten.mjs` | alle drei Kanäle fest auf `false` — **nicht** mehr aus der Umgebung gelesen |
+| `.github/workflows/social-tageslauf.yml` | der `schedule`-Block ist auskommentiert; der Lauf geht nur noch von Hand |
+
+⚠ **Die Geschichte dazu, weil sie teuer war.** Bis 30.08. Entwurf. Am 07.09.
+hat Josef ausdrücklich volle Automatik verlangt, und sie wurde gebaut. Am
+09.09. um 11:20 lief der Zeitplan zum ersten Mal damit und postete auf allen
+fünf Konten öffentlich — Facebook und Instagram, ungelesen. Josef hat das
+sofort zurückgenommen: *„Nein du stellst es jetzt so ein, dass nichts ohne
+meine freigabe geht."*
+
+**Zwei Lehren, die nicht wieder verloren gehen dürfen:**
+
+1. **Die Voreinstellung einer folgenschweren Sache gehört auf „passiert
+   nicht".** Vorher stand dort `process.env.AUTO_FACEBOOK !== 'aus'` — also
+   „an, solange niemand widerspricht". Eine vergessene Variable in einem
+   Workflow hätte gereicht.
+2. **Eine Automatik fragt nicht — das ist ihr Wesen und ihr Widerspruch zur
+   Handy-Regel** („jeder einzelne Lauf braucht ein ausdrückliches ja"). Wer
+   beides zugleich zusagt, hat eines davon gebrochen, bevor es losgeht. Wenn
+   ein Zeitplan das erste Mal scharf läuft, muss das VORHER gesagt werden,
+   nicht hinterher erklärt.
+
+**Wieder aufdrehen** braucht Josefs ausdrückliches Wort zu genau diesen beiden
+Stellen — nicht zu „Automatik" im Allgemeinen.
+
+TikTok wäre ohnehin gesperrt: Der Direktversand (`video.publish`) braucht eine
+geprüfte App und antwortet sonst mit
 `unaudited_client_can_only_post_to_private_accounts`.
 
 **✅ Facebook und Instagram sind für alle fünf Apps fertig** (04.09.2026,
