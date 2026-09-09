@@ -34,6 +34,8 @@ const REPO = 'almaz6380/anigosha';
 const WORKFLOW = 'social-freigabe.yml';
 const WORKFLOW_TIKTOK = 'social-tiktok-posten.yml';
 const WORKFLOW_FACEBOOK = 'social-facebook-posten.yml';
+const WORKFLOW_ABLEHNEN = 'social-ablehnen.yml';
+const WORKFLOW_TAGESLAUF = 'social-tageslauf.yml';
 
 // ⚠ Der Dateiname geht als Workflow-Eingabe weiter und landet dort in einer
 // Shell-Umgebung. Nur zulassen, was unsere Werkzeuge auch erzeugen.
@@ -95,7 +97,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { passwort, aktion, datum, app, datei, privacy, erlaubt, werbung } = req.body ?? {};
+  const { passwort, aktion, datum, app, datei, privacy, erlaubt, werbung, variante } = req.body ?? {};
 
   if (!passtDasPasswort(passwort, process.env.FREIGABE_PASSWORT)) {
     // Kurz bremsen: Ohne das liesse sich ein kurzes Passwort in Minuten
@@ -136,6 +138,61 @@ export default async function handler(req, res) {
       await laufStarten(token, WORKFLOW,
         { modus: 'veroeffentlichen', datum: tag, apps: nurApp });
       res.status(200).json({ gestartet: true, datum: tag, app: nurApp || 'alle' });
+      return;
+    }
+
+    // Ablehnen: EIN Beitrag wird als verworfen vermerkt. Das veroeffentlicht
+    // nichts und nimmt nichts zurueck — es verhindert nur, dass der Beitrag
+    // noch irgendwo hingeht.
+    if (aktion === 'ablehnen') {
+      if (!token) {
+        res.status(500).json({ fehler: 'GITHUB_TOKEN ist in Vercel nicht gesetzt.' });
+        return;
+      }
+      if (!APPS.includes(app)) {
+        res.status(400).json({ fehler: 'Unbekannte App.' });
+        return;
+      }
+      if (!DATEINAME.test(String(datei ?? ''))) {
+        res.status(400).json({ fehler: 'Unerwarteter Dateiname.' });
+        return;
+      }
+      await laufStarten(token, WORKFLOW_ABLEHNEN, { app, datei, datum: tag });
+      res.status(200).json({ gestartet: true, datum: tag, app, datei });
+      return;
+    }
+
+    // Ersatz erzeugen: der Tageslauf noch einmal, mit anderer Saat.
+    //
+    // ⚠ `modus: echt` heisst hier NICHT „oeffentlich" — der Lauf legt Dateien
+    // ab, laedt TikTok in den Posteingang und merkt Facebook und Instagram
+    // vor. Veroeffentlicht wird weiterhin nur auf Knopfdruck.
+    if (aktion === 'neu') {
+      if (!token) {
+        res.status(500).json({ fehler: 'GITHUB_TOKEN ist in Vercel nicht gesetzt.' });
+        return;
+      }
+      if (!APPS.includes(app)) {
+        res.status(400).json({ fehler: 'Unbekannte App.' });
+        return;
+      }
+      // ⚠ Die Variante geht als Workflow-Eingabe in eine Shell-Zeile. Nur eine
+      // kleine ganze Zahl zulassen — und nach oben deckeln, damit niemand
+      // versehentlich eine Kette von Nachlaeufen ausloest.
+      const n = Number(variante);
+      if (!Number.isInteger(n) || n < 1 || n > 20) {
+        res.status(400).json({ fehler: 'Variante muss zwischen 1 und 20 liegen.' });
+        return;
+      }
+      // ⚠ Swaplys Motor liegt noch nicht auf seinem Standardzweig; ohne diese
+      // Angabe bricht der Lauf mit „Cannot find module" ab. Die Zeile gehoert
+      // weg, sobald der Zweig zusammengefuehrt ist — dieselbe Stelle steht
+      // auch im Tageslauf-Workflow.
+      const zweige = app === 'swaply' ? 'swaply=claude/swaply-icon-farben' : '';
+      await laufStarten(token, WORKFLOW_TAGESLAUF, {
+        apps: app, modus: 'echt', datum: tag, variante: String(n), zweige,
+      });
+      res.status(200).json({ gestartet: true, datum: tag, app, variante: n });
       return;
     }
 

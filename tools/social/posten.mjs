@@ -44,7 +44,7 @@ import { bericht as geheimBericht, zugaenge } from './veroeffentlichen/geheimnis
 import { entwurfAnlegen } from './veroeffentlichen/facebook.mjs';
 import { inPosteingang, direktPosten, kontoAuskunft, frischerToken }
   from './veroeffentlichen/tiktok.mjs';
-import { hochladen, merklisteAblegen } from './veroeffentlichen/blob.mjs';
+import { hochladen, merklisteAblegen, merklistenLesen } from './veroeffentlichen/blob.mjs';
 import { containerAnlegen, aufBereitWarten, veroeffentlichen as igVeroeffentlichen }
   from './veroeffentlichen/instagram.mjs';
 import { captionAus, riechtNachBeiblatt } from './vorflug.mjs';
@@ -482,11 +482,44 @@ for (const [appSchluessel, u] of ECHT ? uebersicht : []) {
     }
   }
 
+  // ⚠ ERGAENZEN, nicht ersetzen. Bis zum 09.09.2026 schrieb dieser Aufruf die
+  // Merkliste des Tages einfach neu — was fuer den einen Lauf am Morgen auch
+  // richtig war. Seit es den Nachlauf gibt (`--variante`, ausgeloest vom
+  // Ablehnen eines Beitrags), gilt das nicht mehr: Der Nachlauf rendert NUR
+  // den neuen Beitrag, und ein Ueberschreiben haette die uebrigen Beitraege
+  // des Tages mitsamt ihrem Stand geloescht — auch die schon
+  // veroeffentlichten. Auf der Seite waeren sie verschwunden, und die Sperre
+  // gegen einen doppelten Beitrag mit ihnen.
+  //
+  // Zusammengefuehrt wird ueber den Dateinamen. Was dieser Lauf erzeugt hat,
+  // gewinnt; alles andere bleibt so stehen, wie es war.
+  let alteListe = null;
+  try {
+    const vorhanden = await merklistenLesen({
+      datum: DATUM, token: zugaenge(appSchluessel).blobToken,
+    });
+    alteListe = vorhanden.find((l) => l.app === appSchluessel) ?? null;
+  } catch (e) {
+    // Kein Grund abzubrechen — beim ersten Lauf des Tages gibt es nichts.
+    console.log(`   ⚠ Alte Merkliste nicht lesbar (${e.message}) — es wird neu angelegt.`);
+  }
+
+  const neueDateien = new Set(u.posten.map((p) => p.datei));
+  const alteUebersicht = (alteListe?.uebersicht ?? [])
+    .filter((p) => !neueDateien.has(p.datei));
+  const alteEintraege = (alteListe?.eintraege ?? [])
+    .filter((e) => !neueDateien.has(e.datei));
+
+  const zusammen = [...alteUebersicht, ...u.posten];
+  const alleEintraege = [...alteEintraege, ...eintraege];
+
   const r = await merklisteAblegen({
-    datum: DATUM, appSchluessel, name: u.name, eintraege, uebersicht: u.posten,
+    datum: DATUM, appSchluessel, name: u.name,
+    eintraege: alleEintraege, uebersicht: zusammen,
     tiktok, token: zugaenge(appSchluessel).blobToken,
   });
-  console.log(`Merkliste: ${u.posten.length} Beitrag(e), davon ${eintraege.length} fuer Instagram offen → ${r.pfad}`);
+  console.log(`Merkliste: ${zusammen.length} Beitrag(e) (${u.posten.length} aus diesem Lauf), `
+    + `davon ${alleEintraege.length} fuer Instagram offen → ${r.pfad}`);
 }
 
 // Die Texte zu den TikTok-Entwuerfen in die Zusammenfassung des Laufs.

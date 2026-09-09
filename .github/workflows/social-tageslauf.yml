@@ -60,6 +60,10 @@ on:
         description: 'Andere Zweige der Schwester-Repos, z. B. swaply=claude/xy — leer = Standardzweig'
         type: string
         required: false
+      variante:
+        description: 'Nachlauf nach einer Ablehnung: 1, 2, … — leer = normaler Lauf'
+        type: string
+        required: false
 
 # ⚠ Schreibrecht nur fuer den Ledger (siehe letzter Schritt). Ohne ihn
 # wiederholt der naechste Lauf dieselben Winkel — die Rotation lebt davon,
@@ -282,17 +286,22 @@ jobs:
         env:
           APPS: ${{ steps.plan.outputs.apps }}
           DATUM: ${{ steps.plan.outputs.datum }}
+          VARIANTE: ${{ inputs.variante }}
         run: |
           DATUM_ARG=""
           [ -n "$DATUM" ] && DATUM_ARG="--datum $DATUM"
+          # ⚠ Nachlauf nach einer Ablehnung: andere Saat, und der Ledger von
+          # heute bleibt stehen, damit der abgelehnte Winkel gesperrt ist.
+          VAR_ARG=""
+          [ -n "$VARIANTE" ] && VAR_ARG="--variante $VARIANTE"
           : > "$RUNNER_TEMP/gescheitert.txt"
           if [ "$APPS" = "alle" ]; then
-            node tools/social/lauf.mjs --echt $DATUM_ARG || echo "alle" >> "$RUNNER_TEMP/gescheitert.txt"
+            node tools/social/lauf.mjs --echt $DATUM_ARG $VAR_ARG || echo "alle" >> "$RUNNER_TEMP/gescheitert.txt"
           else
             IFS=',' read -ra LISTE <<< "$APPS"
             for a in "${LISTE[@]}"; do
               app="$(echo "$a" | tr -d ' ')"
-              node tools/social/lauf.mjs --echt --app "$app" $DATUM_ARG \
+              node tools/social/lauf.mjs --echt --app "$app" $DATUM_ARG $VAR_ARG \
                 || echo "$app" >> "$RUNNER_TEMP/gescheitert.txt"
             done
           fi

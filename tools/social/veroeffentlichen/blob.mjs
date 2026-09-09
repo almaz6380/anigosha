@@ -152,9 +152,12 @@ export async function merklistenLesen({ datum, token }) {
  * Was dort noch offen steht, ist noch offen.
  */
 export function nochGebraucht({ liste, datei }) {
+  const post = (liste.uebersicht ?? []).find((p) => p.datei === datei);
+  // Ein abgelehnter Beitrag geht nirgends mehr hin — auch dann nicht, wenn ein
+  // Kanal ihn formal noch als „wartet" fuehrt.
+  if (post?.abgelehnt) return false;
   const offenBeiInstagram = (liste.eintraege ?? [])
     .some((e) => e.datei === datei && !e.veroeffentlicht);
-  const post = (liste.uebersicht ?? []).find((p) => p.datei === datei);
   const offenBeiFacebook = post?.kanaele?.facebook?.stand === 'wartet';
   // Ein Beitrag im TikTok-Posteingang laesst sich von der Freigabe-Seite aus
   // immer noch direkt posten — dafuer braucht es die Datei.

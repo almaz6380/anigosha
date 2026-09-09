@@ -157,7 +157,18 @@ function winkelErlaubt(w, heute) {
  * @param {boolean} o.nurVorhanden  nur Winkel, deren Format schon gebaut ist
  * @returns {Array} Posts mit Winkel, Seed und Begruendung
  */
-export function waehlePosts({ app, heute, ledger, anzahl = 2, nurVorhanden = false }) {
+export function waehlePosts({ app, heute, ledger, anzahl = 2, nurVorhanden = false, variante = 0 }) {
+  // ⚠ `variante` ist der einzige Weg, fuer DENSELBEN Tag etwas anderes zu
+  // bekommen. Alles hier ist bewusst deterministisch aus dem Datum abgeleitet
+  // — derselbe Tag, dieselben Beitraege. Genau das steht im Weg, wenn Josef
+  // einen Beitrag ablehnt und einen neuen will: Ein zweiter Lauf brachte
+  // wieder denselben.
+  //
+  // Die Variante geht NUR in die Saat, nicht in `datum`: Der Beitrag gehoert
+  // weiter zu diesem Tag, er ist nur anders gewuerfelt. Und der Ledger bleibt
+  // beim Nachlauf stehen (siehe lauf.mjs), damit der abgelehnte Winkel
+  // gesperrt ist und nicht als Erstes wieder gezogen wird.
+  const saatTag = variante ? `${heute}#${variante}` : heute;
   const alle = ladeWinkel(app);
   const verfuegbar = alle
     .filter((w) => winkelErlaubt(w, heute))
@@ -180,7 +191,7 @@ export function waehlePosts({ app, heute, ledger, anzahl = 2, nurVorhanden = fal
   if (kandidaten.length === 0) return [];
 
   // Deterministisch mischen: derselbe Tag ergibt dieselbe Reihenfolge.
-  const wuerfel = mulberry32(saat(heute, app));
+  const wuerfel = mulberry32(saat(saatTag, app));
   const gemischt = [...kandidaten].sort(() => wuerfel() - 0.5);
 
   // Mischung aus Bild und Reel anstreben. Ein Kanal, der nur Videos postet,
@@ -211,8 +222,8 @@ export function waehlePosts({ app, heute, ledger, anzahl = 2, nurVorhanden = fal
     // Gesundheitshinweis auch auf einer reinen Uebungskarte.
     hinweis_pflicht: w.hinweis_pflicht === true,
     quelle_pflicht: w.quelle_pflicht === true,
-    sprache: w.sprachen[saat(heute, app, w.id) % w.sprachen.length],
-    seed: saat(heute, app, w.id, String(i)) % 100000,
+    sprache: w.sprachen[saat(saatTag, app, w.id) % w.sprachen.length],
+    seed: saat(saatTag, app, w.id, String(i)) % 100000,
     gesperrteInhalte: [...inhalteWeg],
     winkelSperre: sperre,
     gelockert,
