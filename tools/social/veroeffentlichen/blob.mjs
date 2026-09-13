@@ -58,19 +58,37 @@ export async function hochladen({ datei, token, praefix, trocken }) {
   const pfad = `${praefix}/${basename(datei)}`;
   if (trocken) return { trocken: true, pfad };
 
-  // allowOverwrite, weil ein zweiter Lauf desselben Tages sonst abbricht.
-  // addRandomSuffix bewusst NICHT: Der Pfad soll vorhersagbar bleiben,
-  // damit `aufraeumen` ihn spaeter wiederfindet.
+  // ⚠ addRandomSuffix seit 10.09.2026 AN. Vorher war der Pfad vorhersagbar
+  // (`social/<datum>/<dateiname>`) — wer die Kennung des Speichers kannte,
+  // konnte sich jede Adresse zusammenreimen.
+  //
+  // Ein Passwort ist hier keine Option und wird auch nie eine: Instagram holt
+  // die Datei SELBST ab, als anonymer Besucher („We will cURL your image using
+  // the passed in URL so it must be on a public server"). Jede Sperre traefe
+  // also Instagram. Unerratbar ist damit die Obergrenze des Machbaren.
+  //
+  // Die alte Begruendung gegen den Anhang („damit `aufraeumen` den Pfad
+  // wiederfindet") war falsch: `aufraeumen` bekommt die fertige URL aus der
+  // Merkliste, es baut nie einen Pfad zusammen.
+  //
+  // ⚠ Nebenwirkung: Ein zweiter Lauf ueberschreibt die Datei nicht mehr,
+  // sondern legt eine zweite daneben. Weggeraeumt wird die, die in der
+  // Merkliste steht; eine verwaiste kostet ein paar Kilobyte. `allowOverwrite`
+  // bleibt trotzdem stehen — es schadet nicht und faengt den Fall ab, falls
+  // der Anhang einmal ausbleibt.
   //
   // Als Strom, nicht als Puffer: Ein Reel sind vier Megabyte, und die muessen
   // nicht erst vollstaendig in den Speicher.
-  const { url } = await put(pfad, createReadStream(datei), {
+  const { url, pathname } = await put(pfad, createReadStream(datei), {
     access: 'public',
     token,
     allowOverwrite: true,
-    addRandomSuffix: false,
+    addRandomSuffix: true,
   });
-  return { url, pfad };
+  // ⚠ `pathname` aus der Antwort, nicht der Pfad von oben: Seit dem Anhang
+  // unterscheiden sich die beiden. Wer den angefragten zurueckgibt, meldet
+  // einen Ort, an dem nichts liegt.
+  return { url, pfad: pathname ?? pfad };
 }
 
 /**

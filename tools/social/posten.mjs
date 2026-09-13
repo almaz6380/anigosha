@@ -292,8 +292,11 @@ const uebersicht = new Map();
  * Reel vier Megabyte Bandbreite fuer nichts.
  */
 async function abgelegt(spur, p, z) {
-  const pfad = `social/${DATUM}/${basename(p.medium)}`;
-  if (spur.url) return { url: spur.url, pfad };
+  // ⚠ Kein `pfad` im gemerkten Fall: Seit dem Zufallsanhang liesse er sich
+  // nicht mehr ausrechnen, und ein ausgerechneter waere eine Behauptung ueber
+  // einen Ort, an dem nichts liegt. Gebraucht wird er ohnehin nur in der
+  // Meldung des Trockenlaufs — und dort ist nichts gemerkt.
+  if (spur.url) return { url: spur.url };
   const r = await hochladen({
     datei: p.medium, token: z.blobToken,
     praefix: `social/${DATUM}`, trocken: !ECHT,

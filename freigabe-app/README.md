@@ -49,10 +49,17 @@ in dieser Seite kann höchstens einen Lauf auslösen, den man auch von Hand
 auslösen könnte.
 
 ⚠ **Der Blob-Speicher ist öffentlich lesbar** — er muss es sein, weil
-Instagram die Bilder selbst dort abholt. Die Merklisten liegen darin und
-enthalten Bildadresse und Bildtext, also genau das, was ohnehin gleich
-veröffentlicht wird. Zugangsdaten stehen dort nicht und dürfen dort nie
-landen. Das Passwort schützt also die Bedienung, nicht die Bilder.
+Instagram die Bilder selbst dort abholt („We will cURL your image using the
+passed in URL so it must be on a public server"). Ein Passwort auf den Bildern
+träfe deshalb zuerst Instagram, nicht Fremde. Zugangsdaten stehen dort nicht
+und dürfen dort nie landen. Das Passwort schützt also die Bedienung, nicht die
+Bilder.
+
+Seit 10.09.2026 tragen die **Bilddateien einen Zufallsanhang** im Pfad — ihre
+Adressen lassen sich nicht mehr erraten. Die **Merklisten** bleiben dagegen
+vorhersagbar (`social/<datum>/freigabe-<app>.json`): Diese Seite findet sie nur
+so, weil ihre Funktion bewusst keinen Blob-Token hat. Sie enthalten Bildadresse
+und Bildtext — also das, was ohnehin gleich veröffentlicht wird.
 
 ✅ **Eingerichtet am 09.09.2026: https://wellapps-freigabe.vercel.app**
 
