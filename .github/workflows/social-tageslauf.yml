@@ -17,26 +17,25 @@ name: Social-Tageslauf
 # Oeffentlich wird nichts ohne einen Menschen.
 
 on:
-  # ⚠ DER ZEITPLAN IST AUS — abgeschaltet am 09.09.2026 auf Josefs Wort.
+  # ⚠ Der Zeitplan BEREITET NUR VOR. Er kann nichts veroeffentlichen: Das
+  # verhindert `AUTOMATIK` in posten.mjs, und die steht dort fest auf `false`.
+  # Was dieser Lauf tut: rendern, die Dateien ablegen, das TikTok-Video in den
+  # Posteingang der App legen, und alles auf die Freigabe-Seite stellen. Zu
+  # Facebook und Instagram geht nichts, bevor Josef dort auf einen Knopf tippt.
   #
-  # Er lief an dem Morgen zum ersten Mal mit eingeschalteter Automatik und
-  # postete auf allen fuenf Konten oeffentlich, ohne dass jemand mitgelesen
-  # hatte. Die Automatik selbst steht seither in `posten.mjs` fest auf `false`;
-  # der Zeitplan ist zusaetzlich aus, damit ueberhaupt nichts mehr unbeaufsichtigt
-  # anlaeuft. Zwei Sperren, nicht eine.
-  #
-  # Wieder einschalten heisst: die drei Zeilen unten entkommentieren — und das
-  # braucht Josefs ausdrueckliches Wort, nicht bloss den Eindruck, es sei
-  # inzwischen sicher.
+  # ⚠ Die Geschichte, damit sie niemand rueckwaerts liest: Am 09.09.2026 lief
+  # der Zeitplan zum ersten Mal MIT eingeschalteter Automatik und postete auf
+  # allen fuenf Konten oeffentlich, ungelesen. Danach war beides aus — die
+  # Automatik und der Zeitplan. Am 14.09. ist der Zeitplan auf Josefs Wort
+  # wieder an, die Automatik NICHT. Sie war die Sperre, auf die es ankommt;
+  # der abgeschaltete Zeitplan kostete nur jeden Tag den Inhalt.
   #
   # ⚠ Ein geplanter Lauf hat KEINE Eingabefelder: `inputs.*` ist dann leer.
-  # Die Werte dafuer setzt der Schritt „Lauf planen" weiter unten — der Zweig
-  # bleibt stehen, damit ein wieder eingeschalteter Zeitplan nicht still
-  # nichts tut.
+  # Die Werte dafuer setzt der Schritt „Lauf planen" weiter unten.
   #
   # 05:00 UTC = 07:00 im Sommer, 06:00 im Winter.
-  # schedule:
-  #   - cron: '0 5 * * *'
+  schedule:
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       apps:

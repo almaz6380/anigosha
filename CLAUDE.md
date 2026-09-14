@@ -1154,12 +1154,18 @@ laufenden Beitrag wäre eine Lüge in der Anzeige; löschen geht nur im Netzwerk
 selbst. Ein TikTok-Entwurf im Posteingang muss ebenfalls dort verworfen werden —
 die API kann ihn nicht zurückholen.
 
-**Zwei Sperren, nicht eine:**
+**Die Sperre, auf die es ankommt:**
 
 | Wo | Was |
 |---|---|
 | `AUTOMATIK` oben in `posten.mjs` | alle drei Kanäle fest auf `false` — **nicht** mehr aus der Umgebung gelesen |
-| `.github/workflows/social-tageslauf.yml` | der `schedule`-Block ist auskommentiert; der Lauf geht nur noch von Hand |
+| `.github/workflows/social-tageslauf.yml` | der Zeitplan (05:00 UTC) BEREITET nur vor — veröffentlichen kann er nichts, das verhindert die Zeile darüber |
+
+⚠ **Der Zeitplan war vom 09.09. bis 14.09. zusätzlich aus** — und das war eine
+Überreaktion. Er kostete jeden Tag den Inhalt (die Freigabe-Seite blieb leer,
+weil nichts gerendert wurde) und verhinderte nichts, was `AUTOMATIK` nicht
+schon verhindert. Am 14.09. auf Josefs Wort wieder an. **Merksatz: Eine zweite
+Sperre, die nur Nebenwirkungen hat, ist keine Sicherheit, sondern Ballast.**
 
 ⚠ **Die Geschichte dazu, weil sie teuer war.** Bis 30.08. Entwurf. Am 07.09.
 hat Josef ausdrücklich volle Automatik verlangt, und sie wurde gebaut. Am
