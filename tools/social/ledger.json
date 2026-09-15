@@ -370,24 +370,6 @@
       "sprache": "es"
     },
     {
-      "app": "anigosha",
-      "datum": "2026-09-15",
-      "winkel": "fandom",
-      "medium": "reel",
-      "schluessel": "kategorie",
-      "inhalt": "seed10707",
-      "sprache": "en"
-    },
-    {
-      "app": "anigosha",
-      "datum": "2026-09-15",
-      "winkel": "wusstest-du-karte",
-      "medium": "bild",
-      "schluessel": "fragen-ids",
-      "inhalt": "seed46077",
-      "sprache": "de"
-    },
-    {
       "app": "mahjong",
       "datum": "2026-09-15",
       "winkel": "paar",
@@ -440,6 +422,24 @@
       "schluessel": "kategorie",
       "inhalt": "seed28092",
       "sprache": "es"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-15",
+      "winkel": "fandom",
+      "medium": "reel",
+      "schluessel": "kategorie",
+      "inhalt": "seed10707",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-15",
+      "winkel": "wusstest-du-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed46077",
+      "sprache": "de"
     }
   ]
 }
