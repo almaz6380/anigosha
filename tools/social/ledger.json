@@ -440,6 +440,24 @@
       "schluessel": "fragen-ids",
       "inhalt": "seed46077",
       "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-15",
+      "winkel": "ladder",
+      "medium": "reel",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed62360",
+      "sprache": "de"
+    },
+    {
+      "app": "anigosha",
+      "datum": "2026-09-15",
+      "winkel": "frage-karte",
+      "medium": "bild",
+      "schluessel": "fragen-ids",
+      "inhalt": "seed18760",
+      "sprache": "de"
     }
   ]
 }
