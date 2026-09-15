@@ -47,7 +47,7 @@ function trockenlauf() {
 
   for (const k of appSchluessel) {
     const app = APPS[k];
-    const tage = vorschau({ app: k, start: HEUTE, tage: TAGE, anzahl: app.posts_pro_tag, nurVorhanden: NUR_VORHANDEN });
+    const tage = vorschau({ app: k, start: HEUTE, tage: TAGE, anzahl: app.posts_pro_tag, nurVorhanden: NUR_VORHANDEN, sprachen: app.sprachen });
     const gesamt = tage.flatMap((t) => t.posts);
 
     console.log(`━━ ${app.name}  (${app.nische})`);
@@ -285,6 +285,8 @@ async function tageslauf() {
     }
     const posts = waehlePosts({
       app: k, heute: HEUTE, ledger, variante: VARIANTE,
+      // ⚠ Die Sprache kommt aus apps.json, nicht mehr aus dem Winkel.
+      sprachen: app.sprachen,
       anzahl: Number(wert('anzahl', app.posts_pro_tag)),
       nurVorhanden: NUR_VORHANDEN || echt,
     });

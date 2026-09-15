@@ -1131,6 +1131,44 @@ Freigabe-Seite, Beitrag für Beitrag, per Knopfdruck.
 | Instagram | Datei ablegen, vormerken | ✅ Knopf |
 | TikTok | in den Posteingang der App | Knopf gebaut, wirkt erst nach TikToks Prüfung |
 
+### ⚠ Eine Sprache je App — die Rotation war ein Reichweiten-Killer (15.09.2026)
+
+Josef ist es an den Zahlen aufgefallen: Beiträge, die auf denselben Seiten
+vorher Views hatten, lagen plötzlich bei fast null. Im Ledger gemessen, was
+seit dem 05.09. wirklich rausging:
+
+| App | Was rausging | Zielpublikum |
+|---|---|---|
+| Anigosha | 6× de, **4× en** | deutsch → 4 von 10 falsch |
+| Mahjong | 5× en | englisch → passte |
+| FullRep | 3× de, **7× en** | deutsch → überwiegend falsch |
+| Swaply | 4× en, **5× es**, 1× de | deutsch → fast alles falsch |
+| WELLbooked! | 5× de | deutsch → passte |
+
+**Ursache:** `waehlePosts` würfelte die Sprache je Beitrag aus `w.sprachen` im
+Winkel. Das `sprachen`-Feld in `apps.json` gab es zwar, es wurde aber nirgends
+gelesen — außer für eine Logzeile.
+
+**Das ist derselbe Denkfehler, der weiter oben schon als Begründung gegen einen
+Sammelaccount steht** („ein Kanal mit Anime-Quiz, Mahjong, Fitness und
+Sucht-Recovery lernt der Algorithmus nie zuzuordnen"). Für drei Sprachen auf
+einem Konto gilt er genauso — nur war die Sprache nirgends als Entscheidung
+sichtbar, sondern tief in der Auswahl vergraben.
+
+**Behoben:** `apps.json` führt je App **eine** Sprache (anigosha/wellbooked/
+fullrep/swaply `de`, mahjong `en`), `waehlePosts` und `vorschau` bekommen sie
+durchgereicht, und Winkel, die sie nicht können, fallen aus der Rotation.
+Gemessen: 14 Tage Trockenlauf über alle fünf Apps, keine Fremdsprache mehr,
+volle Winkel-Abdeckung (kein Vorrat geschrumpft).
+
+⚠ **Das erklärt NICHT alles.** Mahjong hat durchgehend in der richtigen Sprache
+gepostet und liegt trotzdem flach. Die Sprache war ein echter Fehler, aber sie
+ist nicht die ganze Antwort — **vor der nächsten Änderung messen**, nicht die
+nächste plausible Erklärung als Befund verkaufen (siehe die Lehre vom August).
+
+**Offen:** ein Lauf, der die echten Zahlen je Beitrag holt (Reichweite, Aufrufe,
+Interaktionen) und die alten, von Hand geposteten Beiträge danebenstellt.
+
 **Ablehnen und Ersatz** (09.09.2026): Jeder Beitrag hat auf der Seite einen
 `Ablehnen`-Knopf. Er vermerkt ihn als verworfen, nimmt seinen Instagram-Eintrag
 aus `eintraege` und löst gleich danach einen **Nachlauf** aus — den Tageslauf
