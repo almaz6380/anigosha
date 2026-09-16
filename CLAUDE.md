@@ -1274,6 +1274,49 @@ Ansicht, ist aber ein eigener Datensatz. Die ganze Einrichtung seit dem
 komplett neu ausgefüllt werden. Das sieht wie Datenverlust aus und ist
 keiner.
 
+### Neu eingereicht am 16.09.2026 — diesmal mit Direct Post
+
+Die Einreichung vom 07.09. beschrieb den **Posteingang**. Der hat **gar kein
+Textfeld**: Eine Bildunterschrift gibt es nur bei
+`post/publish/video/init/`. Josefs Wunsch, dass die vorgefertigten Beiträge
+schon den Text mitbringen, war damit auf dem alten Weg nicht erfüllbar.
+Deshalb am 16.09. neu eingereicht, mit `video.publish` und eingeschaltetem
+Direct Post.
+
+**Was dafür geändert wurde:**
+
+| Wo | Was |
+|---|---|
+| `tools/social/tiktok-zugang.mjs` | Scope jetzt `user.info.basic,video.publish,video.upload` |
+| `freigabe-app/tiktok7dD2…​.txt` | Signaturdatei — die Freigabe-Domain ist bei TikTok als URL prefix verifiziert |
+| Portal, Production | Web/Desktop-URL auf `wellapps-freigabe.vercel.app`, Direct Post an, neuer Erklärtext, neues Demo-Video |
+| Portal, Sandbox | Direct Post ebenfalls an (eigener Datensatz, siehe oben) |
+| Secret | `TIKTOK_REFRESH_TOKEN_ANIGOSHA` neu geholt — die alten Token tragen `video.publish` nicht |
+
+⚠ **Die Domain im Demo-Video muss zur eingetragenen Web/Desktop-URL passen**
+(TikToks eigene Vorgabe). Gezeigt wird die Freigabe-Seite, also musste die
+dort stehen — nicht mehr `anigosha.vercel.app`.
+
+⚠ **`video.publish` ist zusätzlich die Bedingung dafür, dass die Freigabe-Seite
+den TikTok-Block überhaupt zeigt.** Sie baut ihn aus `creator_info/query`, und
+der Aufruf antwortet ohne diesen Scope nicht. Mit den alten Token blieb der
+Block unsichtbar — was wie ein Fehler in der Seite aussah und keiner war.
+
+### ⚠ Direct Post geht nur auf ein PRIVATES Konto, solange die App ungeprüft ist
+
+Am 16.09. gemessen, nicht vermutet: Zwei Versuche gegen das öffentliche Konto
+`anigosha_app` brachen mit **403 „Please review our integration guidelines"**
+ab. Nach dem Umstellen auf „Privates Konto" (TikTok → Einstellungen →
+Datenschutz) lief derselbe Aufruf unverändert durch.
+
+Es geht um das **Konto**, nicht um den Beitrag: `SELF_ONLY` zu wählen reicht
+nicht. Für die Demo-Aufnahme heißt das — Konto privat stellen, aufnehmen,
+danach wieder öffentlich.
+
+⚠ **Die Fehlermeldung nennt den Grund nicht.** `direktPosten` gibt nur
+`error.message` aus, nicht `error.code`; der Code (`unaudited_client_…`) hätte
+es sofort gesagt. Wer hier wieder sucht: erst den Kontostatus prüfen.
+
 **Nach der Freigabe:** Client Key und Secret der Produktion in die Secrets,
 dann je Konto „TikTok-Zugang holen" erneut laufen lassen — die fünf
 Sandbox-Refresh-Token gelten in der Produktion nicht.
@@ -1373,6 +1416,19 @@ ist eingetreten und richtig — der Workflow fängt sie mit Punkt 4 ab.
 **`--kanal` holt einen einzelnen Kanal nach**, ohne die geglückten zu
 verdoppeln. Ohne den Filter hätte der Instagram-Nachlauf zwei weitere
 Facebook-Entwürfe angelegt, und niemand wüsste mehr, welcher der neue ist.
+
+⚠ **Bis zum 16.09.2026 legte ein Lauf mit `--kanal tiktok` die Datei NICHT
+öffentlich ab** — die Ablage hing allein an Facebook und Instagram. Der
+Beitrag hatte dann keine Vorschau („Keine Vorschau — an dem Tag lief nur ein
+einzelner Kanal"), **und der Knopf „Auf TikTok posten" wäre still kaputt
+gewesen**: `tiktok-posten.mjs` läuft auf einer anderen Maschine und holt das
+Video von genau dieser Adresse. Behoben — der TikTok-Zweig legt jetzt selbst
+ab und bricht ab, wenn das nicht gelingt.
+
+**Merksatz:** Wer einen Kanal herausfiltert, filtert auch alles mit, was
+dieser Kanal beiläufig miterledigt hat. Die fehlende Vorschau war das
+sichtbare Symptom; der kaputte Knopf wäre erst beim nächsten Tipper
+aufgefallen.
 
 ⚠ **Ein 502 vom API-Aufruf heißt nicht, dass der Lauf nicht startete.** Am
 05.09. war er durchgekommen, der Wiederholungsversuch startete einen zweiten.

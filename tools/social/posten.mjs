@@ -359,6 +359,25 @@ for (const p of posten) {
           spur.kanaele.tiktok = { stand: 'uebersprungen', grund: 'kein Video' };
           continue;
         }
+        // ⚠ Auch TikTok braucht die oeffentliche Ablage — seit es den Knopf
+        // „Auf TikTok posten" auf der Freigabe-Seite gibt. `tiktok-posten.mjs`
+        // laeuft auf einer anderen Maschine und holt sich das Video von genau
+        // dieser Adresse; ohne sie bricht es mit `fetch(undefined)` ab.
+        //
+        // ⚠ Gefunden am 16.09.2026, auf dem denkbar unguenstigsten Weg: Ein
+        // Lauf mit `--kanal tiktok` erzeugte einen Beitrag ohne Vorschau, und
+        // der Knopf darunter waere still kaputt gewesen. Vorher hing die
+        // Ablage allein an Facebook und Instagram — was stimmte, solange
+        // TikTok nur in den Posteingang lud und die Datei nie wieder brauchte.
+        //
+        // `abgelegt` merkt sich die Adresse je Beitrag, ein zweiter Kanal
+        // laedt also nicht noch einmal hoch.
+        const ablage = await abgelegt(spur, p, z);
+        if (!ablage.trocken && !ablage.url) {
+          throw new Error('TikTok: Die Datei liess sich nicht oeffentlich ablegen — '
+            + 'ohne ihre Adresse kann die Freigabe-Seite sie nicht posten.');
+        }
+
         const token = await tiktokToken(p.app);
         const direkt = AUTOMATIK.tiktok;
         const r = direkt
