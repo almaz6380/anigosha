@@ -349,17 +349,20 @@ jobs:
             done
           fi
 
-      # Damit sich das Ergebnis auch ohne Kanal ansehen laesst — und damit ein
-      # fehlgeschlagener Versand nicht bedeutet, dass die Arbeit weg ist.
-      - name: Beitraege als Artefakt
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: tagespaket
-          retention-days: 14
-          if-no-files-found: warn
-          path: |
-            ${{ github.workspace }}/*/out/social/**
+      # ⚠ Hier lud der Lauf bis zum 16.09.2026 das „tagespaket" als Artefakt
+      # hoch — bequem zum Nachsehen, aber jeden Tag ein paar Megabyte, 14 Tage
+      # lang aufbewahrt. Am 16.09. war der Actions-Speicher (0,5 GB im freien
+      # Kontingent) damit voll, und der Schritt faerbte jeden Lauf rot, obwohl
+      # die Beitraege vollstaendig durchgelaufen waren.
+      #
+      # Weggelassen statt auf `continue-on-error` gesetzt: Ein Schritt, der
+      # immer scheitern darf, ist kein Schritt, sondern Rauschen. Das Ergebnis
+      # steht ohnehin an zwei Stellen, die laenger halten — die gerenderte
+      # Datei liegt im Blob-Speicher, und die Freigabe-Seite zeigt sie.
+      #
+      # Falls das Paket doch je gebraucht wird: `actions/upload-artifact@v4`
+      # mit `path: ${{ github.workspace }}/*/out/social/**` und einer
+      # Aufbewahrung von EINEM Tag.
 
       # ⚠ Der Ledger ist das Gedaechtnis der Rotation: Ohne ihn waehlt der
       # naechste Lauf dieselben Winkel. Er wird deshalb nur nach einem ECHTEN
