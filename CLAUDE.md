@@ -46,6 +46,30 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded, personalisiert per UMP + ATT seit 1.1.1) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 
+## DSGVO-Nachzug (17.09.2026): Resend, Kaufdiagnose, Altersgrenze 14
+
+Ein Datenfluss-Inventar über alle Repos hat Anigoshas Erklärung als die beste
+von allen eingestuft — drei Lücken blieben, alle in `legalContent.ts` (DE+EN)
+geschlossen, `LAST_UPDATED` auf 17.09.2026:
+
+1. **Resend** fehlte als Empfänger. Die Registrierungs- und Passwort-Mails laufen
+   über Supabase-SMTP → Resend Inc. (USA); Resend sieht E-Mail-Adresse und
+   Mailinhalt. Jetzt benannt, samt Drittlandtransfer.
+2. **`client_diagnose`** (Migration 0020) war nirgends erklärt. `App.tsx:47` schickt
+   beim Start automatisch eine Kaufdiagnose, `purchases.ts` bei jedem Kaufversuch —
+   das ist eine Verarbeitung, die in der Erklärung stehen muss. Jetzt als
+   „Kaufdiagnose" unter „Welche Daten", Rechtsgrundlage lit. f, gelöscht mit dem Konto.
+3. **„ab 13 Jahren" passte nicht zu personalisierter Werbung.** Einwilligungsfähig
+   ist man in Österreich ab 14 (§ 4 Abs. 4 DSG), in Deutschland ab 16. Eine
+   13-Jährige kann in den UMP-Dialog nicht wirksam einwilligen. Erklärung und AGB
+   sagen jetzt 14 (mit DE-Hinweis auf 16). ⚠ **Store-Konsolen nachziehen:** Play
+   „Zielgruppe 13+" und die Apple-Altersfreigabe müssen dazu passen — das geht nur
+   von Hand (`asc.py --alter-setzen` kann die Altersfreigabe, nicht die Zielgruppe).
+   Die App fragt das Alter nicht ab; wer das absichern will, braucht ein
+   Geburtsjahr bei der Registrierung — bewusst nicht gebaut, Josefs Entscheidung.
+
+ODR-Link raus (Plattform seit 20.07.2025 eingestellt). `tsc` grün.
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker

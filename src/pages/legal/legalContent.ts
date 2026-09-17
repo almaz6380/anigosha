@@ -20,7 +20,7 @@ export const OPERATOR = {
 const opDE = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nE-Mail: ${OPERATOR.email}`;
 const opEN = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nEmail: ${OPERATOR.email}`;
 
-export const LAST_UPDATED = '04.08.2026';
+export const LAST_UPDATED = '17.09.2026';
 
 export interface LegalSection {
   heading: string;
@@ -155,8 +155,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body: 'Es gilt österreichisches Recht. Zuständig ist das sachlich zuständige Gericht am Sitz des Betreibers.',
         },
         {
-          heading: 'Online-Streitbeilegung',
-          body: 'Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: https://ec.europa.eu/consumers/odr\n\nWir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
+          heading: 'Verbraucherstreitbeilegung',
+          body: 'Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Die frühere EU-Plattform zur Online-Streitbeilegung wurde am 20. Juli 2025 eingestellt.',
         },
         {
           heading: 'Haftung für Inhalte',
@@ -188,8 +188,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body: 'Austrian law applies. The competent court at the provider’s registered office has jurisdiction.',
         },
         {
-          heading: 'Online dispute resolution',
-          body: 'The European Commission provides a platform for online dispute resolution: https://ec.europa.eu/consumers/odr\n\nWe are neither obliged nor willing to participate in dispute resolution proceedings before a consumer arbitration board.',
+          heading: 'Consumer dispute resolution',
+          body: 'We are neither obliged nor willing to participate in dispute resolution proceedings before a consumer arbitration board. The former EU online dispute resolution platform was discontinued on 20 July 2025.',
         },
         {
           heading: 'Liability for content',
@@ -219,6 +219,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Profil: selbst gewählter Spielername, Sprache, optional ein Avatarbild.\n\n' +
             'Spielstand: Erfahrungspunkte, Level, Tagesserie, Elo-Wertung, gespielte Runden und gegebene Antworten, Duelle mit anderen Spielerinnen und Spielern.\n\n' +
             'Meldungen: wenn du eine Frage meldest, speichern wir welche Frage, den Grund und dein Konto.\n\n' +
+            'Kaufdiagnose (nur in den mobilen Apps): Beim Start und bei jedem Kaufversuch speichern wir zu deinem Konto eine kurze technische Diagnose des Kaufsystems — welche Schritte wie lange gedauert haben und ob eine Fehlermeldung kam. Sie enthält keine Zahlungsdaten und dient nur dazu, Fehler beim Kauf „Werbung entfernen“ zu finden, ohne dass du uns etwas abtippen musst (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO). Sie wird mit dem Konto gelöscht.\n\n' +
             'Wir erheben bewusst KEINEN Klarnamen, keine Adresse, kein Geburtsdatum und keinen Standort.',
         },
         {
@@ -242,8 +243,9 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Vercel Web Analytics: eine Reichweitenmessung der Web-App (aufgerufene Seiten, ungefähres Herkunftsland, Gerätetyp, verweisende Seite). Sie setzt keine Cookies und legt keine dauerhafte Kennung an; einzelne Personen lassen sich damit nicht wiedererkennen und nicht über mehrere Besuche hinweg verfolgen. Die IP-Adresse wird nur kurzzeitig verarbeitet und nicht gespeichert. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden und verständlichen Website (Art. 6 Abs. 1 lit. f DSGVO). Die mobilen Apps sind davon nicht betroffen.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
             'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
+            'Resend (Auftragsverarbeiter, USA): Versand der E-Mails zur Registrierung, Passwort-Zurücksetzung und Adressänderung. Resend erhält dafür deine E-Mail-Adresse und den Inhalt der jeweiligen Mail.\n\n' +
             'RevenueCat (Auftragsverarbeiter, USA): Abwicklung und Wiederherstellung des Kaufs „Werbung entfernen", sofern du ihn tätigst.\n\n' +
-            'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google und RevenueCat statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
+            'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google, Resend und RevenueCat statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
         },
         {
           heading: 'Benachrichtigungen',
@@ -285,7 +287,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Kinder und Jugendliche',
           body:
-            'Die App richtet sich an Personen ab 13 Jahren. Wir erheben wissentlich keine Daten von jüngeren Kindern.\n\n' +
+            'Die App richtet sich an Personen ab 14 Jahren — ab diesem Alter kann man in Österreich selbst in Datenverarbeitungen einwilligen (§ 4 Abs. 4 DSG), etwa in personalisierte Werbung. In Deutschland liegt die Grenze bei 16 Jahren; Jüngere brauchen dort die Zustimmung der Erziehungsberechtigten. Wir erheben wissentlich keine Daten von jüngeren Kindern.\n\n' +
             'Erfahren wir, dass ein Konto von einem jüngeren Kind angelegt wurde, löschen wir es. Erziehungsberechtigte können sich dafür jederzeit an uns wenden.',
         },
         {
@@ -305,6 +307,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Profile: your chosen player name, language, optionally an avatar.\n\n' +
             'Game data: experience points, level, daily streak, Elo rating, rounds played and answers given, duels with other players.\n\n' +
             'Reports: if you report a question, we store which question, the reason and your account.\n\n' +
+            'Purchase diagnostics (mobile apps only): at start-up and with every purchase attempt we store a short technical diagnosis of the purchase system against your account — which steps took how long and whether an error occurred. It contains no payment data and serves only to find faults with the “remove ads” purchase without you having to type anything out for us (legitimate interest, Art. 6(1)(f) GDPR). It is deleted together with the account.\n\n' +
             'We deliberately do NOT collect your real name, address, date of birth or location.',
         },
         {
@@ -328,8 +331,9 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Vercel Web Analytics: audience measurement for the web app (pages viewed, approximate country, device type, referring site). It sets no cookies and creates no persistent identifier; individuals cannot be recognised or tracked across visits. IP addresses are processed only briefly and not stored. The legal basis is our legitimate interest in a working and comprehensible website (Art. 6(1)(f) GDPR). The mobile apps are not affected.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
+            'Resend (processor, USA): sending the e-mails for registration, password reset and address change. Resend receives your e-mail address and the content of the respective mail.\n\n' +
             'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
-            'Transfers to third countries (notably the USA) occur with Google and RevenueCat and rely on the European Commission’s standard contractual clauses.',
+            'Transfers to third countries (notably the USA) occur with Google, Resend and RevenueCat and rely on the European Commission’s standard contractual clauses.',
         },
         {
           heading: 'Notifications',
@@ -371,7 +375,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Children',
           body:
-            'The app is intended for people aged 13 and over. We do not knowingly collect data from younger children.\n\n' +
+            'The app is intended for people aged 14 and over — from that age you can consent to data processing yourself in Austria (§ 4(4) DSG), for example to personalised advertising. In Germany the threshold is 16; younger users need their legal guardians’ consent there. We do not knowingly collect data from younger children.\n\n' +
             'If we learn that an account belongs to a younger child, we delete it. Parents and guardians may contact us at any time.',
         },
         {
@@ -393,7 +397,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         },
         {
           heading: 'Nutzungsvoraussetzungen',
-          body: 'Die Nutzung ist ab 13 Jahren gestattet. Minderjährige benötigen die Zustimmung ihrer Erziehungsberechtigten. Pro Person ist ein Konto zulässig.',
+          body: 'Die Nutzung ist ab 14 Jahren gestattet. Minderjährige benötigen die Zustimmung ihrer Erziehungsberechtigten. Pro Person ist ein Konto zulässig.',
         },
         {
           heading: 'Faires Spiel',
@@ -433,7 +437,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         { heading: 'Scope', body: 'These terms apply to the use of the Anigosha app and its website. Operator:\n\n' + opEN },
         {
           heading: 'Requirements',
-          body: 'Use is permitted from the age of 13. Minors require the consent of their legal guardians. One account per person.',
+          body: 'Use is permitted from the age of 14. Minors require the consent of their legal guardians. One account per person.',
         },
         {
           heading: 'Fair play',
