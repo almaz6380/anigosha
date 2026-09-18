@@ -33,7 +33,7 @@
 //     als data:-URI eingebettet sein, file:// laedt dort nicht.
 //   · Der Store-Satz wird uebergeben, nie hier getippt.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -101,6 +101,28 @@ function assets() {
   const font = readFileSync(join(HIER, 'reels', 'assets', 'outfit.woff2')).toString('base64');
   const logo = readFileSync(join(WURZEL, 'public', 'favicon.svg')).toString('base64');
   return { font, logo: `data:image/svg+xml;base64,${logo}` };
+}
+
+// --- Store-Knoepfe ----------------------------------------------------------
+//
+// ⚠ Bis 18.09.2026 stand hier nur der Satz „Gratis im App Store und bei Google
+// Play". Der ist richtig, aber er ist Text — die Knoepfe erkennt man, ohne zu
+// lesen. Dieselben Dateien wie im Reel-Abspann und in FullReps Bildposts.
+//
+// ⚠ Gezeigt wird nur, was zutrifft. Anigosha ist in beiden Stores live; steht
+// das eines Tages anders, gehoert STORES mitgezogen. Ein Badge fuer einen
+// Store ohne App ist eine Falschaussage im Bild.
+const STORES = { ios: true, android: true };
+
+function badgesHtml() {
+  const dateien = [];
+  if (STORES.ios) dateien.push('appstore-en.png');
+  if (STORES.android) dateien.push('googleplay-en.png');
+  return dateien
+    .map((f) => join(HIER, 'reels', 'spot', 'badges', f))
+    .filter((f) => existsSync(f))
+    .map((f) => `<img src="data:image/png;base64,${readFileSync(f).toString('base64')}" alt="">`)
+    .join('');
 }
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -203,13 +225,16 @@ h1.frei{font-size:${freieGroesse(frei?.text ?? '')}px;line-height:1.2}
 .g1{background:rgba(251,191,36,.2);color:#fcd34d}
 .g2{background:rgba(251,113,133,.2);color:#fda4af}
 .cta{font-size:34px;font-weight:600;color:#f5d0fe}
-.fuss{display:flex;justify-content:space-between;align-items:baseline;font-size:24px;color:rgba(237,233,254,.62)}
-.fuss .store{color:#c4b5fd;font-weight:600}
+.fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
+/* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
+   verzerren und nachzeichnen. */
+.badges{display:flex;align-items:center;gap:14px}
+.badges img{height:52px;width:auto;display:block}
 </style>
 <div class="glow g-pink"></div><div class="glow g-lila"></div><div class="vignette"></div>
 <div class="kopf"><img src="${logo}"><span>ANIGOSHA</span></div>
 <div class="inhalt">${mitte}</div>
-<div class="fuss"><span>${esc(T.fuss)}</span><span class="store">${esc(storeSatz)}</span></div>`;
+<div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>`;
 }
 
 // --- Lauf -------------------------------------------------------------------
