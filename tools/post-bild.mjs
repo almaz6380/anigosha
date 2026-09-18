@@ -4,6 +4,23 @@
 //   node tools/post-bild.mjs --format frage-karte --seed 42 --lang de
 //   node tools/post-bild.mjs --format zitat-karte --category naruto --lang en
 //   node tools/post-bild.mjs --format leiter-karte --seed 7
+//   node tools/post-bild.mjs --format freie-karte --text "Dein Satz." \
+//       --haken "Wusstest du?" --marke "Anigosha 1.1" --cta "Jetzt spielen 👇"
+//
+// --- Die freie Karte --------------------------------------------------------
+//
+// Sie ist die einzige, deren Inhalt NICHT aus fragen.json kommt: Der Text wird
+// uebergeben. Gedacht fuer Ansagen, die kein Generator kennen kann — eine neue
+// Version, ein Hinweis, ein Satz, der Josef unterwegs einfaellt.
+//
+// ⚠ Deshalb faellt bei ihr der ganze Kontroll-Teil der Caption weg. Er listet
+// sonst Loesung und Erklaerung je Frage; hier gibt es beides nicht, und eine
+// leere Rubrik „ZUR KONTROLLE" sieht aus wie ein Fehler.
+//
+// ⚠ Die Schriftgroesse haengt an der Textlaenge, nicht an einem festen Wert.
+// Ein Satz mit 40 Zeichen und einer mit 240 in derselben Groesse ergibt einmal
+// eine leere Karte und einmal eine ueberlaufende — und Ueberlauf faellt erst
+// im fertigen JPG auf, weil `overflow:hidden` ihn stumm abschneidet.
 //
 // Warum ein Bild und nicht immer ein Reel: Ein Reel kostet 960 Frames und
 // zwei Minuten Rendern, eine Karte drei Sekunden. Und im Feed erreicht eine
@@ -65,6 +82,9 @@ const TEXTE = {
 
 // --- Auswahl ----------------------------------------------------------------
 function waehleFragen(format, lang, seed, kategorie) {
+  // Die freie Karte traegt ihren Text mit sich — sie zieht nichts.
+  if (format === 'freie-karte') return [];
+
   const w = mulberry32(seed);
   const zieh = (menge) => menge[Math.floor(w() * menge.length)];
 
@@ -85,15 +105,36 @@ function assets() {
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
-function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz }) {
+// Schriftgroesse der freien Karte nach Textlaenge. Die Stufen sind an der
+// 1080er Breite gemessen, nicht geschaetzt: Bei 92px passen rund 14 Zeichen in
+// eine Zeile, bei 44px rund 30 — und in die Karte passen etwa acht Zeilen.
+//
+// ⚠ Laeuft der Text trotzdem ueber, schneidet `overflow:hidden` ihn lautlos ab.
+// Deshalb bricht der Lauf ab, statt eine halbe Karte abzuliefern (siehe unten).
+const FREI_STUFEN = [[45, 118], [90, 84], [150, 64], [240, 50], [Infinity, 42]];
+function freieGroesse(text) {
+  return FREI_STUFEN.find(([bis]) => text.length <= bis)[1];
+}
+
+function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei }) {
   const { font, logo } = assets();
   const T = TEXTE[lang];
   const f = fragen[0];
-  const kat = lang === 'de' ? f.kategorie.de : f.kategorie.en;
-  const inh = lang === 'de' ? f.de : f.en;
+  const kat = f && (lang === 'de' ? f.kategorie.de : f.kategorie.en);
+  const inh = f && (lang === 'de' ? f.de : f.en);
 
   let mitte = '';
-  if (format === 'frage-karte') {
+  if (format === 'freie-karte') {
+    // Alle drei Beiwerke sind freiwillig. Fehlt eines, faellt seine Zeile ganz
+    // weg — eine leere Pille oder ein leerer Haken hinterlaesst sonst einen
+    // Abstand, den niemand erklaeren kann.
+    mitte = [
+      frei.marke && `<div class="marke">${esc(frei.marke)}</div>`,
+      frei.haken && `<div class="haken">${esc(frei.haken)}</div>`,
+      `<h1 class="frei">${esc(frei.text)}</h1>`,
+      frei.cta && `<div class="cta">${esc(frei.cta)}</div>`,
+    ].filter(Boolean).join('\n      ');
+  } else if (format === 'frage-karte') {
     mitte = `
       <div class="marke">${esc(kat)}</div>
       <div class="haken">${esc(T.frageHaken)}</div>
@@ -148,6 +189,7 @@ body{
   background-clip:text;color:transparent}
 h1{font-size:${format === 'zitat-karte' ? 62 : 58}px;line-height:1.16;font-weight:700;letter-spacing:-.01em}
 h1.zitat{font-size:60px;line-height:1.24}
+h1.frei{font-size:${freieGroesse(frei?.text ?? '')}px;line-height:1.2}
 .quelle{font-size:30px;color:#a78bfa;font-weight:500;border-left:4px solid rgba(167,139,250,.5);padding-left:20px}
 .optionen{display:flex;flex-direction:column;gap:16px}
 .opt{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:20px;
@@ -177,6 +219,17 @@ if (fragen.some((f) => !f)) {
   process.exit(1);
 }
 
+// Die freie Karte hat keine Datenquelle, aus der ein fehlender Text zu ersetzen
+// waere. Ohne `--text` gaebe es eine leere Karte — mit Logo, Fusszeile und
+// nichts dazwischen. Die faellt erst auf, wenn sie in der Freigabe steht.
+const frei = a.format === 'freie-karte'
+  ? { text: a.text, haken: a.haken, marke: a.marke, cta: a.cta }
+  : null;
+if (frei && !frei.text) {
+  console.error('Fehlt: --text "Dein Satz."   (Pflicht bei --format freie-karte)');
+  process.exit(1);
+}
+
 // Der Store-Satz kommt von aussen. Fest getippt stand er bei Anigosha schon
 // einmal falsch im Video — deshalb ist der Vorgabewert bewusst neutral.
 const storeSatz = a.store ?? (a.lang === 'de' ? 'Gratis im App Store und bei Google Play'
@@ -193,9 +246,38 @@ const browser = await chromium.launch(
   process.env.CHROMIUM_PFAD ? { executablePath: process.env.CHROMIUM_PFAD } : {},
 );
 const seite = await browser.newPage({ viewport: { width: BREITE, height: HOEHE }, deviceScaleFactor: 1 });
-await seite.setContent(baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz }),
+await seite.setContent(
+  baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz, frei }),
   { waitUntil: 'load' });
 await seite.evaluate(() => document.fonts.ready);
+
+// Ueberlauf messen, bevor das JPG entsteht. `overflow:hidden` schneidet zu
+// langen Text ohne jede Meldung ab — das Bild sieht dann fertig aus und ist
+// mittendrin abgeschnitten.
+//
+// ⚠ Abgebrochen wird nur bei der freien Karte: Dort kommt der Text von aussen
+// und laesst sich kuerzen. Bei den anderen Formaten stammt er aus fragen.json;
+// ein Abbruch wuerde dort einen Tageslauf scheitern lassen, den niemand durch
+// Kuerzen retten kann. Deshalb dort nur eine Warnung.
+// ⚠ NICHT `.inhalt` messen. Der Block steht auf `flex:1` und hat damit
+// `min-height:auto` — er WAECHST ueber die Karte hinaus, statt seinen Inhalt
+// abzuschneiden. Sein scrollHeight ist deshalb immer gleich seinem
+// clientHeight, auch bei 4500 Zeichen. Genau so gemessen und widerlegt:
+// `.inhalt` meldete 3992/3992 (kein Ueberlauf), waehrend der Body auf 4172
+// stand. Abgeschnitten wird erst am Body, also wird dort gemessen.
+const ueber = await seite.evaluate(() => document.body.scrollHeight - window.innerHeight);
+if (ueber > 2) {
+  const wie = `Der Text passt nicht: ${ueber}px zu viel fuer die Karte.`;
+  if (frei) {
+    console.error(`✗ ${wie}`);
+    console.error(`  ${frei.text.length} Zeichen bei ${freieGroesse(frei.text)}px.`);
+    console.error('  Kuerze --text, oder lass --haken/--marke/--cta weg.');
+    await browser.close();
+    process.exit(1);
+  }
+  console.warn(`⚠ ${wie} Das Bild ist unten abgeschnitten.`);
+}
+
 await seite.screenshot({ path: ziel, type: 'jpeg', quality: 92 });
 await browser.close();
 
@@ -205,6 +287,28 @@ await browser.close();
 // Leiter-Karte stehen drei im Bild; wer nur die erste Loesung zur Hand hat,
 // kann auf Kommentare nicht antworten — und Antworten im Kommentarbereich
 // sind bei diesem Format der halbe Zweck.
+//
+// Bei der freien Karte faellt der Kontrollteil weg — es gibt weder Loesung noch
+// Erklaerung. Die Datei entsteht trotzdem: Der Text zum Kopieren ist am Handy
+// genau das, wofuer sie da ist.
+if (frei) {
+  writeFileSync(join(a.out, `${name}.txt`),
+`${name}
+
+CAPTION ZUM KOPIEREN
+--------------------
+${[frei.haken, frei.text, frei.cta].filter(Boolean).join('\n\n')}
+
+#anigosha #animequiz #anime #quiz
+
+Store-Satz im Bild: ${storeSatz}
+`);
+  console.log(`✓ ${ziel}`);
+  console.log(`  ${BREITE}×${HOEHE} · freie Karte · ${a.lang} · ${frei.text.length} Zeichen`
+    + ` bei ${freieGroesse(frei.text)}px`);
+  process.exit(0);
+}
+
 const inh = a.lang === 'de' ? fragen[0].de : fragen[0].en;
 const kat = a.lang === 'de' ? fragen[0].kategorie.de : fragen[0].kategorie.en;
 
