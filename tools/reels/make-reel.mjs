@@ -13,6 +13,7 @@
 //   --text     <satz>                     (nur ansage, Pflicht)
 //   --cta      <zeile>                    (nur ansage, optional)
 //   --category <slug>                     (nur fandom)
+//   --stores   ios,android                Store-Knoepfe im Abspann (Vorgabe: beide)
 //   --lang     de | en                    (Standard de)
 //   --seed     <zahl>                     gleiche Zahl = gleiches Reel
 //   --out      <verzeichnis>              Standard out/reels
@@ -71,6 +72,11 @@ async function main() {
     seed: a.seed,
     text: a.text ?? null,
     cta: a.cta ?? null,
+    // „ios,android" → { ios: true, android: true }. Ohne die Angabe gilt
+    // beides, weil Anigosha in beiden Stores live ist.
+    stores: a.stores
+      ? { ios: a.stores.includes('ios'), android: a.stores.includes('android') }
+      : { ios: true, android: true },
   });
 
   const name = [

@@ -121,6 +121,11 @@ export function ansageMass(text) {
 
 export function baueStoryboard({
   format, lang = 'de', kategorie = null, fragen, seed = 1, text = null, cta = null,
+  // ⚠ In welchen Stores es die App WIRKLICH gibt. Danach richtet sich, ob der
+  // Abspann die Store-Knoepfe zeigt — ein Badge fuer einen Store, in dem es
+  // die App nicht gibt, ist eine Falschaussage im Video. Die Wahrheit steht in
+  // apps.json; der Vorgabewert gilt fuer Anigosha, das in beiden live ist.
+  stores = { ios: true, android: true },
 }) {
   const r = rng(seed);
   const t = TEXTE[lang];
@@ -199,6 +204,7 @@ export function baueStoryboard({
     lang,
     kategorie,
     katName,
+    stores,
     // Nur bei `ansage` gesetzt — die Caption baut ihren Text daraus, statt ihn
     // aus den Bloecken zurueckzulesen.
     ansageText: format === 'ansage' ? text : null,

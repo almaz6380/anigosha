@@ -7,7 +7,7 @@
 // Die Seite wird per page.setContent() geladen und hat deshalb keinen Origin:
 // Schrift und Logo MÜSSEN als data:-URI eingebettet sein (file:// lädt nicht).
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,11 +22,48 @@ function assets() {
   return { font, logo: `data:image/svg+xml;base64,${logo}` };
 }
 
+/**
+ * Die beiden Store-Knoepfe fuers Outro.
+ *
+ * ⚠ Der Abspann konnte sie SEIT JEHER — `outroBadges`, die Einblendung, sogar
+ * die Regel, dass sie im Gegensatz zum Textknopf NICHT pochen duerfen (Apple
+ * und Google untersagen jede Veraenderung ihrer Badges). Nur hat sie nie
+ * jemand mitgegeben: `b.badges` wurde an keiner Stelle gesetzt. Gebaut und nie
+ * angeschlossen — aufgefallen am 18.09.2026, weil Josef sie im fertigen Reel
+ * vermisst hat.
+ *
+ * Die Dateien liegen bei `spot/badges/` und werden schon vom Werbespot
+ * benutzt; FullRep bindet dieselben in seine Bildposts ein.
+ */
+function storeBadges() {
+  const ordner = join(HIER, 'spot', 'badges');
+  const lies = (datei) => {
+    const voll = join(ordner, datei);
+    return existsSync(voll)
+      ? `data:image/png;base64,${readFileSync(voll).toString('base64')}`
+      : null;
+  };
+  return { apple: lies('appstore-en.png'), play: lies('googleplay-en.png') };
+}
+
 // JSON sicher in ein <script> einbetten
 const einbetten = (obj) => JSON.stringify(obj).replace(/</g, '\\u003c');
 
 export function baueHtml(storyboard) {
   const { font, logo } = assets();
+
+  // ⚠ Die Badges haengen am Outro-BLOCK, nicht am Storyboard: Genau dort sucht
+  // sie `blockSetzen()`. Und nur, wenn die App auch wirklich in beiden Stores
+  // ist — `stores` kommt aus apps.json und ist die einzige Wahrheit darueber.
+  // Ein Badge fuer einen Store, in dem es die App nicht gibt, ist eine
+  // Falschaussage im Video.
+  const badges = storeBadges();
+  if (storyboard.stores?.ios && storyboard.stores?.android
+      && badges.apple && badges.play) {
+    for (const b of storyboard.bloecke) {
+      if (b.typ === 'outro') b.badges = badges;
+    }
+  }
 
   return `<!doctype html>
 <meta charset="utf-8">
