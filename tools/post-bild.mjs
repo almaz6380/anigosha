@@ -288,9 +288,19 @@ await browser.close();
 // kann auf Kommentare nicht antworten — und Antworten im Kommentarbereich
 // sind bei diesem Format der halbe Zweck.
 //
-// Bei der freien Karte faellt der Kontrollteil weg — es gibt weder Loesung noch
-// Erklaerung. Die Datei entsteht trotzdem: Der Text zum Kopieren ist am Handy
-// genau das, wofuer sie da ist.
+// ⚠ DIE RUBRIK „ZUR KONTROLLE" MUSS AUCH HIER STEHEN — sie ist kein Text,
+// sondern eine GRENZE.
+//
+// `captionAus()` in tools/social/vorflug.mjs schneidet die Caption an der
+// naechsten unterstrichenen Ueberschrift ab. Ohne sie lief die Caption bis ans
+// Dateiende und nahm „Store-Satz im Bild: …" mit. Genau so gemessen: Der
+// Versand brach ab mit *„Bei diesen Beitraegen ist der Text kein
+// Caption-Text — Verraeter: Store-Satz im Bild"*.
+//
+// Ich hatte sie zuerst weggelassen, weil es bei einer freien Karte weder
+// Loesung noch Erklaerung zu kontrollieren gibt. Das stimmt inhaltlich und war
+// trotzdem falsch: Was hier fehlte, war nicht der Inhalt, sondern das
+// Trennzeichen.
 if (frei) {
   writeFileSync(join(a.out, `${name}.txt`),
 `${name}
@@ -300,6 +310,11 @@ CAPTION ZUM KOPIEREN
 ${[frei.haken, frei.text, frei.cta].filter(Boolean).join('\n\n')}
 
 #anigosha #animequiz #anime #quiz
+
+ZUR KONTROLLE (nicht posten)
+----------------------------
+Freier Text, von Hand gegeben — keine Frage, keine Loesung, keine Erklaerung.
+Medienherkunft: typografie
 
 Store-Satz im Bild: ${storeSatz}
 `);
