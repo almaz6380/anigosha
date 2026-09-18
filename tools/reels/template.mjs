@@ -219,6 +219,12 @@ function blockSetzen(idx) {
   if (b.typ === 'hook') {
     $('hookTitel').innerHTML = zeilen(b.titel);
     $('hookSub').innerHTML = zeilen(b.sub);
+    // ⚠ Nur die Ansage gibt Groesse und Hoehe mit; die Quiz-Reels tun das
+    // nicht und behalten damit exakt ihr bisheriges Aussehen. Faellt das Feld
+    // weg, wird auf die Werte aus dem CSS zurueckgestellt — sonst behielte ein
+    // spaeterer Hook-Block die Groesse des vorigen, weil die Ebene dieselbe ist.
+    $('hookTitel').style.fontSize = b.titelGroesse ? b.titelGroesse + 'px' : '';
+    $('hookTitel').style.top = b.titelTop ? b.titelTop + 'px' : '';
   } else if (b.typ === 'outro') {
     $('outroTitel').innerHTML = zeilen(b.titel);
     $('outroSub').innerHTML = zeilen(b.sub);

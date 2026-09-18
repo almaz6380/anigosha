@@ -5,8 +5,13 @@
 //   node tools/reels/make-reel.mjs --format ladder --lang en --seed 7
 //   node tools/reels/make-reel.mjs --format fandom --category naruto --dry-run
 //
+//   node tools/reels/make-reel.mjs --format ansage --text "Version 1.1 ist da." \
+//       --cta "Jetzt updaten"
+//
 // Optionen:
-//   --format   fandom | ladder            (Pflicht)
+//   --format   fandom | ladder | ansage   (Pflicht)
+//   --text     <satz>                     (nur ansage, Pflicht)
+//   --cta      <zeile>                    (nur ansage, optional)
 //   --category <slug>                     (nur fandom)
 //   --lang     de | en                    (Standard de)
 //   --seed     <zahl>                     gleiche Zahl = gleiches Reel
@@ -46,7 +51,14 @@ const bytesLesbar = (b) => `${(b / 1024 / 1024).toFixed(1)} MB`;
 async function main() {
   const a = argumente(process.argv.slice(2));
   if (!a.format) {
-    console.error('Fehlt: --format fandom|ladder   (siehe Kopf der Datei)');
+    console.error('Fehlt: --format fandom|ladder|ansage   (siehe Kopf der Datei)');
+    process.exit(1);
+  }
+  // ⚠ Hier abfangen, nicht erst im Storyboard: Ohne Text stuende die Ansage
+  // als leere Flaeche im Video, und gemerkt haette man es nach zwei Minuten
+  // Rendern.
+  if (a.format === 'ansage' && !a.text) {
+    console.error('Fehlt: --text "Dein Satz."   (Pflicht bei --format ansage)');
     process.exit(1);
   }
 
@@ -57,6 +69,8 @@ async function main() {
     kategorie: a.category ?? null,
     fragen: bank.fragen,
     seed: a.seed,
+    text: a.text ?? null,
+    cta: a.cta ?? null,
   });
 
   const name = [

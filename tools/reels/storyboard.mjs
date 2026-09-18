@@ -42,6 +42,12 @@ const TEXTE = {
     outroSub: '804 Fragen · 12 Serien · Duelle gegen echte Gegner',
     outroCta: 'Anigosha — gratis im Store',
     kommentar: 'Wie viele hattest du? 👇',
+    // ⚠ Eigener Abspann fuer die Ansage. Der gewoehnliche fragt „Wie viele
+    // hattest du?" und „Schaffst du den Rest?" — beides setzt voraus, dass
+    // gerade jemand drei Fragen beantwortet hat. Nach einer Ansage ist das
+    // schlicht falsch und verraet, dass hier eine Vorlage zweckentfremdet wurde.
+    ansageOutroTitel: 'Jetzt\nspielen',
+    ansageKommentar: 'Link in der Bio 👇',
     fuss: 'Anigosha · Anime Quiz & Duelle',
   },
   en: {
@@ -56,6 +62,8 @@ const TEXTE = {
     outroSub: '804 questions · 12 series · duel real opponents',
     outroCta: 'Anigosha — free on the store',
     kommentar: 'How many did you get? 👇',
+    ansageOutroTitel: 'Play\nnow',
+    ansageKommentar: 'Link in bio 👇',
     fuss: 'Anigosha · Anime Quiz & Duels',
   },
 };
@@ -81,20 +89,45 @@ function fragenWaehlen({ format, kategorie, fragen, r }) {
       auswahl.push(gewaehlt);
     }
     void slugs;
+  } else if (format === 'ansage') {
+    // Eine Ansage hat keine Fragen — ihr Text kommt von aussen.
+    return [];
   } else {
-    throw new Error(`Unbekanntes Format "${format}" (fandom | ladder)`);
+    throw new Error(`Unbekanntes Format "${format}" (fandom | ladder | ansage)`);
   }
 
   return auswahl;
 }
 
-export function baueStoryboard({ format, lang = 'de', kategorie = null, fragen, seed = 1 }) {
+// Schriftgroesse und Hoehe der Ansage nach Textlaenge.
+//
+// ⚠ Der Hook-Block ist auf drei kurze Zeilen bei 104px gebaut („Nur echte\n
+// One-Piece-Fans\nschaffen 3/3"). Ein Ansagetext von 200 Zeichen liefe darin
+// unten aus dem Bild — und im fertigen MP4 sieht man das erst nach zwei
+// Minuten Rendern. Dieselben Stufen wie bei der freien Karte, nur groesser,
+// weil das Bild hier 1080×1920 statt 1080×1350 ist.
+//
+// `top` wandert nach oben, wenn der Text mehr Zeilen braucht: Der Untertitel
+// steht fest auf 1060px, und dazwischen muss alles hineinpassen.
+const ANSAGE_STUFEN = [
+  [45, { groesse: 104, top: 560 }],
+  [90, { groesse: 82, top: 520 }],
+  [150, { groesse: 64, top: 470 }],
+  [240, { groesse: 52, top: 430 }],
+];
+export function ansageMass(text) {
+  return (ANSAGE_STUFEN.find(([bis]) => text.length <= bis) ?? [0, { groesse: 44, top: 400 }])[1];
+}
+
+export function baueStoryboard({
+  format, lang = 'de', kategorie = null, fragen, seed = 1, text = null, cta = null,
+}) {
   const r = rng(seed);
   const t = TEXTE[lang];
   if (!t) throw new Error(`Sprache "${lang}" nicht vorgesehen (de | en)`);
 
   const auswahl = fragenWaehlen({ format, kategorie, fragen, r });
-  const katName = kategorie ? auswahl[0].kategorie[lang] : null;
+  const katName = kategorie && auswahl.length ? auswahl[0].kategorie[lang] : null;
 
   const bloecke = [];
   let start = 0;
@@ -103,14 +136,32 @@ export function baueStoryboard({ format, lang = 'de', kategorie = null, fragen, 
     start += dauer;
   };
 
-  schieben(
-    {
-      typ: 'hook',
-      titel: format === 'fandom' ? t.hookFandom(katName) : t.hookLadder,
-      sub: format === 'fandom' ? t.hookSubFandom : t.hookSubLadder,
-    },
-    HOOK_DAUER,
-  );
+  if (format === 'ansage') {
+    if (!text) throw new Error('Format "ansage" braucht --text');
+
+    // ⚠ Die Standzeit haengt an der Textlaenge, nicht an einem festen Wert.
+    // Zwei Sekunden wie beim Hook reichen fuer „Version 1.1 ist da." — bei
+    // 200 Zeichen kann sie niemand lesen, und ein Reel, das man anhalten
+    // muss, ist eines, das weggewischt wird. Gerechnet mit rund
+    // 15 Zeichen je Sekunde und mindestens vier Sekunden; nach oben
+    // gedeckelt, weil ein Standbild irgendwann langweilt.
+    const stand = Math.min(s(12), Math.max(s(4), s(text.length / 15)));
+    const mass = ansageMass(text);
+
+    schieben({
+      typ: 'hook', titel: text, sub: cta ?? '',
+      titelGroesse: mass.groesse, titelTop: mass.top,
+    }, stand);
+  } else {
+    schieben(
+      {
+        typ: 'hook',
+        titel: format === 'fandom' ? t.hookFandom(katName) : t.hookLadder,
+        sub: format === 'fandom' ? t.hookSubFandom : t.hookSubLadder,
+      },
+      HOOK_DAUER,
+    );
+  }
 
   auswahl.forEach((f, i) => {
     schieben(
@@ -133,7 +184,13 @@ export function baueStoryboard({ format, lang = 'de', kategorie = null, fragen, 
   });
 
   schieben(
-    { typ: 'outro', titel: t.outroTitel, sub: t.outroSub, cta: t.outroCta, kommentar: t.kommentar },
+    {
+      typ: 'outro',
+      titel: format === 'ansage' ? t.ansageOutroTitel : t.outroTitel,
+      sub: t.outroSub,
+      cta: t.outroCta,
+      kommentar: format === 'ansage' ? t.ansageKommentar : t.kommentar,
+    },
     OUTRO_DAUER,
   );
 
@@ -142,6 +199,10 @@ export function baueStoryboard({ format, lang = 'de', kategorie = null, fragen, 
     lang,
     kategorie,
     katName,
+    // Nur bei `ansage` gesetzt — die Caption baut ihren Text daraus, statt ihn
+    // aus den Bloecken zurueckzulesen.
+    ansageText: format === 'ansage' ? text : null,
+    ansageCta: format === 'ansage' ? cta : null,
     seed,
     fps: FPS,
     phasen: PHASEN,

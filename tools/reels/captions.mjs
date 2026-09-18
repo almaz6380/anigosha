@@ -56,6 +56,22 @@ export function baueCaption(storyboard) {
   const { format, lang, katName, kategorie, fragen } = storyboard;
   const t = T[lang];
 
+  // ⚠ Die Ansage hat KEINE Fragen. Ohne diesen Zweig liefe der Code unten in
+  // `fragen.flatMap((f) => FANDOM[f.slug]…)` und in `t.body(fragen.length)` —
+  // das erste wirft, das zweite behauptete „0 Fragen. Wie viele hattest du?".
+  //
+  // Ihr Text steht schon im Video; die Caption wiederholt ihn, weil das der
+  // erste Satz im Feed ist und dort ueber das Weiterschauen entscheidet.
+  if (format === 'ansage') {
+    const satz = storyboard.ansageText ?? '';
+    const cta = storyboard.ansageCta;
+    return {
+      hook: satz,
+      text: cta ? `${satz}\n\n${cta}` : satz,
+      tags: [...BREIT[lang], ...EIGEN],
+    };
+  }
+
   const hook = format === 'fandom' ? t.fandomHook(katName) : t.ladderHook;
 
   const tags = [
@@ -95,8 +111,14 @@ ${c.tags.join(' ')}
 • Auf den ersten Kommentar innerhalb der ersten Stunde antworten;
   frühe Interaktion entscheidet über die Auslieferung.
 
-── ENTHALTENE FRAGEN (Faktencheck) ───────────────────
+${storyboard.format === 'ansage'
+  ? `── ZUR KONTROLLE (nicht posten) ──────────────────────
+
+Freier Text, von Hand gegeben — keine Frage, keine Loesung.
+Medienherkunft: typografie
+`
+  : `── ENTHALTENE FRAGEN (Faktencheck) ───────────────────
 
 ${fragenListe}
-`;
+`}`;
 }
