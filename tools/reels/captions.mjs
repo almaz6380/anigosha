@@ -3,6 +3,21 @@
 //
 // Hashtag-Logik: wenige breite (Reichweite, aber viel Konkurrenz) + mehrere enge
 // Fandom-Tags (dort wird ein neuer Account überhaupt gesehen) + die eigenen.
+//
+// ⚠ DIE REIHENFOLGE IST SEIT 18.09.2026 EINE ENTSCHEIDUNG, KEIN ZUFALL.
+// Josefs Regel: höchstens fünf Hashtags je Beitrag. Gekürzt wird zentral in
+// wellapps-social/tools/social/beschreibung.mjs, und zwar auf die ERSTEN
+// fünf — die anderen vier Repos schreiben ihre Listen von spezifisch nach
+// allgemein, dort ist das richtig.
+//
+// Hier stand es genau andersherum: breit zuerst, die Fandom-Tags in der
+// Mitte, `#anigosha` ganz am Schluss. Von elf Tags hätten die fünf
+// überlebt, die am wenigsten bringen (#anime, #animequiz, #quiz, #animefan,
+// #otaku) — die Serie und die eigene Marke wären weggefallen. Genau der
+// enge Tag ist aber der, über den ein neuer Kanal überhaupt gefunden wird;
+// das steht zwei Zeilen weiter oben und galt schon immer.
+//
+// Reihenfolge jetzt: erst die Serie, dann die Marke, dann die breiten.
 
 const BREIT = {
   de: ['#anime', '#animequiz', '#quiz', '#animefan', '#otaku'],
@@ -68,19 +83,32 @@ export function baueCaption(storyboard) {
     return {
       hook: satz,
       text: cta ? `${satz}\n\n${cta}` : satz,
-      tags: [...BREIT[lang], ...EIGEN],
+      // Eine Ansage hat keine Serie — hier trägt die Marke zuerst.
+      tags: [...EIGEN, ...BREIT[lang]],
     };
   }
 
   const hook = format === 'fandom' ? t.fandomHook(katName) : t.ladderHook;
 
+  // ⚠ Die Fandom-Tags sind GEDECKELT, sonst fressen sie die fuenf ganz auf.
+  // Gemessen am 18.09.2026: `FANDOM.one_piece` hat fuenf Eintraege, also
+  // standen unter dem Reel „#onepiece #onepiecefan #strawhats #luffy #zoro"
+  // — fuenfmal dieselbe Serie, ohne `#anigosha` und ohne ein einziges Wort,
+  // das die Kategorie nennt. Wer das Video sieht, weiss dann zwar, worum es
+  // geht, aber niemand findet den Kanal ueber „Anime-Quiz".
+  //
+  // Drei eng, dann die Marke, dann breit. Die Grenze steht hier und nicht
+  // in der zentralen Kuerzung: Die kennt nur „die ersten fuenf" und kann
+  // nicht wissen, welche davon aus welchem Topf kommen.
+  const eng = format === 'fandom'
+    ? FANDOM[kategorie].slice(0, 3)
+    : [...new Set(fragen.flatMap((f) => FANDOM[f.slug].slice(0, 1)))].slice(0, 3);
+
   const tags = [
-    ...BREIT[lang],
-    ...(format === 'fandom'
-      ? FANDOM[kategorie]
-      : [...new Set(fragen.flatMap((f) => FANDOM[f.slug].slice(0, 2)))]),
-    ...(format === 'ladder' ? t.ladderTags : []),
+    ...eng,
     ...EIGEN,
+    ...BREIT[lang],
+    ...(format === 'ladder' ? t.ladderTags : []),
   ];
 
   return { hook, text: `${hook}\n\n${t.body(fragen.length)}`, tags };
