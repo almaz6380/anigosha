@@ -95,11 +95,19 @@ const TEXTE = {
             + 'Fragen. Wer nicht wartet, spielt solo weiter.',
         bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
         punkte: ['4 Runden', 'Elo-Wertung', 'weltweit'] },
-      { kurz: ['Jeden Tag', 'dieselben 5 Fragen.'],
-        text: 'Die Tägliche Challenge ist für alle gleich — und abends zeigt die '
-            + 'Tagesbestenliste, wer sie am besten gelöst hat.',
+      // ⚠ HIER STAND „Jeden Tag dieselben 5 Fragen." — und das war nicht nur
+      // unattraktiv, sondern FALSCH (Josef am fertigen Bild, 20.09.2026:
+      // „Was für jeden Tag dieselben 5 Fragen!?"). Die Challenge zieht ihre
+      // Fragen deterministisch aus dem DATUM: Sie wechseln taeglich. Gleich
+      // sind sie nur fuer alle SPIELER am selben Tag — und genau das ist der
+      // Reiz, weil die Tagesbestenliste dadurch vergleichbar wird.
+      // Der Satz sagte das Gegenteil und klang nach einer App, die jeden Tag
+      // dasselbe zeigt.
+      { kurz: ['Jeden Tag neu.', 'Für alle gleich.'],
+        text: 'Fünf frische Fragen pro Tag — und jeder Spieler bekommt dieselben. '
+            + 'Abends zeigt die Tagesbestenliste, wer sie am besten gelöst hat.',
         bilder: ['1-home.png', '2-solo.png', '4-bestenliste.png'],
-        punkte: ['täglich', 'für alle gleich', 'Tagesliste'] },
+        punkte: ['5 Fragen', 'täglich neu', 'Tagesliste'] },
     ],
   },
   en: {
@@ -120,11 +128,11 @@ const TEXTE = {
             + 'same questions. No waiting: keep playing solo.',
         bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
         punkte: ['4 rounds', 'Elo rating', 'worldwide'] },
-      { kurz: ['Same five questions', 'for everyone.'],
-        text: 'The Daily Challenge is identical for every player — and the daily '
-            + 'leaderboard shows who solved it best.',
+      { kurz: ['New every day.', 'Same for everyone.'],
+        text: 'Five fresh questions a day — and every player gets the same ones. '
+            + 'The daily leaderboard shows who solved them best.',
         bilder: ['1-home.png', '2-solo.png', '4-bestenliste.png'],
-        punkte: ['daily', 'same for all', 'daily ranking'] },
+        punkte: ['5 questions', 'new daily', 'daily ranking'] },
     ],
   },
 };
