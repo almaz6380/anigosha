@@ -49,6 +49,21 @@ for (let i = 2; i < process.argv.length; i++) {
   else if (k.startsWith('--')) a[k.slice(2).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = process.argv[++i];
 }
 
+// ⚠ Der Bildgenerator fuehrt NUR de und en — anders als die App, die seit
+// 01.09.2026 in fuenf Sprachen laeuft. Ohne diese Probe stirbt jedes Format
+// mit „Cannot read properties of undefined (reading 'schau')" und einem
+// nackten Stacktrace, in dem die Sprache nirgends vorkommt. Gemessen mit
+// `--lang es` am 20.09.2026.
+//
+// Der Tageslauf bestellt heute nur de und en (siehe `sprachen` in
+// wellapps-social/tools/social/ideen/anigosha.json) — wer das erweitert, muss
+// zuerst TEXTE erweitern, nicht nur die Winkel-Datei.
+if (!['de', 'en'].includes(a.lang)) {
+  console.error(`✗ Sprache ${a.lang} kennt dieser Generator nicht — nur de und en.`);
+  console.error('  Die App fuehrt mehr; die POSTTEXTE stehen in TEXTE weiter unten.');
+  process.exit(1);
+}
+
 // --- Daten ------------------------------------------------------------------
 const FRAGEN = JSON.parse(readFileSync(join(HIER, 'reels', 'data', 'fragen.json'), 'utf8')).fragen;
 
@@ -69,6 +84,23 @@ const TEXTE = {
     leiter: 'Bis wohin kommst du?',
     stufen: ['Leicht', 'Mittel', 'Schwer'],
     fuss: 'Anigosha · Anime Quiz & Duelle',
+    schau: [
+      { kurz: ['Wie gut kennst du', 'deine Serien?'],
+        text: 'Solo spielen, im Duell antreten, in der Bestenliste klettern — '
+            + 'alles in einer App, ohne Anmeldegebühr.',
+        bilder: ['2-solo.png', '1-home.png', '3-duell.png'],
+        punkte: ['Solo', 'Duell', 'Bestenliste'] },
+      { kurz: ['Tritt gegen echte', 'Gegner an.'],
+        text: 'Vier Runden zu drei Fragen, zeitversetzt — beide bekommen dieselben '
+            + 'Fragen. Wer nicht wartet, spielt solo weiter.',
+        bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
+        punkte: ['4 Runden', 'Elo-Wertung', 'weltweit'] },
+      { kurz: ['Jeden Tag', 'dieselben 5 Fragen.'],
+        text: 'Die Tägliche Challenge ist für alle gleich — und abends zeigt die '
+            + 'Tagesbestenliste, wer sie am besten gelöst hat.',
+        bilder: ['1-home.png', '2-solo.png', '4-bestenliste.png'],
+        punkte: ['täglich', 'für alle gleich', 'Tagesliste'] },
+    ],
   },
   en: {
     frageHaken: 'Do you know it?',
@@ -77,13 +109,31 @@ const TEXTE = {
     leiter: 'How far do you get?',
     stufen: ['Easy', 'Medium', 'Hard'],
     fuss: 'Anigosha · Anime Quiz & Duels',
+    schau: [
+      { kurz: ['How well do you know', 'your anime?'],
+        text: 'Play solo, take on duels, climb the leaderboard — all in one app, '
+            + 'free to start.',
+        bilder: ['2-solo.png', '1-home.png', '3-duell.png'],
+        punkte: ['Solo', 'Duels', 'Leaderboard'] },
+      { kurz: ['Take on real', 'opponents.'],
+        text: 'Four rounds of three questions, asynchronous — both players get the '
+            + 'same questions. No waiting: keep playing solo.',
+        bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
+        punkte: ['4 rounds', 'Elo rating', 'worldwide'] },
+      { kurz: ['Same five questions', 'for everyone.'],
+        text: 'The Daily Challenge is identical for every player — and the daily '
+            + 'leaderboard shows who solved it best.',
+        bilder: ['1-home.png', '2-solo.png', '4-bestenliste.png'],
+        punkte: ['daily', 'same for all', 'daily ranking'] },
+    ],
   },
 };
 
 // --- Auswahl ----------------------------------------------------------------
 function waehleFragen(format, lang, seed, kategorie) {
   // Die freie Karte traegt ihren Text mit sich — sie zieht nichts.
-  if (format === 'freie-karte') return [];
+  // Die App-Schau zeigt die App selbst, nicht eine Frage daraus.
+  if (format === 'freie-karte' || format === 'app-schau') return [];
 
   const w = mulberry32(seed);
   const zieh = (menge) => menge[Math.floor(w() * menge.length)];
@@ -138,7 +188,7 @@ function freieGroesse(text) {
   return FREI_STUFEN.find(([bis]) => text.length <= bis)[1];
 }
 
-function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei }) {
+function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei, schau, hintergrund }) {
   const { font, logo } = assets();
   const T = TEXTE[lang];
   const f = fragen[0];
@@ -146,7 +196,28 @@ function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei }) {
   const inh = f && (lang === 'de' ? f.de : f.en);
 
   let mitte = '';
-  if (format === 'freie-karte') {
+  if (format === 'app-schau') {
+    // ⚠ DIE EINZIGE KARTE, DIE DIE APP SELBST ZEIGT (Josef, 20.09.2026).
+    // Jeder andere Winkel zeigt eine FRAGE — wer den Kanal drei Wochen
+    // verfolgt, weiss danach, dass hier Anime-Quiz laeuft, aber nicht, dass es
+    // eine App dazu gibt.
+    //
+    // Die Bilder sind die ECHTEN Store-Screenshots aus store-assets/ios/<lang>/.
+    // Kein Nachbau: Ein gezeichneter Bildschirm waere eine Behauptung ueber die
+    // Oberflaeche und veraltet still, sobald sich die App aendert.
+    //
+    // ⚠ Sie zeigen KEINE Anime-Figur — nur Serien-TITEL als Text in der
+    // Kategorienliste. Genau diese Trennung steht im Dateikopf: Titel als Text
+    // sind unproblematisch, Bilder erkennbarer Figuren gefaehrden das Konto.
+    mitte = `
+      <div class="schauKopf">
+        <h1 class="schauZeile">${esc(schau.kurz[0])}<br><i>${esc(schau.kurz[1])}</i></h1>
+        <p class="schauText">${esc(schau.text)}</p>
+      </div>
+      <div class="schirme">${schau.schirme.map((b, i) => `
+        <img class="schirm s${i}" src="data:image/png;base64,${b}">`).join('')}</div>
+      <div class="punkte">${schau.punkte.map((x) => `<span>${esc(x)}</span>`).join('')}</div>`;
+  } else if (format === 'freie-karte') {
     // Alle drei Beiwerke sind freiwillig. Fehlt eines, faellt seine Zeile ganz
     // weg — eine leere Pille oder ein leerer Haken hinterlaesst sonst einen
     // Abstand, den niemand erklaeren kann.
@@ -225,16 +296,85 @@ h1.frei{font-size:${freieGroesse(frei?.text ?? '')}px;line-height:1.2}
 .g1{background:rgba(251,191,36,.2);color:#fcd34d}
 .g2{background:rgba(251,113,133,.2);color:#fda4af}
 .cta{font-size:34px;font-weight:600;color:#f5d0fe}
+
+/* --- app-schau: die App selbst ---
+   Aufbau von oben nach unten: Schlagzeile, ein Satz dazu, drei Bildschirme,
+   darunter drei Stichworte. Die Bildschirme sind das Motiv und bekommen den
+   meisten Platz; sie laufen unten bewusst aus dem Rahmen, damit es wie ein
+   Ausschnitt aus etwas Groesserem wirkt statt wie drei Briefmarken
+   (1320x2868 in eine 1080x1350-Karte gesetzt waere genau das).
+   Keine Backticks in diesem Block — er steht in einem Template-Literal. */
+.schauKopf{display:flex;flex-direction:column;gap:14px;flex:0 0 auto}
+.schauZeile{font-size:66px;line-height:1.04;font-weight:700;letter-spacing:-.015em;color:#fff}
+/* Die zweite Zeile traegt den Markenverlauf, nicht die ganze Schlagzeile —
+   sonst liest sie schlechter und der Akzent wiegt nichts.
+   Es MUSS ein Element sein: "br + *" greift nur bei einem Element nach dem
+   Umbruch, nackter Text waere kein Treffer und die Regel liefe ins Leere. */
+.schauZeile i{font-style:normal;background:linear-gradient(100deg,#c4b5fd,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.schauText{font-size:27px;line-height:1.34;color:#ddd6fe;max-width:94%}
+/* ⚠ Weicher Auslauf statt harter Kante. Ohne Maske endet das Ueberlaufen
+   unten in einer rasiermesserglatten Linie quer durchs Bild, und die liest
+   sich als Fehler, nicht als Ausschnitt. Am JPEG gemessen — im HTML sieht
+   beides gleich aus. */
+.schirme{flex:1 1 0;min-height:0;position:relative;overflow:hidden;
+  display:flex;justify-content:center;align-items:flex-start;padding-top:6px;
+  -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 99%);
+  mask-image:linear-gradient(180deg,#000 78%,transparent 99%)}
+.schirm{position:absolute;width:300px;border-radius:26px;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 34px 70px rgba(10,6,22,.68),0 4px 14px rgba(10,6,22,.5);
+  object-fit:cover;object-position:top}
+.schirm.s0{left:22px;top:44px;transform:rotate(-5deg);height:620px;opacity:.95}
+.schirm.s1{top:4px;height:680px;z-index:3}
+.schirm.s2{right:22px;top:44px;transform:rotate(5deg);height:620px;opacity:.95}
+.punkte{flex:0 0 auto;display:flex;gap:12px}
+.punkte span{flex:1 1 0;text-align:center;background:rgba(139,92,246,.26);
+  border:1px solid rgba(167,139,250,.42);border-radius:16px;padding:14px 8px;
+  font-size:25px;font-weight:600;color:#ddd6fe}
+/* Die App-Schau setzt ihren Inhalt OBEN an, nicht mittig: Die Schlagzeile
+   gehoert an den Kartenrand, damit darunter drei Bildschirme Platz haben. */
+.schau .inhalt{justify-content:flex-start;gap:20px}
+
+/* Das Einzelbild aus dem Werbespot. Stark abgedunkelt — es ist Milieu, nicht
+   Motiv: Darueber liegen helle Screenshots, und zwei Motive uebereinander
+   sind eines zu viel. */
+.hgBild{position:absolute;inset:0;background-size:cover;background-position:center 34%}
+/* ⚠ Der Schleier arbeitet NICHT gleichmaessig. Beim ersten Versuch lag er
+   durchgehend bei 80-95 % — die beiden Figuren waren dann schlicht weg, und
+   vom Spot blieb ein lilafarbener Verlauf uebrig. Das ist sinnlos: Dann
+   braeuchte es das Bild gar nicht.
+   Jetzt ist er OBEN dicht (dort steht die Schlagzeile und muss lesen), in der
+   MITTE durchlaessig (dort stehen die beiden, links und rechts neben den
+   Bildschirmen), und unten wieder dicht fuer die Stichworte. */
+.hgSchleier{position:absolute;inset:0;background:linear-gradient(180deg,
+  rgba(15,10,30,.90) 0%,rgba(15,10,30,.86) 26%,rgba(15,10,30,.52) 46%,
+  rgba(15,10,30,.58) 68%,rgba(15,10,30,.93) 88%,rgba(15,10,30,.96) 100%)}
+/* Die Glows liegen sonst als lila Wolken ueber dem Spot und fressen ihn auf —
+   auf der App-Schau traegt das Einzelbild die Flaeche, nicht der Verlauf. */
+body.schau .glow{opacity:.34}
+body.schau .vignette{opacity:.6}
+/* ⚠ KI-Kennzeichnung. Die Figuren im Spot sind KI-erzeugt; eine Karte, die
+   sie zeigt, muss das sagen. Siehe store-assets/social/hintergrund/HERKUNFT.md. */
+.kiMarke{position:absolute;right:26px;bottom:24px;z-index:4;
+  background:rgba(10,6,22,.62);border:1px solid rgba(237,233,254,.3);
+  border-radius:9px;padding:6px 11px;font-size:19px;font-weight:700;
+  letter-spacing:.1em;color:rgba(237,233,254,.85)}
+.kiMarke b{font-weight:700;margin-right:-.1em}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
    verzerren und nachzeichnen. */
 .badges{display:flex;align-items:center;gap:14px}
 .badges img{height:52px;width:auto;display:block}
 </style>
+<body class="${format === 'app-schau' ? 'schau' : ''}">
+${hintergrund ? `<div class="hgBild" style="background-image:url(data:image/jpeg;base64,${hintergrund})"></div>
+<div class="hgSchleier"></div>` : ''}
 <div class="glow g-pink"></div><div class="glow g-lila"></div><div class="vignette"></div>
 <div class="kopf"><img src="${logo}"><span>ANIGOSHA</span></div>
 <div class="inhalt">${mitte}</div>
-<div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>`;
+<div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>
+${hintergrund ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
 }
 
 // --- Lauf -------------------------------------------------------------------
@@ -255,6 +395,44 @@ if (frei && !frei.text) {
   process.exit(1);
 }
 
+// --- App-Schau: Bildschirme und Hintergrund laden ---------------------------
+//
+// ⚠ Die Screenshots sind SPRACHABHAENGIG. store-assets/ios/ fuehrt de, en, es,
+// fr und pt — ein deutscher Bildschirm auf einer englischen Karte waere genau
+// der Fehler, den die Sprachweiche in src/i18n/index.ts an anderer Stelle
+// schon einmal verursacht hat. Fehlt eine Sprache, faellt sie auf Englisch
+// zurueck, nicht auf Deutsch.
+let schau = null;
+let hintergrund = null;
+if (a.format === 'app-schau') {
+  const w = mulberry32(a.seed);
+  const aufzuege = TEXTE[a.lang].schau;
+  const auf = aufzuege[Math.floor(w() * aufzuege.length)];
+
+  const ordner = ['ios', a.lang], fallback = ['ios', 'en'];
+  const pfad = (datei) => {
+    for (const o of [ordner, fallback]) {
+      const p = join(WURZEL, 'store-assets', ...o, datei);
+      if (existsSync(p)) return p;
+    }
+    return null;
+  };
+  const schirme = auf.bilder.map(pfad).filter(Boolean);
+  // ⚠ Kein stiller Rueckfall auf eine halbe Karte. Zwei von drei Bildschirmen
+  // ergeben ein Layout, das fertig AUSSIEHT und eine Luecke hat — und das
+  // faellt erst in der Freigabe auf, wenn ueberhaupt.
+  if (schirme.length !== auf.bilder.length) {
+    console.error(`✗ Bildschirme fehlen: ${auf.bilder.filter((b) => !pfad(b)).join(', ')}`);
+    console.error('  Erwartet unter store-assets/ios/<sprache>/ — neu aufnehmen mit');
+    console.error('  tools/store-shots-pruefstand.mjs.');
+    process.exit(1);
+  }
+  schau = { ...auf, schirme: schirme.map((p) => readFileSync(p).toString('base64')) };
+
+  const hg = join(WURZEL, 'store-assets', 'social', 'hintergrund', 'spot-start.jpg');
+  if (existsSync(hg)) hintergrund = readFileSync(hg).toString('base64');
+}
+
 // Der Store-Satz kommt von aussen. Fest getippt stand er bei Anigosha schon
 // einmal falsch im Video — deshalb ist der Vorgabewert bewusst neutral.
 const storeSatz = a.store ?? (a.lang === 'de' ? 'Gratis im App Store und bei Google Play'
@@ -272,7 +450,7 @@ const browser = await chromium.launch(
 );
 const seite = await browser.newPage({ viewport: { width: BREITE, height: HOEHE }, deviceScaleFactor: 1 });
 await seite.setContent(
-  baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz, frei }),
+  baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz, frei, schau, hintergrund }),
   { waitUntil: 'load' });
 await seite.evaluate(() => document.fonts.ready);
 
@@ -346,6 +524,43 @@ Store-Satz im Bild: ${storeSatz}
   console.log(`✓ ${ziel}`);
   console.log(`  ${BREITE}×${HOEHE} · freie Karte · ${a.lang} · ${frei.text.length} Zeichen`
     + ` bei ${freieGroesse(frei.text)}px`);
+  process.exit(0);
+}
+
+// ⚠ Eigener Ausstieg, aus demselben Grund wie bei der freien Karte: Der
+// Kontroll-Teil unten liest `fragen[0]`, und die App-Schau zieht keine Frage.
+// Ohne diesen Block bricht der Lauf mit „Cannot read properties of undefined"
+// ab — NACHDEM das JPG schon geschrieben ist, also mit einem fertigen Bild
+// ohne Caption daneben.
+//
+// Die Trennzeichen-Zeile („ZUR KONTROLLE") muss auch hier stehen, obwohl es
+// nichts zu kontrollieren gibt: Der Versand schneidet die Caption an ihr ab
+// und nimmt sonst „Store-Satz im Bild: …" mit in den Beitrag.
+if (schau) {
+  writeFileSync(join(a.out, `${name}.txt`),
+`${name}
+
+CAPTION ZUM KOPIEREN
+--------------------
+${schau.kurz.join(' ')}
+
+${schau.text}
+
+${storeSatz}
+
+#anigosha #animequiz #anime #quiz #duell
+
+ZUR KONTROLLE (nicht posten)
+----------------------------
+Zeigt die App selbst — keine Frage, keine Loesung, keine Erklaerung.
+Bildschirme: ${schau.bilder.join(', ')} (store-assets/ios/${a.lang})
+Medienherkunft: Screenshots + Einzelbild aus dem eigenen Werbespot (KI-erzeugt,
+als AI gekennzeichnet — siehe store-assets/social/hintergrund/HERKUNFT.md)
+
+Store-Satz im Bild: ${storeSatz}
+`);
+  console.log(`✓ ${ziel}`);
+  console.log(`  ${BREITE}×${HOEHE} · App-Schau · ${a.lang} · ${schau.bilder.join(' + ')}`);
   process.exit(0);
 }
 
