@@ -460,6 +460,47 @@ if (a.format === 'app-schau') {
   if (existsSync(hg)) hintergrund = readFileSync(hg).toString('base64');
 }
 
+// ⚠ EINE QUELLE FUER BILD UND REEL (20.09.2026). Der Reel-Generator liegt in
+// wellapps-social und braucht dieselben Texte, Bildschirme und Farben. Sie
+// dort abzuschreiben waere die sichere Methode, beide auseinanderlaufen zu
+// lassen — wer hier eine Schlagzeile aendert, aendert sie im Reel nicht mit,
+// und es faellt erst auf, wenn beide nebeneinander im Feed stehen.
+if (process.argv.includes('--schau-json')) {
+  if (!schau) {
+    console.error(`✗ --schau-json gibt es nur fuer --format app-schau (hier: ${a.format}).`);
+    process.exit(1);
+  }
+  process.stdout.write(JSON.stringify({
+    marke: 'Anigosha',
+    kurz: schau.kurz, text: schau.text, punkte: schau.punkte,
+    // Absolute Pfade, nicht die base64-Fassung: Der Reel-Generator laedt sie
+    // selbst und braucht 1,2 MB JSON nicht durch eine Pipe.
+    schirme: schau.bilder.map((b) => join(WURZEL, 'store-assets', 'ios', a.lang, b))
+      .filter((f) => existsSync(f)),
+    hintergrund: existsSync(join(WURZEL, 'store-assets', 'social', 'hintergrund', 'spot-start.jpg'))
+      ? join(WURZEL, 'store-assets', 'social', 'hintergrund', 'spot-start.jpg') : null,
+    // ⚠ Das AI-Plaettchen gehoert ZWINGEND aufs Reel, sobald der Hintergrund
+    // mitfaehrt: Die Figuren im Spot sind KI-erzeugt. Siehe
+    // store-assets/social/hintergrund/HERKUNFT.md.
+    fuss: TEXTE[a.lang].fuss,
+    optik: {
+      grund: '#0f0a1e',
+      verlauf: 'linear-gradient(115deg,#0f0a1e 0%,#17102c 38%,#3b1d6b 72%,#7c3aed 100%)',
+      tinte: '#ffffff', tinteLeise: '#ddd6fe', akzent: '#c4b5fd',
+      akzentVerlauf: 'linear-gradient(100deg,#c4b5fd,#f472b6)',
+      flaeche: 'rgba(139,92,246,.26)', flaecheRand: 'rgba(167,139,250,.42)',
+      schrift: 'outfit',
+    },
+    schriften: {
+      schlagzeile: join(HIER, 'reels', 'assets', 'outfit.woff2'),
+      text: join(HIER, 'reels', 'assets', 'outfit.woff2'),
+      fett: join(HIER, 'reels', 'assets', 'outfit.woff2'),
+    },
+    logo: join(WURZEL, 'public', 'favicon.svg'),
+  }));
+  process.exit(0);
+}
+
 // Der Store-Satz kommt von aussen. Fest getippt stand er bei Anigosha schon
 // einmal falsch im Video — deshalb ist der Vorgabewert bewusst neutral.
 const storeSatz = a.store ?? (a.lang === 'de' ? 'Gratis im App Store und bei Google Play'
