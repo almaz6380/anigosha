@@ -67,6 +67,17 @@ if (!['de', 'en'].includes(a.lang)) {
 // --- Daten ------------------------------------------------------------------
 const FRAGEN = JSON.parse(readFileSync(join(HIER, 'reels', 'data', 'fragen.json'), 'utf8')).fragen;
 
+// ⚠ GEZAEHLT, NICHT GETIPPT — fuer die App-Schau. Eine Werbekarte, die „804
+// Fragen" behauptet, ist in dem Moment falsch, in dem eine Seed-Migration
+// dazukommt, und es faellt keinem auf: Die Zahl steht im Bild, nicht im Code.
+// Genau dieselbe Falle hat bei FullRep „244 Uebungen" gegen 248 stehen
+// lassen (siehe bestandszahlen() dort).
+const BESTAND = {
+  fragen: FRAGEN.length,
+  serien: new Set(FRAGEN.map((f) => f.slug)).size,
+  stufen: new Set(FRAGEN.map((f) => f.difficulty)).size,
+};
+
 function mulberry32(s) {
   return function () {
     s |= 0; s = (s + 0x6d2b79f5) | 0;
@@ -86,13 +97,20 @@ const TEXTE = {
     fuss: 'Anigosha · Anime Quiz & Duelle',
     schau: [
       { kurz: ['Wie gut kennst du', 'deine Serien?'],
-        text: 'Solo spielen, im Duell antreten, in der Bestenliste klettern — '
-            + 'alles in einer App, ohne Anmeldegebühr.',
+        text: `${BESTAND.fragen} Fragen aus ${BESTAND.serien} Serien, in `
+            + `${BESTAND.stufen} Schwierigkeiten — solo, im Duell oder in der `
+            + 'Täglichen Challenge.',
         bilder: ['2-solo.png', '1-home.png', '3-duell.png'],
-        punkte: ['Solo', 'Duell', 'Bestenliste'] },
-      { kurz: ['Tritt gegen echte', 'Gegner an.'],
-        text: 'Vier Runden zu drei Fragen, zeitversetzt — beide bekommen dieselben '
-            + 'Fragen. Wer nicht wartet, spielt solo weiter.',
+        punkte: [`${BESTAND.fragen} Fragen`, `${BESTAND.serien} Serien`, 'Solo & Duell'] },
+      // ⚠ HIER STAND „Tritt gegen ECHTE Gegner an." Das Matchmaking sucht
+      // zuerst Menschen, aber Bots fuellen die Luecke (CLAUDE.md: „Bots als
+      // Anfangsgegner … Menschen bevorzugt"). Die Karte haette also etwas
+      // zugesagt, was die App nicht garantiert — und in der App sind die Bots
+      // sogar dezent gekennzeichnet, der Widerspruch waere sichtbar gewesen.
+      // Der Duell-MECHANISMUS traegt ohnehin besser als das Versprechen.
+      { kurz: ['Duelle laufen', 'zeitversetzt.'],
+        text: 'Vier Runden zu drei Fragen — beide bekommen dieselben. Du spielst, '
+            + 'wenn du Zeit hast, dein Gegner auch.',
         bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
         punkte: ['4 Runden', 'Elo-Wertung', 'weltweit'] },
       // ⚠ HIER STAND „Jeden Tag dieselben 5 Fragen." — und das war nicht nur
@@ -119,13 +137,14 @@ const TEXTE = {
     fuss: 'Anigosha · Anime Quiz & Duels',
     schau: [
       { kurz: ['How well do you know', 'your anime?'],
-        text: 'Play solo, take on duels, climb the leaderboard — all in one app, '
-            + 'free to start.',
+        text: `${BESTAND.fragen} questions from ${BESTAND.serien} series across `
+            + `${BESTAND.stufen} difficulties — solo, in duels or in the Daily `
+            + 'Challenge.',
         bilder: ['2-solo.png', '1-home.png', '3-duell.png'],
-        punkte: ['Solo', 'Duels', 'Leaderboard'] },
-      { kurz: ['Take on real', 'opponents.'],
-        text: 'Four rounds of three questions, asynchronous — both players get the '
-            + 'same questions. No waiting: keep playing solo.',
+        punkte: [`${BESTAND.fragen} questions`, `${BESTAND.serien} series`, 'solo & duels'] },
+      { kurz: ['Duels run', 'on your time.'],
+        text: 'Four rounds of three questions — both players get the same ones. '
+            + 'You play when you have a minute, so does your opponent.',
         bilder: ['1-home.png', '3-duell.png', '4-bestenliste.png'],
         punkte: ['4 rounds', 'Elo rating', 'worldwide'] },
       { kurz: ['New every day.', 'Same for everyone.'],
