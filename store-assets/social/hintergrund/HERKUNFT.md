@@ -29,7 +29,7 @@ beiden schließen einander aus (der Generator bricht ab, wenn beide gesetzt sind
 | Weg | Aussehen | Wo |
 |---|---|---|
 | `app-schau` (automatisch) | **Milieu** — trägt die ganze Fläche, Schleier lässt die Mitte frei, darüber liegen Screenshots | `.hgBild` / `.hgSchleier` |
-| `--wz spot-start.jpg` | **Wasserzeichen** — 46 % Deckkraft, seitlicher Schleier hält die Textspalte links dunkel | `.wzFiguren` / `.wzSeite` |
+| `--wz spot-start.jpg` | **Wasserzeichen** — 72 % Deckkraft, volle Farbe, seitlicher Schleier hält die Textspalte links dunkel | `.wzFiguren` / `.wzSeite` |
 
 Josef am 21.09.: *„bei den anigoshaposts gerne im hintergrund als wasserzeichen
 ein bild von den beiden figuren"*. `motoren.mjs` hängt `--wz` an **jede**

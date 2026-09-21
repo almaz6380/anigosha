@@ -559,7 +559,7 @@ body.schau .vignette{opacity:.6}
    eingefuegtem Bild aus, nicht nach Wasserzeichen. */
 .wzFiguren{position:absolute;inset:0;
   background-size:cover;background-position:center bottom;
-  opacity:.46;filter:saturate(.88) contrast(1.06);
+  opacity:.72;filter:saturate(1) contrast(1);
   -webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
     rgba(0,0,0,.6) 40%,#000 66%,#000 92%,rgba(0,0,0,.5) 100%);
   mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
@@ -570,7 +570,7 @@ body.schau .vignette{opacity:.6}
    die Textspalte dunkel und die beiden stehen dort, wo Raum ist.
    Am gerenderten JPEG eingestellt, nicht geschaetzt. */
 .wzSeite{position:absolute;inset:0;background:linear-gradient(90deg,
-  rgba(15,10,30,.70) 0%,rgba(15,10,30,.50) 34%,rgba(15,10,30,.10) 62%,
+  rgba(15,10,30,.60) 0%,rgba(15,10,30,.38) 34%,rgba(15,10,30,.04) 62%,
   rgba(15,10,30,0) 100%)}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
