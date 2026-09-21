@@ -29,7 +29,7 @@ beiden schließen einander aus (der Generator bricht ab, wenn beide gesetzt sind
 | Weg | Aussehen | Wo |
 |---|---|---|
 | `app-schau` (automatisch) | **Milieu** — trägt die ganze Fläche, Schleier lässt die Mitte frei, darüber liegen Screenshots | `.hgBild` / `.hgSchleier` |
-| `--wz spot-start.jpg` | **Wasserzeichen** — 72 % Deckkraft, volle Farbe, seitlicher Schleier hält die Textspalte links dunkel | `.wzFiguren` / `.wzSeite` |
+| `--wz spot-start.jpg` | **Szene** — 72 % Deckkraft, volle Farbe, oben offen, Schleier nur über dem Textband | `.wzFiguren` / `.wzSeite` |
 
 Josef am 21.09.: *„bei den anigoshaposts gerne im hintergrund als wasserzeichen
 ein bild von den beiden figuren"*. `motoren.mjs` hängt `--wz` an **jede**
@@ -37,11 +37,25 @@ Anigosha-Bildkarte außer der App-Schau — nicht nach Würfel, weil es genau ei
 Bild gibt und ein Würfel über eine einelementige Menge nur ein gelegentliches
 Weglassen wäre.
 
-⚠ **Die Werte sind am gerenderten JPEG eingestellt, nicht geschätzt.** Der erste
-Versuch setzte die beiden ins untere Drittel; dort standen ihre Köpfe hinter dem
-Text und die Füße waren abgeschnitten. Der zweite zeigte sie über die ganze
-Fläche, aber der Junge verschwand hinter der linken Textspalte — daher der
-seitliche Schleier statt eines waagrechten.
+⚠ **Die Werte sind am gerenderten JPEG eingestellt, nicht geschätzt.** Vier
+Fassungen, jede an einem Befund:
+
+1. Die beiden ins untere Drittel gesetzt → Köpfe hinter dem Text, Füße an der
+   Kartenkante abgeschnitten.
+2. Über die ganze Fläche, waagrechter Schleier → der Junge verschwand hinter der
+   linken Textspalte. Daher ein **seitlicher** Schleier.
+3. 27 % Deckkraft → zu zaghaft („etwas kräftiger", „kräftiger"), zweimal erhöht
+   auf 72 %, Sättigung zurück auf 1.
+4. Der seitliche Schleier lief von oben bis unten durch. Weil der Junge links
+   steht, also genau dort, wo der Schleier am dichtesten ist, war von ihm kaum
+   etwas zu sehen. Jetzt trägt `.wzSeite` eine eigene **senkrechte** Maske: oben
+   weg, ab 32 % voll. Oben steht auf keiner Karte Text — dort stehen jetzt die
+   Köpfe und Oberkörper beider Figuren frei.
+
+⚠ **Die Grenze liegt bei der `frage-karte`.** Dort laufen beide Figuren hinter
+vier Antwortfeldern durch. Die weiße Schrift trägt noch, weil die Felder eine
+eigene halbdurchsichtige Fläche haben. Wer weiter hochgehen will, muss zuerst
+**die Felder** decken, nicht das Bild kräftiger machen.
 
 **Nicht neu erzeugen nötig:** Der Spot liegt im Repo, das Einzelbild lässt sich
 jederzeit wiederholen:

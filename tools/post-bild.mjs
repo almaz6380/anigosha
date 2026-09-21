@@ -560,18 +560,28 @@ body.schau .vignette{opacity:.6}
 .wzFiguren{position:absolute;inset:0;
   background-size:cover;background-position:center bottom;
   opacity:.72;filter:saturate(1) contrast(1);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
-    rgba(0,0,0,.6) 40%,#000 66%,#000 92%,rgba(0,0,0,.5) 100%);
-  mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
-    rgba(0,0,0,.6) 40%,#000 66%,#000 92%,rgba(0,0,0,.5) 100%)}
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.40) 0%,rgba(0,0,0,.72) 10%,
+    rgba(0,0,0,.92) 26%,#000 46%,#000 92%,rgba(0,0,0,.55) 100%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.40) 0%,rgba(0,0,0,.72) 10%,
+    rgba(0,0,0,.92) 26%,#000 46%,#000 92%,rgba(0,0,0,.55) 100%)}
 /* ⚠ Ein SEITLICHER Schleier, kein waagrechter. Der Text steht links; ohne ihn
    liegt der Junge genau dahinter und nimmt der Schrift den Kontrast, waehrend
    rechts — wo die Karte ohnehin leer ist — Platz verschenkt waere. So bleibt
    die Textspalte dunkel und die beiden stehen dort, wo Raum ist.
    Am gerenderten JPEG eingestellt, nicht geschaetzt. */
 .wzSeite{position:absolute;inset:0;background:linear-gradient(90deg,
-  rgba(15,10,30,.60) 0%,rgba(15,10,30,.38) 34%,rgba(15,10,30,.04) 62%,
-  rgba(15,10,30,0) 100%)}
+  rgba(15,10,30,.62) 0%,rgba(15,10,30,.40) 34%,rgba(15,10,30,.04) 62%,
+  rgba(15,10,30,0) 100%);
+  /* ⚠ Der Schleier liegt NUR ueber dem Textband, nicht ueber der ganzen
+     Karte. Vorher lief er von oben bis unten durch — und weil der Junge
+     links steht, also genau dort, wo der Schleier am dichtesten ist, war von
+     ihm kaum etwas zu sehen (Josef, 21.09.2026: „den jungen sieht man kaum").
+     Oben, wo auf keiner Karte Text steht, ist er jetzt weg: Dort stehen die
+     Koepfe und Oberkoerper beider Figuren frei. */
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 12%,
+    rgba(0,0,0,.45) 22%,#000 32%,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0%,transparent 12%,
+    rgba(0,0,0,.45) 22%,#000 32%,#000 100%)}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
    verzerren und nachzeichnen. */
