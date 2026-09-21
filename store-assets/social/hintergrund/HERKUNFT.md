@@ -57,6 +57,22 @@ vier Antwortfeldern durch. Die weiße Schrift trägt noch, weil die Felder eine
 eigene halbdurchsichtige Fläche haben. Wer weiter hochgehen will, muss zuerst
 **die Felder** decken, nicht das Bild kräftiger machen.
 
+## ⚠ Dieses Wasserzeichen ist ein Übergang (21.09.2026)
+
+Josef am selben Abend: *„Ich will einen Prompt für eine Figur … Diese sollen
+immer so am Rand des Bildes sein."* Statt der beiden Figuren **hinter** der
+Karte soll **der Junge** freigestellt **neben** dem Text stehen — dasselbe
+System bekommen FullRep und Swaply.
+
+Sobald `store-assets/social/figuren/junge.png` existiert und in
+`wellapps-social/tools/social/apps.json` als `"figur"` eingetragen ist, hängt
+`motoren.mjs` `--figur` statt `--wz` an, und dieses Bild verschwindet von den
+Textkarten. Einzelheiten: `../figuren/PROMPT.md`.
+
+**In der App-Schau bleibt es.** Dort ist dasselbe Einzelbild Milieu
+(`.hgBild`/`.hgSchleier`) und nicht Wasserzeichen — zwei verschiedene Wege, und
+nur einer wird abgelöst.
+
 **Nicht neu erzeugen nötig:** Der Spot liegt im Repo, das Einzelbild lässt sich
 jederzeit wiederholen:
 

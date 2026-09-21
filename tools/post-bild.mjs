@@ -605,22 +605,49 @@ body.schau .vignette{opacity:.6}
     rgba(0,0,0,.45) 22%,#000 32%,#000 100%);
   mask-image:linear-gradient(180deg,transparent 0%,transparent 12%,
     rgba(0,0,0,.45) 22%,#000 32%,#000 100%)}
+/* --- Die Randfigur (Josef, 21.09.2026) ---
+   Freigestellt, klebt an der RECHTEN Kante und wird unten vom Kartenrand
+   angeschnitten. Rechts, weil aller Text dieser Karten links steht.
+
+   ⚠ bottom:0 und background-position:bottom center gehoeren zusammen:
+   Das gelieferte PNG zeigt die GANZE Figur (Kopf bis Schuhe). Angeschnitten
+   wird hier, nicht im Bild — so laesst sich der Anschnitt nachstellen, ohne
+   dass jemand ein neues Bild erzeugen muss.
+
+   ⚠ KEINE BACKTICKS in diesem Kommentar — das CSS steht in einem
+   JS-Template-Literal, ein Backtick beendet es, und der Fehler liest sich
+   als „SyntaxError" irgendwo weit darunter. Gemessen, nicht befuerchtet. */
+.figur{position:absolute;right:0;bottom:0;z-index:2;
+  width:300px;height:66%;
+  background-size:contain;background-repeat:no-repeat;
+  background-position:bottom center}
+/* ⚠ OHNE DIESE ZEILE STEHT DIE FIGUR IM TEXT. Die Karte hat 90 px Rand, die
+   Figur ist 300 px breit und klebt an der Kante — es fehlen also gut 200 px
+   plus Luft. Gemessen am laengsten Text der leiter-karte, nicht geschaetzt. */
+body.mitFigur .inhalt{padding-right:240px}
+/* ⚠ Auch die FUSSZEILE. Die Figur steht bis zur Unterkante — ohne das liefen
+   die beiden Store-Abzeichen hinter ihr durch. Am gerenderten JPEG gesehen,
+   nicht bedacht. */
+body.mitFigur .fuss{padding-right:240px}
+/* Das AI-Plaettchen sitzt sonst rechts unten — also genau auf der Figur. */
+body.mitFigur .kiMarke{right:auto;left:26px}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
    verzerren und nachzeichnen. */
 .badges{display:flex;align-items:center;gap:14px}
 .badges img{height:52px;width:auto;display:block}
 </style>
-<body class="${format === 'app-schau' ? 'schau' : ''}">
+<body class="${[format === 'app-schau' ? 'schau' : '', randfigur ? 'mitFigur' : ''].filter(Boolean).join(' ')}">
 ${hintergrund ? `<div class="hgBild" style="background-image:url(data:image/jpeg;base64,${hintergrund})"></div>
 <div class="hgSchleier"></div>` : ''}
 ${figuren ? `<div class="wzFiguren" style="background-image:url(data:image/jpeg;base64,${figuren})"></div>
 <div class="wzSeite"></div>` : ''}
+${randfigur ? `<div class="figur" style="background-image:url(data:image/png;base64,${randfigur})"></div>` : ''}
 <div class="glow g-pink"></div><div class="glow g-lila"></div><div class="vignette"></div>
 <div class="kopf"><img src="${logo}"><span>ANIGOSHA</span></div>
 <div class="inhalt">${mitte}</div>
 <div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>
-${hintergrund || figuren ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
+${hintergrund || figuren || randfigur ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
 }
 
 // --- Lauf -------------------------------------------------------------------
@@ -669,6 +696,44 @@ let hintergrund = null;
 // store-assets/social/hintergrund/HERKUNFT.md); wer sie zeigt, muss das
 // sagen. Ein zweiter Schalter waere eine Gelegenheit, ihn zu vergessen —
 // derselbe Grund, aus dem `--wz` bei FullRep die Kennzeichnung mitschaltet.
+// --- Die Randfigur (Josef, 21.09.2026) --------------------------------------
+//
+// „Ich will einen Prompt fuer eine Figur … Diese sollen immer so am Rand des
+// Bildes sein." Statt eines Wasserzeichens HINTER der Karte steht die Figur
+// freigestellt NEBEN dem Text — dasselbe System bekommen FullRep und Swaply,
+// damit die drei Marken ein wiedererkennbares Gesicht haben.
+//
+// ⚠ SIE SCHLIESST `--wz` AUS. Beides zugleich waere dieselbe Figur zweimal
+// auf einer Karte: einmal blass im Hintergrund, einmal scharf am Rand.
+//
+// ⚠ DIE INHALTSSPALTE WIRD SCHMALER (`body.mitFigur .inhalt`). Das ist der
+// eigentliche Eingriff, nicht das Einfuegen des Bildes: Ohne ihn laeuft der
+// laengste Text der Karte in die Figur hinein — und das faellt nur am
+// fertigen JPEG auf, nicht im Protokoll.
+//
+// ⚠ Die KI-Kennzeichnung haengt am Bild, nicht an einem eigenen Schalter —
+// dieselbe Regel wie bei `--wz` unten.
+let randfigur = null;
+if (a.figur) {
+  const datei = join(WURZEL, 'store-assets', 'social', 'figuren', a.figur);
+  if (!existsSync(datei)) {
+    console.error(`✗ Figur nicht gefunden: ${a.figur}`);
+    console.error('  Erwartet unter store-assets/social/figuren/');
+    process.exit(1);
+  }
+  if (a.wz) {
+    console.error('✗ --figur und --wz schliessen einander aus: Das waere dieselbe');
+    console.error('  Figur zweimal auf derselben Karte.');
+    process.exit(1);
+  }
+  if (a.format === 'app-schau') {
+    console.error('✗ --figur und app-schau schliessen einander aus: Die App-Schau');
+    console.error('  zeigt die App selbst, dort steht keine Figur daneben.');
+    process.exit(1);
+  }
+  randfigur = readFileSync(datei).toString('base64');
+}
+
 let figuren = null;
 if (a.wz) {
   const datei = join(WURZEL, 'store-assets', 'social', 'hintergrund', a.wz);
