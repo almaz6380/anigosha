@@ -301,7 +301,7 @@ function freieGroesse(text) {
   return FREI_STUFEN.find(([bis]) => text.length <= bis)[1];
 }
 
-function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei, schau, hintergrund }) {
+function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei, schau, hintergrund, figuren }) {
   const { font, logo } = assets();
   const T = TEXTE[lang];
   const f = fragen[0];
@@ -539,6 +539,39 @@ body.schau .vignette{opacity:.6}
   border-radius:9px;padding:6px 11px;font-size:19px;font-weight:700;
   letter-spacing:.1em;color:rgba(237,233,254,.85)}
 .kiMarke b{font-weight:700;margin-right:-.1em}
+/* --- Die beiden Figuren als Wasserzeichen (Josef, 21.09.2026) ---
+   „bei den anigoshaposts gerne im hintergrund als wasserzeichen ein bild von
+   den beiden figuren".
+
+   ⚠ ANDERE BEHANDLUNG ALS BEI DER APP-SCHAU, und das ist Absicht. Dort ist
+   das Einzelbild MILIEU: Es traegt die ganze Flaeche, der Schleier laesst die
+   Mitte frei, und darueber liegen Bildschirme. Auf einer Textkarte ginge das
+   nicht — der Text steht links auf halber Hoehe, genau dort, wo die beiden
+   stehen, und zwei Motive uebereinander sind eines zu viel.
+
+   Deshalb sitzt das Wasserzeichen im UNTEREN Drittel, das auf allen
+   Textkarten leer ist (gemessen an frage-, zitat-, leiter- und
+   steckbrief-karte: der Aufruf endet bei rund 75 %, die Fusszeile beginnt bei
+   92 %). Die beiden stehen damit unter dem Text wie auf einer Buehne, statt
+   hinter ihm.
+
+   Der Verlauf oben blendet sie ins Nichts aus — eine harte Kante saehe nach
+   eingefuegtem Bild aus, nicht nach Wasserzeichen. */
+.wzFiguren{position:absolute;inset:0;
+  background-size:cover;background-position:center bottom;
+  opacity:.27;filter:saturate(.62) contrast(1.12);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
+    rgba(0,0,0,.6) 40%,#000 66%,#000 92%,rgba(0,0,0,.5) 100%);
+  mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 16%,
+    rgba(0,0,0,.6) 40%,#000 66%,#000 92%,rgba(0,0,0,.5) 100%)}
+/* ⚠ Ein SEITLICHER Schleier, kein waagrechter. Der Text steht links; ohne ihn
+   liegt der Junge genau dahinter und nimmt der Schrift den Kontrast, waehrend
+   rechts — wo die Karte ohnehin leer ist — Platz verschenkt waere. So bleibt
+   die Textspalte dunkel und die beiden stehen dort, wo Raum ist.
+   Am gerenderten JPEG eingestellt, nicht geschaetzt. */
+.wzSeite{position:absolute;inset:0;background:linear-gradient(90deg,
+  rgba(15,10,30,.74) 0%,rgba(15,10,30,.58) 34%,rgba(15,10,30,.18) 62%,
+  rgba(15,10,30,.04) 100%)}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
    verzerren und nachzeichnen. */
@@ -548,11 +581,13 @@ body.schau .vignette{opacity:.6}
 <body class="${format === 'app-schau' ? 'schau' : ''}">
 ${hintergrund ? `<div class="hgBild" style="background-image:url(data:image/jpeg;base64,${hintergrund})"></div>
 <div class="hgSchleier"></div>` : ''}
+${figuren ? `<div class="wzFiguren" style="background-image:url(data:image/jpeg;base64,${figuren})"></div>
+<div class="wzSeite"></div>` : ''}
 <div class="glow g-pink"></div><div class="glow g-lila"></div><div class="vignette"></div>
 <div class="kopf"><img src="${logo}"><span>ANIGOSHA</span></div>
 <div class="inhalt">${mitte}</div>
 <div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>
-${hintergrund ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
+${hintergrund || figuren ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
 }
 
 // --- Lauf -------------------------------------------------------------------
@@ -582,6 +617,43 @@ if (frei && !frei.text) {
 // zurueck, nicht auf Deutsch.
 let schau = null;
 let hintergrund = null;
+
+// --- Das Wasserzeichen: die beiden Figuren aus dem Werbespot ---------------
+//
+// Josef am 21.09.2026: „bei den anigoshaposts gerne im hintergrund als
+// wasserzeichen ein bild von den beiden figuren".
+//
+// ⚠ Gleiche Bauart wie `--wz` bei FullRep, und aus demselben Grund getrennt
+// vom Stil: Die Wahl faellt in waehlen.mjs, der Generator fuehrt sie nur aus.
+//
+// ⚠ ES BRAUCHT EINEN WERT. Die Kommandozeile oben liest jedes `--x` als
+// `a.x = naechstes Argument`. Ein blosses `--wz` verschluckte also `--seed`
+// und der Seed waere weg — ohne Fehlermeldung, und der Beitrag saehe morgen
+// anders aus als heute. Deshalb `--wz spot-start.jpg`.
+//
+// ⚠ Die KI-Kennzeichnung haengt am Bild, nicht an einem eigenen Schalter.
+// Die beiden Figuren sind KI-erzeugt (siehe
+// store-assets/social/hintergrund/HERKUNFT.md); wer sie zeigt, muss das
+// sagen. Ein zweiter Schalter waere eine Gelegenheit, ihn zu vergessen —
+// derselbe Grund, aus dem `--wz` bei FullRep die Kennzeichnung mitschaltet.
+let figuren = null;
+if (a.wz) {
+  const datei = join(WURZEL, 'store-assets', 'social', 'hintergrund', a.wz);
+  if (!existsSync(datei)) {
+    console.error(`✗ Wasserzeichen nicht gefunden: ${a.wz}`);
+    console.error('  Erwartet unter store-assets/social/hintergrund/');
+    process.exit(1);
+  }
+  // Auf der App-Schau traegt dasselbe Bild schon die ganze Flaeche. Beides
+  // zugleich waere das Motiv zweimal, einmal hell und einmal dunkel.
+  if (a.format === 'app-schau') {
+    console.error('✗ --wz und app-schau schliessen einander aus: Die App-Schau');
+    console.error('  zeigt dasselbe Einzelbild bereits als Hintergrund.');
+    process.exit(1);
+  }
+  figuren = readFileSync(datei).toString('base64');
+}
+
 if (a.format === 'app-schau') {
   const w = mulberry32(a.seed);
   const aufzuege = TEXTE[a.lang].schau;
@@ -669,7 +741,7 @@ const browser = await chromium.launch(
 );
 const seite = await browser.newPage({ viewport: { width: BREITE, height: HOEHE }, deviceScaleFactor: 1 });
 await seite.setContent(
-  baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz, frei, schau, hintergrund }),
+  baueHtml({ format: a.format, fragen, lang: a.lang, breite: BREITE, hoehe: HOEHE, storeSatz, frei, schau, hintergrund, figuren }),
   { waitUntil: 'load' });
 await seite.evaluate(() => document.fonts.ready);
 
