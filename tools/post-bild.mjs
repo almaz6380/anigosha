@@ -64,6 +64,34 @@ if (!['de', 'en'].includes(a.lang)) {
   process.exit(1);
 }
 
+// ⚠ FORMATPRUEFUNG — und warum sie ausgerechnet hier gefehlt hat.
+//
+// Die Formate loesen sich weiter unten ueber eine if/else-Kette auf. Ohne
+// Abschluss faellt ein unbekannter Name in den Vorgabezweig `frage-karte` —
+// und zwar LAUTLOS. Gemessen am 21.09.2026: Der Winkel `serien-steckbrief`
+// aus wellapps-social traegt seit jeher `format: "steckbrief-karte"`, ein
+// Format, das es hier nie gab. Der Lauf meldete brav
+//
+//     ✓ anigosha-steckbrief-karte-mix-de-s7.jpg · One Piece · 1 Frage(n)
+//
+// und lieferte eine gewoehnliche Fragekarte. Von zwoelf Anigosha-Winkeln war
+// also einer gar keine Abwechslung, sondern eine Wiederholung mit anderem
+// Namen — und niemandem fiel es auf, weil im Protokoll nichts Rotes stand.
+//
+// Die Reel-Seite hatte es besser: `fragenWaehlen` in storyboard.mjs wirft bei
+// einem unbekannten Format. Deshalb brechen `profi`, `duell` und `erklaerung`
+// laut ab, statt heimlich etwas anderes zu liefern. Genau dieses Verhalten
+// bekommt das Bild jetzt auch.
+//
+// Dasselbe Muster steht seit dem 20.09. in mypeak/scripts/post-bild.mjs.
+const FORMATE = ['frage-karte', 'zitat-karte', 'leiter-karte', 'steckbrief-karte',
+  'freie-karte', 'app-schau'];
+if (!FORMATE.includes(a.format)) {
+  console.error(`✗ unbekanntes Format: ${a.format}`);
+  console.error(`  Bekannt: ${FORMATE.join(', ')}`);
+  process.exit(1);
+}
+
 // --- Daten ------------------------------------------------------------------
 const FRAGEN = JSON.parse(readFileSync(join(HIER, 'reels', 'data', 'fragen.json'), 'utf8')).fragen;
 
@@ -94,6 +122,11 @@ const TEXTE = {
     wusstest: 'Wusstest du?',
     leiter: 'Bis wohin kommst du?',
     stufen: ['Leicht', 'Mittel', 'Schwer'],
+    steckbriefHaken: 'Steckbrief',
+    steckbriefFragen: 'Fragen',
+    steckbriefStufen: 'Schwierigkeiten',
+    steckbriefVon: (n) => `von ${n} Serien`,
+    steckbriefCta: 'Welche Serie sollen wir als Nächstes aufnehmen? 👇',
     fuss: 'Anigosha · Anime Quiz & Duelle',
     schau: [
       { kurz: ['Wie gut kennst du', 'deine Serien?'],
@@ -134,6 +167,11 @@ const TEXTE = {
     wusstest: 'Did you know?',
     leiter: 'How far do you get?',
     stufen: ['Easy', 'Medium', 'Hard'],
+    steckbriefHaken: 'Series profile',
+    steckbriefFragen: 'questions',
+    steckbriefStufen: 'difficulties',
+    steckbriefVon: (n) => `of ${n} series`,
+    steckbriefCta: 'Which series should we add next? 👇',
     fuss: 'Anigosha · Anime Quiz & Duels',
     schau: [
       { kurz: ['How well do you know', 'your anime?'],
@@ -157,6 +195,42 @@ const TEXTE = {
 };
 
 // --- Auswahl ----------------------------------------------------------------
+// Erklaerungen, die OHNE ihre Frage einen Sinn ergeben.
+//
+// ⚠ Warum das noetig ist — am gerenderten Bild aufgefallen (21.09.2026):
+// Der Steckbrief zeigt drei Erklaerungen nebeneinander, ohne die zugehoerigen
+// Fragen. Der erste Entwurf filterte nur nach Laenge, und heraus kam
+//
+//     „Ashs Ziel ist es, ihn zu vervollstaendigen."
+//
+// Wen? Der Pokedex steht in der FRAGE, und die ist hier nicht zu sehen. Das
+// ist dieselbe Klasse Fehler wie die FullRep-Karte, die „Wie viel Kreatin?"
+// fragte und die Antwort verschwieg: ein Satz, der allein nicht traegt.
+//
+// Die Probe ist bewusst GROB und sortiert lieber zu viel aus. Gemessen ueber
+// alle 804 Erklaerungen: DE behaelt 624 (mindestens 47 je Serie), EN 492
+// (mindestens 30). Gebraucht werden drei — der Verschnitt kostet also nichts,
+// und ein durchgerutschter Rueckverweis kostet einen Beitrag.
+const RUECKVERWEIS = {
+  de: /\b(ihn|ihm|ihnen|ihrer|seiner|dieser|diese|dieses|dort|dabei|davon|dadurch|deshalb|dessen|deren)\b/i,
+  en: /\b(him|her|them|his|its|theirs|this|these|those|there|thereby|thus|itself)\b/i,
+};
+function eigenstaendige(menge, lang, w) {
+  const muster = RUECKVERWEIS[lang] ?? RUECKVERWEIS.de;
+  const gut = menge.filter((f) => {
+    const e = (lang === 'de' ? f.de : f.en)?.explanation ?? '';
+    return e.length >= 40 && e.length <= 120 && !muster.test(e);
+  });
+  // Mischen mit derselben Saat, damit zwei Laeufe am selben Tag dasselbe
+  // zeigen und zwei verschiedene Tage nicht dieselben drei Fakten.
+  const liste = [...(gut.length >= 3 ? gut : menge)];
+  for (let i = liste.length - 1; i > 0; i--) {
+    const j = Math.floor(w() * (i + 1));
+    [liste[i], liste[j]] = [liste[j], liste[i]];
+  }
+  return liste;
+}
+
 function waehleFragen(format, lang, seed, kategorie) {
   // Die freie Karte traegt ihren Text mit sich — sie zieht nichts.
   // Die App-Schau zeigt die App selbst, nicht eine Frage daraus.
@@ -169,6 +243,18 @@ function waehleFragen(format, lang, seed, kategorie) {
     const kat = kategorie ?? zieh([...new Set(FRAGEN.map((f) => f.slug))]);
     return [1, 2, 3].map((d) => zieh(FRAGEN.filter((f) => f.slug === kat && f.difficulty === d)));
   }
+
+  // ⚠ Der Steckbrief zieht die GANZE Serie, nicht eine Frage daraus. Er zaehlt
+  // sie naemlich — und eine Zahl aus einer Stichprobe waere eine erfundene
+  // Zahl. Die ersten drei Eintraege sind die Fakten, die die Karte zeigt;
+  // der Rest haengt nur dran, damit `fragen.length` stimmt.
+  if (format === 'steckbrief-karte') {
+    const kat = kategorie ?? zieh([...new Set(FRAGEN.map((f) => f.slug))]);
+    const serie = FRAGEN.filter((f) => f.slug === kat);
+    const gewaehlt = eigenstaendige(serie, lang, w).slice(0, 3);
+    return [...gewaehlt, ...serie.filter((f) => !gewaehlt.includes(f))];
+  }
+
   const menge = kategorie ? FRAGEN.filter((f) => f.slug === kategorie) : FRAGEN;
   return [zieh(menge)];
 }
@@ -269,6 +355,46 @@ function baueHtml({ format, fragen, lang, breite, hoehe, storeSatz, frei, schau,
       <div class="haken">${esc(T.wusstest)}</div>
       <h1 class="zitat">${esc(inh.explanation)}</h1>
       <div class="quelle">${esc(inh.prompt)}</div>`;
+  } else if (format === 'steckbrief-karte') {
+    // --- Familie C: das Raster (Josef, 21.09.2026) --------------------------
+    //
+    // Die erste Karte, die keine Frage stellt, sondern eine SERIE vorstellt.
+    // Sie beantwortet, was ein Anime-Fan als Erstes wissen will: „Ist meine
+    // Serie dabei — und was steht drin?"
+    //
+    // ⚠ ERSTER ENTWURF WAR FALSCH, und zwar auf eine Art, die nur am
+    // gerenderten Bild auffiel. Er zeigte die Verteilung Leicht/Mittel/Schwer
+    // als drei Balken. Am JPEG standen sie praktisch gleich lang da — 22/22/23
+    // — und dann fiel der eigentliche Fehler auf: Diese Zahlen sind bei JEDER
+    // der zwoelf Serien dieselben, weil die Fragen per Konstruktion
+    // gleichverteilt sind (67 je Serie: 22 leicht, 22 mittel, 23 schwer).
+    // Ein Steckbrief, der bei allen zwoelf Serien dasselbe Diagramm zeigt,
+    // ist kein Steckbrief. Ein Diagramm, das nichts unterscheidet, ist
+    // Dekoration — und Dekoration, die wie eine Auskunft aussieht, ist
+    // schlimmer als keine.
+    //
+    // Was sich je Serie WIRKLICH unterscheidet, sind die Erklaerungen. Sie
+    // sind ohnehin der Trumpf der App gegenueber anderen Quiz-Kanaelen: Die
+    // zeigen die Antwort, wir geben einen Grund, bis zum Ende zu lesen.
+    //
+    // ⚠ JEDE ZAHL IST GEZAEHLT. `fragen` enthaelt die vollstaendige Serie
+    // (siehe waehleFragen), nicht eine Stichprobe.
+    const fakten = fragen
+      .slice(0, 3)
+      .map((q) => (lang === 'de' ? q.de : q.en).explanation)
+      .filter(Boolean);
+    mitte = `
+      <div class="marke">${esc(kat)}</div>
+      <div class="haken">${esc(T.steckbriefHaken)}</div>
+      <div class="steckZahl"><b>${fragen.length}</b><i>${esc(T.steckbriefFragen)}</i></div>
+      <div class="steckStufen">
+        ${T.stufen.map((s, i) => `<span class="grad g${i}">${esc(s)}</span>`).join('')}
+      </div>
+      <div class="fakten">
+        <span class="steckLabel">${esc(T.wusstest)}</span>
+        ${fakten.map((x) => `<p>${esc(x)}</p>`).join('')}
+      </div>
+      <div class="cta">${esc(T.steckbriefCta)}</div>`;
   } else if (format === 'leiter-karte') {
     mitte = `
       <div class="marke">${esc(kat)}</div>
@@ -323,6 +449,31 @@ h1.frei{font-size:${freieGroesse(frei?.text ?? '')}px;line-height:1.2}
 .g1{background:rgba(251,191,36,.2);color:#fcd34d}
 .g2{background:rgba(251,113,133,.2);color:#fda4af}
 .cta{font-size:34px;font-weight:600;color:#f5d0fe}
+
+/* --- steckbrief-karte: das Raster (21.09.2026) ---
+   Die erste Karte, die keine Frage stellt. Aufbau von oben nach unten:
+   Serienpille, Augenbraue, EINE grosse Zahl, drei Balken, die Trumpf-Zeile,
+   Fusszeile, Aufruf.
+
+   ⚠ Die Balken sind reines CSS — kein Diagramm-Paket, keine Grafikdatei. Die
+   Breite kommt als style-Attribut aus dem Zweig oben und ist der ANTEIL an der
+   groessten Stufe, nicht an der Gesamtzahl: Bei 22/22/23 saehe ein Anteil an
+   der Summe drei gleich kurze Stummel; am Maximum gemessen fuellt der laengste
+   die Spur aus, und der Unterschied wird ueberhaupt erst sichtbar.
+
+   Die drei Farben sind dieselben wie bei der Leiter (.g0/.g1/.g2) — dieselbe
+   Bedeutung soll auf jeder Karte dieselbe Farbe haben. */
+.steckZahl{display:flex;align-items:baseline;gap:20px}
+.steckZahl b{font-size:186px;font-weight:800;line-height:.82;
+  background:linear-gradient(135deg,#f5d0fe,#a78bfa 55%,#7c3aed);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.steckZahl i{font-size:42px;font-style:normal;font-weight:600;color:#c4b5fd}
+.steckStufen{display:flex;gap:14px}
+.fakten{display:flex;flex-direction:column;gap:22px;
+  border-left:4px solid rgba(167,139,250,.5);padding-left:24px}
+.steckLabel{font-size:24px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:#a78bfa}
+.fakten p{font-size:33px;line-height:1.28;font-weight:500}
 
 /* --- app-schau: die App selbst ---
    Aufbau von oben nach unten: Schlagzeile, ein Satz dazu, drei Bildschirme,
