@@ -208,18 +208,41 @@ const TEXTE = {
 // fragte und die Antwort verschwieg: ein Satz, der allein nicht traegt.
 //
 // Die Probe ist bewusst GROB und sortiert lieber zu viel aus. Gemessen ueber
-// alle 804 Erklaerungen: DE behaelt 624 (mindestens 47 je Serie), EN 492
-// (mindestens 30). Gebraucht werden drei — der Verschnitt kostet also nichts,
-// und ein durchgerutschter Rueckverweis kostet einen Beitrag.
+// alle 804 Erklaerungen: DE behaelt 444 (mindestens 30 je Serie), EN 413
+// (mindestens 21). Gebraucht werden DREI — der Verschnitt kostet also nichts,
+// ein durchgerutschter Rueckverweis dagegen einen Beitrag.
+//
+// ⚠ ZWEIMAL NACHGESCHAERFT, und beide Male an einer ECHTEN Karte aus dem
+// Tageslauf, nicht am Code:
+//
+//   1. „Sherlock Holmes ist SEIN erklaertes Vorbild." — die Possessivpronomen
+//      fehlten in der Liste.
+//   2. „ER schaltet DAMIT nicht nur Kogoro aus." / „SIE stammt aus DERSELBEN
+//      Organisation." — ein Satz, der mit er/sie/es beginnt, verweist fast
+//      immer zurueck.
+//
+// Daraus die zweiteilige Probe: `ueberall` verbietet Woerter an jeder Stelle,
+// `anfang` nur am Satzanfang. Der Unterschied ist wichtig — „sie" mitten im
+// Satz ist meist harmlos („die Organisation, die sie gruendete"), am Anfang
+// fast nie. Ein Wortverbot fuer „sie" haette die Haelfte des Vorrats gekostet
+// und trotzdem die falschen Saetze durchgelassen.
 const RUECKVERWEIS = {
-  de: /\b(ihn|ihm|ihnen|ihrer|seiner|dieser|diese|dieses|dort|dabei|davon|dadurch|deshalb|dessen|deren)\b/i,
-  en: /\b(him|her|them|his|its|theirs|this|these|those|there|thereby|thus|itself)\b/i,
+  de: {
+    ueberall: /\b(ihn|ihm|ihnen|ihr|ihre|ihrer|ihrem|sein|seine|seinem|seinen|seiner|dieser|diese|dieses|dort|dabei|damit|davon|dadurch|deshalb|dessen|deren|derselbe|dieselbe|dasselbe|denselben|demselben|derselben|dieselben)\b/i,
+    anfang: /^(er|sie|es|ihn|ihm|dort|damit|dabei|davon|dadurch|deshalb|dieser|diese|dieses)\b/i,
+  },
+  en: {
+    ueberall: /\b(him|her|them|his|its|their|theirs|this|these|those|there|thereby|thus|itself|the same)\b/i,
+    anfang: /^(he|she|it|they|this|these|those|there|thus)\b/i,
+  },
 };
+
 function eigenstaendige(menge, lang, w) {
   const muster = RUECKVERWEIS[lang] ?? RUECKVERWEIS.de;
   const gut = menge.filter((f) => {
     const e = (lang === 'de' ? f.de : f.en)?.explanation ?? '';
-    return e.length >= 40 && e.length <= 120 && !muster.test(e);
+    return e.length >= 40 && e.length <= 120
+      && !muster.ueberall.test(e) && !muster.anfang.test(e);
   });
   // Mischen mit derselben Saat, damit zwei Laeufe am selben Tag dasselbe
   // zeigen und zwei verschiedene Tage nicht dieselben drei Fakten.
