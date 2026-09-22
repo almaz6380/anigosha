@@ -617,20 +617,29 @@ body.schau .vignette{opacity:.6}
    ⚠ KEINE BACKTICKS in diesem Kommentar — das CSS steht in einem
    JS-Template-Literal, ein Backtick beendet es, und der Fehler liest sich
    als „SyntaxError" irgendwo weit darunter. Gemessen, nicht befuerchtet. */
+/* ⚠ 340 und 70 %, nicht 300 und 66 %. Der Junge streckt einen Arm hoch —
+   sein freigestellter Kasten ist mit 0,40 deutlich breiter als der von
+   FullRep (0,31) und Swaply (0,32). Bei gleicher Breite waere er dadurch nur
+   759 px hoch geworden, also 56 % der Karte, waehrend die anderen beiden auf
+   70 % kommen. Gemessen an den fertigen PNGs, nicht geschaetzt. */
 .figur{position:absolute;right:0;bottom:0;z-index:2;
-  width:300px;height:66%;
+  width:340px;height:70%;
   background-size:contain;background-repeat:no-repeat;
   background-position:bottom center}
 /* ⚠ OHNE DIESE ZEILE STEHT DIE FIGUR IM TEXT. Die Karte hat 90 px Rand, die
    Figur ist 300 px breit und klebt an der Kante — es fehlen also gut 200 px
    plus Luft. Gemessen am laengsten Text der leiter-karte, nicht geschaetzt. */
-body.mitFigur .inhalt{padding-right:240px}
+body.mitFigur .inhalt{padding-right:290px}
 /* ⚠ Auch die FUSSZEILE. Die Figur steht bis zur Unterkante — ohne das liefen
    die beiden Store-Abzeichen hinter ihr durch. Am gerenderten JPEG gesehen,
    nicht bedacht. */
-body.mitFigur .fuss{padding-right:240px}
+body.mitFigur .fuss{padding-right:290px}
 /* Das AI-Plaettchen sitzt sonst rechts unten — also genau auf der Figur. */
 body.mitFigur .kiMarke{right:auto;left:26px}
+/* Der Fusstext brach mit dem schmaleren Platz auf zwei Zeilen um
+   („Anigosha · Anime Quiz & / Duelle") — am gerenderten JPEG gesehen. Eine
+   Nummer kleiner, und er steht wieder in einer Zeile. */
+body.mitFigur .fuss>span:first-child{font-size:19px;white-space:nowrap}
 .fuss{display:flex;justify-content:space-between;align-items:center;font-size:24px;color:rgba(237,233,254,.62)}
 /* ⚠ Feste HOEHE, Breite aus dem Bild — Apple und Google untersagen beides:
    verzerren und nachzeichnen. */
