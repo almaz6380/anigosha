@@ -930,7 +930,8 @@ Stand 25.09.:
 | Repo | Runner | Build + Upload auf dem Mac | Einreichen / Produktion auf dem Mac |
 |---|---|---|---|
 | anigosha | ✅ | ✅ | ✅ (`App Store Connect`, `Play promote` haben `laeufer`) |
-| mahjong-app, swaply, mypeak (= „FullRep") | ✅ | ✅ | ❌ noch GitHub-Läufer — beim ersten Release dort nachziehen, Muster wie hier |
+| mahjong-app | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `asc-submit`, `play-rollout`, `play-listing`, `store-texte`, `store-zahlen` |
+| swaply, mypeak (= „FullRep") | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `play-listing` (Android-Produktion geht dort über den `track` von `Android Release`) |
 | geschichte | ❌ **bewusst nicht** — öffentliches Repo | — | — |
 
 **Repos mit Runner dürfen nie öffentlich werden** — ein Fork-PR könnte sonst
