@@ -907,9 +907,10 @@ lang schlug „Freund herausfordern" für ES/FR/PT fehl („unsupported language
 **Merksatz: Wer eine alte Migration nachholt, spielt danach alle späteren nach,
 die dieselben Funktionen ersetzen — `create or replace` kennt keine Reihenfolge.**
 
-**Offen:** Edge Function `send-push` ist geändert (Texte ES/FR/PT, Token nur
-noch bei echtem „ungültig" löschen), aber **noch nicht veröffentlicht**:
-`npx supabase functions deploy send-push --project-ref hehrqqiobpbmmadmvpql --use-api`.
+Edge Function `send-push` am 25.09. veröffentlicht (Texte ES/FR/PT, Token nur
+noch bei echtem „ungültig" löschen); `test-push-versand` danach 8/8 grün.
+Client-Fixes am 25.09. nach `main` (Web live). **Store-Apps brauchen dafür einen
+neuen Build** — die Datenbank-Fixes wirken dort schon.
 
 ### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
 
