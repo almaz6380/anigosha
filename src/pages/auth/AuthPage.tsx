@@ -36,10 +36,27 @@ export default function AuthPage() {
     }
   };
 
+  // Vorher stand hier immer „gesendet" — auch wenn Supabase ablehnte (etwa
+  // wegen des Versandlimits) oder das Netz fehlte. Und ohne Sperre löste jeder
+  // weitere Tipp eine weitere Mail aus.
   const handleReset = async () => {
-    if (!email) return;
-    await supabase.auth.resetPasswordForEmail(email);
-    setInfo(t('auth.resetSent'));
+    if (busy) return;
+    setError(null);
+    setInfo(null);
+    if (!email) {
+      setError(t('auth.resetNeedsEmail'));
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error: err } = await supabase.auth.resetPasswordForEmail(email);
+      if (err) setError(t('auth.resetError'));
+      else setInfo(t('auth.resetSent'));
+    } catch {
+      setError(t('auth.resetError'));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -96,7 +113,7 @@ export default function AuthPage() {
           {mode === 'login' ? t('auth.noAccount') : t('auth.haveAccount')}
         </button>
         {mode === 'login' && (
-          <button onClick={handleReset} className="leise underline underline-offset-4">
+          <button onClick={handleReset} disabled={busy} className="leise underline underline-offset-4 disabled:opacity-50">
             {t('auth.forgotPassword')}
           </button>
         )}

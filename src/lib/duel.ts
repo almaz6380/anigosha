@@ -19,17 +19,32 @@ export interface DuelSummary {
   opp_score: number;
   winner_id: string | null;
   updated_at: string;
+  /**
+   * `null`, solange für ein Zufallsduell noch kein Gegner gefunden ist: Die
+   * Partie existiert dann schon, der Spieler spielt Runde 1 sofort, und erst
+   * danach kommt ein Mensch dazu — oder nach rund zehn Minuten ein Bot.
+   */
   opponent: Opponent | null;
+  /**
+   * Nach sieben Tagen ohne Zug beendet der Server die Partie. `forfeit` sagt,
+   * wem die Zeit abgelaufen ist; `expired` markiert ein Freundschaftsduell, das
+   * einfach verfallen ist — ohne Sieger.
+   */
+  forfeit?: 'me' | 'opp' | null;
+  expired?: boolean;
 }
 
 export interface DuelState extends Omit<DuelSummary, 'updated_at'> {
   opponent: Opponent | null;
 }
 
-export async function startDuel(lang: string): Promise<{ match_id: string | null; opponent_is_bot?: boolean; queued?: boolean }> {
+/** `searching`: Partie angelegt, aber noch ohne Gegner (siehe `opponent`). */
+export type DuelStart = { match_id: string | null; opponent_is_bot?: boolean; queued?: boolean; searching?: boolean };
+
+export async function startDuel(lang: string): Promise<DuelStart> {
   const { data, error } = await supabase.rpc('start_duel', { p_lang: lang });
   if (error) throw error;
-  return data as { match_id: string | null; opponent_is_bot?: boolean; queued?: boolean };
+  return data as DuelStart;
 }
 
 /**

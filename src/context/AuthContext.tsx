@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import i18n, { datenSprache, type AppSprache } from '../i18n';
 
 export interface Profile {
   id: string;
@@ -20,10 +21,14 @@ interface AuthContextValue {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
+  /** Profil ließ sich (auch nach einem zweiten Versuch) nicht laden. */
+  profileError: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirm: boolean }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  /** Sprache am Profil speichern — der Server wählt danach die Duellfragen. */
+  saveLanguage: (lang: AppSprache) => void;
   deleteAccount: () => Promise<{ error: string | null }>;
 }
 
@@ -38,14 +43,74 @@ function mapAuthError(message: string): string {
   return 'generic';
 }
 
+const SPRACHEN: readonly string[] = ['de', 'en', 'es', 'fr', 'pt'];
+
+/**
+ * `profiles.language` schrieb der Client bisher nie — der Server nimmt sie
+ * aber für die Fragen im Duell. Fehler werden verschluckt: Schlimmstenfalls
+ * kommen die Duellfragen in der alten Sprache, das Spiel läuft weiter.
+ */
+function spracheSchreiben(userId: string, lang: AppSprache) {
+  void supabase
+    .from('profiles')
+    .update({ language: lang })
+    .eq('id', userId)
+    .then(
+      () => {},
+      () => {}
+    );
+}
+
+/**
+ * Nach dem Laden: Gerät und Profil auf eine Sprache bringen.
+ *
+ * Hat jemand auf diesem Gerät ausdrücklich eine Sprache gewählt
+ * (`localStorage.language`), gewinnt sie und wandert ins Profil. Sonst ist das
+ * Gerät frisch — dann übernimmt die App die Sprache des Profils, statt ein
+ * englisches Konto beim ersten Login auf dem neuen Handy auf Deutsch
+ * umzuschreiben (die Oberfläche startet ohne Wahl auf Deutsch).
+ */
+function spracheAbgleichen(p: Profile) {
+  let gewaehlt: string | null = null;
+  try {
+    gewaehlt = localStorage.getItem('language');
+  } catch {
+    /* Speicher gesperrt: wie „nichts gewählt" behandeln */
+  }
+  if (!gewaehlt && SPRACHEN.includes(p.language)) {
+    if (i18n.language !== p.language) void i18n.changeLanguage(p.language);
+    return;
+  }
+  const lang = datenSprache();
+  if (p.language !== lang) spracheSchreiben(p.id, lang);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState(false);
 
+  /**
+   * Lädt das Profil — mit einem zweiten Versuch, bevor es als Fehler gilt.
+   *
+   * Vorher wurde ein Ladefehler verschluckt und `profile` blieb null. App.tsx
+   * zeigt die Namensseite aber nur, wenn ein Profil OHNE Namen da ist — bei
+   * null ging es direkt ins Spiel, ohne Spielernamen. Deshalb jetzt getrennt:
+   * „kein Profil" (data null, kein Fehler) und „Laden fehlgeschlagen".
+   */
   const loadProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    setProfile((data as Profile) ?? null);
+    for (let versuch = 0; versuch < 2; versuch += 1) {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+      if (!error) {
+        setProfile((data as Profile) ?? null);
+        setProfileError(false);
+        if (data) spracheAbgleichen(data as Profile);
+        return;
+      }
+      if (versuch === 0) await new Promise((r) => setTimeout(r, 800));
+    }
+    setProfileError(true);
   }, []);
 
   useEffect(() => {
@@ -58,7 +123,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       if (newSession) loadProfile(newSession.user.id);
-      else setProfile(null);
+      else {
+        setProfile(null);
+        setProfileError(false);
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, [loadProfile]);
@@ -83,6 +151,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session) await loadProfile(session.user.id);
   }, [session, loadProfile]);
 
+  const saveLanguage = useCallback(
+    (lang: AppSprache) => {
+      if (!session) return;
+      setProfile((p) => (p ? { ...p, language: lang } : p));
+      spracheSchreiben(session.user.id, lang);
+    },
+    [session]
+  );
+
   const deleteAccount = async () => {
     const { error } = await supabase.functions.invoke('delete-account');
     if (error) return { error: 'delete_failed' };
@@ -92,7 +169,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ session, profile, loading, signIn, signUp, signOut, refreshProfile, deleteAccount }}
+      value={{
+        session,
+        profile,
+        loading,
+        profileError,
+        signIn,
+        signUp,
+        signOut,
+        refreshProfile,
+        saveLanguage,
+        deleteAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>

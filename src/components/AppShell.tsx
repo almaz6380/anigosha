@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SkyBackground, { useSky } from './SkyBackground';
 import { useThemeColor } from '../hooks/useThemeColor';
 
@@ -54,9 +55,10 @@ export function PageHeader({
   badge?: string;
   right?: ReactNode;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3">
-      <button onClick={onBack} className="p-1 -ml-1 shrink-0" aria-label="back">
+      <button onClick={onBack} className="p-1 -ml-1 shrink-0" aria-label={t('common.back')}>
         <ArrowLeft className="w-[22px] h-[22px]" strokeWidth={2.2} />
       </button>
       <div className="min-w-0 flex-1">

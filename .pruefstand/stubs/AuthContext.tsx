@@ -8,6 +8,8 @@ export function useAuth() {
     session: { user: { id: 'u1' } },
     profile: profil,
     loading: false,
+    profileError: false,
+    saveLanguage: () => {},
     refreshProfile: async () => {},
     signOut: async () => {},
     deleteAccount: async () => ({ error: null }),

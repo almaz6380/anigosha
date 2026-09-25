@@ -94,38 +94,72 @@ async function getAccessToken(sa: { client_email: string; private_key: string })
 // Texte. Bewusst hier und nicht in der Datenbank: Die Meldung soll in der
 // Sprache des Geräts ankommen, und die steht am Token, nicht am Spielzug.
 // ---------------------------------------------------------------------------
-function texte(kind: string, lang: string, gegner: string, extra: Record<string, unknown>) {
-  const de = lang !== 'en';
+type Text = { title: string; body: string };
+type Sprache = 'de' | 'en' | 'es' | 'fr' | 'pt';
+
+// Vorher: `const de = lang !== 'en'` — spanische, französische und
+// portugiesische Geräte bekamen deutsche Meldungen. Unbekannte Sprachen
+// fallen jetzt auf Englisch zurück, nicht auf Deutsch.
+const ERGEBNIS: Record<Sprache, { won: string; lost: string; draw: string }> = {
+  de: { won: 'Gewonnen', lost: 'Verloren', draw: 'Unentschieden' },
+  en: { won: 'You won', lost: 'You lost', draw: 'A draw' },
+  es: { won: 'Has ganado', lost: 'Has perdido', draw: 'Empate' },
+  fr: { won: 'Victoire', lost: 'Défaite', draw: 'Match nul' },
+  pt: { won: 'Você venceu', lost: 'Você perdeu', draw: 'Empate' },
+};
+
+function texte(kind: string, lang: string, gegner: string, extra: Record<string, unknown>): Text {
+  const l: Sprache = (['de', 'en', 'es', 'fr', 'pt'] as const).includes(lang as Sprache) ? (lang as Sprache) : 'en';
   switch (kind) {
     case 'your_turn':
-      return de
-        ? { title: 'Du bist dran!', body: `${gegner} hat gespielt — jetzt bist du am Zug.` }
-        : { title: 'Your turn!', body: `${gegner} has played — it's your move.` };
+      return {
+        de: { title: 'Du bist dran!', body: `${gegner} hat gespielt — jetzt bist du am Zug.` },
+        en: { title: 'Your turn!', body: `${gegner} has played — it's your move.` },
+        es: { title: '¡Te toca!', body: `${gegner} ya ha jugado — ahora es tu turno.` },
+        fr: { title: 'À toi de jouer !', body: `${gegner} a joué — c'est ton tour.` },
+        pt: { title: 'Sua vez!', body: `${gegner} já jogou — agora é a sua vez.` },
+      }[l];
     case 'match_found':
-      return de
-        ? { title: 'Gegner gefunden!', body: `Dein Duell gegen ${gegner} kann losgehen.` }
-        : { title: 'Opponent found!', body: `Your duel against ${gegner} is ready.` };
+      return {
+        de: { title: 'Gegner gefunden!', body: `Dein Duell gegen ${gegner} kann losgehen.` },
+        en: { title: 'Opponent found!', body: `Your duel against ${gegner} is ready.` },
+        es: { title: '¡Rival encontrado!', body: `Tu duelo contra ${gegner} puede empezar.` },
+        fr: { title: 'Adversaire trouvé !', body: `Ton duel contre ${gegner} peut commencer.` },
+        pt: { title: 'Adversário encontrado!', body: `Seu duelo contra ${gegner} pode começar.` },
+      }[l];
     case 'challenge': {
       // Der Name kommt aus der Nutzlast, nicht aus `gegner`: Beim Anlegen ist
       // der Empfänger player_b, der Herausfordernde also die Gegenseite.
       const von = String(extra.from ?? '').trim() || gegner;
-      return de
-        ? { title: `${von} fordert dich heraus!`, body: 'Freundschaftsduell — ohne Wertung. Zeig, was du kannst.' }
-        : { title: `${von} challenges you!`, body: 'Friendly duel — unranked. Show what you know.' };
+      return {
+        de: { title: `${von} fordert dich heraus!`, body: 'Freundschaftsduell — ohne Wertung. Zeig, was du kannst.' },
+        en: { title: `${von} challenges you!`, body: 'Friendly duel — unranked. Show what you know.' },
+        es: { title: `¡${von} te desafía!`, body: 'Duelo amistoso — sin clasificación. Demuestra lo que sabes.' },
+        fr: { title: `${von} te défie !`, body: 'Duel amical — non classé. Montre ce que tu sais.' },
+        pt: { title: `${von} desafia você!`, body: 'Duelo amistoso — sem ranking. Mostre o que você sabe.' },
+      }[l];
     }
     case 'match_finished': {
       const mein = Number(extra.mein ?? 0);
       const sein = Number(extra.sein ?? 0);
-      const erg = mein > sein ? (de ? 'Gewonnen' : 'You won')
-                : mein < sein ? (de ? 'Verloren' : 'You lost')
-                : (de ? 'Unentschieden' : 'A draw');
-      return de
-        ? { title: 'Duell beendet', body: `${erg} gegen ${gegner} — ${mein}:${sein}.` }
-        : { title: 'Duel over', body: `${erg} against ${gegner} — ${mein}:${sein}.` };
+      const e = ERGEBNIS[l];
+      const erg = mein > sein ? e.won : mein < sein ? e.lost : e.draw;
+      return {
+        de: { title: 'Duell beendet', body: `${erg} gegen ${gegner} — ${mein}:${sein}.` },
+        en: { title: 'Duel over', body: `${erg} against ${gegner} — ${mein}:${sein}.` },
+        es: { title: 'Duelo terminado', body: `${erg} contra ${gegner} — ${mein}:${sein}.` },
+        fr: { title: 'Duel terminé', body: `${erg} contre ${gegner} — ${mein}:${sein}.` },
+        pt: { title: 'Duelo encerrado', body: `${erg} contra ${gegner} — ${mein}:${sein}.` },
+      }[l];
     }
     default:
-      return de ? { title: 'Anigosha', body: 'Es gibt Neuigkeiten.' }
-                : { title: 'Anigosha', body: 'Something happened.' };
+      return {
+        de: { title: 'Anigosha', body: 'Es gibt Neuigkeiten.' },
+        en: { title: 'Anigosha', body: 'Something happened.' },
+        es: { title: 'Anigosha', body: 'Hay novedades.' },
+        fr: { title: 'Anigosha', body: 'Il y a du nouveau.' },
+        pt: { title: 'Anigosha', body: 'Tem novidade.' },
+      }[l];
   }
 }
 
@@ -265,7 +299,14 @@ Deno.serve(async (req) => {
         // Ein Token wird ungültig, sobald die App gelöscht oder neu
         // installiert wird. Solche Karteileichen müssen weg, sonst wächst
         // die Tabelle und jeder Lauf verschickt ins Leere.
-        if (res.status === 404 || text.includes('UNREGISTERED') || text.includes('INVALID_ARGUMENT')) {
+        // INVALID_ARGUMENT allein reicht nicht: Das meldet FCM auch bei einer
+        // fehlerhaften NACHRICHT — dann wäre ein gesundes Gerät gelöscht.
+        // Nur wenn der Text das Token selbst benennt, ist es wirklich tot.
+        if (
+          res.status === 404 ||
+          text.includes('UNREGISTERED') ||
+          (text.includes('INVALID_ARGUMENT') && /registration token/i.test(text))
+        ) {
           tote.push(g.token);
         }
       }

@@ -75,6 +75,10 @@ const isNative = Capacitor.isNativePlatform();
 let AdMob: any = null;
 let ready = false;
 let isPremium = false;
+/** Läuft initAds gerade? Das Profil wartet darauf, statt zu früh „nein" zu sagen. */
+let initLauf: Promise<void> | null = null;
+/** Verlangt UMP einen Einstieg für die Datenschutzoptionen (EWR, UK, …)? */
+let datenschutzOptionen: string | null = null;
 
 // --- Häufigkeitsbremse ------------------------------------------------------
 // Eine Anzeige nach jeder zweiten beendeten Runde und frühestens 90 Sekunden
@@ -127,6 +131,7 @@ export function setAdsPremiumStatus(premium: boolean) {
 async function runConsentFlow() {
   try {
     const info = await AdMob.requestConsentInfo();
+    datenschutzOptionen = info.privacyOptionsRequirementStatus ?? null;
     if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
       await AdMob.showConsentForm();
     }
@@ -168,6 +173,17 @@ export function canChangeAdConsent() {
   return isNative && ready;
 }
 
+/**
+ * Wie canChangeAdConsent, wartet aber die laufende Initialisierung ab — öffnet
+ * jemand das Profil gleich nach dem Start, wäre `ready` sonst noch false und
+ * der Knopf fehlte grundlos. Wo UMP ausdrücklich keinen Einstieg verlangt
+ * (außerhalb von EWR/UK), bleibt er weg: Dort gäbe es kein Formular zu zeigen.
+ */
+export async function adConsentAenderbar(): Promise<boolean> {
+  if (initLauf) await initLauf;
+  return canChangeAdConsent() && datenschutzOptionen !== 'NOT_REQUIRED';
+}
+
 export async function changeAdConsent() {
   if (!ready) return;
   try {
@@ -179,8 +195,13 @@ export async function changeAdConsent() {
   }
 }
 
-export async function initAds() {
-  if (!isNative) return; // Im Browser: keine Werbung.
+export function initAds(): Promise<void> {
+  if (!isNative) return Promise.resolve(); // Im Browser: keine Werbung.
+  initLauf ??= initAdsIntern();
+  return initLauf;
+}
+
+async function initAdsIntern() {
   try {
     const mod = await import('@capacitor-community/admob');
     AdMob = mod.AdMob;

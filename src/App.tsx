@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { initAds } from './lib/ads';
-import { preisDiagnose, diagnoseMelden } from './lib/purchases';
+import { initAds, setAdsPremiumStatus } from './lib/ads';
+import { preisDiagnose, diagnoseMelden, werbefreiPruefen } from './lib/purchases';
+import { datenSprache } from './i18n';
 import { pushAuffrischen, pushKlicksBehandeln } from './lib/push';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthPage from './pages/auth/AuthPage';
@@ -13,6 +14,7 @@ import SoloPage from './pages/SoloPage';
 import DuelPage from './pages/DuelPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import LegalPage from './pages/legal/LegalPage';
+import AppShell from './components/AppShell';
 
 /**
  * Hält die Push-Anmeldung aktuell und öffnet beim Antippen die richtige Partie.
@@ -24,13 +26,60 @@ import LegalPage from './pages/legal/LegalPage';
  */
 function PushBruecke({ sprache }: { sprache: string }) {
   const navigate = useNavigate();
-
+  // `navigate` ändert sich bei jedem Seitenwechsel. Hing der Effekt direkt
+  // daran, lief bei jeder Navigation die Auffrischung erneut und ein weiterer
+  // Klick-Hörer kam dazu — ein Antippen öffnete die Partie dann mehrfach.
+  const navigateRef = useRef(navigate);
   useEffect(() => {
-    const lang = sprache === 'en' ? 'en' : 'de';
-    void pushAuffrischen(lang);
-    void pushKlicksBehandeln((pfad) => navigate(pfad));
-  }, [navigate, sprache]);
+    navigateRef.current = navigate;
+  }, [navigate]);
 
+  // Klick-Hörer genau einmal, beim Verlassen (Abmelden) wieder weg.
+  useEffect(() => {
+    let abraeumen: (() => void) | null = null;
+    let verlassen = false;
+    void pushKlicksBehandeln((pfad) => navigateRef.current(pfad)).then((weg) => {
+      if (verlassen) weg();
+      else abraeumen = weg;
+    });
+    return () => {
+      verlassen = true;
+      abraeumen?.();
+    };
+  }, []);
+
+  // Sprache über die zentrale Weiche — die frühere de/en-Abfrage schickte
+  // spanische, französische und portugiesische Geräte auf Deutsch.
+  // `sprache` bleibt Abhängigkeit, damit ein Wechsel im Profil beim Server
+  // ankommt; datenSprache() liest den aktuellen Stand selbst.
+  useEffect(() => {
+    void pushAuffrischen(datenSprache());
+  }, [sprache]);
+
+  return null;
+}
+
+/**
+ * Prüft beim Start, ob dieses Konto „Werbung entfernen" gekauft hat.
+ *
+ * Vorher geschah das nur beim Öffnen des Profils — wer es nie öffnete, bekam
+ * nach jedem Neustart wieder Anzeigen, obwohl er bezahlt hatte. Beim Abmelden
+ * (Unmount bzw. Kontowechsel) fällt der Status zurück, sonst erbte das
+ * nächste Konto am Gerät die Werbefreiheit.
+ */
+function WerbefreiBruecke({ userId }: { userId: string | null }) {
+  useEffect(() => {
+    if (!userId) return;
+    let verlassen = false;
+    void werbefreiPruefen(userId).then(() => {
+      // Kam die Antwort erst nach dem Abmelden, darf sie nicht mehr gelten.
+      if (verlassen) setAdsPremiumStatus(false);
+    });
+    return () => {
+      verlassen = true;
+      setAdsPremiumStatus(false);
+    };
+  }, [userId]);
   return null;
 }
 
@@ -49,9 +98,29 @@ function DiagnoseBruecke({ userId }: { userId: string | null }) {
   return null;
 }
 
+function ProfilFehler({ onRetry }: { onRetry: () => Promise<void> }) {
+  const { t } = useTranslation();
+  const [busy, setBusy] = useState(false);
+  return (
+    <AppShell className="flex flex-col items-center justify-center gap-4 text-center">
+      <p className="leise">{t('common.profileError')}</p>
+      <button
+        onClick={() => {
+          setBusy(true);
+          void onRetry().finally(() => setBusy(false));
+        }}
+        disabled={busy}
+        className="knopf px-6 py-3 disabled:opacity-50"
+      >
+        {busy ? t('common.loading') : t('common.retry')}
+      </button>
+    </AppShell>
+  );
+}
+
 function AppRoutes() {
   const { t, i18n } = useTranslation();
-  const { session, profile, loading } = useAuth();
+  const { session, profile, loading, profileError, refreshProfile } = useAuth();
 
   if (loading) {
     return (
@@ -80,12 +149,16 @@ function AppRoutes() {
       </Routes>
     );
   }
+  // Profil nicht ladbar: nicht ohne Spielernamen ins Spiel lassen (vorher
+  // führte `profile === null` genau dorthin), sondern Fehler + neuer Versuch.
+  if (profileError && !profile) return <ProfilFehler onRetry={refreshProfile} />;
   if (profile && !profile.username) return <UsernamePage />;
 
   return (
     <>
       <PushBruecke sprache={i18n.language} />
       <DiagnoseBruecke userId={profile?.id ?? null} />
+      <WerbefreiBruecke userId={profile?.id ?? null} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/solo" element={<SoloPage />} />

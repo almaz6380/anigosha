@@ -23,17 +23,33 @@ export default function UsernamePage() {
     }
     setBusy(true);
     setError(null);
-    const { error: err } = await supabase
-      .from('profiles')
-      .update({ username: name })
-      .eq('id', session.user.id);
-    if (err) {
-      // 23505 = unique_violation → Name vergeben
-      setError(err.code === '23505' ? t('username.taken') : t('common.error'));
+    try {
+      // `select` liefert die geänderten Zeilen zurück. Ohne das war ein Update,
+      // das keine Zeile traf (kein Profil, RLS), kein Fehler — die Seite blieb
+      // dann für immer auf „Lädt…" stehen, weil sie auf ein Profil mit Namen
+      // wartete, das nie kam.
+      const { data, error: err } = await supabase
+        .from('profiles')
+        .update({ username: name })
+        .eq('id', session.user.id)
+        .select('id');
+      if (err) {
+        // 23505 = unique_violation → Name vergeben
+        setError(err.code === '23505' ? t('username.taken') : t('common.error'));
+        return;
+      }
+      if (!data?.length) {
+        setError(t('common.error'));
+        return;
+      }
+      await refreshProfile();
+    } catch {
+      setError(t('common.error'));
+    } finally {
+      // Bei Erfolg verschwindet die Seite ohnehin; bleibt sie stehen (Profil
+      // nicht neu ladbar), muss der Knopf wieder gehen.
       setBusy(false);
-      return;
     }
-    await refreshProfile();
   };
 
   return (

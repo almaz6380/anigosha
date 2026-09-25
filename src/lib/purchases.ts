@@ -30,13 +30,17 @@ export const PRODUKT_ID = 'anigosha_no_ads';
 const IOS_KEY = (import.meta.env.VITE_REVENUECAT_IOS_KEY as string) || '';
 const ANDROID_KEY = (import.meta.env.VITE_REVENUECAT_ANDROID_KEY as string) || '';
 
+/**
+ * Nur Gruende, keine Saetze — uebersetzt wird in der Oberflaeche
+ * (`kauf.fehler.<grund>`). Vorher standen hier deutsche Texte, die jedes
+ * Geraet in jeder Sprache zu sehen bekam.
+ */
 export type KaufErgebnis =
   | { ok: true; werbefrei: boolean }
   | {
       ok: false;
-      grund: 'nicht_eingerichtet' | 'nur_app' | 'abgebrochen' | 'fehler';
-      text: string;
-      /** Technischer Befund (Fehlercode) — nur zur Diagnose, nicht fuer Nutzer. */
+      grund: 'nicht_eingerichtet' | 'nur_app' | 'abgebrochen' | 'kein_angebot' | 'fehler';
+      /** Technischer Befund (Fehlercode, Meldung) — nur zur Diagnose. */
       detail?: string;
     };
 
@@ -236,24 +240,20 @@ export async function diagnoseMelden(
 
 export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebnis> {
   if (!Capacitor.isNativePlatform()) {
-    return {
-      ok: false,
-      grund: 'nur_app',
-      text: 'Käufe sind nur in der App aus dem Store möglich.',
-    };
+    return { ok: false, grund: 'nur_app' };
   }
   if (!kaufMoeglich()) {
-    return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    return { ok: false, grund: 'nicht_eingerichtet' };
   }
 
   try {
     const zugang = await bereitmachen(userId);
-    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet' };
     const { Purchases } = zugang;
 
     const angebote = await Purchases.getOfferings();
     const paket = angebote.current?.availablePackages?.[0];
-    if (!paket) return { ok: false, grund: 'fehler', text: 'Kein Angebot verfügbar.' };
+    if (!paket) return { ok: false, grund: 'kein_angebot' };
 
     const info = await Purchases.purchasePackage({ aPackage: paket });
     const frei = hatAnspruch(info);
@@ -290,13 +290,14 @@ export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebn
     // aussehen — sonst steht "Kauf fehlgeschlagen" auf dem Bildschirm, obwohl
     // der Nutzer selbst abgebrochen hat.
     if (f?.userCancelled || f?.code === '1') {
-      return { ok: false, grund: 'abgebrochen', text: '', detail: `code 1 (${lesbar})` };
+      return { ok: false, grund: 'abgebrochen', detail: `code 1 (${lesbar})` };
     }
     return {
       ok: false,
       grund: 'fehler',
-      text: f?.message ?? 'Kauf fehlgeschlagen.',
-      detail: `code ${f?.code ?? '?'} (${lesbar}) ${f?.underlyingErrorMessage ?? ''}`.trim(),
+      detail: `code ${f?.code ?? '?'} (${lesbar}) ${f?.message ?? ''} ${f?.underlyingErrorMessage ?? ''}`
+        .replace(/\s+/g, ' ')
+        .trim(),
     };
   }
 }
@@ -308,11 +309,11 @@ export async function werbungEntfernenKaufen(userId: string): Promise<KaufErgebn
  */
 export async function kaeufeWiederherstellen(userId: string): Promise<KaufErgebnis> {
   if (!kaufMoeglich()) {
-    return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    return { ok: false, grund: 'nicht_eingerichtet' };
   }
   try {
     const zugang = await bereitmachen(userId);
-    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet', text: 'Käufe sind noch nicht eingerichtet.' };
+    if (!zugang) return { ok: false, grund: 'nicht_eingerichtet' };
     const { Purchases } = zugang;
     const info = await Purchases.restorePurchases();
     const frei = hatAnspruch(info);
@@ -326,6 +327,6 @@ export async function kaeufeWiederherstellen(userId: string): Promise<KaufErgebn
       `Wiederherstellen FEHLER code=${f?.code ?? '?'} (${f?.readableErrorCode ?? '?'}) msg=${f?.message ?? '-'}`,
       'kauf_versuch'
     );
-    return { ok: false, grund: 'fehler', text: e instanceof Error ? e.message : 'Wiederherstellen fehlgeschlagen.' };
+    return { ok: false, grund: 'fehler', detail: `code ${f?.code ?? '?'} ${f?.message ?? ''}`.trim() };
   }
 }

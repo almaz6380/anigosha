@@ -7,8 +7,9 @@
     "save": "Speichern",
     "cancel": "Abbrechen",
     "continue": "Weiter",
-    "comingSoon": "Bald verfügbar",
-    "bot": "Bot"
+    "bot": "Bot",
+    "retry": "Erneut versuchen",
+    "profileError": "Dein Profil konnte nicht geladen werden. Prüf deine Verbindung und versuch es erneut."
   },
   "auth": {
     "login": "Anmelden",
@@ -27,7 +28,9 @@
       "user_already_exists": "Diese E-Mail ist bereits registriert.",
       "weak_password": "Das Passwort ist zu schwach (mind. 8 Zeichen).",
       "generic": "Anmeldung fehlgeschlagen. Bitte versuch es erneut."
-    }
+    },
+    "resetError": "Die E-Mail konnte nicht gesendet werden. Bitte versuch es erneut.",
+    "resetNeedsEmail": "Gib zuerst deine E-Mail-Adresse ein."
   },
   "username": {
     "title": "Wähle deinen Spielernamen",
@@ -73,7 +76,9 @@
     "deleteConfirmButton": "Ja, endgültig löschen",
     "deleteError": "Löschen fehlgeschlagen. Bitte versuch es später erneut.",
     "streak": "Tagesserie",
-    "streakBest": "Bestwert"
+    "streakBest": "Bestwert",
+    "adConsent": "Datenschutz-Einstellungen für Werbung",
+    "adConsentHint": "Deine Einwilligung zu personalisierter Werbung jederzeit ändern oder widerrufen."
   },
   "solo": {
     "difficulty": {
@@ -139,7 +144,12 @@
     },
     "play": "Spielen",
     "finished": "Beendet",
-    "format": "4 Runden à 3 Fragen"
+    "format": "4 Runden à 3 Fragen",
+    "searching": "Gegner wird gesucht…",
+    "searchingLong": "Wir suchen einen Gegner für dich. Sobald jemand gefunden ist, geht es weiter — schau später wieder rein!",
+    "forfeitWon": "Gewonnen – dem Gegner ist die Zeit abgelaufen",
+    "forfeitLost": "Verloren – deine Zeit ist abgelaufen",
+    "expired": "Abgelaufen"
   },
   "legal": {
     "imprint": "Impressum",
@@ -158,7 +168,14 @@
     "aktiv": "Aktiv",
     "an": "Benachrichtigungen sind aktiv.",
     "aus": "Benachrichtigungen sind ausgeschaltet.",
-    "homescreen": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren — anders erlaubt Apple im Browser keine Benachrichtigungen."
+    "homescreen": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren — anders erlaubt Apple im Browser keine Benachrichtigungen.",
+    "fehler": {
+      "abgelehnt": "Benachrichtigungen wurden nicht erlaubt.",
+      "nicht_unterstuetzt": "Dieser Browser unterstützt keine Benachrichtigungen.",
+      "homescreen": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren.",
+      "nicht_eingerichtet": "Benachrichtigungen sind noch nicht eingerichtet.",
+      "fehler": "Benachrichtigungen konnten nicht eingeschaltet werden."
+    }
   },
   "kauf": {
     "titel": "Werbung entfernen",
@@ -168,7 +185,14 @@
     "wiederherstellen": "Wiederherstellen",
     "danke": "Werbung ist ab sofort aus. Danke!",
     "nichtsGefunden": "Es wurde kein früherer Kauf gefunden.",
-    "abgebrochen": "Kauf nicht abgeschlossen."
+    "abgebrochen": "Kauf nicht abgeschlossen.",
+    "fehler": {
+      "nur_app": "Käufe sind nur in der App aus dem Store möglich.",
+      "nicht_eingerichtet": "Käufe sind noch nicht eingerichtet.",
+      "kein_angebot": "Kein Angebot verfügbar.",
+      "fehler": "Kauf fehlgeschlagen.",
+      "wiederherstellen": "Wiederherstellen fehlgeschlagen."
+    }
   },
   "leaderboard": {
     "kicker": "Weltweit · nach Elo"

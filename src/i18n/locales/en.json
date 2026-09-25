@@ -7,8 +7,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "continue": "Continue",
-    "comingSoon": "Coming soon",
-    "bot": "Bot"
+    "bot": "Bot",
+    "retry": "Try again",
+    "profileError": "Your profile could not be loaded. Check your connection and try again."
   },
   "auth": {
     "login": "Log in",
@@ -27,7 +28,9 @@
       "user_already_exists": "This email is already registered.",
       "weak_password": "Password is too weak (min. 8 characters).",
       "generic": "Sign-in failed. Please try again."
-    }
+    },
+    "resetError": "The email could not be sent. Please try again.",
+    "resetNeedsEmail": "Enter your email address first."
   },
   "username": {
     "title": "Choose your player name",
@@ -73,7 +76,9 @@
     "deleteConfirmButton": "Yes, delete permanently",
     "deleteError": "Deletion failed. Please try again later.",
     "streak": "Daily streak",
-    "streakBest": "Best"
+    "streakBest": "Best",
+    "adConsent": "Ad privacy settings",
+    "adConsentHint": "Change or withdraw your consent to personalised ads at any time."
   },
   "solo": {
     "difficulty": {
@@ -139,7 +144,12 @@
     },
     "play": "Play",
     "finished": "Finished",
-    "format": "4 rounds of 3 questions"
+    "format": "4 rounds of 3 questions",
+    "searching": "Looking for an opponent…",
+    "searchingLong": "We are looking for an opponent for you. The duel continues as soon as someone is found — check back later!",
+    "forfeitWon": "Won – your opponent ran out of time",
+    "forfeitLost": "Lost – your time ran out",
+    "expired": "Expired"
   },
   "legal": {
     "imprint": "Legal Notice",
@@ -158,7 +168,14 @@
     "aktiv": "On",
     "an": "Notifications are on.",
     "aus": "Notifications are off.",
-    "homescreen": "On iPhone, add the site to your home screen first via Share → Add to Home Screen — Apple allows notifications no other way."
+    "homescreen": "On iPhone, add the site to your home screen first via Share → Add to Home Screen — Apple allows notifications no other way.",
+    "fehler": {
+      "abgelehnt": "Notifications were not allowed.",
+      "nicht_unterstuetzt": "This browser does not support notifications.",
+      "homescreen": "On iPhone, first install via “Share → Add to Home Screen”.",
+      "nicht_eingerichtet": "Notifications are not set up yet.",
+      "fehler": "Notifications could not be turned on."
+    }
   },
   "kauf": {
     "titel": "Remove ads",
@@ -168,7 +185,14 @@
     "wiederherstellen": "Restore",
     "danke": "Ads are off from now on. Thank you!",
     "nichtsGefunden": "No earlier purchase was found.",
-    "abgebrochen": "Purchase not completed."
+    "abgebrochen": "Purchase not completed.",
+    "fehler": {
+      "nur_app": "Purchases are only possible in the app from the store.",
+      "nicht_eingerichtet": "Purchases are not set up yet.",
+      "kein_angebot": "No offer available.",
+      "fehler": "Purchase failed.",
+      "wiederherstellen": "Restore failed."
+    }
   },
   "leaderboard": {
     "kicker": "Worldwide · by Elo"

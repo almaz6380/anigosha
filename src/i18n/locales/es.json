@@ -7,8 +7,9 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "continue": "Continuar",
-    "comingSoon": "Próximamente",
-    "bot": "Bot"
+    "bot": "Bot",
+    "retry": "Reintentar",
+    "profileError": "No se pudo cargar tu perfil. Comprueba tu conexión e inténtalo de nuevo."
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -27,7 +28,9 @@
       "user_already_exists": "Este correo ya está registrado.",
       "weak_password": "La contraseña es demasiado débil (mín. 8 caracteres).",
       "generic": "No se pudo iniciar sesión. Inténtalo de nuevo."
-    }
+    },
+    "resetError": "No se pudo enviar el correo. Inténtalo de nuevo.",
+    "resetNeedsEmail": "Introduce primero tu correo electrónico."
   },
   "username": {
     "title": "Elige tu nombre de jugador",
@@ -73,7 +76,9 @@
     "deleteConfirmButton": "Sí, eliminar definitivamente",
     "deleteError": "No se pudo eliminar. Inténtalo más tarde.",
     "streak": "Racha diaria",
-    "streakBest": "Récord"
+    "streakBest": "Récord",
+    "adConsent": "Ajustes de privacidad de anuncios",
+    "adConsentHint": "Cambia o retira en cualquier momento tu consentimiento a los anuncios personalizados."
   },
   "solo": {
     "difficulty": {
@@ -139,7 +144,12 @@
     },
     "play": "Jugar",
     "finished": "Terminados",
-    "format": "4 rondas de 3 preguntas"
+    "format": "4 rondas de 3 preguntas",
+    "searching": "Buscando rival…",
+    "searchingLong": "Estamos buscando un rival para ti. El duelo continuará en cuanto encontremos a alguien. ¡Vuelve más tarde!",
+    "forfeitWon": "Ganado: a tu rival se le acabó el tiempo",
+    "forfeitLost": "Perdido: se te acabó el tiempo",
+    "expired": "Caducado"
   },
   "legal": {
     "imprint": "Aviso legal",
@@ -158,7 +168,14 @@
     "aktiv": "Activadas",
     "an": "Las notificaciones están activadas.",
     "aus": "Las notificaciones están desactivadas.",
-    "homescreen": "En el iPhone, añade primero la página a tu pantalla de inicio con «Compartir → Añadir a pantalla de inicio» — Apple no permite notificaciones en el navegador de otra forma."
+    "homescreen": "En el iPhone, añade primero la página a tu pantalla de inicio con «Compartir → Añadir a pantalla de inicio» — Apple no permite notificaciones en el navegador de otra forma.",
+    "fehler": {
+      "abgelehnt": "No se permitieron las notificaciones.",
+      "nicht_unterstuetzt": "Este navegador no admite notificaciones.",
+      "homescreen": "En el iPhone, instálala primero con «Compartir → Añadir a pantalla de inicio».",
+      "nicht_eingerichtet": "Las notificaciones aún no están configuradas.",
+      "fehler": "No se pudieron activar las notificaciones."
+    }
   },
   "kauf": {
     "titel": "Quitar la publicidad",
@@ -168,7 +185,14 @@
     "wiederherstellen": "Restaurar",
     "danke": "La publicidad está desactivada desde ahora. ¡Gracias!",
     "nichtsGefunden": "No se encontró ninguna compra anterior.",
-    "abgebrochen": "Compra no completada."
+    "abgebrochen": "Compra no completada.",
+    "fehler": {
+      "nur_app": "Las compras solo son posibles en la app de la tienda.",
+      "nicht_eingerichtet": "Las compras aún no están configuradas.",
+      "kein_angebot": "No hay ninguna oferta disponible.",
+      "fehler": "La compra ha fallado.",
+      "wiederherstellen": "No se pudo restaurar."
+    }
   },
   "leaderboard": {
     "kicker": "Mundial · por Elo"

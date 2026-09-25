@@ -86,7 +86,7 @@ ODR-Link raus (Plattform seit 20.07.2025 eingestellt). `tsc` grün.
 ## Sicherheits-Grundregeln (nicht verhandelbar)
 
 - Fragen NIE direkt selektierbar — nur RPC `get_round_questions`/`get_solo_questions` (security definer), korrekte Antwort wird NICHT an den Client gegeben
-- Antwort-Bewertung, XP/Elo nur serverseitig (Edge Function `submit-answers` / Service Role); `profiles_guard_columns`-Trigger blockt Client-Schreibzugriff auf xp/elo/is_bot
+- Antwort-Bewertung, XP/Elo nur serverseitig (security-definer-RPCs wie `answer_solo_question`/`answer_duel`); `profiles_guard_columns`-Trigger blockt Client-Schreibzugriff auf xp/elo/is_bot
 - Secrets nur in `.env` (gitignored) bzw. Supabase-Secrets
 
 ## Aktueller Stand
@@ -872,6 +872,44 @@ nur der Startbildschirm den Himmel und die Solo-Seite MUSSTE auf Dunkelviolett
 zurückstellen; heute wäre genau das der Fehler. Der Test nagelt die Stunde jetzt im
 Browser fest (`Date.prototype.getHours`) und prüft in jedem Lauf Tag UND Nacht — vorher
 verhielt er sich je nach Uhrzeit anders und prüfte nachts weniger.
+
+### Migration 0064: Menschen-Matchmaking, Rechte dicht, Duell-Schummelei zu (25.09.2026)
+
+Aus der App-Prüfung vom 24.09. Eingespielt, Trockenlauf vorher, alle
+Testskripte grün (neu: `test-matchmaking.mjs`, 30 Prüfungen).
+
+- **Zufallsduelle trafen nie auf Menschen** — die Warteschlange wurde nur ohne
+  aktive Bots benutzt, also nie. Jetzt nach Quizduell-Art: `start_duel` steigt
+  zuerst in die **offene Partie** eines anderen Menschen ein, der Runde 1 schon
+  gespielt hat (über Sprachen hinweg — jede Frage liegt in allen fünf vor).
+  Sonst entsteht eine offene Partie mit `player_b = null`; man spielt sofort,
+  danach hat ein Mensch **10 Minuten** (steht in `bot_due_at`), dann setzt
+  `fill_open_match` einen Bot ein. Eine offene Suche je Spieler; weitere Duelle
+  gehen sofort gegen Bots. `match_queue` ist damit unbenutzt.
+- **Rechte:** `revoke … from public` entzog NICHT die direkten Rechte von
+  `anon`/`authenticated`. Gemessen: Ohne Anmeldung ließ sich `push_enqueue`
+  aufrufen (Push mit beliebigem Titel an jeden). Jetzt ist alles zu und nur die
+  15 Client-RPCs sind für `authenticated` freigegeben, dazu die
+  Default-Privileges. **Jede neue Client-RPC braucht ab jetzt ihr eigenes
+  `grant execute … to authenticated`**, sonst antwortet sie mit 42501.
+- `answer_duel` zählte eine zweite, richtige Antwort nach einer falschen mit.
+  `finish_solo_session`/`use_fifty_fifty` ohne Zeilensperre (XP/Joker doppelt).
+- **Ablauf:** täglich 03:23 UTC (`expire_stale_matches`). 7 Tage ohne Zug →
+  wer am Zug ist, verliert (`end_reason = forfeit_a/b`, mit Elo);
+  Freundschaftsduelle verfallen (`expired`); offene Suchen ohne gespielte
+  Runde 1 werden nach 3 Tagen gelöscht. Ohne Push.
+- `profiles.language` schrieb niemand; jetzt Trigger an `solo_sessions`,
+  `start_duel`, `challenge_friend` und der Client.
+
+⚠ **Das Nachholen von 0021 am 01.09. hat 0022/0036 teilweise zurückgedreht:**
+`challenge_friend` und `get_duel_round` standen wieder auf de/en. Drei Wochen
+lang schlug „Freund herausfordern" für ES/FR/PT fehl („unsupported language").
+**Merksatz: Wer eine alte Migration nachholt, spielt danach alle späteren nach,
+die dieselben Funktionen ersetzen — `create or replace` kennt keine Reihenfolge.**
+
+**Offen:** Edge Function `send-push` ist geändert (Texte ES/FR/PT, Token nur
+noch bei echtem „ungültig" löschen), aber **noch nicht veröffentlicht**:
+`npx supabase functions deploy send-push --project-ref hehrqqiobpbmmadmvpql --use-api`.
 
 ### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
 

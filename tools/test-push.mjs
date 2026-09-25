@@ -104,7 +104,13 @@ ok(String(platt?.message ?? '').includes('invalid platform'), 'unbekannte Plattf
 await rpc(A.H, 'register_push_token', { p_token: GERAET, p_platform: 'ios', p_lang: 'de' });
 
 console.log('\n--- Meldung bei Zugwechsel ---');
+// Bot-Weg erzwingen (siehe test-duel-flow.mjs): Platzhalter-Suche davor
+const sucht = await sql(`select count(*)::int as n from public.matches
+  where status = 'active' and player_b is null and turn = 'b' and player_a <> '${A.uid}';`);
+if (sucht[0]?.n > 0) throw new Error('Ein echter Spieler sucht gerade einen Gegner — später noch einmal.');
+await sql(`insert into public.matches (player_a, lang, status) values ('${A.uid}', 'de', 'active');`);
 const start = await rpc(A.H, 'start_duel', { p_lang: 'de' });
+await sql(`delete from public.matches where player_a = '${A.uid}' and player_b is null;`);
 const M = start.match_id;
 ok(!!M, `Partie angelegt (Gegner ist Bot: ${start.opponent_is_bot})`);
 

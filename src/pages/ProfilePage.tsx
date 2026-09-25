@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { Bell, BellOff, Sparkles } from 'lucide-react';
+import { Bell, BellOff, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
 import AppShell, { PageHeader } from '../components/AppShell';
-import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, webPushMoeglich } from '../lib/push';
+import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, pushIstAn, webPushMoeglich } from '../lib/push';
+import { adConsentAenderbar, changeAdConsent } from '../lib/ads';
 import {
   kaeufeWiederherstellen,
   kaufMoeglich,
@@ -29,8 +30,14 @@ function PushSchalter() {
   const [busy, setBusy] = useState(false);
   const [hinweis, setHinweis] = useState<string | null>(null);
 
+  // Vorher nur im Browser gelesen — nativ stand der Schalter nach jedem
+  // Start auf „aus", obwohl Benachrichtigungen ankamen.
   useEffect(() => {
-    if (!istNativ() && webPushMoeglich()) setAn(Notification.permission === 'granted');
+    let aktiv = true;
+    void pushIstAn().then((wert) => aktiv && setAn(wert));
+    return () => {
+      aktiv = false;
+    };
   }, []);
 
   const moeglich = istNativ() || webPushMoeglich();
@@ -40,13 +47,17 @@ function PushSchalter() {
     setHinweis(null);
     try {
       if (an) {
-        await pushAbmelden();
+        await pushAbmelden(true);
         setAn(false);
         setHinweis(t('push.aus'));
       } else {
         const r = await pushAnmelden(datenSprache());
         setAn(r.ok);
-        setHinweis(r.ok ? t('push.an') : r.text);
+        setHinweis(
+          r.ok
+            ? t('push.an')
+            : `${t(`push.fehler.${r.grund}`)}${r.grund === 'fehler' && r.detail ? ` [${r.detail}]` : ''}`
+        );
       }
     } finally {
       setBusy(false);
@@ -148,7 +159,13 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
         // kaputten Kauf nicht zu unterscheiden (06.08.26).
         setHinweis(`${t('kauf.abgebrochen')}${r.detail ? ` [${r.detail}]` : ''}`);
       } else {
-        setHinweis(`${r.text}${r.detail ? ` [${r.detail}]` : ''}`);
+        // Gescheitertes Wiederherstellen hat einen eigenen Satz — „Kauf
+        // fehlgeschlagen" wäre dort irreführend.
+        const satz =
+          r.grund === 'fehler' && was === 'wiederherstellen'
+            ? t('kauf.fehler.wiederherstellen')
+            : t(`kauf.fehler.${r.grund}`);
+        setHinweis(`${satz}${r.detail ? ` [${r.detail}]` : ''}`);
       }
     } finally {
       setBusy(false);
@@ -189,10 +206,51 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
   );
 }
 
+/**
+ * Werbe-Einwilligung nachträglich ändern oder widerrufen.
+ *
+ * Die DSGVO verlangt, dass der Widerruf so einfach ist wie die Erteilung —
+ * der UMP-Dialog kam bisher aber nur einmal beim ersten Start. Erscheint nur,
+ * wenn das Anzeigen-SDK bereit ist und UMP für diese Region einen Einstieg
+ * verlangt; im Browser gibt es keine Werbung und damit nichts zu ändern.
+ */
+function WerbeEinwilligung() {
+  const { t } = useTranslation();
+  const [sichtbar, setSichtbar] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let aktiv = true;
+    void adConsentAenderbar().then((ja) => aktiv && setSichtbar(ja));
+    return () => {
+      aktiv = false;
+    };
+  }, []);
+
+  if (!sichtbar) return null;
+
+  return (
+    <button
+      onClick={() => {
+        setBusy(true);
+        void changeAdConsent().finally(() => setBusy(false));
+      }}
+      disabled={busy}
+      className="glas p-5 flex items-center gap-3.5 text-left disabled:opacity-50"
+    >
+      <ShieldCheck size={22} className="shrink-0 fein" strokeWidth={2} />
+      <div className="flex-1 min-w-0">
+        <div className="text-[15px] font-semibold">{t('profile.adConsent')}</div>
+        <div className="text-xs leise">{t('profile.adConsentHint')}</div>
+      </div>
+    </button>
+  );
+}
+
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { profile, signOut, deleteAccount } = useAuth();
+  const { profile, signOut, deleteAccount, saveLanguage } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -200,6 +258,10 @@ export default function ProfilePage() {
   const changeLanguage = (code: string) => {
     i18n.changeLanguage(code);
     localStorage.setItem('language', code);
+    // Auch ins Profil: Der Server wählt danach die Sprache der Duellfragen.
+    // datenSprache() statt `code`, damit eine Sprache ohne Fragen in der
+    // Datenbank dort nicht landet.
+    saveLanguage(datenSprache());
   };
 
   // Beim Abmelden muss das Gerätetoken weg. Sonst bekäme der Nächste, der sich
@@ -288,6 +350,7 @@ export default function ProfilePage() {
 
       <PushSchalter />
       <WerbungEntfernen userId={profile?.id ?? null} />
+      <WerbeEinwilligung />
 
       <button onClick={abmelden} className="knopf-rand py-3.5 mt-2 text-[15px]">
         {t('profile.logout')}

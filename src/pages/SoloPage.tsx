@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { datenSprache } from '../i18n';
+import { appSprache, datenSprache } from '../i18n';
 import { ArrowRight, Check, ChevronRight, Flag, Flame, Lightbulb, RotateCcw, Scissors, Share2, Trophy, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitial } from '../lib/ads';
@@ -13,11 +13,12 @@ import {
   answerSolo,
   dailyLeaderboard,
   fetchCategories,
+  fiftyFifty,
   finishSolo,
+  kategorieName,
   reportQuestion,
   startDaily,
   startSolo,
-  useFiftyFifty,
   type AnswerResult,
   type Category,
   type LeaderboardRow,
@@ -89,6 +90,8 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   }, [daily, lang, t]);
 
   const current = questions[index];
+  // Anzeige, nicht Datenbank: deshalb appSprache(), nicht `lang`.
+  const katName = kategorieName(category, appSprache());
 
   async function begin(difficulty: number) {
     if (!category) return;
@@ -115,6 +118,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   async function pick(option: number) {
     if (!sessionId || !current || picked !== null) return;
     setPicked(option);
+    setError(null);
     try {
       const res = await answerSolo(sessionId, current.id, option);
       setFeedback(res);
@@ -126,12 +130,20 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   }
 
   async function joker() {
-    if (!sessionId || !current || jokerUsed || picked !== null) return;
+    if (!sessionId || !current || jokerUsed || picked !== null || busy) return;
+    setBusy(true);
+    setError(null);
     try {
-      setHidden(await useFiftyFifty(sessionId, current.id));
+      setHidden(await fiftyFifty(sessionId, current.id));
+      // Erst nach Erfolg verbraucht. Vorher galt der Joker auch bei einem
+      // Netzfehler als benutzt — der Spieler verlor ihn, ohne dass etwas
+      // wegfiel. Ob er serverseitig schon verbucht ist, entscheidet ohnehin
+      // die RPC beim nächsten Versuch.
       setJokerUsed(true);
     } catch {
-      setJokerUsed(true);
+      setError(t('common.error'));
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -143,6 +155,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     }
     if (!sessionId) return;
     setBusy(true);
+    setError(null);
     try {
       const xpBefore = profile?.xp ?? 0;
       const res = await finishSolo(sessionId);
@@ -180,14 +193,13 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       : t('solo.shareText', {
           correct: result.correct,
           total: result.total,
-          category: lang === 'en' ? category?.name_en : category?.name_de,
+          category: katName,
         });
     if (navigator.share) navigator.share({ text }).catch(() => {});
     else navigator.clipboard?.writeText(text);
   }
 
   const farbe = kategorieFarbe(category?.slug);
-  const katName = lang === 'en' ? category?.name_en : category?.name_de;
 
   /** Ein Segment je Frage: grün/rot für beantwortete, leer für offene.
    *  Ersetzt den 4-px-Faden, der weder Stand noch Restlänge verriet. */
@@ -239,7 +251,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
                 <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[5px]" style={{ background: f }} />
                 <span aria-hidden className="w-[22px] h-[22px] rounded-[7px]" style={{ background: f, opacity: 0.18 }} />
                 <span className="text-sm font-semibold leading-tight tracking-[-0.01em]">
-                  {lang === 'en' ? c.name_en : c.name_de}
+                  {kategorieName(c, appSprache())}
                 </span>
               </button>
             );
@@ -422,7 +434,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     <AppShell>
       {/* Kopf nennt jetzt Serie und Stufe — vorher stand dort nur „3 / 10" */}
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate('/')} className="p-1 -ml-1 shrink-0" aria-label="back">
+        <button onClick={() => navigate('/')} className="p-1 -ml-1 shrink-0" aria-label={t('common.back')}>
           <ArrowRight className="w-[22px] h-[22px] rotate-180" strokeWidth={2.2} />
         </button>
         <span className="glas text-[13px] font-semibold px-3 py-1 rounded-full truncate">
@@ -494,9 +506,15 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
         })}
       </div>
 
+      {/* Fehler während der Runde (Antwort, Joker, Abschluss) standen vorher
+          nur im State — sichtbar war davon nichts, der Knopf leuchtete bloß
+          wieder auf. */}
+      {error && <Notice>{error}</Notice>}
+
       {picked === null && !jokerUsed && (
         <button
           onClick={joker}
+          disabled={busy}
           className="mt-4 w-full knopf-rand py-3 text-sm flex items-center justify-center gap-2"
         >
           <Scissors className="w-4 h-4" />

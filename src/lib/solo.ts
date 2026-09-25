@@ -8,6 +8,17 @@ export interface Category {
   sort_order: number;
 }
 
+/**
+ * Anzeigename einer Kategorie. Die Tabelle kennt nur Deutsch und Englisch —
+ * alle anderen Sprachen bekommen den englischen Namen. Vorher stand in den
+ * Seiten `lang === 'en' ? name_en : name_de`, und ein spanisches Gerät sah
+ * deutsche Serientitel („Detektiv Conan").
+ */
+export function kategorieName(c: Pick<Category, 'name_de' | 'name_en'> | null | undefined, lang: string): string | undefined {
+  if (!c) return undefined;
+  return lang === 'de' ? c.name_de : c.name_en;
+}
+
 export interface SoloQuestion {
   id: string;
   type: 'mc' | 'who_am_i' | 'emoji' | 'image';
@@ -83,8 +94,10 @@ export async function finishSolo(sessionId: string): Promise<SoloResult> {
 }
 
 /** 50:50-Joker. Der Server entscheidet, welche zwei falschen Antworten fallen —
- *  der Client kennt die Lösung nicht. Einmal pro Runde. */
-export async function useFiftyFifty(sessionId: string, questionId: string): Promise<number[]> {
+ *  der Client kennt die Lösung nicht. Einmal pro Runde.
+ *  Hieß früher `useFiftyFifty` — das `use`-Präfix hielt der Linter für einen
+ *  React-Hook und meldete jeden Aufruf in einer async-Funktion als Regelverstoß. */
+export async function fiftyFifty(sessionId: string, questionId: string): Promise<number[]> {
   const { data, error } = await supabase.rpc('use_fifty_fifty', {
     p_session: sessionId,
     p_question: questionId,

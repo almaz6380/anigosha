@@ -46,9 +46,24 @@ const rpc = async (fn, body) =>
 const elo = async () =>
   (await (await fetch(`${url}/rest/v1/profiles?select=elo&id=eq.${uid}`, { headers: H })).json())[0].elo;
 
+// Seit 0064 sucht start_duel zuerst einen MENSCHEN (offene Partie), und die
+// erste eigene Suche wartet 10 Minuten auf einen. Dieser Test prüft den
+// Bot-Weg: Ein Platzhalter mit ungespielter Runde 1 zählt als „ich suche
+// schon" — dann gibt es sofort einen Bot. Den Menschen-Weg prüft
+// test-matchmaking.mjs. Sucht gerade ein echter Spieler, bricht der Test ab,
+// statt ihm ein Testkonto als Gegner unterzuschieben.
+const fremd = await sql(`select count(*)::int as n from public.matches
+  where status = 'active' and player_b is null and turn = 'b' and player_a <> '${uid}';`);
+if (fremd[0]?.n > 0) {
+  console.log('Abbruch: Ein echter Spieler sucht gerade einen Gegner — später noch einmal.');
+  process.exit(1);
+}
+await sql(`insert into public.matches (player_a, lang, status) values ('${uid}', 'de', 'active');`);
+
 console.log('--- Duell starten ---');
 const eloVorher = await elo();
 const start = await rpc('start_duel', { p_lang: 'de' });
+await sql(`delete from public.matches where player_a = '${uid}' and player_b is null;`);
 ok(!!start.match_id, `Partie angelegt (Gegner ist Bot: ${start.opponent_is_bot})`);
 const M = start.match_id;
 

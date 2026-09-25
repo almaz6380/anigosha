@@ -15,6 +15,8 @@ export const startSolo = async () => ({ session_id: 's1', questions: Array.from(
 export const startDaily = async () => ({ session_id: 's1', already_done: false, questions: Array.from({ length: 5 }, (_, i) => ({ ...FRAGE, id: 'q' + i })) });
 export const answerSolo = async () => ({ correct: false, correct_index: 3, explanation: 'Der Name setzt sich aus zwei berühmten Krimiautoren zusammen.', counted: true });
 export const finishSolo = async () => ({ correct: 8, total: 10, xp: 120, replay: false, streak: 8 });
-export const useFiftyFifty = async () => [1, 2];
+export const fiftyFifty = async () => [1, 2];
 export const reportQuestion = async () => {};
 export const dailyLeaderboard = async () => [];
+export const kategorieName = (c: { name_de: string; name_en: string } | null | undefined, lang: string) =>
+  c ? (lang === 'de' ? c.name_de : c.name_en) : undefined;
