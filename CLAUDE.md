@@ -598,12 +598,12 @@ Schritt „Versionsnummer anzeigen", aber erst der Upload ganz am Ende faellt da
 Dasselbe gilt fuer iOS: `CURRENT_PROJECT_VERSION` muss ueber der hoechsten bereits
 hochgeladenen Build-Nummer liegen — siehe die Falle mit Build 13 weiter unten.
 
-### M5 Release — Stand 02.09.2026 (per API gemessen, nicht fortgeschrieben)
+### M5 Release — Stand 25.09.2026 (per Protokoll gemessen, nicht fortgeschrieben)
 
 | | App Store | Google Play |
 |---|---|---|
-| Live | **1.0 READY_FOR_SALE** mit Build 15 — Apple hat freigegeben | vc4 in Produktion |
-| In Arbeit | **1.1.1 mit Build 18, am 07.09. eingereicht — WAITING_FOR_REVIEW** (1.1/Build 17 zurueckgezogen) | **1.1.1 / vc8 seit 06.09. auf `production`** |
+| Live | 1.1.1 / Build 18 (Freigabe nicht erneut per `status` geprüft) | **1.1.2 / vc9 seit 25.09., 17:12 UTC auf `production`**, an alle |
+| In Arbeit | **1.1.2 / Build 19 am 25.09. eingereicht — WAITING_FOR_REVIEW**, Einreichung `bfffcf64` | — |
 | Kauf | `anigosha_no_ads` **APPROVED** — faehrt nicht mehr mit, ist durch | funktioniert, am Geraet bestaetigt |
 
 ⚠ **Diese Tabelle stand bis zum 02.09. auf dem 13.08.: „1.0 Build 15 in Pruefung".**
@@ -922,6 +922,36 @@ Studio (für das SDK), Runner als Dienst. Der Mac muss während des Builds wach 
 Die Workflows wurden dafür so umgebaut, dass sie auf einem privaten Rechner nichts
 Eigenes anfassen (kein `rm -rf ~/.appstoreconnect` mehr, nichts unter `/tmp`,
 Schlüsselbund-Suchliste wird wiederhergestellt).
+
+**Gilt für jede Sitzung, nicht nur die, die es eingerichtet hat** — die Runner
+laufen als Dienst auf Josefs MacBook Air, die Workflows liegen auf `main`.
+Stand 25.09.:
+
+| Repo | Runner | Build + Upload auf dem Mac | Einreichen / Produktion auf dem Mac |
+|---|---|---|---|
+| anigosha | ✅ | ✅ | ✅ (`App Store Connect`, `Play promote` haben `laeufer`) |
+| mahjong-app, swaply, mypeak (= „FullRep") | ✅ | ✅ | ❌ noch GitHub-Läufer — beim ersten Release dort nachziehen, Muster wie hier |
+| geschichte | ❌ **bewusst nicht** — öffentliches Repo | — | — |
+
+**Repos mit Runner dürfen nie öffentlich werden** — ein Fork-PR könnte sonst
+Code auf Josefs Mac ausführen.
+
+**Der Upload-Artefakt-Schritt hat `continue-on-error: true`.** Am 25.09. brachen
+beide Release-Läufe nach „EXPORT SUCCEEDED" mit *„Artifact storage quota has been
+hit"* ab — der Schritt stand vor dem Store-Upload, also ging nichts raus. Das
+Artefakt ist Bequemlichkeit, der Upload nicht.
+
+**Kompletter Release ohne Handgriff in ASC — so lief 1.1.2 am 25.09.** (alles
+`laeufer: mac`, jeder Lauf mit Josefs „ja"):
+
+1. `iOS Release` / `Android Release` mit `upload: true` (Android erst `internal`)
+2. ASC `version-anlegen` (`nummer` = Versionsstring, **neuer Modus**; weigert sich,
+   wenn schon eine offene Version existiert) → `build <nr>` → `texte-schreiben`
+   (whatsNew vorher in `store-assets/asc-texte.json`) → `einreichen`
+3. `Play promote` auf `production`
+
+Geht nur so glatt, solange **kein Kaufprodukt einreichbar** ist (sonst bricht
+`einreichen` ab, s. u.) und die App-Datenschutz-Angabe zum Binary passt.
 
 ### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
 
@@ -1375,6 +1405,7 @@ Produktnummern über `nummer`, Trockenlauf über `dry_run`):
 | Modus | Was er tut |
 |---|---|
 | `status` | liest nur: Versionen, Builds, **einmalige Kaeufe**, Screenshots, offene Einreichungen |
+| `version-anlegen` | legt die neue App-Store-Version `nummer` an (z. B. `1.1.2`) — nur wenn keine offene Version existiert |
 | `build` | weist Build `nummer` der offenen Version zu |
 | `testflight` | weist Build `nummer` der internen TestFlight-Gruppe zu — **ohne** die Store-Version anzufassen |
 | `sandbox` | liest nur: Sandbox-Testkonten (antwortet mit 404 — Apple gibt sie per API nicht heraus) |
