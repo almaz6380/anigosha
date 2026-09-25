@@ -36,6 +36,7 @@ on:
           - status
           - build
           - versionsnummer
+          - version-anlegen
           - testflight
           - sandbox
           - kauf-einreichen
@@ -55,7 +56,7 @@ on:
           - pruefnotiz
         default: status
       nummer:
-        description: 'Build-Nummer (build/testflight) bzw. Versionsnummer (versionsnummer)'
+        description: 'Build-Nummer (build/testflight) bzw. Versionsnummer (versionsnummer, version-anlegen)'
         type: string
         default: ''
       dry_run:
@@ -96,7 +97,7 @@ jobs:
 
           # --build und --testflight brauchen eine Nummer, die uebrigen nicht.
           # Der Trockenlauf gilt nur fuer die schreibenden Befehle.
-          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ] || [ "$MODE" = "versionsnummer" ]; then
+          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ] || [ "$MODE" = "versionsnummer" ] || [ "$MODE" = "version-anlegen" ]; then
             if [ -z "$NUMMER" ]; then
               echo "::error::Modus $MODE braucht die Eingabe 'nummer'."
               exit 1

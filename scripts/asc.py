@@ -309,6 +309,46 @@ def setze_versionsnummer(tok, nummer):
         print(f'  gesetzt: {res["data"]["attributes"].get("versionString")}')
 
 
+def version_anlegen(tok, nummer):
+    """Neue App-Store-Version anlegen (z. B. 1.1.2), wenn keine offene existiert.
+
+    Nach einer Freigabe steht die alte Version auf READY_FOR_SALE, und ohne
+    offene Version scheitern --build, --texte-schreiben und --einreichen mit
+    "Keine offene Version gefunden". Bisher ging das nur per Klick auf
+    "+ Version" in ASC. Apple uebernimmt Beschreibung, Keywords und Bilder der
+    Vorgaengerversion; leer bleibt nur whatsNew (danach --texte-schreiben).
+
+    ASC laesst nur EINE bearbeitbare Version zu. Gibt es schon eine, wird
+    nichts angelegt — dann ist --versionsnummer der richtige Weg.
+    """
+    aid = app_id(tok)
+    vers = api(tok, f'apps/{aid}/appStoreVersions?limit=10')
+    fertig = {'READY_FOR_SALE', 'REPLACED_BY_NEW_VERSION',
+              'REMOVED_FROM_SALE', 'DEVELOPER_REMOVED_FROM_SALE'}
+    for v in vers.get('data', []):
+        at = v['attributes']
+        if at.get('versionString') == nummer:
+            print(f'  Version {nummer} gibt es schon ({at.get("appStoreState")}) — nichts zu tun')
+            return
+        if at.get('appStoreState') not in fertig:
+            sys.exit(f'  Es gibt schon eine offene Version {at.get("versionString")} '
+                     f'({at.get("appStoreState")}). Apple erlaubt nur eine — '
+                     f'umbenennen mit --versionsnummer {nummer}.')
+    print(f'  lege Version {nummer} (iOS) an')
+    if TROCKEN:
+        print('  [trocken] wuerde angelegt')
+        return
+    res = api(tok, 'appStoreVersions', 'POST', {
+        'data': {'type': 'appStoreVersions',
+                 'attributes': {'platform': 'IOS', 'versionString': nummer},
+                 'relationships': {'app': {'data': {'type': 'apps', 'id': aid}}}},
+    }, fatal=False)
+    if res.get('_fehler'):
+        sys.exit(f'  FEHLER: {fehler_text(res)}')
+    at = res['data']['attributes']
+    print(f'  angelegt: {at.get("versionString")} ({at.get("appStoreState")})')
+
+
 def testflight_zuweisen(tok, nummer):
     """Build der/den internen TestFlight-Gruppe(n) zuweisen.
 
@@ -1464,6 +1504,8 @@ def main():
                    help='Diesen Build der offenen Version zuweisen')
     p.add_argument('--versionsnummer', metavar='NR',
                    help='Offene Version umbenennen, z. B. 1.1.1')
+    p.add_argument('--version-anlegen', metavar='NR',
+                   help='Neue Version anlegen, z. B. 1.1.2 (nur ohne offene Version)')
     p.add_argument('--testflight', metavar='NR',
                    help='Diesen Build der internen TestFlight-Gruppe zuweisen')
     p.add_argument('--sandbox', action='store_true',
@@ -1517,7 +1559,7 @@ def main():
     TROCKEN = a.dry_run
     TROTZDEM = a.trotzdem
 
-    tat = [a.status, a.name, a.build, a.versionsnummer, a.testflight, a.sandbox, a.kauf_einreichen,
+    tat = [a.status, a.name, a.build, a.versionsnummer, a.version_anlegen, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
            a.warum, a.texte_lesen, a.texte_sichern, a.texte_schreiben,
            a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
@@ -1548,6 +1590,8 @@ def main():
         setze_build(tok, a.build)
     if a.versionsnummer:
         setze_versionsnummer(tok, a.versionsnummer)
+    if a.version_anlegen:
+        version_anlegen(tok, a.version_anlegen)
     if a.testflight:
         testflight_zuweisen(tok, a.testflight)
     if a.sandbox:
