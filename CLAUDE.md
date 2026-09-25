@@ -932,7 +932,7 @@ Stand 25.09.:
 | anigosha | ✅ | ✅ | ✅ (`App Store Connect`, `Play promote` haben `laeufer`) |
 | mahjong-app | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `asc-submit`, `play-rollout`, `play-listing`, `store-texte`, `store-zahlen` |
 | swaply, mypeak (= „FullRep") | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `play-listing` (Android-Produktion geht dort über den `track` von `Android Release`) |
-| geschichte | ❌ **bewusst nicht** — öffentliches Repo | — | — |
+| geschichte | ✅ seit 25.09. abends (Repo dafür **privat** gestellt, GitHub Pages entfernt) | ✅ `iOS App`, `Android App` — nur noch auf Zuruf, kein push-Ausloeser mehr; AAB landet zusaetzlich in `~/Downloads` | — (kein Einreich-Workflow) |
 
 **Repos mit Runner dürfen nie öffentlich werden** — ein Fork-PR könnte sonst
 Code auf Josefs Mac ausführen.
