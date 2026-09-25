@@ -27,30 +27,35 @@ on:
         description: 'Nur zeigen, nichts an Google senden'
         type: boolean
         default: true
+      laeufer:
+        description: 'Wo laufen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
+        type: choice
+        default: 'github'
+        options: ['github', 'mac']
 
 permissions:
   contents: read
 
 jobs:
   promote:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Abhaengigkeiten
         run: |
-          python3 -m venv /tmp/venv
-          /tmp/venv/bin/pip install --quiet pyjwt cryptography
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet pyjwt cryptography
 
       - name: Stand vorher
         env:
           PLAY_KEY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           TRACK: ${{ inputs.track }}
         run: |
-          printf '%s' "$PLAY_KEY_JSON" > /tmp/play-key.json
-          PLAY_KEY=/tmp/play-key.json /tmp/venv/bin/python scripts/play-upload.py \
+          printf '%s' "$PLAY_KEY_JSON" > "$RUNNER_TEMP/play-key.json"
+          PLAY_KEY="$RUNNER_TEMP/play-key.json" "$RUNNER_TEMP/venv/bin/python" scripts/play-upload.py \
             --status --track "$TRACK"
-          rm -f /tmp/play-key.json
+          rm -f "$RUNNER_TEMP/play-key.json"
 
       - name: Hochstufen
         if: ${{ !inputs.dry_run }}
@@ -60,11 +65,11 @@ jobs:
           TRACK: ${{ inputs.track }}
           NOTES: ${{ inputs.notes }}
         run: |
-          printf '%s' "$PLAY_KEY_JSON" > /tmp/play-key.json
-          PLAY_KEY=/tmp/play-key.json /tmp/venv/bin/python scripts/play-upload.py \
+          printf '%s' "$PLAY_KEY_JSON" > "$RUNNER_TEMP/play-key.json"
+          PLAY_KEY="$RUNNER_TEMP/play-key.json" "$RUNNER_TEMP/venv/bin/python" scripts/play-upload.py \
             --promote "$VC" --track "$TRACK" --complete --notes "$NOTES"
-          rm -f /tmp/play-key.json
+          rm -f "$RUNNER_TEMP/play-key.json"
 
       - name: Aufraeumen
         if: always()
-        run: rm -f /tmp/play-key.json
+        run: rm -rf "$RUNNER_TEMP/play-key.json" "$RUNNER_TEMP/venv"
