@@ -7,6 +7,12 @@
 #
 # Hinweis: macOS-Laeufer verbrauchen 10x so viele Minuten wie Linux; der Lauf dauert
 # ~15-25 min. Das Einreichen zur Pruefung bleibt bewusst manuell (ASC).
+#
+# Laeufer „mac" = Josefs eigener Mac als Self-hosted Runner (docs/release-ci.md):
+# kostet keine GitHub-Minuten. Weil der Lauf dort auf einem PRIVATEN Rechner
+# stattfindet, faesst er nichts Eigenes an: eigener Wegwerf-Schluesselbund (die
+# Suchliste wird danach wiederhergestellt), Profil und API-Schluessel nur unter
+# $RUNNER_TEMP bzw. mit eindeutigem Namen, nichts unter ~/.appstoreconnect.
 name: iOS Release
 
 on:
@@ -16,6 +22,11 @@ on:
         description: 'Wirklich zu App Store Connect hochladen? (aus = nur bauen)'
         type: boolean
         default: false
+      laeufer:
+        description: 'Wo bauen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
+        type: choice
+        default: 'github'
+        options: ['github', 'mac']
 
 permissions:
   contents: read
@@ -23,8 +34,9 @@ permissions:
 jobs:
   build:
     # macos-26 bringt Xcode 26 mit. Apple verlangt seit 2026 mindestens das
-    # iOS-26-SDK fuer Uploads (sonst Fehler 90725).
-    runs-on: macos-26
+    # iOS-26-SDK fuer Uploads (sonst Fehler 90725) — auf dem eigenen Mac prueft
+    # das der Schritt „Xcode-Version" unten.
+    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'macos-26' }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +45,17 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
+
+      - name: Xcode-Version
+        run: |
+          X=$(xcodebuild -version | head -1)
+          echo "$X"
+          MAJOR=$(printf '%s' "$X" | awk '{print $2}' | cut -d. -f1)
+          if [ "${MAJOR:-0}" -lt 26 ]; then
+            echo "ABBRUCH: Xcode 26 oder neuer noetig — Apple nimmt Uploads mit"
+            echo "aelterem SDK nicht an (Fehler 90725). Xcode im App Store aktualisieren."
+            exit 1
+          fi
 
       - name: Abhaengigkeiten
         run: npm ci
@@ -81,6 +104,9 @@ jobs:
           set -euo pipefail
           KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
           KEYCHAIN_PW="$(openssl rand -base64 24)"
+          # Bisherige Suchliste merken — auf dem eigenen Mac stehen dort Josefs
+          # Schluesselbunde, die nach dem Lauf genau so wiederhergestellt werden.
+          security list-keychains -d user | sed 's/"//g' | xargs > "$RUNNER_TEMP/keychains-vorher.txt"
           security create-keychain -p "$KEYCHAIN_PW" "$KEYCHAIN"
           security set-keychain-settings -lut 21600 "$KEYCHAIN"
           security unlock-keychain -p "$KEYCHAIN_PW" "$KEYCHAIN"
@@ -93,9 +119,10 @@ jobs:
             -s -k "$KEYCHAIN_PW" "$KEYCHAIN" >/dev/null
           security list-keychains -d user -s "$KEYCHAIN" \
             $(security list-keychains -d user | sed s/\"//g)
+          # Eindeutiger Name, damit der Aufraeumschritt nur dieses Profil loescht.
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           printf '%s' "$PROFILE_B64" | tr -cd 'A-Za-z0-9+/=' | base64 -d \
-            > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+            > ~/Library/MobileDevice/Provisioning\ Profiles/anigosha-ci.mobileprovision
           rm -f "$RUNNER_TEMP/cert.p12"
 
       - name: ExportOptions schreiben
@@ -103,7 +130,7 @@ jobs:
           # provisioningProfiles ist bei signingStyle=manual PFLICHT — fehlt die
           # Zuordnung, weiss xcodebuild beim Export nicht, welches Profil zu
           # welcher Bundle-ID gehoert.
-          cat > /tmp/ExportOptions.plist <<'EOF'
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -141,7 +168,7 @@ jobs:
       - name: Exportieren
         run: |
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/App.xcarchive" \
-            -exportOptionsPlist /tmp/ExportOptions.plist -exportPath "$RUNNER_TEMP/export"
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -exportPath "$RUNNER_TEMP/export"
 
       - name: IPA als Artefakt ablegen
         uses: actions/upload-artifact@v4
@@ -157,13 +184,28 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
         run: |
-          mkdir -p ~/.appstoreconnect/private_keys
+          # Schluessel NICHT nach ~/.appstoreconnect: Auf dem eigenen Mac koennten
+          # dort eigene Schluessel liegen, und das fruehere `rm -rf` haette sie
+          # mitgenommen. altool sucht zusaetzlich in API_PRIVATE_KEYS_DIR.
+          export API_PRIVATE_KEYS_DIR="$RUNNER_TEMP/asc-keys"
+          mkdir -p "$API_PRIVATE_KEYS_DIR"
           printf '%s' "$ASC_KEY_P8_BASE64" | tr -cd 'A-Za-z0-9+/=' | base64 -d \
-            > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+            > "$API_PRIVATE_KEYS_DIR/AuthKey_$ASC_KEY_ID.p8"
           xcrun altool --upload-app -f "$RUNNER_TEMP/export/App.ipa" -t ios \
             --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
-          rm -rf ~/.appstoreconnect
+          rm -rf "$API_PRIVATE_KEYS_DIR"
 
-      - name: Schluesselbund aufraeumen
+      - name: Aufraeumen
+        # Auf GitHubs Rechnern waere das egal (die Maschine wird verworfen), auf
+        # dem eigenen Mac nicht: Zertifikat, Profil, API-Schluessel und IPA
+        # duerfen dort nicht liegen bleiben.
         if: always()
-        run: security delete-keychain "$RUNNER_TEMP/build.keychain-db" || true
+        run: |
+          security delete-keychain "$RUNNER_TEMP/build.keychain-db" 2>/dev/null || true
+          if [ -s "$RUNNER_TEMP/keychains-vorher.txt" ]; then
+            security list-keychains -d user -s $(cat "$RUNNER_TEMP/keychains-vorher.txt")
+          fi
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/anigosha-ci.mobileprovision
+          rm -rf "$RUNNER_TEMP/asc-keys" "$RUNNER_TEMP/cert.p12" "$RUNNER_TEMP/export" \
+                 "$RUNNER_TEMP/App.xcarchive" "$RUNNER_TEMP/ExportOptions.plist" \
+                 "$RUNNER_TEMP/keychains-vorher.txt"

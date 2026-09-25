@@ -912,6 +912,17 @@ noch bei echtem „ungültig" löschen); `test-push-versand` danach 8/8 grün.
 Client-Fixes am 25.09. nach `main` (Web live). **Store-Apps brauchen dafür einen
 neuen Build** — die Datenbank-Fixes wirken dort schon.
 
+### Release-Builds wahlweise auf dem eigenen Mac (25.09.2026)
+
+`iOS Release` und `Android Release` haben die Eingabe **`laeufer`**: `github`
+(Standard) oder `mac` = Josefs Mac als Self-hosted Runner — **kostet keine
+GitHub-Minuten**, die mehrfach knapp waren (macOS zählt zehnfach). Einrichtung
+und Regeln in `docs/release-ci.md`. Voraussetzung am Mac: Xcode ≥ 26, Android
+Studio (für das SDK), Runner als Dienst. Der Mac muss während des Builds wach sein.
+Die Workflows wurden dafür so umgebaut, dass sie auf einem privaten Rechner nichts
+Eigenes anfassen (kein `rm -rf ~/.appstoreconnect` mehr, nichts unter `/tmp`,
+Schlüsselbund-Suchliste wird wiederhergestellt).
+
 ### Migration 0021 eingespielt — Freundschaftsduell wieder heil (01.09.2026)
 
 Beim Durchlaufen der Testskripte fiel auf, dass `0021_freundesduell.sql` nur **halb** in

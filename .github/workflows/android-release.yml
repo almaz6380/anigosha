@@ -5,6 +5,11 @@
 # Einmalige Einrichtung: siehe docs/release-ci.md (fuenf Android-Secrets).
 # WICHTIG: versionCode in android/app/build.gradle vorher erhoehen — Play lehnt
 # einen bereits benutzten versionCode ab.
+#
+# Laeufer „mac" = Josefs eigener Mac als Self-hosted Runner (docs/release-ci.md):
+# kostet keine GitHub-Minuten, braucht dort aber das Android-SDK (kommt mit
+# Android Studio). Alle Schluessel liegen nur unter $RUNNER_TEMP und werden am
+# Ende geloescht — nichts unter /tmp, das andere Programme sehen koennten.
 name: Android Release
 
 on:
@@ -23,13 +28,18 @@ on:
         description: 'Wirklich zu Play hochladen? (aus = nur bauen und als Artefakt ablegen)'
         type: boolean
         default: false
+      laeufer:
+        description: 'Wo bauen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
+        type: choice
+        default: 'github'
+        options: ['github', 'mac']
 
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +52,23 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'   # Capacitor 8 / AGP 8.13 brauchen JDK 21
+
+      - name: Android-SDK finden
+        # GitHubs Ubuntu-Rechner setzen ANDROID_HOME selbst. Auf dem eigenen Mac
+        # liegt das SDK dort, wohin Android Studio es installiert.
+        run: |
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$SDK" ] && [ -d "$HOME/Library/Android/sdk" ]; then
+            SDK="$HOME/Library/Android/sdk"
+          fi
+          if [ -z "$SDK" ] || [ ! -d "$SDK" ]; then
+            echo "ABBRUCH: Kein Android-SDK gefunden. Auf dem Mac einmal Android Studio"
+            echo "installieren und starten — es legt das SDK unter ~/Library/Android/sdk an."
+            exit 1
+          fi
+          echo "Android-SDK: $SDK"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
 
       - name: Abhaengigkeiten
         run: npm ci
@@ -140,14 +167,16 @@ jobs:
           NOTES: ${{ inputs.notes }}
         run: |
           # Eigene venv: Ubuntu-Runner erlauben kein pip3 install ins System-Python.
-          python3 -m venv /tmp/venv
-          /tmp/venv/bin/pip install --quiet pyjwt cryptography
-          printf '%s' "$PLAY_KEY_JSON" > /tmp/play-key.json
-          PLAY_KEY=/tmp/play-key.json /tmp/venv/bin/python scripts/play-upload.py \
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet pyjwt cryptography
+          printf '%s' "$PLAY_KEY_JSON" > "$RUNNER_TEMP/play-key.json"
+          PLAY_KEY="$RUNNER_TEMP/play-key.json" "$RUNNER_TEMP/venv/bin/python" scripts/play-upload.py \
             --aab android/app/build/outputs/bundle/release/app-release.aab \
             --track "$TRACK" --complete --notes "$NOTES"
-          rm -f /tmp/play-key.json
+          rm -f "$RUNNER_TEMP/play-key.json"
 
       - name: Schluessel aufraeumen
         if: always()
-        run: rm -f android/upload-keystore.jks android/keystore.properties /tmp/play-key.json
+        run: |
+          rm -f android/upload-keystore.jks android/keystore.properties "$RUNNER_TEMP/play-key.json"
+          rm -rf "$RUNNER_TEMP/venv"

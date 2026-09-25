@@ -87,3 +87,36 @@ WELLbooked.
 - Android: `versionCode` in `android/app/build.gradle` erhöhen (aktuell 1)
 - iOS: `CURRENT_PROJECT_VERSION` im pbxproj erhöhen (2 Stellen)
 - DSGVO-Einwilligungsnachricht in AdMob muss **veröffentlicht** sein
+
+## Eigener Mac als Läufer (keine GitHub-Minuten)
+
+Beide Release-Workflows haben die Eingabe **`laeufer`**: `github` (Standard, kostet
+Minuten — macOS zählt zehnfach, ein iOS-Build also ~90–250 Minuten) oder `mac`
+(Josefs Mac als *Self-hosted Runner*, kostenlos und unbegrenzt).
+
+### Einmal einrichten (~20 Minuten, am Mac)
+
+1. **Xcode 26 oder neuer** — der iOS-Lauf prüft das und bricht sonst ab.
+2. **Android Studio** installieren und einmal starten. Der Einrichtungsassistent legt
+   das Android-SDK unter `~/Library/Android/sdk` an; der Workflow findet es dort selbst.
+   Danach muss Android Studio nie wieder geöffnet werden.
+3. GitHub → Repo `anigosha` → **Settings → Actions → Runners → New self-hosted runner**
+   → **macOS**. Die angezeigten Befehle im Terminal ausführen (Ordner anlegen,
+   herunterladen, `./config.sh --url … --token …`). Die Rückfragen mit Enter
+   bestätigen — die Standard-Labels `self-hosted` und `macOS` sind genau die, die
+   die Workflows erwarten.
+4. Als Dienst einrichten, damit er mit dem Mac startet:
+   `./svc.sh install && ./svc.sh start`
+5. Unter Settings → Actions → Runners steht der Mac jetzt als **Idle**.
+
+### Im Betrieb
+
+- **Der Mac muss an sein und darf nicht schlafen**, solange gebaut wird. Ist er aus,
+  wartet der Auftrag, bis er wieder erreichbar ist.
+- Der Lauf fasst nichts Eigenes an: Zertifikat in einem Wegwerf-Schlüsselbund (die
+  Suchliste wird danach wiederhergestellt), Profil als `anigosha-ci.mobileprovision`
+  (wird gelöscht), API- und Play-Schlüssel nur unter `$RUNNER_TEMP`.
+- ⚠ **Das Repo darf nie öffentlich werden**, solange der Runner angemeldet ist: Jeder
+  Workflow-Lauf führt Code aus dem Repo auf dem Mac aus.
+- Abmelden: Runner-Ordner → `./svc.sh stop && ./svc.sh uninstall`, dann auf GitHub
+  unter Runners entfernen.
