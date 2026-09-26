@@ -17,9 +17,10 @@ werden dürfen — die Regel im Kopf von `tools/post-bild.mjs` verbietet Bilder
 **erkennbarer** Figuren, auch KI-erzeugte, weil daran das ganze Entwicklerkonto
 hängt.
 
-⚠ **Es sind KI-erzeugte Menschen.** Jede Karte, die dieses Bild trägt, braucht das
-AI-Wasserzeichen — dieselbe Regel wie bei FullReps Trainingsbildern. Der Generator
-setzt es automatisch; wer das aushebelt, liefert ein ungekennzeichnetes KI-Bild aus.
+⚠ **Anime, kein realistischer Mensch → KEIN AI-Plättchen** (Josef, 26.09.2026: „ki
+wasserzeichen nur wenn realistische personen sichtbar sind!!! Nicht bei anigosha wenn nur der
+animejunge zu sehen ist"). Bis dahin setzten die Generatoren das Plättchen automatisch; die
+Leitplanke im Tageslauf (`wellapps-social/tools/social/vorflug.mjs`) lehnt es jetzt ab.
 
 ## Zwei Verwendungen, zwei Behandlungen (21.09.2026)
 

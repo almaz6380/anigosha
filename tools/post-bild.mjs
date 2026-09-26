@@ -555,13 +555,11 @@ h1.frei{font-size:${freieGroesse(frei?.text ?? '')}px;line-height:1.2}
    auf der App-Schau traegt das Einzelbild die Flaeche, nicht der Verlauf. */
 body.schau .glow{opacity:.34}
 body.schau .vignette{opacity:.6}
-/* ⚠ KI-Kennzeichnung. Die Figuren im Spot sind KI-erzeugt; eine Karte, die
-   sie zeigt, muss das sagen. Siehe store-assets/social/hintergrund/HERKUNFT.md. */
-.kiMarke{position:absolute;right:26px;bottom:24px;z-index:4;
-  background:rgba(10,6,22,.62);border:1px solid rgba(237,233,254,.3);
-  border-radius:9px;padding:6px 11px;font-size:19px;font-weight:700;
-  letter-spacing:.1em;color:rgba(237,233,254,.85)}
-.kiMarke b{font-weight:700;margin-right:-.1em}
+/* ⚠ KEIN AI-Plaettchen (Josef, 26.09.2026: „ki wasserzeichen nur wenn
+   realistische personen sichtbar sind!!! Nicht bei anigosha wenn nur der
+   animejunge zu sehen ist"). Alles, was Anigosha zeigt — Junge, Spot-Bild,
+   beide Figuren —, ist Anime, kein realistischer Mensch. Bis dahin sass hier
+   eine .kiMarke. */
 /* --- Die beiden Figuren als Wasserzeichen (Josef, 21.09.2026) ---
    „bei den anigoshaposts gerne im hintergrund als wasserzeichen ein bild von
    den beiden figuren".
@@ -634,8 +632,6 @@ body.mitFigur .inhalt{padding-right:290px}
    die beiden Store-Abzeichen hinter ihr durch. Am gerenderten JPEG gesehen,
    nicht bedacht. */
 body.mitFigur .fuss{padding-right:290px}
-/* Das AI-Plaettchen sitzt sonst rechts unten — also genau auf der Figur. */
-body.mitFigur .kiMarke{right:auto;left:26px}
 /* Der Fusstext brach mit dem schmaleren Platz auf zwei Zeilen um
    („Anigosha · Anime Quiz & / Duelle") — am gerenderten JPEG gesehen. Eine
    Nummer kleiner, und er steht wieder in einer Zeile. */
@@ -656,7 +652,7 @@ ${randfigur ? `<div class="figur" style="background-image:url(data:image/png;bas
 <div class="kopf"><img src="${logo}"><span>ANIGOSHA</span></div>
 <div class="inhalt">${mitte}</div>
 <div class="fuss"><span>${esc(T.fuss)}</span><span class="badges">${badgesHtml()}</span></div>
-${hintergrund || figuren || randfigur ? '<div class="kiMarke"><b>AI</b></div>' : ''}`;
+`;
 }
 
 // --- Lauf -------------------------------------------------------------------
@@ -809,9 +805,9 @@ if (process.argv.includes('--schau-json')) {
       .filter((f) => existsSync(f)),
     hintergrund: existsSync(join(WURZEL, 'store-assets', 'social', 'hintergrund', 'spot-start.jpg'))
       ? join(WURZEL, 'store-assets', 'social', 'hintergrund', 'spot-start.jpg') : null,
-    // ⚠ Das AI-Plaettchen gehoert ZWINGEND aufs Reel, sobald der Hintergrund
-    // mitfaehrt: Die Figuren im Spot sind KI-erzeugt. Siehe
-    // store-assets/social/hintergrund/HERKUNFT.md.
+    // ⚠ KEIN AI-Plaettchen: Das Spot-Bild ist Anime, kein realistischer Mensch
+    // (Josef, 26.09.2026). Der Reel-Generator setzt es nur bei
+    // `hintergrundRealistisch: true`, das hier bewusst fehlt.
     fuss: TEXTE[a.lang].fuss,
     optik: {
       grund: '#0f0a1e',
@@ -952,8 +948,8 @@ ZUR KONTROLLE (nicht posten)
 ----------------------------
 Zeigt die App selbst — keine Frage, keine Loesung, keine Erklaerung.
 Bildschirme: ${schau.bilder.join(', ')} (store-assets/ios/${a.lang})
-Medienherkunft: Screenshots + Einzelbild aus dem eigenen Werbespot (KI-erzeugt,
-als AI gekennzeichnet — siehe store-assets/social/hintergrund/HERKUNFT.md)
+Medienherkunft: Screenshots + Einzelbild aus dem eigenen Werbespot (Anime, KI-erzeugt,
+kein Plättchen — siehe store-assets/social/hintergrund/HERKUNFT.md)
 
 Store-Satz im Bild: ${storeSatz}
 `);

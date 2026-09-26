@@ -40,8 +40,10 @@ Anime-Figur dar** — das ist der Grund, warum er verwendet werden darf. Die
 Regel im Kopf von `tools/post-bild.mjs` verbietet Bilder **erkennbarer**
 Figuren, auch KI-erzeugte.
 
-⚠ **Es ist ein KI-erzeugter Mensch.** `--figur` schaltet das AI-Plättchen
-automatisch mit.
+⚠ **Anime, kein realistischer Mensch → KEIN AI-Plättchen** (Josef, 26.09.2026: „ki
+wasserzeichen nur wenn realistische personen sichtbar sind!!! Nicht bei anigosha wenn nur der
+animejunge zu sehen ist"). Bis dahin setzten die Generatoren das Plättchen automatisch; die
+Leitplanke im Tageslauf (`wellapps-social/tools/social/vorflug.mjs`) lehnt es jetzt ab.
 
 Das Vorbild für Aussehen und Kleidung ist
 `tools/reels/spot/referenz/0-charakterblatt.jpg`.
