@@ -1,0 +1,59 @@
+# Kopiert die Store-Schluessel aus diesem Repo nach almaz6380/loonpop (03.10.2026).
+#
+# Warum ueber einen Workflow: GitHub laesst Secrets nicht auslesen und nicht
+# zwischen Repos kopieren. Nur ein Lauf HIER sieht die Werte — und kann sie mit
+# einem Token, das Schreibrecht auf die loonpop-Secrets hat, dort eintragen.
+# Josef war dabei nicht am Mac; so geht es ganz ohne Dateien, vom Handy aus.
+#
+# Einmal noetig: Secret LOONPOP_TOKEN in diesem Repo = fein granulares
+# GitHub-Token, nur fuer almaz6380/Loonpop, Recht „Secrets: Read and write“.
+#
+# ⚠ NICHT kopiert wird IOS_PROVISIONING_PROFILE_BASE64: Das Profil gehoert zu
+# at.gallab.animequiz. loonpop holt sein eigenes („loonpop AppStore“) beim
+# Bauen ueber die App-Store-Connect-API.
+# Nur von Hand. Die Werte erscheinen nie im Protokoll, nur ihre Namen.
+name: Schluessel nach loonpop
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kopieren:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Eintragen
+        env:
+          GH_TOKEN: ${{ secrets.LOONPOP_TOKEN }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          IOS_CERT_P12_BASE64: ${{ secrets.IOS_CERT_P12_BASE64 }}
+          IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "Secret LOONPOP_TOKEN fehlt in diesem Repo." >&2
+            exit 1
+          fi
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS \
+                      ANDROID_KEY_PASSWORD PLAY_SERVICE_ACCOUNT_JSON IOS_CERT_P12_BASE64 \
+                      IOS_CERT_PASSWORD ASC_KEY_P8_BASE64 ASC_KEY_ID ASC_ISSUER_ID; do
+            wert="${!name}"
+            if [ -z "$wert" ]; then
+              echo "  fehlt hier, uebersprungen: $name"
+              continue
+            fi
+            printf '%s' "$wert" | gh secret set "$name" -R almaz6380/Loonpop
+            echo "  eingetragen: $name"
+          done
+          echo
+          echo "Jetzt in loonpop vorhanden:"
+          gh secret list -R almaz6380/Loonpop | awk '{print "  " $1}'
