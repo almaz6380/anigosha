@@ -70,6 +70,45 @@ geschlossen, `LAST_UPDATED` auf 17.09.2026:
 
 ODR-Link raus (Plattform seit 20.07.2025 eingestellt). `tsc` grün.
 
+## Rechtsprüfung umgesetzt (04.10.2026, 1.1.3 vorbereitet, Branch `claude/rechtspruefung-fixes`)
+
+Aus einer Rechts- und Store-Prüfung. Code fertig, **nichts gebaut, nichts
+eingereicht, keine Migration**. Versionen stehen auf **iOS 1.1.3 / Build 20,
+Android 1.1.3 / vc10**; whatsNew in `store-assets/asc-texte.json` (alle sieben
+Sprachen) ist nachgezogen, die Play-Hinweise gehen wie immer als Workflow-Eingabe.
+
+| Was | Wo |
+|---|---|
+| Löschseite + Speicherdauer: Duelle werden mitgelöscht (`player_a/b … on delete cascade` in 0017), auch beim Gegenüber — vorher stand dort „anonymisiert" | `legalContent.ts` (DE+EN) |
+| Drittland: Vercel Inc. und Supabase Inc. (US-Firma, Daten in Frankfurt) genannt, Grundlage DPF bzw. SCC | ebenda |
+| „optional ein Avatarbild" raus — es gibt keinen Upload, nur die vorgegebene Auswahl | ebenda |
+| Nutzungsbedingungen: Klausel zum Kauf „Werbung entfernen" (Apple/Google regeln Zahlung, Erstattung, Widerruf) statt „künftig vielleicht werbefrei" | ebenda |
+| **Mindestalter 16 für ein Konto**: Pflicht-Häkchen bei der Registrierung, dazu Links auf `/legal/agb` und `/legal/datenschutz` (i18n `auth.ageConfirm/ageRequired/legalNote` ×5) | `AuthPage.tsx`, `legalContent.ts` |
+| UMP-Status VOR `AdMob.initialize`; höchstens **4 Interstitials je Sitzung** | `src/lib/ads.ts`, `tools/test-werbung.mjs` (+6 Prüfungen) |
+| Prüfnotiz wahrheitsgemäß (ATT nativ, personalisiert nur mit Einwilligung) | `scripts/asc.py` `PRUEFNOTIZ` — **in ASC erst mit `--pruefnotiz` aktiv** |
+| Privacy Manifest (Tracking: ja, UserDefaults CA92.1, 5 Datentypen) | `ios/App/App/PrivacyInfo.xcprivacy` |
+| ATT-Dialog in DE/EN/ES/FR/PT (`<code>.lproj/InfoPlist.strings`) | `tools/ios-projekt.mjs` (idempotent, trägt beides per `xcode` in die pbxproj ein) |
+
+⚠ **Die Google-Reihenfolge geht auf iOS nur halb.** `@capacitor-community/admob`
+8.0.0 setzt die Plugin-Rückreferenz des ConsentExecutor erst in `initialize()`
+(im Quelltext gelesen). `requestConsentInfo` braucht sie nicht, `showConsentForm`
+schon — davor lehnt es mit „No ViewController" ab (die Swaply-Falle vom 29.07.).
+Deshalb: Android `requestConsentInfo → showConsentForm → initialize`, iOS
+`requestConsentInfo → initialize → showConsentForm`. `ready` wird in beiden Fällen
+erst danach gesetzt, die erste Anzeigenanfrage kommt also immer nach dem Formular.
+Wer das Plugin aktualisiert: nachsehen, ob die Referenz früher gesetzt wird.
+
+⚠ **Mindestalter 16 vs. Store-Konsolen:** Play-Zielgruppe und Apple-Altersfreigabe
+von Hand prüfen, damit sie nicht jünger werben als die App zulässt.
+
+**Noch offen — Melden/Blockieren von Spielernamen und Freundesduellen.** Apple
+verlangt bei nutzergenerierten Inhalten (Richtlinie 1.2) eine Möglichkeit,
+Inhalte zu melden und Nutzer zu blockieren; sichtbar sind hier Spielernamen
+(Bestenliste, Duelle) und Freundes-Herausforderungen. Das braucht eine
+DB-Migration (Melde- und Blockliste + RPC-Filter in Matchmaking/`challenge_friend`)
+und ist bewusst NICHT in diesem Paket. Risiko: eine Ablehnung nach 1.2 bei einer
+künftigen Prüfung.
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker

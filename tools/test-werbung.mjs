@@ -36,7 +36,7 @@ globalThis.localStorage = {
 const gemerkt = () => JSON.parse(speicher.get('anigosha.ads.seen') ?? '[]');
 
 register('./werbung-hooks.mjs', import.meta.url);
-const { protokoll, protokollZuruecksetzen } = await import('./werbung-stub.mjs');
+const { protokoll, protokollZuruecksetzen, einstellung } = await import('./werbung-stub.mjs');
 
 // Jeder Import mit anderem Zähler ergibt ein frisches Modul — so lässt sich ein
 // App-Neustart nachstellen, ohne den localStorage-Inhalt zu verlieren.
@@ -138,6 +138,55 @@ console.log('\n--- Belohnte Anzeige ---');
 protokollZuruecksetzen();
 ok((await ads.showRewardedAd()) === true, 'showRewardedAd meldet die gesehene Anzeige');
 ok(protokoll.rewardedGezeigt === 1, 'und ist an keine Häufigkeitsbremse gebunden');
+
+// ---------------------------------------------------------------------------
+console.log('\n--- Obergrenze: höchstens vier Interstitials je Sitzung ---');
+protokollZuruecksetzen();
+ads = await adsLaden(); // neue Sitzung
+await ads.initAds();
+for (let i = 0; i < 12; i += 1) {
+  jetzt += 91_000;
+  await ads.maybeShowInterstitial();
+  await ads.maybeShowInterstitial();
+}
+ok(protokoll.interstitialGezeigt === 4, `nach 24 Runden genau 4 Anzeigen (${protokoll.interstitialGezeigt})`);
+for (let i = 0; i < 4; i += 1) {
+  jetzt += 91_000;
+  await ads.maybeShowInterstitialOnce(`duel:CAP${i}`);
+}
+ok(protokoll.interstitialGezeigt === 4, 'auch Duell-Abschlüsse zählen gegen dieselbe Grenze');
+protokollZuruecksetzen();
+ads = await adsLaden(); // App-Neustart
+await ads.initAds();
+jetzt += 91_000;
+await ads.maybeShowInterstitial();
+await ads.maybeShowInterstitial();
+ok(protokoll.interstitialGezeigt === 1, 'nach einem Neustart gibt es wieder Anzeigen');
+
+// ---------------------------------------------------------------------------
+console.log('\n--- Reihenfolge: Einwilligung vor dem SDK-Start ---');
+einstellung.formularNoetig = true;
+protokollZuruecksetzen();
+ads = await adsLaden();
+await ads.initAds();
+ok(
+  protokoll.ablauf.join(' > ') === 'requestConsentInfo > showConsentForm > initialize',
+  `Android: ${protokoll.ablauf.join(' > ')}`,
+);
+einstellung.plattform = 'ios';
+protokollZuruecksetzen();
+ads = await adsLaden();
+await ads.initAds();
+ok(
+  protokoll.ablauf.join(' > ') === 'requestConsentInfo > initialize > showConsentForm',
+  `iOS (Formular braucht die Plugin-Referenz aus initialize): ${protokoll.ablauf.join(' > ')}`,
+);
+jetzt += 91_000;
+await ads.maybeShowInterstitial();
+await ads.maybeShowInterstitial();
+ok(protokoll.interstitialGezeigt === 1, 'Anzeigen erst nach abgeschlossenem Einwilligungsablauf');
+einstellung.plattform = 'android';
+einstellung.formularNoetig = false;
 
 console.log(fehler === 0 ? '\nAlles grün.' : `\n${fehler} Prüfung(en) fehlgeschlagen.`);
 process.exitCode = fehler === 0 ? 0 : 1;

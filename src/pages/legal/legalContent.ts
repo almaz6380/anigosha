@@ -20,7 +20,7 @@ export const OPERATOR = {
 const opDE = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nE-Mail: ${OPERATOR.email}`;
 const opEN = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nEmail: ${OPERATOR.email}`;
 
-export const LAST_UPDATED = '17.09.2026';
+export const LAST_UPDATED = '04.10.2026';
 
 export interface LegalSection {
   heading: string;
@@ -64,14 +64,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             '• dein Profil: Spielername, Avatar, Spracheinstellung\n' +
             '• dein Spielstand: Erfahrungspunkte, Level, Elo-Wertung, Tagesserie\n' +
             '• alle Solo-Runden und die dabei gegebenen Antworten\n' +
-            '• deine Duelle und Duell-Antworten\n' +
+            '• alle Duelle, an denen du teilgenommen hast, samt Duell-Antworten — auch bereits beendete\n' +
             '• dein Gerätetoken für Benachrichtigungen\n' +
             '• von dir gemeldete Fragen samt Meldegrund',
         },
         {
           heading: 'Was bestehen bleibt',
           body:
-            'Bereits beendete Duelle bleiben beim jeweiligen Gegenüber sichtbar, allerdings ohne Bezug zu dir — dein Spielername wird dort entfernt. Das ist nötig, damit der Spielverlauf der anderen Person schlüssig bleibt.\n\n' +
+            'Weil ein Duell immer zwei Personen gehört, verschwindet es mit deinem Konto auch aus dem Verlauf deines Gegenübers. Die dort bereits verbuchte Elo-Wertung der anderen Person bleibt davon unberührt.\n\n' +
             'Belege über getätigte Käufe liegen bei Apple bzw. Google, nicht bei uns. Dort gelten deren gesetzliche Aufbewahrungsfristen; auf diese Daten haben wir keinen Zugriff.\n\n' +
             'Eine darüber hinausgehende Aufbewahrung bei uns findet nicht statt.',
         },
@@ -108,14 +108,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             '• your profile: player name, avatar, language setting\n' +
             '• your progress: experience points, level, Elo rating, daily streak\n' +
             '• all solo rounds and the answers given in them\n' +
-            '• your duels and duel answers\n' +
+            '• all duels you took part in, including duel answers — finished ones too\n' +
             '• your device token for notifications\n' +
             '• questions you reported, including the reason given',
         },
         {
           heading: 'What remains',
           body:
-            'Duels that have already finished remain visible to your opponent, but without any reference to you — your player name is removed there. This is necessary so that the other person’s match history stays coherent.\n\n' +
+            'Because a duel always belongs to two people, it disappears from your opponent’s history together with your account. The Elo rating already credited to the other person is not affected.\n\n' +
             'Receipts for purchases are held by Apple or Google, not by us. Their statutory retention periods apply and we have no access to that data.\n\n' +
             'We do not retain anything beyond this.',
         },
@@ -216,7 +216,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Welche Daten wir verarbeiten',
           body:
             'Konto: E-Mail-Adresse und Passwort (verschlüsselt gespeichert, für uns nicht lesbar).\n\n' +
-            'Profil: selbst gewählter Spielername, Sprache, optional ein Avatarbild.\n\n' +
+            'Profil: selbst gewählter Spielername, Sprache und ein Avatar aus der vorgegebenen Auswahl der App (kein eigenes Bild, kein Upload).\n\n' +
             'Spielstand: Erfahrungspunkte, Level, Tagesserie, Elo-Wertung, gespielte Runden und gegebene Antworten, Duelle mit anderen Spielerinnen und Spielern.\n\n' +
             'Meldungen: wenn du eine Frage meldest, speichern wir welche Frage, den Grund und dein Konto.\n\n' +
             'Kaufdiagnose (nur in den mobilen Apps): Beim Start und bei jedem Kaufversuch speichern wir zu deinem Konto eine kurze technische Diagnose des Kaufsystems — welche Schritte wie lange gedauert haben und ob eine Fehlermeldung kam. Sie enthält keine Zahlungsdaten und dient nur dazu, Fehler beim Kauf „Werbung entfernen“ zu finden, ohne dass du uns etwas abtippen musst (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO). Sie wird mit dem Konto gelöscht.\n\n' +
@@ -238,14 +238,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Empfänger deiner Daten',
           body:
-            'Supabase (Auftragsverarbeiter, Serverstandort Frankfurt/EU): Konto, Profil und Spielstände.\n\n' +
-            'Vercel: Auslieferung der Web-App, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
+            'Supabase Inc. (Auftragsverarbeiter, Unternehmen mit Sitz in den USA; deine Daten liegen in der EU-Region Frankfurt): Konto, Profil und Spielstände.\n\n' +
+            'Vercel Inc. (USA): Auslieferung der Web-App und der öffentlichen Rechtsseiten, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
             'Vercel Web Analytics: eine Reichweitenmessung der Web-App (aufgerufene Seiten, ungefähres Herkunftsland, Gerätetyp, verweisende Seite). Sie setzt keine Cookies und legt keine dauerhafte Kennung an; einzelne Personen lassen sich damit nicht wiedererkennen und nicht über mehrere Besuche hinweg verfolgen. Die IP-Adresse wird nur kurzzeitig verarbeitet und nicht gespeichert. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden und verständlichen Website (Art. 6 Abs. 1 lit. f DSGVO). Die mobilen Apps sind davon nicht betroffen.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
             'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
             'Resend (Auftragsverarbeiter, USA): Versand der E-Mails zur Registrierung, Passwort-Zurücksetzung und Adressänderung. Resend erhält dafür deine E-Mail-Adresse und den Inhalt der jeweiligen Mail.\n\n' +
             'RevenueCat (Auftragsverarbeiter, USA): Abwicklung und Wiederherstellung des Kaufs „Werbung entfernen", sofern du ihn tätigst.\n\n' +
-            'Eine Übermittlung in Drittstaaten (insbesondere USA) findet bei Google, Resend und RevenueCat statt und stützt sich auf die Standardvertragsklauseln der EU-Kommission.',
+            'Eine Übermittlung in Drittstaaten (insbesondere USA) ist bei Google, Resend, RevenueCat und Vercel Inc. möglich; bei Supabase Inc. liegen die Daten zwar in der EU, ein Zugriff des US-Unternehmens lässt sich aber nicht ausschließen. Sie stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework, soweit der Empfänger danach zertifiziert ist, und im Übrigen auf die Standardvertragsklauseln der EU-Kommission.',
         },
         {
           heading: 'Benachrichtigungen',
@@ -274,7 +274,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Speicherdauer',
           body:
             'Wir speichern deine Daten, solange dein Konto besteht.\n\n' +
-            'Löschst du dein Konto in der App, werden Konto, Profil und Spielstände unverzüglich und vollständig gelöscht. Beendete Duelle können in anonymisierter Form beim Gegenüber verbleiben, damit dessen Spielverlauf schlüssig bleibt.',
+            'Löschst du dein Konto in der App, werden Konto, Profil und Spielstände unverzüglich und vollständig gelöscht. Das gilt auch für alle Duelle, an denen du teilgenommen hast — sie verschwinden damit auch aus dem Verlauf deines Gegenübers.',
         },
         {
           heading: 'Deine Rechte',
@@ -287,8 +287,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Kinder und Jugendliche',
           body:
-            'Die App richtet sich an Personen ab 14 Jahren — ab diesem Alter kann man in Österreich selbst in Datenverarbeitungen einwilligen (§ 4 Abs. 4 DSG), etwa in personalisierte Werbung. In Deutschland liegt die Grenze bei 16 Jahren; Jüngere brauchen dort die Zustimmung der Erziehungsberechtigten. Wir erheben wissentlich keine Daten von jüngeren Kindern.\n\n' +
-            'Erfahren wir, dass ein Konto von einem jüngeren Kind angelegt wurde, löschen wir es. Erziehungsberechtigte können sich dafür jederzeit an uns wenden.',
+            'Ein Konto kann nur anlegen, wer mindestens 16 Jahre alt ist; das bestätigst du bei der Registrierung. Damit liegt die Grenze über den Altersgrenzen für eine eigene Einwilligung in Österreich (14 Jahre, § 4 Abs. 4 DSG) und Deutschland (16 Jahre, Art. 8 DSGVO) — etwa in personalisierte Werbung. Wir erheben wissentlich keine Daten von jüngeren Personen.\n\n' +
+            'Erfahren wir, dass ein Konto von einer jüngeren Person angelegt wurde, löschen wir es. Erziehungsberechtigte können sich dafür jederzeit an uns wenden.',
         },
         {
           heading: 'Änderungen',
@@ -304,7 +304,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'What data we process',
           body:
             'Account: email address and password (stored encrypted, unreadable to us).\n\n' +
-            'Profile: your chosen player name, language, optionally an avatar.\n\n' +
+            'Profile: your chosen player name, language and an avatar from the app’s built-in selection (no own picture, no upload).\n\n' +
             'Game data: experience points, level, daily streak, Elo rating, rounds played and answers given, duels with other players.\n\n' +
             'Reports: if you report a question, we store which question, the reason and your account.\n\n' +
             'Purchase diagnostics (mobile apps only): at start-up and with every purchase attempt we store a short technical diagnosis of the purchase system against your account — which steps took how long and whether an error occurred. It contains no payment data and serves only to find faults with the “remove ads” purchase without you having to type anything out for us (legitimate interest, Art. 6(1)(f) GDPR). It is deleted together with the account.\n\n' +
@@ -326,14 +326,14 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Recipients',
           body:
-            'Supabase (processor, servers in Frankfurt/EU): account, profile and game data.\n\n' +
-            'Vercel: delivery of the web app; server logs including IP addresses arise for technical reasons.\n\n' +
+            'Supabase Inc. (processor, a US company; your data is stored in the EU region Frankfurt): account, profile and game data.\n\n' +
+            'Vercel Inc. (USA): delivery of the web app and the public legal pages; server logs including IP addresses arise for technical reasons.\n\n' +
             'Vercel Web Analytics: audience measurement for the web app (pages viewed, approximate country, device type, referring site). It sets no cookies and creates no persistent identifier; individuals cannot be recognised or tracked across visits. IP addresses are processed only briefly and not stored. The legal basis is our legitimate interest in a working and comprehensible website (Art. 6(1)(f) GDPR). The mobile apps are not affected.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
             'Resend (processor, USA): sending the e-mails for registration, password reset and address change. Resend receives your e-mail address and the content of the respective mail.\n\n' +
             'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
-            'Transfers to third countries (notably the USA) occur with Google, Resend and RevenueCat and rely on the European Commission’s standard contractual clauses.',
+            'Transfers to third countries (notably the USA) may occur with Google, Resend, RevenueCat and Vercel Inc.; with Supabase Inc. the data is stored in the EU, but access by the US company cannot be ruled out. They rely on the adequacy decision for the EU-US Data Privacy Framework where the recipient is certified under it, and otherwise on the European Commission’s standard contractual clauses.',
         },
         {
           heading: 'Notifications',
@@ -362,7 +362,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Retention',
           body:
             'We store your data for as long as your account exists.\n\n' +
-            'If you delete your account in the app, account, profile and game data are erased immediately and completely. Finished duels may remain in anonymised form for your opponent so that their history stays coherent.',
+            'If you delete your account in the app, account, profile and game data are erased immediately and completely. This includes all duels you took part in — they also disappear from your opponent’s history.',
         },
         {
           heading: 'Your rights',
@@ -375,8 +375,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Children',
           body:
-            'The app is intended for people aged 14 and over — from that age you can consent to data processing yourself in Austria (§ 4(4) DSG), for example to personalised advertising. In Germany the threshold is 16; younger users need their legal guardians’ consent there. We do not knowingly collect data from younger children.\n\n' +
-            'If we learn that an account belongs to a younger child, we delete it. Parents and guardians may contact us at any time.',
+            'You can only create an account if you are at least 16 years old; you confirm this when registering. This is above the ages from which you can consent to processing yourself in Austria (14, § 4(4) DSG) and Germany (16, Art. 8 GDPR) — for example to personalised advertising. We do not knowingly collect data from younger people.\n\n' +
+            'If we learn that an account belongs to someone younger, we delete it. Parents and guardians may contact us at any time.',
         },
         {
           heading: 'Changes',
@@ -397,7 +397,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         },
         {
           heading: 'Nutzungsvoraussetzungen',
-          body: 'Die Nutzung ist ab 14 Jahren gestattet. Minderjährige benötigen die Zustimmung ihrer Erziehungsberechtigten. Pro Person ist ein Konto zulässig.',
+          body: 'Ein Konto darf anlegen, wer mindestens 16 Jahre alt ist; das bestätigst du bei der Registrierung. Pro Person ist ein Konto zulässig.',
         },
         {
           heading: 'Faires Spiel',
@@ -414,8 +414,10 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body: 'Die Fragen wurden nach bestem Wissen erstellt, können aber Fehler enthalten. Ein Anspruch auf inhaltliche Richtigkeit besteht nicht. Nutze bitte die Melden-Funktion, wenn dir ein Fehler auffällt.',
         },
         {
-          heading: 'Werbung',
-          body: 'Die App finanziert sich über Werbung. Wir behalten uns vor, künftig eine kostenpflichtige werbefreie Variante anzubieten.',
+          heading: 'Werbung und „Werbung entfernen"',
+          body:
+            'Die App finanziert sich über Werbung. In den mobilen Apps kannst du einmalig „Werbung entfernen" kaufen; danach werden dir keine Vollbild-Anzeigen (Interstitials) mehr gezeigt.\n\n' +
+            'Der Kauf wird über Apple (App Store) bzw. Google (Google Play) abgeschlossen und abgerechnet. Für Bezahlung, Rückerstattung und ein etwaiges Widerrufsrecht gelten die Bedingungen des jeweiligen Stores; Rückerstattungen beantragst du dort. Über „Käufe wiederherstellen" in der App lässt sich der Kauf auf einem neuen Gerät mit demselben Store-Konto erneut freischalten.',
         },
         {
           heading: 'Verfügbarkeit und Änderungen',
@@ -437,7 +439,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         { heading: 'Scope', body: 'These terms apply to the use of the Anigosha app and its website. Operator:\n\n' + opEN },
         {
           heading: 'Requirements',
-          body: 'Use is permitted from the age of 14. Minors require the consent of their legal guardians. One account per person.',
+          body: 'You may create an account if you are at least 16 years old; you confirm this when registering. One account per person.',
         },
         {
           heading: 'Fair play',
@@ -453,7 +455,12 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Content and accuracy',
           body: 'Questions were compiled to the best of our knowledge but may contain errors. There is no claim to factual accuracy. Please use the report function if you spot a mistake.',
         },
-        { heading: 'Advertising', body: 'The app is funded by advertising. We reserve the right to offer a paid ad-free option in future.' },
+        {
+          heading: 'Advertising and “remove ads”',
+          body:
+            'The app is funded by advertising. In the mobile apps you can make a one-off “remove ads” purchase; after that you will no longer be shown full-screen ads (interstitials).\n\n' +
+            'The purchase is concluded and billed through Apple (App Store) or Google (Google Play). Payment, refunds and any right of withdrawal are governed by the terms of the respective store; refunds are requested there. Using “Restore purchases” in the app, the purchase can be unlocked again on a new device with the same store account.',
+        },
         {
           heading: 'Availability and changes',
           body: 'There is no claim to uninterrupted availability. We may change, extend or discontinue features. Significant changes will be announced in the app.',

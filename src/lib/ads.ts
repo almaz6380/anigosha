@@ -81,8 +81,8 @@ let initLauf: Promise<void> | null = null;
 let datenschutzOptionen: string | null = null;
 
 // --- Häufigkeitsbremse ------------------------------------------------------
-// Eine Anzeige nach jeder zweiten beendeten Runde und frühestens 90 Sekunden
-// nach der letzten. Ein Quiz, das nach jeder Runde Werbung zeigt, verliert
+// Eine Anzeige nach jeder zweiten beendeten Runde, frühestens 90 Sekunden
+// nach der letzten und höchstens vier je Sitzung. Ein Quiz, das nach jeder Runde Werbung zeigt, verliert
 // seine Spieler schneller, als die Einblendungen einbringen.
 //
 // Solo und Duell teilen sich diesen Zähler bewusst. Zwei getrennte Zähler
@@ -90,9 +90,15 @@ let datenschutzOptionen: string | null = null;
 // wechselt — und genau das tun Spieler ständig.
 const EVERY_NTH_ROUND = 2;
 const MIN_GAP_MS = 90_000;
+// Obergrenze je App-Sitzung (04.10.2026, nach der Rechtsprüfung): Wer eine
+// Stunde am Stück spielt, sähe sonst über 20 Vollbildanzeigen. Ab der vierten
+// ist Schluss, bis die App neu gestartet wird. Der Zähler lebt bewusst nur im
+// Speicher — „Sitzung" heißt hier: dieser Prozess.
+const MAX_PER_SESSION = 4;
 
 let roundCounter = 0;
 let lastShownAt = 0;
+let shownThisSession = 0;
 
 // --- Einmalige Gelegenheiten ------------------------------------------------
 // Manche Abschlüsse gibt es nur einmal, ihr Bildschirm aber beliebig oft: Eine
@@ -128,15 +134,26 @@ export function setAdsPremiumStatus(premium: boolean) {
   isPremium = premium;
 }
 
-async function runConsentFlow() {
+/** Schritt 1 nach Google: Einwilligungsstatus holen, bevor das SDK startet. */
+async function holeEinwilligungsInfo(): Promise<boolean> {
   try {
     const info = await AdMob.requestConsentInfo();
     datenschutzOptionen = info.privacyOptionsRequirementStatus ?? null;
-    if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
-      await AdMob.showConsentForm();
-    }
+    return !!(info.isConsentFormAvailable && info.status === 'REQUIRED');
   } catch (e) {
-    console.warn('Einwilligung fehlgeschlagen:', e);
+    // Scheitert UMP (offline, Konfiguration), läuft es trotzdem weiter: Ohne
+    // Consent-String liefert Google in EWR/UK von sich aus nur eingeschränkte,
+    // nicht personalisierte Anzeigen. Gefragt wurde — das ist die Bedingung.
+    console.warn('Einwilligungsstatus nicht abrufbar:', e);
+    return false;
+  }
+}
+
+async function zeigeEinwilligungsFormular() {
+  try {
+    await AdMob.showConsentForm();
+  } catch (e) {
+    console.warn('Einwilligungsformular fehlgeschlagen:', e);
   }
 }
 
@@ -206,8 +223,25 @@ async function initAdsIntern() {
     const mod = await import('@capacitor-community/admob');
     AdMob = mod.AdMob;
     await warteAufTrackingAntwort();
+
+    // ── Reihenfolge nach Google (04.10.2026): Einwilligung VOR SDK-Start ──
+    //  Erst den UMP-Status holen, dann bei Bedarf das Formular, erst danach
+    //  `initialize` — so startet das SDK samt Mediation erst, wenn die
+    //  Entscheidung vorliegt. Vorher lief es umgekehrt.
+    //
+    //  ⚠ Eine Ausnahme erzwingt das Plugin (8.0.0, im Quelltext gelesen):
+    //  Auf iOS setzt `AdMobPlugin.initialize()` die Rückreferenz `plugin` des
+    //  ConsentExecutor. Davor findet `showConsentForm` keinen ViewController
+    //  und lehnt ab — dieselbe Falle, die Swaply am 29.07.2026 die Werbung
+    //  komplett gekostet hat. `requestConsentInfo` braucht sie nicht. Auf iOS
+    //  kommt das FORMULAR deshalb nach `initialize`; `MobileAds.start()` selbst
+    //  schickt keine Anzeigenanfrage, die erste geht erst nach dem Formular
+    //  raus (`ready` wird erst danach gesetzt).
+    const formularNoetig = await holeEinwilligungsInfo();
+    const ios = Capacitor.getPlatform() === 'ios';
+    if (formularNoetig && !ios) await zeigeEinwilligungsFormular();
     await AdMob.initialize({ initializeForTesting: USE_TEST_ADS });
-    await runConsentFlow();
+    if (formularNoetig && ios) await zeigeEinwilligungsFormular();
     ready = true;
   } catch (e) {
     console.warn('AdMob-Initialisierung fehlgeschlagen:', e);
@@ -224,11 +258,13 @@ export async function maybeShowInterstitial() {
   roundCounter += 1;
   if (roundCounter % EVERY_NTH_ROUND !== 0) return;
   if (Date.now() - lastShownAt < MIN_GAP_MS) return;
+  if (shownThisSession >= MAX_PER_SESSION) return;
 
   try {
     await AdMob.prepareInterstitial({ adId: ids().interstitial });
     await AdMob.showInterstitial();
     lastShownAt = Date.now();
+    shownThisSession += 1;
   } catch (e) {
     console.warn('Interstitial fehlgeschlagen:', e);
   }

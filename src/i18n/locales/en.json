@@ -30,7 +30,10 @@
       "generic": "Sign-in failed. Please try again."
     },
     "resetError": "The email could not be sent. Please try again.",
-    "resetNeedsEmail": "Enter your email address first."
+    "resetNeedsEmail": "Enter your email address first.",
+    "legalNote": "By registering you accept the <terms>Terms of Use</terms>. How we process your data is explained in the <privacy>Privacy Policy</privacy>.",
+    "ageConfirm": "I am at least 16 years old.",
+    "ageRequired": "Please confirm that you are at least 16 years old."
   },
   "username": {
     "title": "Choose your player name",

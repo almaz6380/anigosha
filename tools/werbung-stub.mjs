@@ -13,28 +13,42 @@ export const protokoll = {
   rewardedGezeigt: 0,
   initialisiert: 0,
   letzteInterstitialId: null,
+  /** Reihenfolge der Einwilligungs- und Startaufrufe (Google-Reihenfolge). */
+  ablauf: [],
 };
+
+/** Vom Test einstellbar: Plattform und ob UMP ein Formular verlangt. */
+export const einstellung = { plattform: 'android', formularNoetig: false };
 
 export function protokollZuruecksetzen() {
   protokoll.interstitialGezeigt = 0;
   protokoll.rewardedGezeigt = 0;
   protokoll.initialisiert = 0;
   protokoll.letzteInterstitialId = null;
+  protokoll.ablauf = [];
 }
 
-// Android, damit der iOS-Zweig (ATT-Abfrage) im Einwilligungsablauf entfällt —
-// der wird hier nicht geprüft.
+// Standard Android; der iOS-Zweig lässt sich über `einstellung.plattform`
+// einschalten (die ATT-Abfrage antwortet hier sofort mit „authorized").
 export const Capacitor = {
   isNativePlatform: () => true,
-  getPlatform: () => 'android',
+  getPlatform: () => einstellung.plattform,
 };
 
 export const AdMob = {
   initialize: async () => {
     protokoll.initialisiert += 1;
+    protokoll.ablauf.push('initialize');
   },
-  requestConsentInfo: async () => ({ isConsentFormAvailable: false, status: 'NOT_REQUIRED' }),
-  showConsentForm: async () => {},
+  requestConsentInfo: async () => {
+    protokoll.ablauf.push('requestConsentInfo');
+    return einstellung.formularNoetig
+      ? { isConsentFormAvailable: true, status: 'REQUIRED' }
+      : { isConsentFormAvailable: false, status: 'NOT_REQUIRED' };
+  },
+  showConsentForm: async () => {
+    protokoll.ablauf.push('showConsentForm');
+  },
   resetConsentInfo: async () => {},
   trackingAuthorizationStatus: async () => ({ status: 'authorized' }),
   requestTrackingAuthorization: async () => {},
