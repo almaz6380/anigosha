@@ -87,6 +87,9 @@ Sprachen) ist nachgezogen, die Play-Hinweise gehen wie immer als Workflow-Eingab
 | UMP-Status VOR `AdMob.initialize`; höchstens **4 Interstitials je Sitzung** | `src/lib/ads.ts`, `tools/test-werbung.mjs` (+6 Prüfungen) |
 | Prüfnotiz wahrheitsgemäß (ATT nativ, personalisiert nur mit Einwilligung) | `scripts/asc.py` `PRUEFNOTIZ` — **in ASC erst mit `--pruefnotiz` aktiv** |
 | Privacy Manifest (Tracking: ja, UserDefaults CA92.1, 5 Datentypen) | `ios/App/App/PrivacyInfo.xcprivacy` |
+
+⚠ **`NSPrivacyTracking = true` mit LEERER `NSPrivacyTrackingDomains` ist „Ungültige Binärdatei“** (ITMS-91064, FullRep Build 13 am 04.10.2026 so abgelehnt). Die drei Google-Werbedomains stehen jetzt drin, wie bei Swaply. Build 21 trug die leere Liste, deshalb Build 22.
+
 | ATT-Dialog in DE/EN/ES/FR/PT (`<code>.lproj/InfoPlist.strings`) | `tools/ios-projekt.mjs` (idempotent, trägt beides per `xcode` in die pbxproj ein) |
 
 ⚠ **Die Google-Reihenfolge geht auf iOS nur halb.** `@capacitor-community/admob`
