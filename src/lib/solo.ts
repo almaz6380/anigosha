@@ -106,6 +106,26 @@ export async function fiftyFifty(sessionId: string, questionId: string): Promise
   return (data as { remove: number[] }).remove ?? [];
 }
 
+/** Zweiter 50:50-Joker, nach einem belohnten Video (1.1.4). Der Server prüft
+ *  nur die Spielregeln: erster Joker verbraucht, nicht dieselbe Frage, einmal
+ *  je Runde, nicht in der Täglichen Challenge. */
+export async function fiftyFiftyExtra(sessionId: string, questionId: string): Promise<number[]> {
+  const { data, error } = await supabase.rpc('use_fifty_fifty_extra', {
+    p_session: sessionId,
+    p_question: questionId,
+  });
+  if (error) throw error;
+  return (data as { remove: number[] }).remove ?? [];
+}
+
+/** Streak-Rettung nach einem belohnten Video: genau ein verpasster Tag,
+ *  höchstens einmal je sieben Tage (Datum der Datenbank, UTC). */
+export async function restoreStreak(): Promise<number> {
+  const { data, error } = await supabase.rpc('restore_streak');
+  if (error) throw error;
+  return (data as { streak: number }).streak;
+}
+
 export interface DailyStart {
   session_id: string;
   questions: SoloQuestion[];

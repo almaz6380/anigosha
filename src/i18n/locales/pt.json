@@ -63,7 +63,12 @@
     "profile": "Perfil",
     "daily": "Desafio diário",
     "dailyKicker": "Hoje",
-    "dailyGo": "Jogar agora"
+    "dailyGo": "Jogar agora",
+    "streakAtRisk_one": "Você perdeu ontem! Salve sua sequência de {{count}} dia.",
+    "streakAtRisk_other": "Você perdeu ontem! Salve sua sequência de {{count}} dias.",
+    "streakSave": "Salvar",
+    "streakSaved_one": "Sequência salva: {{count}} dia. Jogue uma rodada hoje para continuar contando.",
+    "streakSaved_other": "Sequência salva: {{count}} dias. Jogue uma rodada hoje para continuar contando."
   },
   "profile": {
     "title": "Perfil",
@@ -109,7 +114,10 @@
     "fiftyFifty": "50:50 — remover duas respostas",
     "streakDays_one": "{{count}} dia seguido",
     "streakDays_other": "{{count}} dias seguidos",
-    "chooseSeries": "Escolha uma série"
+    "chooseSeries": "Escolha uma série",
+    "fiftyFiftyVideo": "Mais um 50:50 · vídeo",
+    "videoAborted": "Vídeo fechado antes do fim — a recompensa exige o vídeo inteiro.",
+    "videoUnavailable": "Nenhum vídeo disponível agora. Tente de novo mais tarde."
   },
   "daily": {
     "title": "Desafio diário",

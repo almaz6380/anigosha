@@ -15,6 +15,8 @@ export interface Profile {
   streak_current: number;
   streak_best: number;
   last_play_date: string | null;
+  /** Letzte Streak-Rettung per Video (0065), höchstens alle sieben Tage. */
+  streak_shield_at?: string | null;
 }
 
 interface AuthContextValue {
