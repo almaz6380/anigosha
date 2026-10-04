@@ -30,7 +30,10 @@
       "generic": "Anmeldung fehlgeschlagen. Bitte versuch es erneut."
     },
     "resetError": "Die E-Mail konnte nicht gesendet werden. Bitte versuch es erneut.",
-    "resetNeedsEmail": "Gib zuerst deine E-Mail-Adresse ein."
+    "resetNeedsEmail": "Gib zuerst deine E-Mail-Adresse ein.",
+    "legalNote": "Mit der Registrierung akzeptierst du die <terms>Nutzungsbedingungen</terms>. Wie wir deine Daten verarbeiten, steht in der <privacy>Datenschutzerklärung</privacy>.",
+    "ageConfirm": "Ich bin mindestens 16 Jahre alt.",
+    "ageRequired": "Bitte bestätige, dass du mindestens 16 Jahre alt bist."
   },
   "username": {
     "title": "Wähle deinen Spielernamen",

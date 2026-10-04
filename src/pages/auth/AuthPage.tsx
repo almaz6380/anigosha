@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 import AppShell from '../../components/AppShell';
@@ -16,6 +17,10 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Mindestalter 16 (04.10.2026): Pflicht-Häkchen vor der Registrierung. Die
+  // App fragt kein Geburtsdatum ab — das Häkchen ist die Bestätigung, auf die
+  // sich Datenschutzerklärung und Nutzungsbedingungen berufen.
+  const [ageOk, setAgeOk] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,6 +32,10 @@ export default function AuthPage() {
         const { error: err } = await signIn(email, password);
         if (err) setError(t(`auth.errors.${err}`));
       } else {
+        if (!ageOk) {
+          setError(t('auth.ageRequired'));
+          return;
+        }
         const { error: err, needsConfirm } = await signUp(email, password);
         if (err) setError(t(`auth.errors.${err}`));
         else if (needsConfirm) setInfo(t('auth.confirmSent'));
@@ -90,7 +99,28 @@ export default function AuthPage() {
           className="feld w-full px-4 py-3"
         />
         {mode === 'register' && (
-          <p className="text-xs leise">{t('auth.passwordMin')}</p>
+          <>
+            <p className="text-xs leise">{t('auth.passwordMin')}</p>
+            <label className="flex items-start gap-2.5 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={ageOk}
+                onChange={(e) => setAgeOk(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-accent-500"
+              />
+              <span>{t('auth.ageConfirm')}</span>
+            </label>
+            <p className="text-xs leise">
+              <Trans
+                i18nKey="auth.legalNote"
+                components={{
+                  terms: <Link to="/legal/agb" className="underline underline-offset-2" />,
+                  privacy: <Link to="/legal/datenschutz" className="underline underline-offset-2" />,
+                }}
+              />
+            </p>
+          </>
         )}
 
         {error && <p className="text-sm text-pink-400">{error}</p>}
@@ -98,7 +128,7 @@ export default function AuthPage() {
 
         <button
           type="submit"
-          disabled={busy}
+          disabled={busy || (mode === 'register' && !ageOk)}
           className="knopf w-full py-3.5 disabled:opacity-50"
         >
           {busy ? t('common.loading') : mode === 'login' ? t('auth.login') : t('auth.register')}

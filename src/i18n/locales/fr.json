@@ -30,7 +30,10 @@
       "generic": "Échec de la connexion. Réessaie."
     },
     "resetError": "L’e-mail n’a pas pu être envoyé. Réessaie.",
-    "resetNeedsEmail": "Saisis d’abord ton adresse e-mail."
+    "resetNeedsEmail": "Saisis d’abord ton adresse e-mail.",
+    "legalNote": "En t’inscrivant, tu acceptes les <terms>Conditions d’utilisation</terms>. La manière dont nous traitons tes données est expliquée dans la <privacy>Politique de confidentialité</privacy>.",
+    "ageConfirm": "J’ai au moins 16 ans.",
+    "ageRequired": "Confirme que tu as au moins 16 ans."
   },
   "username": {
     "title": "Choisis ton nom de joueur",
