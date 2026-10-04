@@ -18,7 +18,12 @@ export const protokoll = {
 };
 
 /** Vom Test einstellbar: Plattform und ob UMP ein Formular verlangt. */
-export const einstellung = { plattform: 'android', formularNoetig: false };
+export const einstellung = { plattform: 'android', formularNoetig: false, video: 'earned' };
+
+// Ereignis-Hörer wie im echten Plugin (addListener → Handle mit remove)
+const hoerer = new Map();
+const feuern = (name) => [...(hoerer.get(name) ?? [])].forEach((f) => f());
+export const hoererAnzahl = () => [...hoerer.values()].reduce((n, l) => n + l.size, 0);
 
 export function protokollZuruecksetzen() {
   protokoll.interstitialGezeigt = 0;
@@ -58,9 +63,33 @@ export const AdMob = {
   showInterstitial: async () => {
     protokoll.interstitialGezeigt += 1;
   },
-  prepareRewardVideoAd: async () => {},
-  showRewardVideoAd: async () => {
+  addListener: async (name, f) => {
+    if (!hoerer.has(name)) hoerer.set(name, new Set());
+    hoerer.get(name).add(f);
+    return { remove: async () => hoerer.get(name)?.delete(f) };
+  },
+  prepareRewardVideoAd: async () => {
+    if (einstellung.video === 'laden-scheitert') throw new Error('no fill');
+  },
+  // Wie das echte Plugin: Die Promise löst NUR bei verdienter Belohnung auf.
+  // Bei Abbruch bleibt sie für immer offen — genau das muss ads.ts aushalten.
+  showRewardVideoAd: () => {
     protokoll.rewardedGezeigt += 1;
-    return { type: 'reward', amount: 1 };
+    if (einstellung.video === 'zeigen-scheitert') {
+      setTimeout(() => feuern('onRewardedVideoAdFailedToShow'), 5);
+      return new Promise(() => {});
+    }
+    setTimeout(() => feuern('onRewardedVideoAdShowed'), 5);
+    if (einstellung.video === 'abgebrochen') {
+      setTimeout(() => feuern('onRewardedVideoAdDismissed'), 20);
+      return new Promise(() => {});
+    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        feuern('onRewardedVideoAdReward');
+        resolve({ type: 'reward', amount: 1 });
+        feuern('onRewardedVideoAdDismissed');
+      }, 20);
+    });
   },
 };

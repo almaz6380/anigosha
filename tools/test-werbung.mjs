@@ -36,7 +36,7 @@ globalThis.localStorage = {
 const gemerkt = () => JSON.parse(speicher.get('anigosha.ads.seen') ?? '[]');
 
 register('./werbung-hooks.mjs', import.meta.url);
-const { protokoll, protokollZuruecksetzen, einstellung } = await import('./werbung-stub.mjs');
+const { protokoll, protokollZuruecksetzen, einstellung, hoererAnzahl } = await import('./werbung-stub.mjs');
 
 // Jeder Import mit anderem Zähler ergibt ein frisches Modul — so lässt sich ein
 // App-Neustart nachstellen, ohne den localStorage-Inhalt zu verlieren.
@@ -136,7 +136,7 @@ ok(liste.includes('duel:NEU') && !liste.includes('duel:alt0'), 'der älteste Ein
 // ---------------------------------------------------------------------------
 console.log('\n--- Belohnte Anzeige ---');
 protokollZuruecksetzen();
-ok((await ads.showRewardedAd()) === true, 'showRewardedAd meldet die gesehene Anzeige');
+ok((await ads.showRewardedAd()) === 'earned', 'showRewardedAd meldet die gesehene Anzeige');
 ok(protokoll.rewardedGezeigt === 1, 'und ist an keine Häufigkeitsbremse gebunden');
 
 // ---------------------------------------------------------------------------
@@ -187,6 +187,54 @@ await ads.maybeShowInterstitial();
 ok(protokoll.interstitialGezeigt === 1, 'Anzeigen erst nach abgeschlossenem Einwilligungsablauf');
 einstellung.plattform = 'android';
 einstellung.formularNoetig = false;
+
+
+// ---------------------------------------------------------------------------
+console.log('\n--- Belohnte Videos (1.1.4) ---');
+protokollZuruecksetzen();
+ads = await adsLaden();
+ok((await ads.showRewardedAd()) === 'unavailable', 'vor initAds (Browser): unavailable, kein Hängen');
+ok((await ads.belohnungPerVideo()) === 'unavailable', 'auch über belohnungPerVideo');
+await ads.initAds();
+einstellung.video = 'earned';
+ok((await ads.showRewardedAd()) === 'earned', 'Video zu Ende gesehen: earned');
+einstellung.video = 'abgebrochen';
+const t0 = performance.now();
+const abbr = await ads.showRewardedAd();
+ok(abbr === 'aborted', `Abbruch: aborted statt ewigem Warten (${Math.round(performance.now() - t0)} ms)`);
+einstellung.video = 'zeigen-scheitert';
+ok((await ads.showRewardedAd()) === 'unavailable', 'Anzeigen scheitert: unavailable');
+einstellung.video = 'laden-scheitert';
+ok((await ads.showRewardedAd()) === 'unavailable', 'kein Video verfügbar: unavailable');
+ok(hoererAnzahl() === 0, 'alle Ereignis-Hörer wieder entfernt');
+einstellung.video = 'earned';
+const [a, b] = await Promise.all([ads.showRewardedAd(), ads.showRewardedAd()]);
+ok(a === 'earned' && b === 'unavailable', `Doppeltipp: nur eine Anzeige (${a}/${b})`);
+// Direkt nach einem Video darf kein Interstitial kommen (Mindestabstand)
+protokollZuruecksetzen();
+const vorherI = protokoll.interstitialGezeigt;
+await ads.maybeShowInterstitial();
+const gezeigt = await ads.maybeShowInterstitial();
+ok(gezeigt === false && protokoll.interstitialGezeigt === vorherI, 'kein Interstitial gleich nach dem Video');
+jetzt += 91_000;
+await ads.maybeShowInterstitial();
+const gez2 = await ads.maybeShowInterstitial();
+ok(gez2 === true, 'maybeShowInterstitial meldet eine gezeigte Anzeige mit true');
+einstellung.video = 'laden-scheitert';
+ads.setAdsPremiumStatus(true);
+ok((await ads.belohnungPerVideo()) === 'earned', 'werbefrei: Belohnung ohne Video');
+ads.setAdsPremiumStatus(false);
+einstellung.video = 'earned';
+
+// ---------------------------------------------------------------------------
+console.log('\n--- Bewertungsanfrage (Regel) ---');
+const bw = await import('../src/lib/bewertung.ts');
+const TAG = 86_400_000;
+ok(!bw.sollFragen(9, null, jetzt, false), 'vor der 10. Runde nicht');
+ok(bw.sollFragen(10, null, jetzt, false), 'ab der 10. Runde ja');
+ok(!bw.sollFragen(10, null, jetzt, true), 'nie im selben Ablauf wie ein Interstitial');
+ok(!bw.sollFragen(50, jetzt - 89 * TAG, jetzt, false), 'nicht innerhalb von 90 Tagen erneut');
+ok(bw.sollFragen(50, jetzt - 90 * TAG, jetzt, false), 'nach 90 Tagen wieder');
 
 console.log(fehler === 0 ? '\nAlles grün.' : `\n${fehler} Prüfung(en) fehlgeschlagen.`);
 process.exitCode = fehler === 0 ? 0 : 1;

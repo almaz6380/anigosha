@@ -252,21 +252,24 @@ async function initAdsIntern() {
  * Nach einer beendeten Runde aufrufen. Entscheidet selbst, ob wirklich eine
  * Anzeige erscheint (Premium, Häufigkeit, Mindestabstand).
  */
-export async function maybeShowInterstitial() {
-  if (!ready || isPremium) return;
+export async function maybeShowInterstitial(): Promise<boolean> {
+  if (!ready || isPremium) return false;
 
   roundCounter += 1;
-  if (roundCounter % EVERY_NTH_ROUND !== 0) return;
-  if (Date.now() - lastShownAt < MIN_GAP_MS) return;
-  if (shownThisSession >= MAX_PER_SESSION) return;
+  if (roundCounter % EVERY_NTH_ROUND !== 0) return false;
+  if (Date.now() - lastShownAt < MIN_GAP_MS) return false;
+  if (shownThisSession >= MAX_PER_SESSION) return false;
 
   try {
     await AdMob.prepareInterstitial({ adId: ids().interstitial });
     await AdMob.showInterstitial();
     lastShownAt = Date.now();
     shownThisSession += 1;
+    return true;
   } catch (e) {
     console.warn('Interstitial fehlgeschlagen:', e);
+    // Versucht ist versucht: lieber keine Bewertungsanfrage hinterher.
+    return true;
   }
 }
 
@@ -282,29 +285,117 @@ export async function maybeShowInterstitial() {
  * Die Gelegenheit ist damit auch dann verbraucht, wenn die Bremse oben sie
  * verwirft — genau wie in Solo, wo jede beendete Sitzung nur eine Chance hat.
  */
-export async function maybeShowInterstitialOnce(key: string) {
-  if (!ready || isPremium) return;
-  if (seenKeys().includes(key)) return;
+export async function maybeShowInterstitialOnce(key: string): Promise<boolean> {
+  if (!ready || isPremium) return false;
+  if (seenKeys().includes(key)) return false;
   // Kein Speicher (Privatmodus, gesperrter Speicher): lieber gar keine Anzeige
   // als bei jedem Öffnen wieder eine.
-  if (!markSeen(key)) return;
-  await maybeShowInterstitial();
+  if (!markSeen(key)) return false;
+  return maybeShowInterstitial();
 }
 
+// --- Belohnte Videos (1.1.4) ----------------------------------------------
+//  ⚠ `showRewardVideoAd()` löst im Plugin AUSSCHLIESSLICH im Belohnungs-
+//  Callback auf. Bricht der Spieler ab, antwortet das Plugin nie — ein blankes
+//  `await` hängt dann für immer, und die Oberfläche tut stumm gar nichts.
+//  Genau das hat Mahjong Royale 1.0.2 gekostet (Video gesehen, keine
+//  Belohnung). Deshalb hören wir zusätzlich auf Showed/Dismissed/FailedToShow,
+//  werten die Auflösung der Plugin-Promise selbst als Beleg und begrenzen hart
+//  auf Zeit. Muster: mahjong-app/src/ads/admob.ts `requestReward`.
+export type RewardOutcome = 'earned' | 'aborted' | 'unavailable';
+
+const REWARD_HARD_TIMEOUT_MS = 180_000; // Notbremse: Video hängt/bleibt offen
+const REWARD_AFTER_EARN_MS = 15_000; // Belohnung sicher, Dismissed bleibt aus
+const REWARD_AFTER_DISMISS_MS = 400; // kurze Nachfrist für ein spätes Ereignis
+let rewardInFlight = false;
+
+// Die Ereignisnamen stehen hier als Zeichenketten statt über das Enum des
+// Plugins: das Modul wird erst zur Laufzeit geladen (im Browser nie).
+const EV = {
+  Showed: 'onRewardedVideoAdShowed',
+  FailedToShow: 'onRewardedVideoAdFailedToShow',
+  Dismissed: 'onRewardedVideoAdDismissed',
+  Rewarded: 'onRewardedVideoAdReward',
+} as const;
+
 /**
- * Belohnte Anzeige, z. B. für den Streak-Schutz.
- * Gibt true zurück, wenn die Anzeige vollständig gesehen wurde — nur dann
- * darf die Belohnung vergeben werden.
+ * Für eine Belohnung ein Video zeigen — oder, wer „Werbung entfernen" gekauft
+ * hat, die Belohnung ohne Video geben. Die Belohnung darf NUR bei 'earned'
+ * vergeben werden. Im Browser gibt es keine Anzeigen → 'unavailable'.
  */
-export async function showRewardedAd(): Promise<boolean> {
-  if (!ready) return false;
+export async function belohnungPerVideo(): Promise<RewardOutcome> {
+  if (isPremium) return 'earned';
+  return showRewardedAd();
+}
+
+/** Belohnte Anzeige. Nur bei 'earned' darf die Belohnung vergeben werden. */
+export async function showRewardedAd(): Promise<RewardOutcome> {
+  if (initLauf) await initLauf;
+  if (!ready) return 'unavailable';
+  if (rewardInFlight) {
+    console.warn('Rewarded läuft bereits – zweite Anfrage verworfen.');
+    return 'unavailable';
+  }
+  rewardInFlight = true;
+
+  const handles: Array<{ remove: () => Promise<void> }> = [];
+  let earned = false;
+  let shown = false;
+  let done!: () => void;
+  const finished = new Promise<void>((resolve) => {
+    done = resolve;
+  });
+  let timer = setTimeout(done, REWARD_HARD_TIMEOUT_MS);
+  const rearm = (ms: number) => {
+    clearTimeout(timer);
+    timer = setTimeout(done, ms);
+  };
+
   try {
-    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
-    const reward = await AdMob.showRewardVideoAd();
-    return !!reward;
+    handles.push(await AdMob.addListener(EV.Showed, () => { shown = true; }));
+    handles.push(
+      await AdMob.addListener(EV.Rewarded, () => {
+        earned = true;
+        rearm(REWARD_AFTER_EARN_MS);
+      }),
+    );
+    handles.push(await AdMob.addListener(EV.Dismissed, () => rearm(REWARD_AFTER_DISMISS_MS)));
+    handles.push(await AdMob.addListener(EV.FailedToShow, () => done()));
+
+    try {
+      await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
+    } catch (e) {
+      console.warn('Rewarded konnte nicht geladen werden:', e);
+      return 'unavailable';
+    }
+
+    // Bewusst ohne await: die Promise kann ewig offen bleiben (siehe oben).
+    AdMob.showRewardVideoAd()
+      .then(() => {
+        earned = true;
+        rearm(REWARD_AFTER_EARN_MS);
+      })
+      .catch((e: unknown) => {
+        console.warn('Rewarded fehlgeschlagen:', e);
+        done();
+      });
+
+    await finished;
+    if (earned || shown) lastShownAt = Date.now(); // kein Interstitial gleich hinterher
+    return earned ? 'earned' : shown ? 'aborted' : 'unavailable';
   } catch (e) {
     console.warn('Rewarded fehlgeschlagen:', e);
-    return false;
+    return 'unavailable';
+  } finally {
+    rewardInFlight = false;
+    clearTimeout(timer);
+    for (const h of handles) {
+      try {
+        await h.remove();
+      } catch {
+        /* Listener schon weg */
+      }
+    }
   }
 }
 

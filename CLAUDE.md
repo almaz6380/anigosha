@@ -109,6 +109,34 @@ DB-Migration (Melde- und Blockliste + RPC-Filter in Matchmaking/`challenge_frien
 und ist bewusst NICHT in diesem Paket. Risiko: eine Ablehnung nach 1.2 bei einer
 künftigen Prüfung.
 
+## Belohnte Videos + Bewertungsanfrage (04.10.2026, 1.1.4 vorbereitet, Branch `claude/video-belohnungen`)
+
+Baut auf 1.1.3 auf (das nie ausgeliefert wurde) — **die whatsNew-Texte für 1.1.4
+tragen deshalb den 1.1.3-Inhalt mit.** Versionen: iOS 1.1.4 / Build 21, Android
+1.1.4 / vc11. Nichts gebaut, nichts eingereicht. **Migration 0065 ist eingespielt**
+(Trockenlauf, echt, lesend nachgezählt: 3 Spalten, Rechte nur `authenticated`).
+
+| Was | Wo |
+|---|---|
+| **Zweiter 50:50-Joker per Video**, einmal je Runde. Server: `use_fifty_fifty_extra` — erst nach dem freien Joker, nicht auf dessen Frage (`solo_sessions.joker_question`, sonst ergäben 2×2 zufällige falsche Antworten oft die Lösung), nicht nach Antwort/Rundenende, **nicht in der Täglichen Challenge** (Bestenliste), Zeilensperre | `0065_joker_video.sql`, `SoloPage.tsx`, `solo.ts` |
+| **Streak-Rettung per Video**: genau ein verpasster Tag (`last_play_date = current_date − 2`), Serie > 0, höchstens alle 7 Tage (`profiles.streak_shield_at`, im Spalten-Guard). Schiebt den letzten Spieltag auf gestern; die nächste Runde zählt weiter. Karte auf der Startseite | `restore_streak()`, `HomePage.tsx` |
+| `showRewardedAd()` → `'earned' \| 'aborted' \| 'unavailable'`, hört auf Showed/Dismissed/FailedToShow, harte Zeitgrenze, Doppeltipp-Sperre. ⚠ Das Plugin löst `showRewardVideoAd()` NUR bei verdienter Belohnung auf — ein blankes `await` hängt beim Abbruch ewig (Mahjong-Lehre). `belohnungPerVideo()`: werbefrei → `'earned'` ohne Video. Nach einem Video kein Interstitial (setzt `lastShownAt`) | `src/lib/ads.ts`, `test-werbung.mjs` (+16) |
+| `maybeShowInterstitial()` gibt jetzt zurück, ob eine Anzeige lief | `ads.ts` |
+| **Bewertungsanfrage** nach der 10. beendeten Runde, höchstens alle 90 Tage, nie direkt nach einem Interstitial, nur nativ, ohne Belohnung (`@capacitor-community/in-app-review` 8.0.0, per `cap sync` in Package.swift und Gradle) | `src/lib/bewertung.ts` |
+| Datenschutz + Nutzungsbedingungen (DE+EN): freiwillige Videos, gleiche AdMob-Grundlage; werbefrei = Hilfen ohne Video | `legalContent.ts` |
+
+**Der Server kann nicht prüfen, ob ein Video lief** — es läuft komplett auf dem
+Gerät. Er prüft nur die Spielregeln (einmal je Runde / je 7 Tage). Das ist
+bewusst so: Werbefreie bekommen beides ohnehin ohne Video, und keine der
+Hilfen wirkt in einer Bestenliste.
+
+**Streak-Datum ist UTC** (`current_date` der Datenbank) — das gilt schon immer für
+die Serie selbst; die Startseite rechnet die Rettbarkeit deshalb ebenfalls in UTC.
+
+Tests: `test-joker-daily.mjs` 32/32 (16 neu), `test-werbung.mjs` grün,
+solo/duel/matchmaking/freundesduell unverändert grün. **Am Gerät ungetestet:**
+Video-Abbruch, Bewertungsdialog.
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker

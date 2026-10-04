@@ -260,7 +260,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body:
             'Die mobilen Apps zeigen Werbung. Vor der ersten Anzeige fragen wir über Googles Einwilligungsdialog (UMP), ob du personalisierte Werbung möchtest.\n\n' +
             'Du kannst diese Entscheidung jederzeit über die Einstellungen in der App ändern. Lehnst du ab, siehst du weiterhin Werbung, aber ohne Personalisierung.\n\n' +
-            'Auf iOS fragen wir zusätzlich über Apples Dialog zur App-Tracking-Transparenz.',
+            'Auf iOS fragen wir zusätzlich über Apples Dialog zur App-Tracking-Transparenz.\n\n' +
+            'Freiwillige Videos: An einigen Stellen kannst du dir freiwillig ein Werbevideo ansehen und bekommst dafür eine Spielhilfe (einen zweiten 50:50-Joker in einer Runde oder die Rettung einer Serie nach einem verpassten Tag). Diese Videos liefert ebenfalls Google AdMob aus, auf derselben Grundlage wie oben: personalisiert nur mit deiner Einwilligung, sonst ohne Personalisierung. Ob du ein Video bis zum Ende gesehen hast, erfährt nur die App auf deinem Gerät; wir speichern davon nichts, nur die Spielhilfe selbst.',
         },
         {
           heading: 'In-App-Käufe',
@@ -348,7 +349,8 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           body:
             'The mobile apps show advertising. Before the first ad we ask via Google’s consent dialog (UMP) whether you want personalised advertising.\n\n' +
             'You can change this decision at any time in the app settings. If you decline, you will still see ads, but without personalisation.\n\n' +
-            'On iOS we additionally ask via Apple’s App Tracking Transparency dialog.',
+            'On iOS we additionally ask via Apple’s App Tracking Transparency dialog.\n\n' +
+            'Optional videos: in a few places you can choose to watch an advertising video and receive a game aid in return (a second 50:50 joker in a round, or saving a streak after a missed day). These videos are also served by Google AdMob, on the same basis as above: personalised only with your consent, otherwise without personalisation. Whether you watched a video to the end is known only to the app on your device; we store nothing about it, only the game aid itself.',
         },
         {
           heading: 'In-app purchases',
@@ -416,7 +418,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Werbung und „Werbung entfernen"',
           body:
-            'Die App finanziert sich über Werbung. In den mobilen Apps kannst du einmalig „Werbung entfernen" kaufen; danach werden dir keine Vollbild-Anzeigen (Interstitials) mehr gezeigt.\n\n' +
+            'Die App finanziert sich über Werbung. In den mobilen Apps kannst du einmalig „Werbung entfernen" kaufen; danach werden dir keine Vollbild-Anzeigen (Interstitials) mehr gezeigt, und die Spielhilfen, für die es sonst ein freiwilliges Video gibt, bekommst du ohne Video.\n\n' +
             'Der Kauf wird über Apple (App Store) bzw. Google (Google Play) abgeschlossen und abgerechnet. Für Bezahlung, Rückerstattung und ein etwaiges Widerrufsrecht gelten die Bedingungen des jeweiligen Stores; Rückerstattungen beantragst du dort. Über „Käufe wiederherstellen" in der App lässt sich der Kauf auf einem neuen Gerät mit demselben Store-Konto erneut freischalten.',
         },
         {
@@ -458,7 +460,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
         {
           heading: 'Advertising and “remove ads”',
           body:
-            'The app is funded by advertising. In the mobile apps you can make a one-off “remove ads” purchase; after that you will no longer be shown full-screen ads (interstitials).\n\n' +
+            'The app is funded by advertising. In the mobile apps you can make a one-off “remove ads” purchase; after that you will no longer be shown full-screen ads (interstitials), and the game aids otherwise offered for an optional video are granted without one.\n\n' +
             'The purchase is concluded and billed through Apple (App Store) or Google (Google Play). Payment, refunds and any right of withdrawal are governed by the terms of the respective store; refunds are requested there. Using “Restore purchases” in the app, the purchase can be unlocked again on a new device with the same store account.',
         },
         {

@@ -1,10 +1,26 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Swords, Brain, Trophy, User, ArrowRight, ChevronRight, Flame } from 'lucide-react';
+import { Swords, Brain, Trophy, User, ArrowRight, ChevronRight, Flame, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AppShell from '../components/AppShell';
 import { useSky } from '../components/SkyBackground';
 import { levelProgress } from '../lib/level';
+import { belohnungPerVideo } from '../lib/ads';
+import { restoreStreak } from '../lib/solo';
+
+/** Datum der Datenbank (current_date läuft in UTC), um `d` Tage verschoben. */
+function dbTag(d: number) {
+  return new Date(Date.now() + d * 86_400_000).toISOString().slice(0, 10);
+}
+
+/** Ist die Serie rettbar? Spiegelt die Regeln von restore_streak (0065) —
+ *  der Server prüft sie trotzdem selbst. */
+function serieRettbar(p: { streak_current: number; last_play_date: string | null; streak_shield_at?: string | null } | null) {
+  if (!p || p.streak_current <= 0) return false;
+  if (p.last_play_date !== dbTag(-2)) return false;
+  return !p.streak_shield_at || p.streak_shield_at <= dbTag(-7);
+}
 
 /** Die drei Nebenziele. Solo und die Challenge stehen bewusst darüber:
  *  Im alten 2x2-Raster wog „Profil" genauso viel wie die Kernschleife. */
@@ -16,10 +32,30 @@ const nebenziele = [
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { profile } = useAuth();
+  const { profile, refreshProfile } = useAuth();
+  const [rettung, setRettung] = useState<'bereit' | 'laeuft' | string>('bereit');
   const { phase } = useSky();
   const lvl = levelProgress(profile?.xp ?? 0);
   const streak = profile?.streak_current ?? 0;
+  const rettbar = serieRettbar(profile);
+
+  /** Streak per Video retten (werbefrei: ohne Video). Nur nach 'earned'. */
+  async function serieRetten() {
+    if (rettung === 'laeuft') return;
+    setRettung('laeuft');
+    const ausgang = await belohnungPerVideo();
+    if (ausgang !== 'earned') {
+      setRettung(t(ausgang === 'aborted' ? 'solo.videoAborted' : 'solo.videoUnavailable'));
+      return;
+    }
+    try {
+      await restoreStreak();
+      await refreshProfile();
+      setRettung(t('home.streakSaved', { count: streak }));
+    } catch {
+      setRettung(t('common.error'));
+    }
+  }
 
   // Der Gruß folgt derselben Uhr wie der Himmel — das ist die Stelle, an der
   // die Tageszeit zu Worten wird.
@@ -48,6 +84,29 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Streak-Rettung: genau ein Tag verpasst, höchstens alle sieben Tage */}
+      {(rettbar || (rettung !== 'bereit' && rettung !== 'laeuft')) && (
+        <div className="glas px-4 py-3.5 flex items-center gap-3.5">
+          <Flame className="w-6 h-6 shrink-0 text-pink-500" strokeWidth={2.2} />
+          <div className="flex-1 min-w-0 text-sm">
+            {rettbar ? t('home.streakAtRisk', { count: streak }) : rettung}
+          </div>
+          {rettbar && (
+            <button
+              onClick={serieRetten}
+              disabled={rettung === 'laeuft'}
+              className="knopf px-3.5 py-2 text-[13px] flex items-center gap-1.5 shrink-0 disabled:opacity-50"
+            >
+              <Play className="w-3.5 h-3.5" />
+              {t('home.streakSave')}
+            </button>
+          )}
+        </div>
+      )}
+      {rettbar && rettung !== 'bereit' && rettung !== 'laeuft' && (
+        <p className="text-xs leise -mt-2 px-1">{rettung}</p>
+      )}
 
       {/* Level — die Zahl steht jetzt als Ziffer daneben statt nur im Fließtext */}
       <div className="glas px-4 py-3.5 flex items-center gap-3.5">

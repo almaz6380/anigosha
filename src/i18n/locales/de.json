@@ -63,7 +63,12 @@
     "profile": "Profil",
     "daily": "Tägliche Challenge",
     "dailyKicker": "Heute",
-    "dailyGo": "Jetzt spielen"
+    "dailyGo": "Jetzt spielen",
+    "streakAtRisk_one": "Gestern verpasst! Rette deine Serie von {{count}} Tag.",
+    "streakAtRisk_other": "Gestern verpasst! Rette deine Serie von {{count}} Tagen.",
+    "streakSave": "Retten",
+    "streakSaved_one": "Serie gerettet: {{count}} Tag. Spiel heute eine Runde, dann zählt sie weiter.",
+    "streakSaved_other": "Serie gerettet: {{count}} Tage. Spiel heute eine Runde, dann zählt sie weiter."
   },
   "profile": {
     "title": "Profil",
@@ -109,7 +114,10 @@
     "fiftyFifty": "50:50 — zwei Antworten entfernen",
     "streakDays_one": "{{count}} Tag in Folge",
     "streakDays_other": "{{count}} Tage in Folge",
-    "chooseSeries": "Wähle eine Serie"
+    "chooseSeries": "Wähle eine Serie",
+    "fiftyFiftyVideo": "Noch ein 50:50 · Video",
+    "videoAborted": "Video abgebrochen — ohne ganzes Video gibt es keine Belohnung.",
+    "videoUnavailable": "Gerade ist kein Video verfügbar. Versuch es später noch einmal."
   },
   "daily": {
     "title": "Tägliche Challenge",
