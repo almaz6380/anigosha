@@ -1426,7 +1426,42 @@ def texte_schreiben(tok):
             print(f'    FEHLER: {fehler_text(res)}')
         else:
             print('    gesetzt')
+    datenschutz_url_setzen(tok)
 
+
+# ⚠ 04.10.2026: Vercel ist gesperrt, die alte Adresse antwortet mit 402. Die
+# Datenschutz-URL haengt bei Apple am appInfo (je Sprache), nicht an der
+# Version, und ist nur aenderbar, solange eine Version vorbereitet wird.
+DATENSCHUTZ_URL = {
+    'de-DE': 'https://almaz6380.github.io/anigosha/datenschutz.html',
+}
+DATENSCHUTZ_URL_SONST = 'https://almaz6380.github.io/anigosha/privacy.html'
+
+
+def datenschutz_url_setzen(tok):
+    aid = app_id(tok)
+    infos = api(tok, f'apps/{aid}/appInfos')
+    for info in infos.get('data', []):
+        zustand = info['attributes'].get('appStoreState') or \
+                  info['attributes'].get('state') or '?'
+        if zustand in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION',
+                       'REPLACED_WITH_NEW_INFO'):
+            continue
+        locs = api(tok, f'appInfos/{info["id"]}/appInfoLocalizations')
+        for loc in locs.get('data', []):
+            a = loc['attributes']
+            soll = DATENSCHUTZ_URL.get(a['locale'], DATENSCHUTZ_URL_SONST)
+            if a.get('privacyPolicyUrl') == soll:
+                print(f'  {a["locale"]}: Datenschutz-URL steht schon richtig')
+                continue
+            print(f'  {a["locale"]}: Datenschutz-URL {a.get("privacyPolicyUrl")!r} -> {soll}')
+            if TROCKEN:
+                continue
+            res = api(tok, f'appInfoLocalizations/{loc["id"]}', 'PATCH', {
+                'data': {'type': 'appInfoLocalizations', 'id': loc['id'],
+                         'attributes': {'privacyPolicyUrl': soll}},
+            }, fatal=False)
+            print(f'    FEHLER: {fehler_text(res)}' if res.get('_fehler') else '    gesetzt')
 
 
 def zeige_status(tok):
