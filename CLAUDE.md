@@ -19,9 +19,15 @@ Anime-Quiz-App (Anigosha) für App Store + Google Play. Wissensquiz zu echten An
 Websuche sauber, das Register zeigte drei Treffer in unseren Klassen. Jeder künftige
 Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Spiele).
 **Bundle-ID:** at.gallab.animequiz
-**Live:** https://anigosha.vercel.app (Vercel-Projekt `anigosha`; alte Aliase kioku-quiz.vercel.app und anibrain.vercel.app zeigen weiter dorthin)
+**Live:** https://anigosha.almaz6380.workers.dev (Cloudflare Workers, seit 05.10.2026;
+`wrangler.jsonc`, Kurzlinks in `public/_redirects`). Vorher `anigosha.vercel.app` —
+Vercel hat den Account gesperrt (402). ⚠ Supabase Auth `site_url` + Redirect-Liste müssen
+auf die Cloudflare-Adresse zeigen, sonst führt der Bestätigungslink der Registrierungsmail
+auf die tote Seite (genau so am 05.10. passiert). Der TikTok-Redirect in
+`tools/social/tiktok-zugang.mjs` zeigt noch auf Vercel — erst umstellen, wenn er auch im
+TikTok-Entwicklerportal geändert ist.
 **Repository:** https://github.com/almaz6380/anigosha (privat, seit 28.07.2026)
-**Deploy:** Vercel ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
+**Deploy:** Cloudflare Workers Builds ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)

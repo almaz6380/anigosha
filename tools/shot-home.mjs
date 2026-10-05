@@ -3,7 +3,7 @@
 import { browserStarten, netzVerlangen, vorschauSichern } from './pruefbrowser.mjs';
 import { readFileSync } from 'node:fs';
 
-const gewuenscht = process.argv[2] ?? 'https://anigosha.vercel.app';
+const gewuenscht = process.argv[2] ?? 'https://anigosha.almaz6380.workers.dev';
 // Startet bei Bedarf einen Vorschau-Server und beendet ihn am Ende wieder.
 // Zeigt die URL nach draussen (Vercel), bleibt sie unveraendert.
 const { url, stoppen } = await vorschauSichern(gewuenscht);

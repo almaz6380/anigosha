@@ -10,7 +10,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const FCM_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
-const APP_URL = Deno.env.get('APP_URL') ?? 'https://anigosha.vercel.app';
+const APP_URL = Deno.env.get('APP_URL') ?? 'https://anigosha.almaz6380.workers.dev';
 
 type Outbox = {
   id: number;
