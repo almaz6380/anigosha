@@ -26,6 +26,12 @@ auf die Cloudflare-Adresse zeigen, sonst führt der Bestätigungslink der Regist
 auf die tote Seite (genau so am 05.10. passiert). Der TikTok-Redirect in
 `tools/social/tiktok-zugang.mjs` zeigt noch auf Vercel — erst umstellen, wenn er auch im
 TikTok-Entwicklerportal geändert ist.
+⚠ **Offen: Web-Push in der Web-Fassung geht seit dem Umzug nicht.** Die Supabase-Werte
+stehen öffentlich in `.env.production` (sonst blieb die Seite leer, `supabaseUrl is
+required`). Die fünf `VITE_FIREBASE_*`-Werte gibt es nur als GitHub-Secrets — sie müssen
+noch in Cloudflare (Projekt anigosha → Settings → Build → Variables) oder ebenfalls in
+`.env.production` (alle öffentlich, auch der VAPID-Schlüssel). Die Store-Apps sind nicht
+betroffen, ihre Builds bekommen die Werte aus den Secrets.
 **Repository:** https://github.com/almaz6380/anigosha (privat, seit 28.07.2026)
 **Deploy:** Cloudflare Workers Builds ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
