@@ -8,8 +8,14 @@ export const listDuels = async () => [
 export const startDuel = async () => ({ match_id: 'm1' });
 export const challengeFriend = async () => ({ match_id: 'm1', opponent: geg('Freund') });
 export const duelState = async () => ({ match_id: 'm1', status: 'active', round_no: 3, my_turn: true, my_score: 5, opp_score: 4, winner_id: null, opponent: geg('KiraFan88') });
-export const getDuelRound = async () => [] as never[];
-export const answerDuel = async () => ({ correct: true, correct_index: 3, explanation: null, counted: true });
+// Werbespot: Mit localStorage 'spot.frage' (JSON {id,prompt,options,correct,explanation})
+// zeigt die Partie eine echte Frage statt einer leeren Runde.
+const spotFrage = () => { try { return JSON.parse(localStorage.getItem('spot.frage') ?? 'null'); } catch { return null; } };
+export const getDuelRound = async () => {
+  const f = spotFrage();
+  return { round_no: 3, questions: f ? [{ id: f.id, type: 'mc', image: null, prompt: f.prompt, options: f.options, hints: null }] : [] };
+};
+export const answerDuel = async () => { const f = spotFrage(); return { correct: true, correct_index: f?.correct ?? 3, explanation: f?.explanation ?? null, counted: true, round_done: false }; };
 const N = ['YukiBlade','RenjiX','NozomiQ','HikariNeko','Zoro92','TanukiRen','Josef','SakuraDrop','GonFreaks','MioFuji'];
 export const globalLeaderboard = async () =>
   N.map((username, i) => ({ username, avatar_id: null, is_bot: i === 4 || i === 8, elo: 1487 - i * 32, xp: 4800 - i * 240, rank: i + 1 }));
