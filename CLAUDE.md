@@ -1087,8 +1087,9 @@ Regeln dazu:
   ausgenommen — sie sind echte Zeilen in `profiles`, wer sie mitzählt, feiert
   die eigene Infrastruktur als Nutzer. **Warum nicht aus den Stores:** Apple und
   Google zeigen Downloads, also die uninteressanteste Zahl; ob jemand am zweiten
-  Tag wiederkommt oder Runden abbricht, steht nur hier. Vercel Web Analytics
-  misst wiederum **nur die Web-App** — die Store-Apps laden ihre Oberfläche aus
+  Tag wiederkommt oder Runden abbricht, steht nur hier. Cloudflare Web Analytics
+  (seit 08.10.2026, vorher Vercel; `src/lib/webAnalytics.ts` + Schnipsel in
+  `public/get.html`, Token öffentlich) misst wiederum **nur die Web-App** — die Store-Apps laden ihre Oberfläche aus
   dem eigenen Paket und tauchen dort nie auf.
   Braucht `SUPABASE_ACCESS_TOKEN` (Umgebungsvariable oder `.env`), **nicht** den
   Service-Role-Key: Die Abfragen laufen über die Management-API, weil Port 5432

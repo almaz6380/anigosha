@@ -6,7 +6,7 @@
 // zweiten Tag wiederkommt, ob Runden abgebrochen werden, welche Kategorie
 // gespielt wird: das steht nur hier.
 //
-// Und Vercel Web Analytics misst NUR die Web-App — die Store-Apps laden ihre
+// Und Cloudflare Web Analytics (vorher Vercel) misst NUR die Web-App — die Store-Apps laden ihre
 // Oberflaeche aus dem eigenen Paket und tauchen dort nie auf.
 //
 // Aufruf:  node tools/statistik.mjs            (letzte 30 Tage)
