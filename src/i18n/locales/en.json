@@ -30,7 +30,10 @@
       "generic": "Sign-in failed. Please try again."
     },
     "resetError": "The email could not be sent. Please try again.",
-    "resetNeedsEmail": "Enter your email address first."
+    "resetNeedsEmail": "Enter your email address first.",
+    "legalNote": "By registering you accept the <terms>Terms of Use</terms>. How we process your data is explained in the <privacy>Privacy Policy</privacy>.",
+    "ageConfirm": "I am at least 16 years old.",
+    "ageRequired": "Please confirm that you are at least 16 years old."
   },
   "username": {
     "title": "Choose your player name",
@@ -60,7 +63,12 @@
     "profile": "Profile",
     "daily": "Daily Challenge",
     "dailyKicker": "Today",
-    "dailyGo": "Play now"
+    "dailyGo": "Play now",
+    "streakAtRisk_one": "You missed yesterday! Save your {{count}}-day streak.",
+    "streakAtRisk_other": "You missed yesterday! Save your {{count}}-day streak.",
+    "streakSave": "Save",
+    "streakSaved_one": "Streak saved: {{count}} day. Play a round today to keep it going.",
+    "streakSaved_other": "Streak saved: {{count}} days. Play a round today to keep it going."
   },
   "profile": {
     "title": "Profile",
@@ -106,7 +114,10 @@
     "fiftyFifty": "50:50 — remove two answers",
     "streakDays_one": "{{count}} day in a row",
     "streakDays_other": "{{count}} days in a row",
-    "chooseSeries": "Pick a series"
+    "chooseSeries": "Pick a series",
+    "fiftyFiftyVideo": "One more 50:50 · video",
+    "videoAborted": "Video closed early — the reward needs the full video.",
+    "videoUnavailable": "No video available right now. Please try again later."
   },
   "daily": {
     "title": "Daily Challenge",

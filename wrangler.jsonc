@@ -1,0 +1,21 @@
+// Web-App auf Cloudflare Workers (seit 05.10.2026; vorher Vercel, das den Account
+// gesperrt hat — anigosha.vercel.app antwortet mit 402). Nur statische Dateien
+// aus dist/, kein Worker-Code. Gebaut und veröffentlicht von Cloudflare selbst
+// (Workers Builds, mit dem GitHub-Repo verknüpft). Vorlage: FixTheMix.
+{
+  "name": "anigosha",
+  "compatibility_date": "2026-09-01",
+  // Wrangler baut selbst, bevor es hochlädt; dist/ ist gitignored.
+  "build": { "command": "npm run build" },
+  // Für Zweige außer main ruft Cloudflare `wrangler preview` auf, das ohne
+  // diesen Block abbricht.
+  "previews": {},
+  "assets": {
+    "directory": "./dist",
+    // Routen wie /solo kennt erst der Browser: alles, was keine Datei ist,
+    // bekommt index.html (früher die Rewrite-Regel in vercel.json).
+    // /get und /tiktok-fertig liefert Cloudflare von selbst aus get.html bzw.
+    // tiktok-fertig.html; /app und /download leitet public/_redirects um.
+    "not_found_handling": "single-page-application"
+  }
+}

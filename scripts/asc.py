@@ -631,19 +631,26 @@ def setze_abo_screenshot(tok):
 
 
 # Prueferhinweis fuer Anigosha. Englisch, weil App Review das liest.
-# Inhaltsgleich mit dem, was am 13.08.2026 in App Store Connect steht — wer
-# --pruefnotiz laufen laesst, ueberschreibt die Notiz also nicht mit etwas
-# Fremdem. Bei jeder Aenderung in ASC hier nachziehen (oder umgekehrt).
+# Neu gefasst am 04.10.2026: Die Fassung vom 13.08. sagte „kein Tracking,
+# npa=1, keine NSUserTrackingUsageDescription" — seit 1.1.1 (06.09.2026) ist
+# alles davon falsch. Bei jeder Aenderung in ASC hier nachziehen (oder
+# umgekehrt). Ob die Notiz in ASC schon diesen Stand traegt, sagt erst der
+# naechste Lauf von --pruefnotiz.
 PRUEFNOTIZ = """Sign in with the demo account (already verified, no
 registration needed). All areas are then accessible: solo quiz, duels against
 bots and humans, leaderboards, profile. The "Remove Ads" purchase is optional
 and not required for review. The demo account is set to English.
 
 Privacy / advertising
-Anigosha does not track users. The app privacy information declares no
-tracking, the binary contains no NSUserTrackingUsageDescription, and every ad
-request is sent with npa=1 (non-personalized). SKAdNetwork is used for
-attribution only, which does not require tracking consent.
+The app shows Google AdMob ads (interstitials between rounds, at most four per
+session). On first launch iOS shows the App Tracking Transparency prompt; it is
+requested natively when the app becomes active, before the ad SDK starts. In
+the EEA/UK, Google's consent dialog (UMP) asks whether ads may be
+personalised. Ads are personalised only if the user allows both; otherwise
+non-personalised ads are served. The app privacy information declares the
+device ID as used for tracking (third-party advertising). Consent can be
+changed at any time under Profile -> "Ad privacy settings". New accounts must confirm
+they are at least 16 years old.
 
 Demo account: store-review@anigosha.app / AnigoshaReview2026
 """
@@ -1419,7 +1426,42 @@ def texte_schreiben(tok):
             print(f'    FEHLER: {fehler_text(res)}')
         else:
             print('    gesetzt')
+    datenschutz_url_setzen(tok)
 
+
+# ⚠ 04.10.2026: Vercel ist gesperrt, die alte Adresse antwortet mit 402. Die
+# Datenschutz-URL haengt bei Apple am appInfo (je Sprache), nicht an der
+# Version, und ist nur aenderbar, solange eine Version vorbereitet wird.
+DATENSCHUTZ_URL = {
+    'de-DE': 'https://almaz6380.github.io/anigosha/datenschutz.html',
+}
+DATENSCHUTZ_URL_SONST = 'https://almaz6380.github.io/anigosha/privacy.html'
+
+
+def datenschutz_url_setzen(tok):
+    aid = app_id(tok)
+    infos = api(tok, f'apps/{aid}/appInfos')
+    for info in infos.get('data', []):
+        zustand = info['attributes'].get('appStoreState') or \
+                  info['attributes'].get('state') or '?'
+        if zustand in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION',
+                       'REPLACED_WITH_NEW_INFO'):
+            continue
+        locs = api(tok, f'appInfos/{info["id"]}/appInfoLocalizations')
+        for loc in locs.get('data', []):
+            a = loc['attributes']
+            soll = DATENSCHUTZ_URL.get(a['locale'], DATENSCHUTZ_URL_SONST)
+            if a.get('privacyPolicyUrl') == soll:
+                print(f'  {a["locale"]}: Datenschutz-URL steht schon richtig')
+                continue
+            print(f'  {a["locale"]}: Datenschutz-URL {a.get("privacyPolicyUrl")!r} -> {soll}')
+            if TROCKEN:
+                continue
+            res = api(tok, f'appInfoLocalizations/{loc["id"]}', 'PATCH', {
+                'data': {'type': 'appInfoLocalizations', 'id': loc['id'],
+                         'attributes': {'privacyPolicyUrl': soll}},
+            }, fatal=False)
+            print(f'    FEHLER: {fehler_text(res)}' if res.get('_fehler') else '    gesetzt')
 
 
 def zeige_status(tok):

@@ -30,7 +30,10 @@
       "generic": "Não foi possível entrar. Tente de novo."
     },
     "resetError": "Não foi possível enviar o e-mail. Tente novamente.",
-    "resetNeedsEmail": "Digite primeiro seu endereço de e-mail."
+    "resetNeedsEmail": "Digite primeiro seu endereço de e-mail.",
+    "legalNote": "Ao se cadastrar, você aceita os <terms>Termos de uso</terms>. Como tratamos seus dados está explicado na <privacy>Política de privacidade</privacy>.",
+    "ageConfirm": "Tenho pelo menos 16 anos.",
+    "ageRequired": "Confirme que você tem pelo menos 16 anos."
   },
   "username": {
     "title": "Escolha seu nome de jogador",
@@ -60,7 +63,12 @@
     "profile": "Perfil",
     "daily": "Desafio diário",
     "dailyKicker": "Hoje",
-    "dailyGo": "Jogar agora"
+    "dailyGo": "Jogar agora",
+    "streakAtRisk_one": "Você perdeu ontem! Salve sua sequência de {{count}} dia.",
+    "streakAtRisk_other": "Você perdeu ontem! Salve sua sequência de {{count}} dias.",
+    "streakSave": "Salvar",
+    "streakSaved_one": "Sequência salva: {{count}} dia. Jogue uma rodada hoje para continuar contando.",
+    "streakSaved_other": "Sequência salva: {{count}} dias. Jogue uma rodada hoje para continuar contando."
   },
   "profile": {
     "title": "Perfil",
@@ -106,7 +114,10 @@
     "fiftyFifty": "50:50 — remover duas respostas",
     "streakDays_one": "{{count}} dia seguido",
     "streakDays_other": "{{count}} dias seguidos",
-    "chooseSeries": "Escolha uma série"
+    "chooseSeries": "Escolha uma série",
+    "fiftyFiftyVideo": "Mais um 50:50 · vídeo",
+    "videoAborted": "Vídeo fechado antes do fim — a recompensa exige o vídeo inteiro.",
+    "videoUnavailable": "Nenhum vídeo disponível agora. Tente de novo mais tarde."
   },
   "daily": {
     "title": "Desafio diário",

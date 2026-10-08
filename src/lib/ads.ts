@@ -81,8 +81,8 @@ let initLauf: Promise<void> | null = null;
 let datenschutzOptionen: string | null = null;
 
 // --- Häufigkeitsbremse ------------------------------------------------------
-// Eine Anzeige nach jeder zweiten beendeten Runde und frühestens 90 Sekunden
-// nach der letzten. Ein Quiz, das nach jeder Runde Werbung zeigt, verliert
+// Eine Anzeige nach jeder zweiten beendeten Runde, frühestens 90 Sekunden
+// nach der letzten und höchstens vier je Sitzung. Ein Quiz, das nach jeder Runde Werbung zeigt, verliert
 // seine Spieler schneller, als die Einblendungen einbringen.
 //
 // Solo und Duell teilen sich diesen Zähler bewusst. Zwei getrennte Zähler
@@ -90,9 +90,15 @@ let datenschutzOptionen: string | null = null;
 // wechselt — und genau das tun Spieler ständig.
 const EVERY_NTH_ROUND = 2;
 const MIN_GAP_MS = 90_000;
+// Obergrenze je App-Sitzung (04.10.2026, nach der Rechtsprüfung): Wer eine
+// Stunde am Stück spielt, sähe sonst über 20 Vollbildanzeigen. Ab der vierten
+// ist Schluss, bis die App neu gestartet wird. Der Zähler lebt bewusst nur im
+// Speicher — „Sitzung" heißt hier: dieser Prozess.
+const MAX_PER_SESSION = 4;
 
 let roundCounter = 0;
 let lastShownAt = 0;
+let shownThisSession = 0;
 
 // --- Einmalige Gelegenheiten ------------------------------------------------
 // Manche Abschlüsse gibt es nur einmal, ihr Bildschirm aber beliebig oft: Eine
@@ -128,15 +134,26 @@ export function setAdsPremiumStatus(premium: boolean) {
   isPremium = premium;
 }
 
-async function runConsentFlow() {
+/** Schritt 1 nach Google: Einwilligungsstatus holen, bevor das SDK startet. */
+async function holeEinwilligungsInfo(): Promise<boolean> {
   try {
     const info = await AdMob.requestConsentInfo();
     datenschutzOptionen = info.privacyOptionsRequirementStatus ?? null;
-    if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
-      await AdMob.showConsentForm();
-    }
+    return !!(info.isConsentFormAvailable && info.status === 'REQUIRED');
   } catch (e) {
-    console.warn('Einwilligung fehlgeschlagen:', e);
+    // Scheitert UMP (offline, Konfiguration), läuft es trotzdem weiter: Ohne
+    // Consent-String liefert Google in EWR/UK von sich aus nur eingeschränkte,
+    // nicht personalisierte Anzeigen. Gefragt wurde — das ist die Bedingung.
+    console.warn('Einwilligungsstatus nicht abrufbar:', e);
+    return false;
+  }
+}
+
+async function zeigeEinwilligungsFormular() {
+  try {
+    await AdMob.showConsentForm();
+  } catch (e) {
+    console.warn('Einwilligungsformular fehlgeschlagen:', e);
   }
 }
 
@@ -206,8 +223,25 @@ async function initAdsIntern() {
     const mod = await import('@capacitor-community/admob');
     AdMob = mod.AdMob;
     await warteAufTrackingAntwort();
+
+    // ── Reihenfolge nach Google (04.10.2026): Einwilligung VOR SDK-Start ──
+    //  Erst den UMP-Status holen, dann bei Bedarf das Formular, erst danach
+    //  `initialize` — so startet das SDK samt Mediation erst, wenn die
+    //  Entscheidung vorliegt. Vorher lief es umgekehrt.
+    //
+    //  ⚠ Eine Ausnahme erzwingt das Plugin (8.0.0, im Quelltext gelesen):
+    //  Auf iOS setzt `AdMobPlugin.initialize()` die Rückreferenz `plugin` des
+    //  ConsentExecutor. Davor findet `showConsentForm` keinen ViewController
+    //  und lehnt ab — dieselbe Falle, die Swaply am 29.07.2026 die Werbung
+    //  komplett gekostet hat. `requestConsentInfo` braucht sie nicht. Auf iOS
+    //  kommt das FORMULAR deshalb nach `initialize`; `MobileAds.start()` selbst
+    //  schickt keine Anzeigenanfrage, die erste geht erst nach dem Formular
+    //  raus (`ready` wird erst danach gesetzt).
+    const formularNoetig = await holeEinwilligungsInfo();
+    const ios = Capacitor.getPlatform() === 'ios';
+    if (formularNoetig && !ios) await zeigeEinwilligungsFormular();
     await AdMob.initialize({ initializeForTesting: USE_TEST_ADS });
-    await runConsentFlow();
+    if (formularNoetig && ios) await zeigeEinwilligungsFormular();
     ready = true;
   } catch (e) {
     console.warn('AdMob-Initialisierung fehlgeschlagen:', e);
@@ -218,19 +252,24 @@ async function initAdsIntern() {
  * Nach einer beendeten Runde aufrufen. Entscheidet selbst, ob wirklich eine
  * Anzeige erscheint (Premium, Häufigkeit, Mindestabstand).
  */
-export async function maybeShowInterstitial() {
-  if (!ready || isPremium) return;
+export async function maybeShowInterstitial(): Promise<boolean> {
+  if (!ready || isPremium) return false;
 
   roundCounter += 1;
-  if (roundCounter % EVERY_NTH_ROUND !== 0) return;
-  if (Date.now() - lastShownAt < MIN_GAP_MS) return;
+  if (roundCounter % EVERY_NTH_ROUND !== 0) return false;
+  if (Date.now() - lastShownAt < MIN_GAP_MS) return false;
+  if (shownThisSession >= MAX_PER_SESSION) return false;
 
   try {
     await AdMob.prepareInterstitial({ adId: ids().interstitial });
     await AdMob.showInterstitial();
     lastShownAt = Date.now();
+    shownThisSession += 1;
+    return true;
   } catch (e) {
     console.warn('Interstitial fehlgeschlagen:', e);
+    // Versucht ist versucht: lieber keine Bewertungsanfrage hinterher.
+    return true;
   }
 }
 
@@ -246,29 +285,117 @@ export async function maybeShowInterstitial() {
  * Die Gelegenheit ist damit auch dann verbraucht, wenn die Bremse oben sie
  * verwirft — genau wie in Solo, wo jede beendete Sitzung nur eine Chance hat.
  */
-export async function maybeShowInterstitialOnce(key: string) {
-  if (!ready || isPremium) return;
-  if (seenKeys().includes(key)) return;
+export async function maybeShowInterstitialOnce(key: string): Promise<boolean> {
+  if (!ready || isPremium) return false;
+  if (seenKeys().includes(key)) return false;
   // Kein Speicher (Privatmodus, gesperrter Speicher): lieber gar keine Anzeige
   // als bei jedem Öffnen wieder eine.
-  if (!markSeen(key)) return;
-  await maybeShowInterstitial();
+  if (!markSeen(key)) return false;
+  return maybeShowInterstitial();
 }
 
+// --- Belohnte Videos (1.1.4) ----------------------------------------------
+//  ⚠ `showRewardVideoAd()` löst im Plugin AUSSCHLIESSLICH im Belohnungs-
+//  Callback auf. Bricht der Spieler ab, antwortet das Plugin nie — ein blankes
+//  `await` hängt dann für immer, und die Oberfläche tut stumm gar nichts.
+//  Genau das hat Mahjong Royale 1.0.2 gekostet (Video gesehen, keine
+//  Belohnung). Deshalb hören wir zusätzlich auf Showed/Dismissed/FailedToShow,
+//  werten die Auflösung der Plugin-Promise selbst als Beleg und begrenzen hart
+//  auf Zeit. Muster: mahjong-app/src/ads/admob.ts `requestReward`.
+export type RewardOutcome = 'earned' | 'aborted' | 'unavailable';
+
+const REWARD_HARD_TIMEOUT_MS = 180_000; // Notbremse: Video hängt/bleibt offen
+const REWARD_AFTER_EARN_MS = 15_000; // Belohnung sicher, Dismissed bleibt aus
+const REWARD_AFTER_DISMISS_MS = 400; // kurze Nachfrist für ein spätes Ereignis
+let rewardInFlight = false;
+
+// Die Ereignisnamen stehen hier als Zeichenketten statt über das Enum des
+// Plugins: das Modul wird erst zur Laufzeit geladen (im Browser nie).
+const EV = {
+  Showed: 'onRewardedVideoAdShowed',
+  FailedToShow: 'onRewardedVideoAdFailedToShow',
+  Dismissed: 'onRewardedVideoAdDismissed',
+  Rewarded: 'onRewardedVideoAdReward',
+} as const;
+
 /**
- * Belohnte Anzeige, z. B. für den Streak-Schutz.
- * Gibt true zurück, wenn die Anzeige vollständig gesehen wurde — nur dann
- * darf die Belohnung vergeben werden.
+ * Für eine Belohnung ein Video zeigen — oder, wer „Werbung entfernen" gekauft
+ * hat, die Belohnung ohne Video geben. Die Belohnung darf NUR bei 'earned'
+ * vergeben werden. Im Browser gibt es keine Anzeigen → 'unavailable'.
  */
-export async function showRewardedAd(): Promise<boolean> {
-  if (!ready) return false;
+export async function belohnungPerVideo(): Promise<RewardOutcome> {
+  if (isPremium) return 'earned';
+  return showRewardedAd();
+}
+
+/** Belohnte Anzeige. Nur bei 'earned' darf die Belohnung vergeben werden. */
+export async function showRewardedAd(): Promise<RewardOutcome> {
+  if (initLauf) await initLauf;
+  if (!ready) return 'unavailable';
+  if (rewardInFlight) {
+    console.warn('Rewarded läuft bereits – zweite Anfrage verworfen.');
+    return 'unavailable';
+  }
+  rewardInFlight = true;
+
+  const handles: Array<{ remove: () => Promise<void> }> = [];
+  let earned = false;
+  let shown = false;
+  let done!: () => void;
+  const finished = new Promise<void>((resolve) => {
+    done = resolve;
+  });
+  let timer = setTimeout(done, REWARD_HARD_TIMEOUT_MS);
+  const rearm = (ms: number) => {
+    clearTimeout(timer);
+    timer = setTimeout(done, ms);
+  };
+
   try {
-    await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
-    const reward = await AdMob.showRewardVideoAd();
-    return !!reward;
+    handles.push(await AdMob.addListener(EV.Showed, () => { shown = true; }));
+    handles.push(
+      await AdMob.addListener(EV.Rewarded, () => {
+        earned = true;
+        rearm(REWARD_AFTER_EARN_MS);
+      }),
+    );
+    handles.push(await AdMob.addListener(EV.Dismissed, () => rearm(REWARD_AFTER_DISMISS_MS)));
+    handles.push(await AdMob.addListener(EV.FailedToShow, () => done()));
+
+    try {
+      await AdMob.prepareRewardVideoAd({ adId: ids().rewarded });
+    } catch (e) {
+      console.warn('Rewarded konnte nicht geladen werden:', e);
+      return 'unavailable';
+    }
+
+    // Bewusst ohne await: die Promise kann ewig offen bleiben (siehe oben).
+    AdMob.showRewardVideoAd()
+      .then(() => {
+        earned = true;
+        rearm(REWARD_AFTER_EARN_MS);
+      })
+      .catch((e: unknown) => {
+        console.warn('Rewarded fehlgeschlagen:', e);
+        done();
+      });
+
+    await finished;
+    if (earned || shown) lastShownAt = Date.now(); // kein Interstitial gleich hinterher
+    return earned ? 'earned' : shown ? 'aborted' : 'unavailable';
   } catch (e) {
     console.warn('Rewarded fehlgeschlagen:', e);
-    return false;
+    return 'unavailable';
+  } finally {
+    rewardInFlight = false;
+    clearTimeout(timer);
+    for (const h of handles) {
+      try {
+        await h.remove();
+      } catch {
+        /* Listener schon weg */
+      }
+    }
   }
 }
 

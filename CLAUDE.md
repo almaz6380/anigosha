@@ -19,9 +19,21 @@ Anime-Quiz-App (Anigosha) für App Store + Google Play. Wissensquiz zu echten An
 Websuche sauber, das Register zeigte drei Treffer in unseren Klassen. Jeder künftige
 Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Spiele).
 **Bundle-ID:** at.gallab.animequiz
-**Live:** https://anigosha.vercel.app (Vercel-Projekt `anigosha`; alte Aliase kioku-quiz.vercel.app und anibrain.vercel.app zeigen weiter dorthin)
+**Live:** https://anigosha.almaz6380.workers.dev (Cloudflare Workers, seit 05.10.2026;
+`wrangler.jsonc`, Kurzlinks in `public/_redirects`). Vorher `anigosha.vercel.app` —
+Vercel hat den Account gesperrt (402). ⚠ Supabase Auth `site_url` + Redirect-Liste müssen
+auf die Cloudflare-Adresse zeigen, sonst führt der Bestätigungslink der Registrierungsmail
+auf die tote Seite (genau so am 05.10. passiert). Der TikTok-Redirect in
+`tools/social/tiktok-zugang.mjs` zeigt noch auf Vercel — erst umstellen, wenn er auch im
+TikTok-Entwicklerportal geändert ist.
+⚠ **Offen: Web-Push in der Web-Fassung geht seit dem Umzug nicht.** Die Supabase-Werte
+stehen öffentlich in `.env.production` (sonst blieb die Seite leer, `supabaseUrl is
+required`). Die fünf `VITE_FIREBASE_*`-Werte gibt es nur als GitHub-Secrets — sie müssen
+noch in Cloudflare (Projekt anigosha → Settings → Build → Variables) oder ebenfalls in
+`.env.production` (alle öffentlich, auch der VAPID-Schlüssel). Die Store-Apps sind nicht
+betroffen, ihre Builds bekommen die Werte aus den Secrets.
 **Repository:** https://github.com/almaz6380/anigosha (privat, seit 28.07.2026)
-**Deploy:** Vercel ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
+**Deploy:** Cloudflare Workers Builds ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
@@ -69,6 +81,76 @@ geschlossen, `LAST_UPDATED` auf 17.09.2026:
    Geburtsjahr bei der Registrierung — bewusst nicht gebaut, Josefs Entscheidung.
 
 ODR-Link raus (Plattform seit 20.07.2025 eingestellt). `tsc` grün.
+
+## Rechtsprüfung umgesetzt (04.10.2026, 1.1.3 vorbereitet, Branch `claude/rechtspruefung-fixes`)
+
+Aus einer Rechts- und Store-Prüfung. Code fertig, **nichts gebaut, nichts
+eingereicht, keine Migration**. Versionen stehen auf **iOS 1.1.3 / Build 20,
+Android 1.1.3 / vc10**; whatsNew in `store-assets/asc-texte.json` (alle sieben
+Sprachen) ist nachgezogen, die Play-Hinweise gehen wie immer als Workflow-Eingabe.
+
+| Was | Wo |
+|---|---|
+| Löschseite + Speicherdauer: Duelle werden mitgelöscht (`player_a/b … on delete cascade` in 0017), auch beim Gegenüber — vorher stand dort „anonymisiert" | `legalContent.ts` (DE+EN) |
+| Drittland: Vercel Inc. und Supabase Inc. (US-Firma, Daten in Frankfurt) genannt, Grundlage DPF bzw. SCC | ebenda |
+| „optional ein Avatarbild" raus — es gibt keinen Upload, nur die vorgegebene Auswahl | ebenda |
+| Nutzungsbedingungen: Klausel zum Kauf „Werbung entfernen" (Apple/Google regeln Zahlung, Erstattung, Widerruf) statt „künftig vielleicht werbefrei" | ebenda |
+| **Mindestalter 16 für ein Konto**: Pflicht-Häkchen bei der Registrierung, dazu Links auf `/legal/agb` und `/legal/datenschutz` (i18n `auth.ageConfirm/ageRequired/legalNote` ×5) | `AuthPage.tsx`, `legalContent.ts` |
+| UMP-Status VOR `AdMob.initialize`; höchstens **4 Interstitials je Sitzung** | `src/lib/ads.ts`, `tools/test-werbung.mjs` (+6 Prüfungen) |
+| Prüfnotiz wahrheitsgemäß (ATT nativ, personalisiert nur mit Einwilligung) | `scripts/asc.py` `PRUEFNOTIZ` — **in ASC erst mit `--pruefnotiz` aktiv** |
+| Privacy Manifest (Tracking: ja, UserDefaults CA92.1, 5 Datentypen) | `ios/App/App/PrivacyInfo.xcprivacy` |
+
+⚠ **`NSPrivacyTracking = true` mit LEERER `NSPrivacyTrackingDomains` ist „Ungültige Binärdatei“** (ITMS-91064, FullRep Build 13 am 04.10.2026 so abgelehnt). Die drei Google-Werbedomains stehen jetzt drin, wie bei Swaply. Build 21 trug die leere Liste, deshalb Build 22.
+
+| ATT-Dialog in DE/EN/ES/FR/PT (`<code>.lproj/InfoPlist.strings`) | `tools/ios-projekt.mjs` (idempotent, trägt beides per `xcode` in die pbxproj ein) |
+
+⚠ **Die Google-Reihenfolge geht auf iOS nur halb.** `@capacitor-community/admob`
+8.0.0 setzt die Plugin-Rückreferenz des ConsentExecutor erst in `initialize()`
+(im Quelltext gelesen). `requestConsentInfo` braucht sie nicht, `showConsentForm`
+schon — davor lehnt es mit „No ViewController" ab (die Swaply-Falle vom 29.07.).
+Deshalb: Android `requestConsentInfo → showConsentForm → initialize`, iOS
+`requestConsentInfo → initialize → showConsentForm`. `ready` wird in beiden Fällen
+erst danach gesetzt, die erste Anzeigenanfrage kommt also immer nach dem Formular.
+Wer das Plugin aktualisiert: nachsehen, ob die Referenz früher gesetzt wird.
+
+⚠ **Mindestalter 16 vs. Store-Konsolen:** Play-Zielgruppe und Apple-Altersfreigabe
+von Hand prüfen, damit sie nicht jünger werben als die App zulässt.
+
+**Noch offen — Melden/Blockieren von Spielernamen und Freundesduellen.** Apple
+verlangt bei nutzergenerierten Inhalten (Richtlinie 1.2) eine Möglichkeit,
+Inhalte zu melden und Nutzer zu blockieren; sichtbar sind hier Spielernamen
+(Bestenliste, Duelle) und Freundes-Herausforderungen. Das braucht eine
+DB-Migration (Melde- und Blockliste + RPC-Filter in Matchmaking/`challenge_friend`)
+und ist bewusst NICHT in diesem Paket. Risiko: eine Ablehnung nach 1.2 bei einer
+künftigen Prüfung.
+
+## Belohnte Videos + Bewertungsanfrage (04.10.2026, 1.1.4 vorbereitet, Branch `claude/video-belohnungen`)
+
+Baut auf 1.1.3 auf (das nie ausgeliefert wurde) — **die whatsNew-Texte für 1.1.4
+tragen deshalb den 1.1.3-Inhalt mit.** Versionen: iOS 1.1.4 / Build 21, Android
+1.1.4 / vc11. Nichts gebaut, nichts eingereicht. **Migration 0065 ist eingespielt**
+(Trockenlauf, echt, lesend nachgezählt: 3 Spalten, Rechte nur `authenticated`).
+
+| Was | Wo |
+|---|---|
+| **Zweiter 50:50-Joker per Video**, einmal je Runde. Server: `use_fifty_fifty_extra` — erst nach dem freien Joker, nicht auf dessen Frage (`solo_sessions.joker_question`, sonst ergäben 2×2 zufällige falsche Antworten oft die Lösung), nicht nach Antwort/Rundenende, **nicht in der Täglichen Challenge** (Bestenliste), Zeilensperre | `0065_joker_video.sql`, `SoloPage.tsx`, `solo.ts` |
+| **Streak-Rettung per Video**: genau ein verpasster Tag (`last_play_date = current_date − 2`), Serie > 0, höchstens alle 7 Tage (`profiles.streak_shield_at`, im Spalten-Guard). Schiebt den letzten Spieltag auf gestern; die nächste Runde zählt weiter. Karte auf der Startseite | `restore_streak()`, `HomePage.tsx` |
+| `showRewardedAd()` → `'earned' \| 'aborted' \| 'unavailable'`, hört auf Showed/Dismissed/FailedToShow, harte Zeitgrenze, Doppeltipp-Sperre. ⚠ Das Plugin löst `showRewardVideoAd()` NUR bei verdienter Belohnung auf — ein blankes `await` hängt beim Abbruch ewig (Mahjong-Lehre). `belohnungPerVideo()`: werbefrei → `'earned'` ohne Video. Nach einem Video kein Interstitial (setzt `lastShownAt`) | `src/lib/ads.ts`, `test-werbung.mjs` (+16) |
+| `maybeShowInterstitial()` gibt jetzt zurück, ob eine Anzeige lief | `ads.ts` |
+| **Bewertungsanfrage** nach der 10. beendeten Runde, höchstens alle 90 Tage, nie direkt nach einem Interstitial, nur nativ, ohne Belohnung (`@capacitor-community/in-app-review` 8.0.0, per `cap sync` in Package.swift und Gradle) | `src/lib/bewertung.ts` |
+| Datenschutz + Nutzungsbedingungen (DE+EN): freiwillige Videos, gleiche AdMob-Grundlage; werbefrei = Hilfen ohne Video | `legalContent.ts` |
+
+**Der Server kann nicht prüfen, ob ein Video lief** — es läuft komplett auf dem
+Gerät. Er prüft nur die Spielregeln (einmal je Runde / je 7 Tage). Das ist
+bewusst so: Werbefreie bekommen beides ohnehin ohne Video, und keine der
+Hilfen wirkt in einer Bestenliste.
+
+**Streak-Datum ist UTC** (`current_date` der Datenbank) — das gilt schon immer für
+die Serie selbst; die Startseite rechnet die Rettbarkeit deshalb ebenfalls in UTC.
+
+Tests: `test-joker-daily.mjs` 32/32 (16 neu), `test-werbung.mjs` grün,
+solo/duel/matchmaking/freundesduell unverändert grün. **Am Gerät ungetestet:**
+Video-Abbruch, Bewertungsdialog.
 
 ## Kern-Features (V1)
 

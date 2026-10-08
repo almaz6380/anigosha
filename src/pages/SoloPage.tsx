@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { ArrowRight, Check, ChevronRight, Flag, Flame, Lightbulb, RotateCcw, Scissors, Share2, Trophy, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronRight, Flag, Flame, Lightbulb, Play, RotateCcw, Scissors, Share2, Trophy, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { maybeShowInterstitial } from '../lib/ads';
+import { belohnungPerVideo, maybeShowInterstitial } from '../lib/ads';
+import { nachRundeBewerten } from '../lib/bewertung';
 import LevelUpClouds from '../components/LevelUpClouds';
 import AppShell, { PageHeader } from '../components/AppShell';
 import { kategorieFarbe } from '../lib/kategorien';
@@ -14,6 +15,7 @@ import {
   dailyLeaderboard,
   fetchCategories,
   fiftyFifty,
+  fiftyFiftyExtra,
   finishSolo,
   kategorieName,
   reportQuestion,
@@ -51,6 +53,13 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const [result, setResult] = useState<SoloResult | null>(null);
   const [hidden, setHidden] = useState<number[]>([]);
   const [jokerUsed, setJokerUsed] = useState(false);
+  /** Frage des ersten Jokers — der zweite darf dort nicht landen (verriete
+   *  die Lösung). Der Server prüft das ebenfalls. */
+  const [jokerFrage, setJokerFrage] = useState<string | null>(null);
+  /** Zweiter Joker per Video: 'offen' → Video verdient (RPC noch nicht durch,
+   *  z. B. Netzfehler — dann kein zweites Video) → 'benutzt'. */
+  const [extraJoker, setExtraJoker] = useState<'offen' | 'verdient' | 'benutzt'>('offen');
+  const [hinweis, setHinweis] = useState<string | null>(null);
   const [board, setBoard] = useState<LeaderboardRow[]>([]);
   const [alreadyDone, setAlreadyDone] = useState(false);
   const [newLevel, setNewLevel] = useState<number | null>(null);
@@ -64,6 +73,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     setHintsShown(1);
     setReported(false);
     setHidden([]);
+    setHinweis(null);
   }, []);
 
   // Solo: Kategorien laden. Challenge: sofort die Fragen des Tages holen.
@@ -104,6 +114,9 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       setQuestions(data.questions ?? []);
       setIndex(0);
       setJokerUsed(false);
+      setJokerFrage(null);
+      setExtraJoker('offen');
+      setHinweis(null);
       setVerlauf([]);
       resetQuestionState();
       setStep('quiz');
@@ -140,6 +153,33 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       // wegfiel. Ob er serverseitig schon verbucht ist, entscheidet ohnehin
       // die RPC beim nächsten Versuch.
       setJokerUsed(true);
+      setJokerFrage(current.id);
+    } catch {
+      setError(t('common.error'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** Zweiter 50:50-Joker gegen ein freiwilliges Video. Werbefreie Spieler
+   *  bekommen ihn ohne Video (belohnungPerVideo). */
+  async function jokerPerVideo() {
+    if (!sessionId || !current || picked !== null || busy) return;
+    if (!jokerUsed || extraJoker === 'benutzt' || current.id === jokerFrage) return;
+    setBusy(true);
+    setError(null);
+    setHinweis(null);
+    try {
+      if (extraJoker === 'offen') {
+        const ausgang = await belohnungPerVideo();
+        if (ausgang !== 'earned') {
+          setHinweis(t(ausgang === 'aborted' ? 'solo.videoAborted' : 'solo.videoUnavailable'));
+          return;
+        }
+        setExtraJoker('verdient');
+      }
+      setHidden(await fiftyFiftyExtra(sessionId, current.id));
+      setExtraJoker('benutzt');
     } catch {
       setError(t('common.error'));
     } finally {
@@ -168,7 +208,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       // sich eine Anzeige über den Glücksmoment.
       const up = levelUpFrom(xpBefore, res.xp ?? 0);
       if (up) setNewLevel(up);
-      else maybeShowInterstitial();
+      else nachRundeBewerten(await maybeShowInterstitial(), res.replay);
     } catch {
       setError(t('common.error'));
     } finally {
@@ -315,7 +355,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
             level={newLevel}
             onDone={() => {
               setNewLevel(null);
-              maybeShowInterstitial();
+              maybeShowInterstitial().then((anzeige) => nachRundeBewerten(anzeige, result?.replay));
             }}
           />
         )}
@@ -521,6 +561,21 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
           {t('solo.fiftyFifty')}
         </button>
       )}
+
+      {/* Zweiter Joker gegen ein freiwilliges Video — nicht in der Täglichen
+          Challenge (Bestenliste) und nicht auf der Frage des ersten Jokers. */}
+      {picked === null && jokerUsed && !daily && extraJoker !== 'benutzt' && current.id !== jokerFrage && (
+        <button
+          onClick={jokerPerVideo}
+          disabled={busy}
+          className="mt-4 w-full knopf-rand py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          <Scissors className="w-4 h-4" />
+          {t('solo.fiftyFiftyVideo')}
+          <Play className="w-3.5 h-3.5" />
+        </button>
+      )}
+      {hinweis && <Notice>{hinweis}</Notice>}
 
       {feedback && (
         <div className="mt-5">

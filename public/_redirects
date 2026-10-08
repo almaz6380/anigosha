@@ -1,0 +1,3 @@
+# Kurzlinks für die Social-Profile (früher Rewrites in vercel.json)
+/app /get 301
+/download /get 301
