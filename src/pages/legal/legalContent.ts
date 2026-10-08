@@ -20,7 +20,7 @@ export const OPERATOR = {
 const opDE = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nE-Mail: ${OPERATOR.email}`;
 const opEN = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nEmail: ${OPERATOR.email}`;
 
-export const LAST_UPDATED = '04.10.2026';
+export const LAST_UPDATED = '08.10.2026';
 
 export interface LegalSection {
   heading: string;
@@ -239,13 +239,13 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Empfänger deiner Daten',
           body:
             'Supabase Inc. (Auftragsverarbeiter, Unternehmen mit Sitz in den USA; deine Daten liegen in der EU-Region Frankfurt): Konto, Profil und Spielstände.\n\n' +
-            'Vercel Inc. (USA): Auslieferung der Web-App und der öffentlichen Rechtsseiten, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
-            'Vercel Web Analytics: eine Reichweitenmessung der Web-App (aufgerufene Seiten, ungefähres Herkunftsland, Gerätetyp, verweisende Seite). Sie setzt keine Cookies und legt keine dauerhafte Kennung an; einzelne Personen lassen sich damit nicht wiedererkennen und nicht über mehrere Besuche hinweg verfolgen. Die IP-Adresse wird nur kurzzeitig verarbeitet und nicht gespeichert. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden und verständlichen Website (Art. 6 Abs. 1 lit. f DSGVO). Die mobilen Apps sind davon nicht betroffen.\n\n' +
+            'Cloudflare Inc. (USA): Auslieferung der Web-App und der öffentlichen Rechtsseiten, dabei fallen technisch bedingt Serverprotokolle mit IP-Adresse an.\n\n' +
+            'Cloudflare Web Analytics: eine Reichweitenmessung der Web-App (aufgerufene Seiten, ungefähres Herkunftsland, Gerätetyp, verweisende Seite). Sie setzt keine Cookies, speichert nichts auf deinem Gerät und legt keine dauerhafte Kennung an; einzelne Personen lassen sich damit nicht wiedererkennen und nicht über mehrere Besuche hinweg verfolgen. Die IP-Adresse wird nur kurzzeitig verarbeitet und nicht gespeichert. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden und verständlichen Website (Art. 6 Abs. 1 lit. f DSGVO). Die mobilen Apps sind davon nicht betroffen.\n\n' +
             'Google AdMob: Werbung in den mobilen Apps. Google kann dabei Gerätekennungen verarbeiten. Ohne deine Einwilligung wird nur nicht personalisierte Werbung ausgeliefert.\n\n' +
             'Google Firebase Cloud Messaging: Zustellung von Benachrichtigungen, sofern du sie eingeschaltet hast.\n\n' +
             'Resend (Auftragsverarbeiter, USA): Versand der E-Mails zur Registrierung, Passwort-Zurücksetzung und Adressänderung. Resend erhält dafür deine E-Mail-Adresse und den Inhalt der jeweiligen Mail.\n\n' +
             'RevenueCat (Auftragsverarbeiter, USA): Abwicklung und Wiederherstellung des Kaufs „Werbung entfernen", sofern du ihn tätigst.\n\n' +
-            'Eine Übermittlung in Drittstaaten (insbesondere USA) ist bei Google, Resend, RevenueCat und Vercel Inc. möglich; bei Supabase Inc. liegen die Daten zwar in der EU, ein Zugriff des US-Unternehmens lässt sich aber nicht ausschließen. Sie stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework, soweit der Empfänger danach zertifiziert ist, und im Übrigen auf die Standardvertragsklauseln der EU-Kommission.',
+            'Eine Übermittlung in Drittstaaten (insbesondere USA) ist bei Google, Resend, RevenueCat und Cloudflare Inc. möglich; bei Supabase Inc. liegen die Daten zwar in der EU, ein Zugriff des US-Unternehmens lässt sich aber nicht ausschließen. Sie stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework, soweit der Empfänger danach zertifiziert ist, und im Übrigen auf die Standardvertragsklauseln der EU-Kommission.',
         },
         {
           heading: 'Benachrichtigungen',
@@ -328,13 +328,13 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Recipients',
           body:
             'Supabase Inc. (processor, a US company; your data is stored in the EU region Frankfurt): account, profile and game data.\n\n' +
-            'Vercel Inc. (USA): delivery of the web app and the public legal pages; server logs including IP addresses arise for technical reasons.\n\n' +
-            'Vercel Web Analytics: audience measurement for the web app (pages viewed, approximate country, device type, referring site). It sets no cookies and creates no persistent identifier; individuals cannot be recognised or tracked across visits. IP addresses are processed only briefly and not stored. The legal basis is our legitimate interest in a working and comprehensible website (Art. 6(1)(f) GDPR). The mobile apps are not affected.\n\n' +
+            'Cloudflare Inc. (USA): delivery of the web app and the public legal pages; server logs including IP addresses arise for technical reasons.\n\n' +
+            'Cloudflare Web Analytics: audience measurement for the web app (pages viewed, approximate country, device type, referring site). It sets no cookies, stores nothing on your device and creates no persistent identifier; individuals cannot be recognised or tracked across visits. IP addresses are processed only briefly and not stored. The legal basis is our legitimate interest in a working and comprehensible website (Art. 6(1)(f) GDPR). The mobile apps are not affected.\n\n' +
             'Google AdMob: advertising in the mobile apps. Google may process device identifiers. Without your consent, only non-personalised ads are served.\n\n' +
             'Google Firebase Cloud Messaging: delivery of notifications, if you have turned them on.\n\n' +
             'Resend (processor, USA): sending the e-mails for registration, password reset and address change. Resend receives your e-mail address and the content of the respective mail.\n\n' +
             'RevenueCat (processor, USA): handling and restoration of the “remove ads” purchase, if you make it.\n\n' +
-            'Transfers to third countries (notably the USA) may occur with Google, Resend, RevenueCat and Vercel Inc.; with Supabase Inc. the data is stored in the EU, but access by the US company cannot be ruled out. They rely on the adequacy decision for the EU-US Data Privacy Framework where the recipient is certified under it, and otherwise on the European Commission’s standard contractual clauses.',
+            'Transfers to third countries (notably the USA) may occur with Google, Resend, RevenueCat and Cloudflare Inc.; with Supabase Inc. the data is stored in the EU, but access by the US company cannot be ruled out. They rely on the adequacy decision for the EU-US Data Privacy Framework where the recipient is certified under it, and otherwise on the European Commission’s standard contractual clauses.',
         },
         {
           heading: 'Notifications',
