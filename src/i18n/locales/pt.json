@@ -265,5 +265,20 @@
     "waehlen": "Escolher avatar",
     "ab": "A partir do nível {{level}}",
     "lvl": "Nv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Opções do jogador",
+    "melden": "Denunciar jogador",
+    "gemeldet": "Obrigado! Analisamos as denúncias em até 24 horas.",
+    "blockieren": "Bloquear",
+    "blockFrage": "Bloquear {{name}}? Vocês não vão mais se enfrentar em duelos nem se ver nos rankings.",
+    "blockliste": "Jogadores bloqueados",
+    "entblocken": "Desbloquear",
+    "tippHinweis": "Toque em um jogador para denunciar ou bloquear.",
+    "grund": {
+      "name": "Nome ofensivo",
+      "cheating": "Trapaça",
+      "other": "Outro"
+    }
   }
 }

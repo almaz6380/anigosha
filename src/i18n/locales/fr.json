@@ -265,5 +265,20 @@
     "waehlen": "Choisir l’avatar",
     "ab": "Dès le niveau {{level}}",
     "lvl": "Nv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Options du joueur",
+    "melden": "Signaler le joueur",
+    "gemeldet": "Merci ! Nous examinons les signalements sous 24 heures.",
+    "blockieren": "Bloquer",
+    "blockFrage": "Bloquer {{name}} ? Vous ne vous croiserez plus en duel et ne vous verrez plus dans les classements.",
+    "blockliste": "Joueurs bloqués",
+    "entblocken": "Débloquer",
+    "tippHinweis": "Touche un joueur pour le signaler ou le bloquer.",
+    "grund": {
+      "name": "Nom offensant",
+      "cheating": "Triche",
+      "other": "Autre"
+    }
   }
 }

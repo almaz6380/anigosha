@@ -220,6 +220,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Profil: selbst gewählter Spielername, Sprache und ein Avatar aus der vorgegebenen Auswahl der App (kein eigenes Bild, kein Upload).\n\n' +
             'Spielstand: Erfahrungspunkte, Level, Tagesserie, Elo-Wertung, gespielte Runden und gegebene Antworten, Duelle mit anderen Spielerinnen und Spielern.\n\n' +
             'Meldungen: wenn du eine Frage meldest, speichern wir welche Frage, den Grund und dein Konto.\n\n' +
+            'Spieler melden und blockieren: Meldest du einen anderen Spieler, speichern wir dein Konto, den gemeldeten Spieler, seinen Namen zu diesem Zeitpunkt und den Grund, um die Meldung zu prüfen (berechtigtes Interesse an einer sicheren Spielumgebung, Art. 6 Abs. 1 lit. f DSGVO). Blockierst du jemanden, speichern wir, wen du blockiert hast, damit ihr euch nicht mehr in Duellen und Bestenlisten begegnet. Beides wird mit deinem Konto gelöscht.\n\n' +
             'Kaufdiagnose (nur in den mobilen Apps): Beim Start und bei jedem Kaufversuch speichern wir zu deinem Konto eine kurze technische Diagnose des Kaufsystems — welche Schritte wie lange gedauert haben und ob eine Fehlermeldung kam. Sie enthält keine Zahlungsdaten und dient nur dazu, Fehler beim Kauf „Werbung entfernen“ zu finden, ohne dass du uns etwas abtippen musst (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO). Sie wird mit dem Konto gelöscht.\n\n' +
             'Wir erheben bewusst KEINEN Klarnamen, keine Adresse, kein Geburtsdatum und keinen Standort.',
         },
@@ -311,6 +312,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
             'Profile: your chosen player name, language and an avatar from the app’s built-in selection (no own picture, no upload).\n\n' +
             'Game data: experience points, level, daily streak, Elo rating, rounds played and answers given, duels with other players.\n\n' +
             'Reports: if you report a question, we store which question, the reason and your account.\n\n' +
+            'Reporting and blocking players: if you report another player, we store your account, the reported player, their name at that moment and the reason, so we can review the report (legitimate interest in a safe game environment, Art. 6(1)(f) GDPR). If you block someone, we store whom you blocked so you no longer meet in duels and leaderboards. Both are deleted together with your account.\n\n' +
             'Purchase diagnostics (mobile apps only): at start-up and with every purchase attempt we store a short technical diagnosis of the purchase system against your account — which steps took how long and whether an error occurred. It contains no payment data and serves only to find faults with the “remove ads” purchase without you having to type anything out for us (legitimate interest, Art. 6(1)(f) GDPR). It is deleted together with the account.\n\n' +
             'We deliberately do NOT collect your real name, address, date of birth or location.',
         },

@@ -265,5 +265,20 @@
     "waehlen": "Choose avatar",
     "ab": "From level {{level}}",
     "lvl": "Lv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Player options",
+    "melden": "Report player",
+    "gemeldet": "Thanks! We review reports within 24 hours.",
+    "blockieren": "Block",
+    "blockFrage": "Block {{name}}? You won’t meet in duels anymore and won’t see each other on the leaderboards.",
+    "blockliste": "Blocked players",
+    "entblocken": "Unblock",
+    "tippHinweis": "Tap a player to report or block them.",
+    "grund": {
+      "name": "Offensive name",
+      "cheating": "Cheating",
+      "other": "Other"
+    }
   }
 }

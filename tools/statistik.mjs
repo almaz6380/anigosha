@@ -175,7 +175,13 @@ select json_build_object(
   'meldungen', (select coalesce(json_agg(z), '[]'::json) from
     (select reason as grund, count(*) as anzahl from meldungen
      group by reason order by count(*) desc) z),
-  'meldungen_gesamt', (select count(*) from meldungen)
+  'meldungen_gesamt', (select count(*) from meldungen),
+  -- 0069: gemeldete SPIELER. Apple erwartet, dass Meldungen binnen 24 h
+  -- bearbeitet werden — die App sagt das dem Meldenden auch zu.
+  'spieler_offen', (select coalesce(json_agg(z), '[]'::json) from
+    (select username, grund, count(*) as anzahl, min(created_at)::date as seit
+       from public.player_reports where erledigt_at is null
+      group by username, grund order by count(*) desc limit 20) z)
 ) as d;
 `;
 
@@ -233,6 +239,9 @@ ${(d.sprachen ?? []).map((s) => `  ${String(s.sprache).padEnd(27)}${z(s.anzahl)}
 
 BELIEBTESTE KATEGORIEN
 ${(d.kategorien ?? []).map((k) => `  ${String(k.slug).padEnd(27)}${z(k.runden)}`).join('\n') || '  —'}
+
+GEMELDETE SPIELER (offen — binnen 24 h bearbeiten, danach erledigt_at setzen)
+${(d.spieler_offen ?? []).map((m) => `  ${String(m.username).padEnd(18)} ${String(m.grund).padEnd(9)}${z(m.anzahl)}  seit ${m.seit}`).join('\n') || '  keine'}
 
 GEMELDETE FRAGEN  (gesamt ${d.meldungen_gesamt})
 ${(d.meldungen ?? []).map((m) => `  ${String(m.grund).padEnd(27)}${z(m.anzahl)}`).join('\n') || '  keine'}
