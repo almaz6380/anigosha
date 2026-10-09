@@ -23,6 +23,13 @@ const FARBEN: Record<string, string> = {
   my_hero: '#2e9e57',
   demon_slayer: '#2a9fc4',
   jujutsu_kaisen: '#7c4fd6',
+  frieren: '#4f9ccf',
+  chainsaw_man: '#c8432e',
+  spy_family: '#c9547c',
+  solo_leveling: '#4a5ad1',
+  blue_lock: '#2b6fe0',
+  hunter_x_hunter: '#3c9a48',
+  emoji_raetsel: '#e3a516',
 };
 
 /** Fällt auf das Accent-Violett zurück — eine neue Kategorie in der Datenbank

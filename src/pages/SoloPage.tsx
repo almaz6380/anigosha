@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { ArrowRight, Check, ChevronRight, Flag, Flame, Lightbulb, Play, RotateCcw, Scissors, Share2, Trophy, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronRight, Flag, Flame, Heart, Lightbulb, Play, RotateCcw, Scissors, Share2, Timer, Trophy, X, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { belohnungPerVideo, maybeShowInterstitial } from '../lib/ads';
 import { nachRundeBewerten } from '../lib/bewertung';
@@ -21,8 +21,12 @@ import {
   finishSolo,
   kategorieName,
   reportQuestion,
+  BLITZ_SEKUNDEN,
+  revealHint,
   startDaily,
   startSolo,
+  SURVIVAL_LEBEN,
+  type SoloModus,
   type AnswerResult,
   type Category,
   type LeaderboardRow,
@@ -50,7 +54,13 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<AnswerResult | null>(null);
-  const [hintsShown, setHintsShown] = useState(1);
+  /** „Wer bin ich?": vom Server freigegebene Hinweise der aktuellen Frage. */
+  const [hinweise, setHinweise] = useState<string[]>([]);
+  const [modus, setModus] = useState<SoloModus>('normal');
+  /** Blitz: verbleibende Sekunden (Anzeige); die echte Uhr läuft am Server. */
+  const [rest, setRest] = useState(BLITZ_SEKUNDEN);
+  const blitzEnde = useRef<number | null>(null);
+  const [leben, setLeben] = useState(SURVIVAL_LEBEN);
   const [reported, setReported] = useState(false);
   const [result, setResult] = useState<SoloResult | null>(null);
   const [hidden, setHidden] = useState<number[]>([]);
@@ -72,7 +82,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   const resetQuestionState = useCallback(() => {
     setPicked(null);
     setFeedback(null);
-    setHintsShown(1);
+    setHinweise([]);
     setReported(false);
     setHidden([]);
     setHinweis(null);
@@ -101,6 +111,23 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     }
   }, [daily, lang, t]);
 
+  // Blitz-Uhr: Anzeige jede Viertelsekunde. Bei 0 endet die Runde von selbst,
+  // auch mitten in einer Frage — der Server nimmt ohnehin nichts mehr an.
+  const beendenRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (step !== 'quiz' || modus !== 'blitz' || daily) return;
+    const id = setInterval(() => {
+      if (blitzEnde.current === null) return;
+      const s = Math.max(0, Math.ceil((blitzEnde.current - Date.now()) / 1000));
+      setRest(s);
+      if (s <= 0) {
+        clearInterval(id);
+        beendenRef.current();
+      }
+    }, 250);
+    return () => clearInterval(id);
+  }, [step, modus, daily]);
+
   const current = questions[index];
   // Anzeige, nicht Datenbank: deshalb appSprache(), nicht `lang`.
   const katName = kategorieName(category, appSprache());
@@ -111,7 +138,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     setBusy(true);
     setError(null);
     try {
-      const data = await startSolo(category.slug, difficulty, lang);
+      const data = await startSolo(category.slug, difficulty, lang, 10, modus);
       setSessionId(data.session_id);
       setQuestions(data.questions ?? []);
       setIndex(0);
@@ -120,6 +147,10 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       setExtraJoker('offen');
       setHinweis(null);
       setVerlauf([]);
+      setLeben(SURVIVAL_LEBEN);
+      setRest(BLITZ_SEKUNDEN);
+      blitzEnde.current = modus === 'blitz' ? Date.now() + BLITZ_SEKUNDEN * 1000 : null;
+      beendet.current = false;
       resetQuestionState();
       setStep('quiz');
     } catch (e) {
@@ -137,7 +168,10 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     try {
       const res = await answerSolo(sessionId, current.id, option);
       setFeedback(res);
-      setVerlauf((v) => [...v, res.correct]);
+      // Nach Ablauf der Blitz-Zeit zählt die Antwort nicht mehr — dann auch
+      // nicht im Verlauf, sonst stimmten Raster und Ergebnis nicht überein.
+      if (res.counted) setVerlauf((v) => [...v, res.correct]);
+      if (typeof res.lives_left === 'number') setLeben(res.lives_left);
     } catch {
       setError(t('common.error'));
       setPicked(null);
@@ -189,13 +223,28 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     }
   }
 
+  /** Runde vorbei? Normal: letzte Frage. Survival: keine Leben mehr. */
+  const rundeVorbei =
+    index + 1 >= questions.length ||
+    (modus === 'survival' && !daily && leben <= 0) ||
+    (modus === 'blitz' && !daily && rest <= 0);
+
   async function next() {
-    if (index + 1 < questions.length) {
+    if (!rundeVorbei) {
       setIndex(index + 1);
       resetQuestionState();
       return;
     }
-    if (!sessionId) return;
+    await beenden();
+  }
+
+  /** Schutz gegen doppeltes Beenden (Blitz-Uhr und Knopf gleichzeitig) —
+   *  der zweite Aufruf bekäme vom Server „replay" und zeigte 0 XP. */
+  const beendet = useRef(false);
+  async function beenden() {
+    if (!sessionId || beendet.current) return;
+    beendet.current = true;
+    blitzEnde.current = null;
     setBusy(true);
     setError(null);
     try {
@@ -211,6 +260,24 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       const up = levelUpFrom(xpBefore, res.xp ?? 0);
       if (up) setNewLevel(up);
       else nachRundeBewerten(await maybeShowInterstitial(), res.replay);
+    } catch {
+      beendet.current = false;
+      setError(t('common.error'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  beendenRef.current = () => {
+    void beenden();
+  };
+
+  /** „Wer bin ich?": nächsten Hinweis vom Server holen. */
+  async function hinweisHolen() {
+    if (!sessionId || !current || picked !== null || busy) return;
+    setBusy(true);
+    try {
+      setHinweise(await revealHint(sessionId, current.id));
     } catch {
       setError(t('common.error'));
     } finally {
@@ -314,7 +381,27 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       <AppShell>
         <PageHeader onBack={() => setStep('category')} title={katName ?? ''} badge={farbe} />
         {error && <Notice>{error}</Notice>}
-        <div className="flex flex-col gap-3 mt-6">
+        {/* Modus vor der Stufe: Blitz (60 s) und Survival (3 Leben) */}
+        <div className="glas mt-6 p-1.5 flex gap-1.5" role="radiogroup" aria-label={t('solo.modus.titel')}>
+          {([
+            ['normal', ChevronRight],
+            ['blitz', Zap],
+            ['survival', Heart],
+          ] as const).map(([m, Icon]) => (
+            <button
+              key={m}
+              role="radio"
+              aria-checked={modus === m}
+              onClick={() => setModus(m)}
+              className={`flex-1 py-2.5 rounded-[16px] text-[13px] font-semibold flex items-center justify-center gap-1.5 ${modus === m ? 'knopf' : ''}`}
+            >
+              {m !== 'normal' && <Icon className="w-4 h-4" />}
+              {t(`solo.modus.${m}`)}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs leise mt-2 px-1">{t(`solo.modus.${modus}Hint`)}</p>
+        <div className="flex flex-col gap-3 mt-4">
           {[1, 2, 3].map((d) => (
             <button
               key={d}
@@ -493,34 +580,70 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
         <span className="glas text-[13px] font-semibold px-3 py-1 rounded-full truncate">
           {daily ? t('daily.title') : `${katName}${stufe ? ` · ${t(`solo.difficulty.${stufe}`)}` : ''}`}
         </span>
-        <span className="ml-auto text-[13px] font-semibold leise tabular-nums shrink-0">
-          {index + 1} / {questions.length}
-        </span>
+        {!daily && modus === 'blitz' ? (
+          <span
+            className={`ml-auto glas text-[15px] font-bold px-3 py-1 rounded-full tabular-nums shrink-0 flex items-center gap-1.5 ${rest <= 10 ? 'text-pink-500' : ''}`}
+          >
+            <Timer className="w-4 h-4" />
+            {rest}s
+          </span>
+        ) : !daily && modus === 'survival' ? (
+          <span className="ml-auto flex items-center gap-1 shrink-0" aria-label={t('solo.lebenRest', { count: leben })}>
+            {Array.from({ length: SURVIVAL_LEBEN }, (_, i) => (
+              <Heart
+                key={i}
+                className={`w-5 h-5 ${i < leben ? 'text-pink-500 fill-pink-500' : 'fein'}`}
+                strokeWidth={2}
+              />
+            ))}
+          </span>
+        ) : (
+          <span className="ml-auto text-[13px] font-semibold leise tabular-nums shrink-0">
+            {index + 1} / {questions.length}
+          </span>
+        )}
       </div>
 
       <div className="mt-3.5">
-        <Segmente anzahl={questions.length} />
+        {!daily && modus !== 'normal' ? (
+          <div className="text-[13px] font-semibold leise tabular-nums">
+            {t('solo.modusStand', { richtig: verlauf.filter(Boolean).length, gesamt: verlauf.length })}
+          </div>
+        ) : (
+          <Segmente anzahl={questions.length} />
+        )}
       </div>
 
       <h2 className="text-[25px] font-bold mt-6 leading-[1.24] tracking-[-0.02em] text-pretty">
         {current.prompt}
       </h2>
 
-      {current.type === 'who_am_i' && current.hints && (
+      {current.type === 'who_am_i' && (
         <div className="mt-4 flex flex-col gap-2">
-          {current.hints.slice(0, hintsShown).map((h, i) => (
-            <div key={i} className="glas text-sm px-4 py-3 rounded-[16px]">
+          {hinweise.map((h, i) => (
+            <div key={i} className="glas text-sm px-4 py-3 rounded-[16px] flex gap-2">
+              <span className="font-bold akzent-text">{i + 2}.</span>
               {h}
             </div>
           ))}
-          {hintsShown < current.hints.length && picked === null && (
-            <button
-              onClick={() => setHintsShown(hintsShown + 1)}
-              className="text-sm font-semibold flex items-center gap-1.5 py-1 text-accent-600"
-            >
-              <Lightbulb className="w-4 h-4" />
-              {t('solo.nextHint')}
-            </button>
+          {picked === null && (
+            <div className="flex items-center gap-3">
+              {hinweise.length < 2 && (
+                <button
+                  onClick={hinweisHolen}
+                  disabled={busy}
+                  className="text-sm font-semibold flex items-center gap-1.5 py-1 text-accent-600 disabled:opacity-50"
+                >
+                  <Lightbulb className="w-4 h-4" />
+                  {t('solo.nextHint')}
+                </button>
+              )}
+              {hinweise.length < 2 && (
+                <span className="text-xs fein ml-auto">
+                  {t('solo.whoamiBonus', { xp: (2 - hinweise.length) * 5 * (stufe ?? 2) })}
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -623,7 +746,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
               disabled={busy}
               className="flex-1 knopf py-4 flex items-center justify-center gap-2 text-base disabled:opacity-50"
             >
-              {index + 1 < questions.length ? t('common.continue') : t('solo.finish')}
+              {rundeVorbei ? t('solo.finish') : t('common.continue')}
               <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.4} />
             </button>
             {/* „Frage melden" war ein grauer Link ÜBER der Hauptaktion und lag

@@ -123,7 +123,20 @@
     "chooseSeries": "Choisis une série",
     "fiftyFiftyVideo": "Encore un 50:50 · vidéo",
     "videoAborted": "Vidéo fermée trop tôt — la récompense exige la vidéo entière.",
-    "videoUnavailable": "Aucune vidéo disponible pour le moment. Réessaie plus tard."
+    "videoUnavailable": "Aucune vidéo disponible pour le moment. Réessaie plus tard.",
+    "whoamiBonus": "Juste maintenant : +{{xp}} XP de bonus",
+    "lebenRest_one": "Encore {{count}} vie",
+    "lebenRest_other": "Encore {{count}} vies",
+    "modusStand": "{{richtig}} sur {{gesamt}} justes",
+    "modus": {
+      "titel": "Mode",
+      "normal": "Classique",
+      "blitz": "Éclair",
+      "survival": "Survie",
+      "normalHint": "10 questions tranquillement, avec joker.",
+      "blitzHint": "60 secondes : un maximum de bonnes réponses.",
+      "survivalHint": "Joue jusqu’à trois erreurs."
+    }
   },
   "daily": {
     "title": "Défi du jour",

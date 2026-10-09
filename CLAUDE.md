@@ -215,6 +215,24 @@ das bei 1.2. Offene Meldungen zeigt `node tools/statistik.mjs` unter „GEMELDET
 erledigen = `update player_reports set erledigt_at = now() where …` (bei anstößigem Namen
 den Namen per SQL ändern). Test: `tools/test-blockieren.mjs` 18/18.
 
+## Modi, Rätsel und sechs neue Serien (09.10.2026, Paket 3)
+
+**Fragenstand: 1206 MC-Fragen je Sprache** (vorher 804) + 45 Emoji-Rätsel + „Wer bin ich?"-Rätsel,
+alle fünf Sprachen gleich (gemessen per `select lang, count(*) from question_translations group by lang`).
+
+| Migration | Inhalt |
+|---|---|
+| 0068 | `solo_sessions.mode` (normal/blitz/survival) + `hints_used`. **Blitz** 60 s, Serveruhr `started_at`, Antworten nach 65 s zählen nicht (`time_up`). **Survival** endet nach 3 Fehlern (`solo_fehler()`, `lives_left`). Beide ziehen bis 30 Fragen, `total` = Beantwortetes, kein Fehlerfrei-Bonus. `start_solo_session` hat jetzt `p_mode` (alte Signatur gelöscht, Grant neu). **„Wer bin ich?"**: Start liefert keine Hinweise, nur `reveal_hint` (zählt mit); Bonus +10·Stufe ohne / +5·Stufe mit einem weiteren Hinweis |
+| 0070–0075 / 0076–0081 | Frieren, Chainsaw Man, Spy x Family, Solo Leveling, Blue Lock, Hunter x Hunter — je 67 Fragen DE+EN / ES+FR+PT. Von sechs Agenten parallel geschrieben, je Trockenlauf 67/335, unsicherste Fakten von Hand gegengeprüft |
+| 0082 | `seed_raetsel` / `seed_uebersetzung_raetsel` (mit `hints`), Kategorie `emoji_raetsel` |
+| 0083 | „Wer bin ich?" — 3 je Serie (Fragetext = erster Hinweis, `hints` = zwei weitere) |
+| 0084 | 45 Emoji-Rätsel (Anime-Titel raten), 15 je Stufe |
+
+Oberfläche: Modus-Umschalter vor der Stufe, Blitz-Uhr bzw. Herzen im Kopf, Hinweise per Knopf
+mit Bonusanzeige (`SoloPage.tsx`, `src/lib/solo.ts`). Farben der neuen Serien in `kategorien.ts`.
+Test: `tools/test-modi.mjs`. ⚠ Survival endet auch, wenn die Stufe einer Serie keine Fragen mehr hat
+(22–23 je Stufe).
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker
