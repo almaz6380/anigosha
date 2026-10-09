@@ -237,5 +237,33 @@
     "falsch0": "So close …",
     "falsch1": "Now you’ll remember!",
     "falsch2": "Next time!"
+  },
+  "missionen": {
+    "titel": "Weekly missions",
+    "art": {
+      "solo_runden_one": "Play {{count}} solo round",
+      "solo_runden_other": "Play {{count}} solo rounds",
+      "richtige_one": "Answer {{count}} question correctly",
+      "richtige_other": "Answer {{count}} questions correctly",
+      "daily_one": "Play {{count}} Daily Challenge",
+      "daily_other": "Play {{count}} Daily Challenges",
+      "fehlerfrei_one": "Finish {{count}} perfect round",
+      "fehlerfrei_other": "Finish {{count}} perfect rounds",
+      "schwer_one": "Play {{count}} round on “Hard”",
+      "schwer_other": "Play {{count}} rounds on “Hard”",
+      "duelle_one": "Finish {{count}} duel",
+      "duelle_other": "Finish {{count}} duels",
+      "siege_one": "Win {{count}} duel",
+      "siege_other": "Win {{count}} duels",
+      "spieltage_one": "Play on {{count}} day",
+      "spieltage_other": "Play on {{count}} different days"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "New avatar unlocked!",
+    "waehlen": "Choose avatar",
+    "ab": "From level {{level}}",
+    "lvl": "Lv {{level}}"
   }
 }

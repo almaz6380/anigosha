@@ -8,6 +8,9 @@
  * Grund) und werden rund beschnitten — so braucht es kein Freistellen.
  */
 
+import type { CSSProperties } from 'react';
+import { avatarBild } from '../lib/avatare';
+
 export type Stimmung = 'richtig' | 'falsch' | 'neutral' | 'frech';
 
 const KOEPFE = {
@@ -58,5 +61,38 @@ export function FigurGanz({ hoehe = 220, className = '' }: { hoehe?: number; cla
       className={`select-none pointer-events-none ${className}`}
       style={{ height: hoehe, width: 'auto' }}
     />
+  );
+}
+
+/**
+ * Spieler-Avatar: das gewählte Bild aus der Sammlung, sonst wie bisher der
+ * Anfangsbuchstabe. Bots tragen `bot_*`-Kennungen ohne Bild und bleiben so
+ * beim Buchstaben.
+ */
+export function Avatar({
+  id,
+  name,
+  groesse,
+  className = '',
+  style,
+}: {
+  id: string | null | undefined;
+  name: string | null | undefined;
+  groesse: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const bild = avatarBild(id);
+  return (
+    <div
+      className={`rounded-full shrink-0 flex items-center justify-center font-bold overflow-hidden ${className}`}
+      style={{ width: groesse, height: groesse, fontSize: Math.round(groesse * 0.38), ...style }}
+    >
+      {bild ? (
+        <img src={bild} alt="" aria-hidden draggable={false} className="w-full h-full object-cover bg-[#ededed]" />
+      ) : (
+        (name ?? '?').slice(0, 1).toUpperCase()
+      )}
+    </div>
   );
 }

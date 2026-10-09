@@ -7,6 +7,7 @@ import { reportQuestion, type SoloQuestion, type AnswerResult } from '../lib/sol
 import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitialOnce } from '../lib/ads';
 import AppShell, { PageHeader } from '../components/AppShell';
+import { Avatar } from '../components/Figur';
 import {
   answerDuel,
   challengeFriend,
@@ -275,12 +276,12 @@ export default function DuelPage() {
         style={wach ? { borderColor: 'rgba(244,114,182,0.45)' } : undefined}
       >
         {wach && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1 akzent-flaeche" />}
-        <div
-          className={`rounded-full shrink-0 flex items-center justify-center font-bold ${wach ? 'w-10 h-10 text-[15px]' : 'w-9 h-9 text-sm'}`}
+        <Avatar
+          id={d.opponent?.avatar_id}
+          name={d.opponent?.username}
+          groesse={wach ? 40 : 36}
           style={{ background: 'var(--spur)', border: '1px solid var(--linie)' }}
-        >
-          {(d.opponent?.username ?? '?').slice(0, 1).toUpperCase()}
-        </div>
+        />
         <div className="flex-1 min-w-0">
           <div className={`truncate flex items-center gap-1.5 ${wach ? 'text-base font-bold' : 'text-[15px] font-semibold'}`}>
             {gegnerName(d.opponent)}

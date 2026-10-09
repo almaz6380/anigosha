@@ -237,5 +237,33 @@
     "falsch0": "Knapp daneben …",
     "falsch1": "Das merkst du dir jetzt!",
     "falsch2": "Beim nächsten Mal!"
+  },
+  "missionen": {
+    "titel": "Wochenmissionen",
+    "art": {
+      "solo_runden_one": "Spiele {{count}} Solo-Runde",
+      "solo_runden_other": "Spiele {{count}} Solo-Runden",
+      "richtige_one": "Beantworte {{count}} Frage richtig",
+      "richtige_other": "Beantworte {{count}} Fragen richtig",
+      "daily_one": "Spiele {{count}} Tägliche Challenge",
+      "daily_other": "Spiele {{count}} Tägliche Challenges",
+      "fehlerfrei_one": "Schaffe {{count}} fehlerfreie Runde",
+      "fehlerfrei_other": "Schaffe {{count}} fehlerfreie Runden",
+      "schwer_one": "Spiele {{count}} Runde auf „Schwer“",
+      "schwer_other": "Spiele {{count}} Runden auf „Schwer“",
+      "duelle_one": "Beende {{count}} Duell",
+      "duelle_other": "Beende {{count}} Duelle",
+      "siege_one": "Gewinne {{count}} Duell",
+      "siege_other": "Gewinne {{count}} Duelle",
+      "spieltage_one": "Spiele an {{count}} Tag",
+      "spieltage_other": "Spiele an {{count}} verschiedenen Tagen"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Neuer Avatar freigeschaltet!",
+    "waehlen": "Avatar wählen",
+    "ab": "Ab Level {{level}}",
+    "lvl": "Lv {{level}}"
   }
 }

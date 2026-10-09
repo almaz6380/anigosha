@@ -1,4 +1,4 @@
-const geg = (username: string, is_bot = false) => ({ username, avatar_id: null, elo: 1200, is_bot });
+const geg = (username: string, is_bot = false) => ({ username, avatar_id: username.length % 2 ? 'maedchen-schule' : null, elo: 1200, is_bot });
 export const listDuels = async () => [
   { match_id: 'm1', status: 'active', round_no: 3, my_turn: true, my_score: 5, opp_score: 4, winner_id: null, updated_at: '', opponent: geg('KiraFan88') },
   { match_id: 'm2', status: 'active', round_no: 1, my_turn: true, is_friendly: true, my_score: 0, opp_score: 0, winner_id: null, updated_at: '', opponent: geg('ShonenSora') },
@@ -12,4 +12,4 @@ export const getDuelRound = async () => [] as never[];
 export const answerDuel = async () => ({ correct: true, correct_index: 3, explanation: null, counted: true });
 const N = ['YukiBlade','RenjiX','NozomiQ','HikariNeko','Zoro92','TanukiRen','Josef','SakuraDrop','GonFreaks','MioFuji'];
 export const globalLeaderboard = async () =>
-  N.map((username, i) => ({ username, avatar_id: null, is_bot: i === 4 || i === 8, elo: 1487 - i * 32, xp: 4800 - i * 240, rank: i + 1 }));
+  N.map((username, i) => ({ username, avatar_id: ['maedchen-yukata','junge-sport','maedchen-winter',null,null,'junge-schule',null,'maedchen-frech'][i] ?? null, is_bot: i === 4 || i === 8, elo: 1487 - i * 32, xp: 4800 - i * 240, rank: i + 1 }));

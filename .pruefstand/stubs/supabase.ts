@@ -10,4 +10,5 @@ export const supabase = {
     resetPasswordForEmail: async () => leer,
   },
   from: () => kette,
+  rpc: async () => leer,
 } as never;
