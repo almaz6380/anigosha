@@ -27,6 +27,18 @@ interface AuthContextValue {
   profileError: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirm: boolean }>;
+  /** Sofort spielen ohne E-Mail (Supabase Anonymous Sign-in, 0066). */
+  signInAsGuest: () => Promise<{ error: string | null }>;
+  /** Gastkonto ohne E-Mail — es geht verloren, wenn die App gelöscht wird. */
+  isGuest: boolean;
+  /**
+   * Gast sichern, Schritt 1: E-Mail ans Konto hängen. Supabase schickt eine
+   * Bestätigungsmail; erst danach lässt sich ein Passwort setzen (Schritt 2).
+   * Die User-ID bleibt dieselbe — XP, Serie und Kauf wandern also mit.
+   */
+  linkEmail: (email: string) => Promise<{ error: string | null }>;
+  /** Gast sichern, Schritt 2 — nach der bestätigten Mail. */
+  setPassword: (password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   /** Sprache am Profil speichern — der Server wählt danach die Duellfragen. */
@@ -40,7 +52,7 @@ function mapAuthError(message: string): string {
   const m = message.toLowerCase();
   if (m.includes('invalid login credentials')) return 'invalid_credentials';
   if (m.includes('email not confirmed')) return 'email_not_confirmed';
-  if (m.includes('already registered') || m.includes('already exists')) return 'user_already_exists';
+  if (m.includes('already registered') || m.includes('already been registered') || m.includes('already exists')) return 'user_already_exists';
   if (m.includes('password')) return 'weak_password';
   return 'generic';
 }
@@ -145,6 +157,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null, needsConfirm: !data.session };
   };
 
+  const signInAsGuest = async () => {
+    const { error } = await supabase.auth.signInAnonymously();
+    return { error: error ? mapAuthError(error.message) : null };
+  };
+
+  const linkEmail = async (email: string) => {
+    const { error } = await supabase.auth.updateUser({ email });
+    return { error: error ? mapAuthError(error.message) : null };
+  };
+
+  const setPassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error ? mapAuthError(error.message) : null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
@@ -178,6 +205,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profileError,
         signIn,
         signUp,
+        signInAsGuest,
+        isGuest: session?.user.is_anonymous === true,
+        linkEmail,
+        setPassword,
         signOut,
         refreshProfile,
         saveLanguage,

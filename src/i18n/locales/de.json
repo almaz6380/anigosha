@@ -31,9 +31,14 @@
     },
     "resetError": "Die E-Mail konnte nicht gesendet werden. Bitte versuch es erneut.",
     "resetNeedsEmail": "Gib zuerst deine E-Mail-Adresse ein.",
-    "legalNote": "Mit der Registrierung akzeptierst du die <terms>Nutzungsbedingungen</terms>. Wie wir deine Daten verarbeiten, steht in der <privacy>Datenschutzerklärung</privacy>.",
+    "legalNote": "Mit dem Start akzeptierst du die <terms>Nutzungsbedingungen</terms>. Wie wir deine Daten verarbeiten, steht in der <privacy>Datenschutzerklärung</privacy>.",
     "ageConfirm": "Ich bin mindestens 16 Jahre alt.",
-    "ageRequired": "Bitte bestätige, dass du mindestens 16 Jahre alt bist."
+    "ageRequired": "Bitte bestätige, dass du mindestens 16 Jahre alt bist.",
+    "playNow": "Sofort spielen",
+    "guestHint": "Ohne E-Mail. Du kannst dein Konto später im Profil sichern.",
+    "withEmail": "Mit E-Mail anmelden oder registrieren",
+    "backToGuest": "Ohne E-Mail spielen",
+    "guestError": "Das hat nicht geklappt. Bitte versuch es erneut."
   },
   "username": {
     "title": "Wähle deinen Spielernamen",
@@ -41,7 +46,8 @@
     "placeholder": "z. B. OtakuMeister",
     "rules": "3–16 Zeichen, nur Buchstaben, Zahlen und _",
     "taken": "Dieser Name ist leider schon vergeben.",
-    "invalid": "3–16 Zeichen, nur Buchstaben, Zahlen und _"
+    "invalid": "3–16 Zeichen, nur Buchstaben, Zahlen und _",
+    "another": "Anderer Vorschlag"
   },
   "nav": {
     "home": "Start",
@@ -124,7 +130,9 @@
     "sub": "5 Fragen — für alle gleich",
     "alreadyDone": "Du hast die heutige Challenge schon gespielt. Morgen gibt es fünf neue Fragen!",
     "leaderboard": "Tagesbestenliste",
-    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Anigosha-Challenge geschafft!"
+    "shareText": "Ich habe {{correct}} von {{total}} Fragen der heutigen Anigosha-Challenge geschafft!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Schaffst du mehr?"
   },
   "duel": {
     "new": "Neues Duell starten",
@@ -203,9 +211,31 @@
       "kein_angebot": "Kein Angebot verfügbar.",
       "fehler": "Kauf fehlgeschlagen.",
       "wiederherstellen": "Wiederherstellen fehlgeschlagen."
-    }
+    },
+    "gastHinweis": "Tipp: Sichere vorher dein Konto, dann bleibt der Kauf sicher mit deinem Spielstand verbunden."
   },
   "leaderboard": {
     "kicker": "Weltweit · nach Elo"
+  },
+  "guest": {
+    "title": "Konto sichern",
+    "text": "Du spielst als Gast. Löschst du die App, sind XP und Serie weg — mit einer E-Mail bleiben sie.",
+    "save": "Sichern",
+    "mailSent": "Wir haben eine Mail an {{email}} geschickt. Bestätige sie, dann legst du hier dein Passwort fest.",
+    "pending": "Bestätigung für {{email}} ausstehend — tippe auf den Link in der Mail.",
+    "confirmed": "Ich habe bestätigt",
+    "otherMail": "Andere E-Mail",
+    "notYet": "Noch nicht bestätigt. Prüfe auch den Spam-Ordner.",
+    "passwordTitle": "Passwort festlegen",
+    "passwordText": "Deine E-Mail ist bestätigt. Mit einem Passwort meldest du dich auch auf anderen Geräten an.",
+    "logoutWarn": "Du spielst als Gast. Nach dem Abmelden kommst du nicht mehr an dieses Konto — XP und Serie wären weg. Trotzdem abmelden?"
+  },
+  "figur": {
+    "richtig0": "Volltreffer!",
+    "richtig1": "Stark, genau so!",
+    "richtig2": "Du kennst dich aus!",
+    "falsch0": "Knapp daneben …",
+    "falsch1": "Das merkst du dir jetzt!",
+    "falsch2": "Beim nächsten Mal!"
   }
 }

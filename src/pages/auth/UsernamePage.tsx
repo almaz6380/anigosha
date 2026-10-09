@@ -3,14 +3,24 @@ import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { Dices } from 'lucide-react';
 import AppShell from '../../components/AppShell';
 
 const USERNAME_RE = /^[A-Za-z0-9_]{3,16}$/;
 
+// Vorschlag statt leerem Feld: Ein Tipp auf „Weiter" genügt. Wer bei der
+// Namenswahl hängen bleibt, hat nie eine Frage gesehen. Nur allgemeine
+// Anime-Wörter, keine Figurennamen.
+const SILBEN = ['Shinobi', 'Senpai', 'Kohai', 'Otaku', 'Ronin', 'Sensei', 'Kitsune', 'Ninja', 'Samurai', 'Mecha', 'Chibi', 'Kami', 'Oni', 'Tengu', 'Yokai'];
+function namensVorschlag(): string {
+  const wort = SILBEN[Math.floor(Math.random() * SILBEN.length)];
+  return `${wort}${1000 + Math.floor(Math.random() * 9000)}`;
+}
+
 export default function UsernamePage() {
   const { t } = useTranslation();
   const { session, refreshProfile } = useAuth();
-  const [name, setName] = useState('');
+  const [name, setName] = useState(namensVorschlag);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -57,13 +67,23 @@ export default function UsernamePage() {
       <h1 className="text-2xl font-bold mb-2">{t('username.title')}</h1>
       <p className="leise text-sm mb-8 text-center">{t('username.subtitle')}</p>
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3">
-        <input
-          autoFocus
-          placeholder={t('username.placeholder')}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="feld w-full px-4 py-3"
-        />
+        <div className="flex gap-2">
+          <input
+            placeholder={t('username.placeholder')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="feld flex-1 min-w-0 px-4 py-3"
+          />
+          <button
+            type="button"
+            onClick={() => { setName(namensVorschlag()); setError(null); }}
+            aria-label={t('username.another')}
+            title={t('username.another')}
+            className="knopf-rand w-[50px] shrink-0 flex items-center justify-center rounded-2xl"
+          >
+            <Dices className="w-5 h-5" />
+          </button>
+        </div>
         <p className="text-xs leise">{t('username.rules')}</p>
         {error && <p className="text-sm text-pink-400">{error}</p>}
         <button

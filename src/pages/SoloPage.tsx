@@ -8,6 +8,8 @@ import { belohnungPerVideo, maybeShowInterstitial } from '../lib/ads';
 import { nachRundeBewerten } from '../lib/bewertung';
 import LevelUpClouds from '../components/LevelUpClouds';
 import AppShell, { PageHeader } from '../components/AppShell';
+import { FigurKopf, figurFuer } from '../components/Figur';
+import { teilenText } from '../lib/teilen';
 import { kategorieFarbe } from '../lib/kategorien';
 import { levelProgress, levelUpFrom } from '../lib/level';
 import {
@@ -229,7 +231,12 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
   function share() {
     if (!result) return;
     const text = daily
-      ? t('daily.shareText', { correct: result.correct, total: result.total })
+      ? teilenText({
+          kopf: t('daily.shareHead', { nr: tagesNummer(), correct: result.correct, total: result.total }),
+          verlauf,
+          serie: result.streak ?? 0,
+          schluss: t('daily.shareCta'),
+        })
       : t('solo.shareText', {
           correct: result.correct,
           total: result.total,
@@ -368,6 +375,12 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
         {result ? (
           <>
             <div className="text-center mt-10">
+              <FigurKopf
+                figur={figurFuer(result.correct)}
+                stimmung={result.correct * 2 >= result.total ? 'richtig' : 'falsch'}
+                groesse={64}
+                className="mx-auto mb-4"
+              />
               {/* Bewusst in Tinte, nicht in Weiß: mittags ist der Himmel unten
                   fast weiß, dort wäre eine weiße Zahl unlesbar. */}
               <div className="text-[86px] font-extrabold leading-[0.9] tracking-[-0.055em]">
@@ -579,6 +592,15 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
 
       {feedback && (
         <div className="mt-5">
+          {/* Unsere Figuren reagieren auf die Antwort — abwechselnd Junge und
+              Mädchen, der Spruch wechselt mit der Frage. Reine Deko: bewertet
+              hat der Server längst. */}
+          <div className="flex items-center gap-3 mb-3">
+            <FigurKopf figur={figurFuer(index)} stimmung={feedback.correct ? 'richtig' : 'falsch'} groesse={44} />
+            <p className="glas px-3.5 py-2 text-sm font-semibold !rounded-2xl">
+              {t(`figur.${feedback.correct ? 'richtig' : 'falsch'}${index % 3}`)}
+            </p>
+          </div>
           {feedback.explanation && (
             <div className="notiz pl-5 pr-[18px] py-[17px]">
               <span className="notiz-kante" aria-hidden />
@@ -622,6 +644,12 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
       )}
     </AppShell>
   );
+}
+
+/** Laufende Nummer der Täglichen Challenge (UTC, wie das Datum am Server). */
+function tagesNummer(): number {
+  const heute = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate());
+  return Math.floor((heute - Date.UTC(2026, 7, 1)) / 86_400_000) + 1;
 }
 
 function Notice({ children }: { children: React.ReactNode }) {

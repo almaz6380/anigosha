@@ -31,9 +31,14 @@
     },
     "resetError": "The email could not be sent. Please try again.",
     "resetNeedsEmail": "Enter your email address first.",
-    "legalNote": "By registering you accept the <terms>Terms of Use</terms>. How we process your data is explained in the <privacy>Privacy Policy</privacy>.",
+    "legalNote": "By starting you accept the <terms>Terms of Use</terms>. How we process your data is explained in the <privacy>Privacy Policy</privacy>.",
     "ageConfirm": "I am at least 16 years old.",
-    "ageRequired": "Please confirm that you are at least 16 years old."
+    "ageRequired": "Please confirm that you are at least 16 years old.",
+    "playNow": "Play now",
+    "guestHint": "No email needed. You can secure your account later in your profile.",
+    "withEmail": "Log in or sign up with email",
+    "backToGuest": "Play without email",
+    "guestError": "That didn’t work. Please try again."
   },
   "username": {
     "title": "Choose your player name",
@@ -41,7 +46,8 @@
     "placeholder": "e.g. OtakuMaster",
     "rules": "3–16 characters, letters, numbers and _ only",
     "taken": "Sorry, that name is already taken.",
-    "invalid": "3–16 characters, letters, numbers and _ only"
+    "invalid": "3–16 characters, letters, numbers and _ only",
+    "another": "Another suggestion"
   },
   "nav": {
     "home": "Home",
@@ -124,7 +130,9 @@
     "sub": "5 questions — the same for everyone",
     "alreadyDone": "You have already played today's challenge. Five new questions tomorrow!",
     "leaderboard": "Today's leaderboard",
-    "shareText": "I got {{correct}} out of {{total}} in today's Anigosha challenge!"
+    "shareText": "I got {{correct}} out of {{total}} in today's Anigosha challenge!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Can you beat me?"
   },
   "duel": {
     "new": "Start a new duel",
@@ -203,9 +211,31 @@
       "kein_angebot": "No offer available.",
       "fehler": "Purchase failed.",
       "wiederherstellen": "Restore failed."
-    }
+    },
+    "gastHinweis": "Tip: secure your account first so the purchase stays tied to your progress."
   },
   "leaderboard": {
     "kicker": "Worldwide · by Elo"
+  },
+  "guest": {
+    "title": "Secure your account",
+    "text": "You’re playing as a guest. If you delete the app, your XP and streak are gone — add an email to keep them.",
+    "save": "Save",
+    "mailSent": "We sent an email to {{email}}. Confirm it, then set your password here.",
+    "pending": "Waiting for confirmation of {{email}} — tap the link in the email.",
+    "confirmed": "I’ve confirmed",
+    "otherMail": "Different email",
+    "notYet": "Not confirmed yet. Check your spam folder too.",
+    "passwordTitle": "Set a password",
+    "passwordText": "Your email is confirmed. With a password you can log in on other devices too.",
+    "logoutWarn": "You’re playing as a guest. After logging out you can’t get back into this account — your XP and streak would be lost. Log out anyway?"
+  },
+  "figur": {
+    "richtig0": "Bullseye!",
+    "richtig1": "Nice, exactly!",
+    "richtig2": "You know your stuff!",
+    "falsch0": "So close …",
+    "falsch1": "Now you’ll remember!",
+    "falsch2": "Next time!"
   }
 }

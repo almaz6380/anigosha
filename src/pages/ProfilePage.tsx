@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { Bell, BellOff, ShieldCheck, Sparkles } from 'lucide-react';
+import { Bell, BellOff, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
 import AppShell, { PageHeader } from '../components/AppShell';
@@ -123,6 +124,7 @@ const LANGUAGES = [
  */
 function WerbungEntfernen({ userId }: { userId: string | null }) {
   const { t } = useTranslation();
+  const { isGuest } = useAuth();
   const [frei, setFrei] = useState(false);
   const [preis, setPreis] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -181,6 +183,10 @@ function WerbungEntfernen({ userId }: { userId: string | null }) {
           <div className="text-xs leise">{frei ? t('kauf.aktiv') : t('kauf.text')}</div>
         </div>
       </div>
+      {/* Der Kauf hängt an der Konto-ID und bleibt beim Sichern erhalten. Geht
+          das Gastkonto verloren, holt „Wiederherstellen" ihn übers Store-Konto
+          zurück — trotzdem lieber vorher sichern. */}
+      {isGuest && !frei && <p className="text-xs text-pink-500 mt-2.5">{t('kauf.gastHinweis')}</p>}
 
       {!frei && (
         <div className="flex gap-2.5 mt-3.5">
@@ -247,10 +253,159 @@ function WerbeEinwilligung() {
   );
 }
 
+/** Merker: E-Mail ist verknüpft, das Passwort fehlt noch (Schritt 2). */
+const PASSWORT_OFFEN = 'anigosha.konto.passwortOffen';
+function merkerLesen(): boolean {
+  try {
+    return localStorage.getItem(PASSWORT_OFFEN) === '1';
+  } catch {
+    return false;
+  }
+}
+function merkerSetzen(an: boolean) {
+  try {
+    if (an) localStorage.setItem(PASSWORT_OFFEN, '1');
+    else localStorage.removeItem(PASSWORT_OFFEN);
+  } catch {
+    /* Speicher gesperrt: dann bleibt nur „Passwort vergessen" */
+  }
+}
+
+/**
+ * Gastkonto sichern. Supabase verlangt zwei Schritte: erst die E-Mail
+ * verknüpfen und bestätigen, danach das Passwort setzen. Die User-ID bleibt
+ * dabei dieselbe — XP, Serie, Duelle und der Kauf „Werbung entfernen"
+ * (RevenueCat kennt das Konto über diese ID) wandern also mit.
+ */
+function KontoSichern() {
+  const { t } = useTranslation();
+  const { session, isGuest, linkEmail, setPassword } = useAuth();
+  const [email, setEmail] = useState('');
+  const [passwort, setPasswort] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [fehler, setFehler] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [passwortOffen, setPasswortOffen] = useState(merkerLesen);
+
+  const ausstehend = session?.user.new_email ?? null;
+  const zeigePasswort = !isGuest && passwortOffen;
+  if (!isGuest && !zeigePasswort) return null;
+
+  async function emailSenden() {
+    if (busy || !email) return;
+    setBusy(true);
+    setFehler(null);
+    setInfo(null);
+    try {
+      const { error } = await linkEmail(email);
+      if (error) setFehler(t(`auth.errors.${error}`));
+      else {
+        merkerSetzen(true);
+        setPasswortOffen(true);
+        setInfo(t('guest.mailSent', { email }));
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Nach dem Klick auf den Bestätigungslink weiß das Token auf diesem Gerät
+  // noch nichts davon — erst eine Erneuerung holt is_anonymous = false.
+  async function pruefen() {
+    setBusy(true);
+    setFehler(null);
+    try {
+      const { data } = await supabase.auth.refreshSession();
+      if (data.user?.is_anonymous) setInfo(t('guest.notYet'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function passwortSetzen() {
+    if (busy) return;
+    if (passwort.length < 8) {
+      setFehler(t('auth.errors.weak_password'));
+      return;
+    }
+    setBusy(true);
+    setFehler(null);
+    try {
+      const { error } = await setPassword(passwort);
+      if (error) setFehler(t(`auth.errors.${error}`));
+      else {
+        merkerSetzen(false);
+        setPasswortOffen(false);
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="glas p-5 flex flex-col gap-3" style={{ borderColor: 'rgba(236,72,153,0.4)' }}>
+      <div className="flex items-center gap-3.5">
+        <ShieldAlert size={22} className="shrink-0 text-pink-500" strokeWidth={2} />
+        <div className="flex-1 min-w-0">
+          <div className="text-[15px] font-semibold">{zeigePasswort ? t('guest.passwordTitle') : t('guest.title')}</div>
+          <div className="text-xs leise">{zeigePasswort ? t('guest.passwordText') : t('guest.text')}</div>
+        </div>
+      </div>
+
+      {zeigePasswort ? (
+        <div className="flex gap-2">
+          <input
+            type="password"
+            autoComplete="new-password"
+            placeholder={t('auth.password')}
+            value={passwort}
+            onChange={(e) => setPasswort(e.target.value)}
+            className="feld flex-1 min-w-0 px-4 py-2.5"
+          />
+          <button onClick={passwortSetzen} disabled={busy} className="knopf px-4 text-sm disabled:opacity-50">
+            {t('guest.save')}
+          </button>
+        </div>
+      ) : ausstehend || passwortOffen ? (
+        <>
+          <p className="text-sm">{t('guest.pending', { email: ausstehend ?? email })}</p>
+          <div className="flex gap-2">
+            <button onClick={pruefen} disabled={busy} className="knopf flex-1 py-2.5 text-sm disabled:opacity-50">
+              {t('guest.confirmed')}
+            </button>
+            <button
+              onClick={() => { merkerSetzen(false); setPasswortOffen(false); setInfo(null); }}
+              className="knopf-rand px-4 py-2.5 text-sm"
+            >
+              {t('guest.otherMail')}
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex gap-2">
+          <input
+            type="email"
+            autoComplete="email"
+            placeholder={t('auth.email')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="feld flex-1 min-w-0 px-4 py-2.5"
+          />
+          <button onClick={emailSenden} disabled={busy || !email} className="knopf px-4 text-sm disabled:opacity-50">
+            {t('guest.save')}
+          </button>
+        </div>
+      )}
+      {fehler && <p className="text-sm text-pink-500">{fehler}</p>}
+      {info && <p className="text-sm text-accent-600">{info}</p>}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { profile, signOut, deleteAccount, saveLanguage } = useAuth();
+  const { profile, signOut, deleteAccount, saveLanguage, isGuest } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -267,6 +422,8 @@ export default function ProfilePage() {
   // Beim Abmelden muss das Gerätetoken weg. Sonst bekäme der Nächste, der sich
   // an diesem Gerät anmeldet, weiterhin die Duell-Meldungen des Vorbesitzers.
   async function abmelden() {
+    // Ein Gast kommt nach dem Abmelden nie wieder an sein Konto.
+    if (isGuest && !window.confirm(t('guest.logoutWarn'))) return;
     await pushAbmelden();
     await signOut();
   }
@@ -348,6 +505,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      <KontoSichern />
       <PushSchalter />
       <WerbungEntfernen userId={profile?.id ?? null} />
       <WerbeEinwilligung />

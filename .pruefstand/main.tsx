@@ -8,6 +8,8 @@ import SoloPage from '../src/pages/SoloPage';
 import DuelPage from '../src/pages/DuelPage';
 import LeaderboardPage from '../src/pages/LeaderboardPage';
 import ProfilePage from '../src/pages/ProfilePage';
+import AuthPage from '../src/pages/auth/AuthPage';
+import UsernamePage from '../src/pages/auth/UsernamePage';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +21,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/duel" element={<DuelPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/name" element={<UsernamePage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
