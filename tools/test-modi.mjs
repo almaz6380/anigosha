@@ -84,8 +84,9 @@ try {
     ok(h2.length === 1, 'nach der Antwort gibt es keine neuen Hinweise');
     const f4 = (await rpc('finish_solo_session', { p_session: s4.session_id })).data;
     const basis = 10 * w.difficulty;
-    // 1/1 richtig → +25 % Fehlerfrei-Bonus auf die Basis, dazu +5·Stufe (ein Hinweis genommen)
-    const erwartet = basis + Math.floor(basis / 4) + 5 * w.difficulty;
+    // Basis + 5·Stufe (ein Hinweis genommen), darauf +25 % Fehlerfrei-Bonus (1/1 richtig)
+    const mitBonus = basis + 5 * w.difficulty;
+    const erwartet = mitBonus + Math.floor(mitBonus / 4);
     ok(f4.xp === erwartet, `Bonus nach einem Hinweis: ${f4.xp} XP (erwartet ${erwartet})`);
   }
 } finally {
