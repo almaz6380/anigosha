@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { appSprache, datenSprache } from '../i18n';
-import { Bell, BellOff, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
+import { Bell, BellOff, Lock, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
+import { AVATARE, avatarBild, setAvatar } from '../lib/avatare';
+import { Avatar } from '../components/Figur';
 import AppShell, { PageHeader } from '../components/AppShell';
 import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, pushIstAn, webPushMoeglich } from '../lib/push';
 import { adConsentAenderbar, changeAdConsent } from '../lib/ads';
@@ -402,6 +404,67 @@ function KontoSichern() {
   );
 }
 
+/**
+ * Avatar-Auswahl. Gesperrte zeigen das nötige Level; der Server prüft es in
+ * set_avatar ein zweites Mal — die Sperre hier ist nur Anzeige.
+ */
+function AvatarWahl() {
+  const { t } = useTranslation();
+  const { profile, refreshProfile } = useAuth();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [fehler, setFehler] = useState(false);
+  const level = levelProgress(profile?.xp ?? 0).level;
+
+  async function waehlen(id: string) {
+    if (busy) return;
+    setBusy(id);
+    setFehler(false);
+    try {
+      await setAvatar(id);
+      await refreshProfile();
+    } catch {
+      setFehler(true);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <div className="glas p-5">
+      <div className="rubrik">{t('avatar.titel')}</div>
+      <div className="grid grid-cols-4 gap-2.5 mt-3">
+        {AVATARE.map((a) => {
+          const frei = level >= a.level;
+          const gewaehlt = profile?.avatar_id === a.id;
+          return (
+            <button
+              key={a.id}
+              onClick={() => frei && waehlen(a.id)}
+              disabled={!frei || busy !== null}
+              aria-label={frei ? t('avatar.waehlen') : t('avatar.ab', { level: a.level })}
+              className="relative aspect-square rounded-full overflow-hidden"
+              style={{ outline: gewaehlt ? '3px solid var(--color-accent-500, #8b5cf6)' : 'none', outlineOffset: 2 }}
+            >
+              <img
+                src={avatarBild(a.id) ?? ''}
+                alt=""
+                className={`w-full h-full object-cover bg-[#ededed] ${frei ? '' : 'grayscale opacity-40'}`}
+              />
+              {!frei && (
+                <span className="absolute inset-0 flex flex-col items-center justify-center text-[11px] font-bold text-white bg-black/35">
+                  <Lock className="w-3.5 h-3.5" />
+                  {t('avatar.lvl', { level: a.level })}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {fehler && <p className="text-sm text-pink-500 mt-2">{t('common.error')}</p>}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -444,9 +507,7 @@ export default function ProfilePage() {
 
       <div className="glas p-5 mt-2">
         <div className="flex items-center gap-3.5">
-          <div className="w-[46px] h-[46px] rounded-full akzent-flaeche text-white flex items-center justify-center text-[19px] font-bold shrink-0">
-            {(profile?.username ?? '?').slice(0, 1).toUpperCase()}
-          </div>
+          <Avatar id={profile?.avatar_id} name={profile?.username} groesse={46} className="akzent-flaeche text-white" />
           <div className="text-[19px] font-bold tracking-[-0.01em] truncate">{profile?.username}</div>
         </div>
 
@@ -505,6 +566,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      <AvatarWahl />
       <KontoSichern />
       <PushSchalter />
       <WerbungEntfernen userId={profile?.id ?? null} />

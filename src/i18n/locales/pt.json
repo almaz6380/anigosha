@@ -237,5 +237,33 @@
     "falsch0": "Quase …",
     "falsch1": "Agora você sabe!",
     "falsch2": "Na próxima!"
+  },
+  "missionen": {
+    "titel": "Missões da semana",
+    "art": {
+      "solo_runden_one": "Jogue {{count}} rodada solo",
+      "solo_runden_other": "Jogue {{count}} rodadas solo",
+      "richtige_one": "Acerte {{count}} pergunta",
+      "richtige_other": "Acerte {{count}} perguntas",
+      "daily_one": "Jogue {{count}} Desafio diário",
+      "daily_other": "Jogue {{count}} Desafios diários",
+      "fehlerfrei_one": "Faça {{count}} rodada perfeita",
+      "fehlerfrei_other": "Faça {{count}} rodadas perfeitas",
+      "schwer_one": "Jogue {{count}} rodada no “Difícil”",
+      "schwer_other": "Jogue {{count}} rodadas no “Difícil”",
+      "duelle_one": "Termine {{count}} duelo",
+      "duelle_other": "Termine {{count}} duelos",
+      "siege_one": "Vença {{count}} duelo",
+      "siege_other": "Vença {{count}} duelos",
+      "spieltage_one": "Jogue em {{count}} dia",
+      "spieltage_other": "Jogue em {{count}} dias diferentes"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Novo avatar desbloqueado!",
+    "waehlen": "Escolher avatar",
+    "ab": "A partir do nível {{level}}",
+    "lvl": "Nv {{level}}"
   }
 }

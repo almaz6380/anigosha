@@ -237,5 +237,33 @@
     "falsch0": "Presque …",
     "falsch1": "Maintenant tu sais !",
     "falsch2": "La prochaine fois !"
+  },
+  "missionen": {
+    "titel": "Missions de la semaine",
+    "art": {
+      "solo_runden_one": "Joue {{count}} partie solo",
+      "solo_runden_other": "Joue {{count}} parties solo",
+      "richtige_one": "Réponds juste à {{count}} question",
+      "richtige_other": "Réponds juste à {{count}} questions",
+      "daily_one": "Joue {{count}} Défi du jour",
+      "daily_other": "Joue {{count}} Défis du jour",
+      "fehlerfrei_one": "Réussis {{count}} partie parfaite",
+      "fehlerfrei_other": "Réussis {{count}} parties parfaites",
+      "schwer_one": "Joue {{count}} partie en « Difficile »",
+      "schwer_other": "Joue {{count}} parties en « Difficile »",
+      "duelle_one": "Termine {{count}} duel",
+      "duelle_other": "Termine {{count}} duels",
+      "siege_one": "Gagne {{count}} duel",
+      "siege_other": "Gagne {{count}} duels",
+      "spieltage_one": "Joue {{count}} jour",
+      "spieltage_other": "Joue {{count}} jours différents"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Nouvel avatar débloqué !",
+    "waehlen": "Choisir l’avatar",
+    "ab": "Dès le niveau {{level}}",
+    "lvl": "Nv {{level}}"
   }
 }

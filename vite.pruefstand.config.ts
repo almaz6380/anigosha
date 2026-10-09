@@ -34,7 +34,10 @@ export default defineConfig({
       { find: /^.*\/lib\/ads$/, replacement: `${S}/ads.ts` },
       { find: /^.*\/lib\/purchases$/, replacement: `${S}/purchases.ts` },
       { find: /^.*\/lib\/push$/, replacement: `${S}/push.ts` },
+      { find: /^.*\/lib\/missionen$/, replacement: `${S}/missionen.ts` },
       { find: /^.*\/lib\/supabase$/, replacement: `${S}/supabase.ts` },
+      // Innerhalb von src/lib heißt der Import nur './supabase'.
+      { find: /^\.\/supabase$/, replacement: `${S}/supabase.ts` },
     ],
   },
 });

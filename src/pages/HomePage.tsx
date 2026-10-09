@@ -8,6 +8,7 @@ import { useSky } from '../components/SkyBackground';
 import { levelProgress } from '../lib/level';
 import { belohnungPerVideo } from '../lib/ads';
 import { restoreStreak } from '../lib/solo';
+import Missionen from '../components/Missionen';
 
 /** Datum der Datenbank (current_date läuft in UTC), um `d` Tage verschoben. */
 function dbTag(d: number) {
@@ -126,6 +127,8 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      <Missionen />
 
       {/* Die Tägliche Challenge ist der Held der Seite — sie ist der Grund
           wiederzukommen, stand aber als schmale Zeile über dem Raster. */}

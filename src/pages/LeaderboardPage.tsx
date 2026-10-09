@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Bot, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AppShell, { PageHeader } from '../components/AppShell';
+import { Avatar } from '../components/Figur';
 import { globalLeaderboard, type GlobalRow } from '../lib/duel';
 
 /** Gold, Silber, Bronze — die einzigen drei festen Farben der App, weil ein
@@ -19,18 +20,12 @@ function Stufe({ row, platz, ich }: { row: GlobalRow; platz: 0 | 1 | 2; ich: boo
   return (
     <div className="flex flex-col items-center gap-2" style={{ width: platz === 0 ? 108 : 96 }}>
       {platz === 0 && <Trophy className="w-5 h-5" style={{ color: p.rand }} strokeWidth={2} />}
-      <div
-        className="rounded-full flex items-center justify-center font-bold"
-        style={{
-          width: p.avatar,
-          height: p.avatar,
-          fontSize: platz === 0 ? 21 : 18,
-          background: p.flaeche,
-          border: `2px solid ${p.rand}`,
-        }}
-      >
-        {row.username.slice(0, 1).toUpperCase()}
-      </div>
+      <Avatar
+        id={row.avatar_id}
+        name={row.username}
+        groesse={p.avatar}
+        style={{ fontSize: platz === 0 ? 21 : 18, background: p.flaeche, border: `2px solid ${p.rand}` }}
+      />
       <div
         className={`text-center leading-tight truncate w-full ${platz === 0 ? 'text-sm font-bold' : 'text-[13px] font-semibold'} ${ich ? 'underline underline-offset-4' : ''}`}
       >
@@ -107,6 +102,7 @@ export default function LeaderboardPage() {
             >
               {ich && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[3px] akzent-flaeche" />}
               <span className={`w-6 tabular-nums ${ich ? 'font-bold' : 'fein'}`}>{r.rank}</span>
+              <Avatar id={r.avatar_id} name={r.username} groesse={30} style={{ background: 'var(--spur)' }} />
               <span className={`flex-1 truncate flex items-center gap-1.5 ${ich ? 'font-bold' : ''}`}>
                 {r.username}
                 {r.is_bot && <Bot className="w-3.5 h-3.5 fein shrink-0" />}

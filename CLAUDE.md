@@ -177,6 +177,25 @@ Pruefstand nachgezogen (war seit 1.1.4 kaputt: `ads`-Stub ohne `belohnungPerVide
 **Store-Apps brauchen dafür einen neuen Build.** Noch offen aus dem Ausbauplan: Paket 2
 (Wochenmissionen + Avatare), 3 (Fragetypen/Modi/Kategorien), 4 (Melden/Blockieren).
 
+## Wochenmissionen + Avatar-Sammlung (09.10.2026, Paket 2)
+
+**Migration 0067 eingespielt** (Trockenlauf, echt, nachgezählt: 10 Missionen, 12 Avatare,
+2 Trigger, Grants nur `get_weekly_missions`/`claim_mission`/`set_avatar`).
+
+| Was | Wo |
+|---|---|
+| 3 Missionen je Woche (Mo–So, **UTC**), verschiedene Art, deterministisch aus `md5(user, woche, id)`, lazy angelegt | `ensure_weekly_missions`, `get_weekly_missions` |
+| Fortschritt **nur per Trigger**: `missions_solo` (Abschluss einer Runde: Runden, richtige, Daily, fehlerfrei, Schwer, Spieltage), `missions_match` (beendet, nicht `expired`: Duelle, Siege). Bots ausgenommen. Trigger fangen jeden Fehler ab (`raise warning`) — eine Mission darf nie eine Runde kaputtmachen | `0067_missionen_avatare.sql` |
+| `claim_mission`: Zeilensperre, einmal, XP über `app.allow_score_write` | ebenda |
+| 12 Avatare (4 Köpfe aus dem Charakterblatt + **8 per fal.ai**, `flux-pro/kontext`, ~0,32 $, Vorlage Charakterblatt), Level 1–26. `avatar_id` steht jetzt im **Spalten-Guard**, nur `set_avatar` (prüft Level, `floor(sqrt(xp/50+1))`) schreibt | `public/figuren/avatar-*.webp`, `src/lib/avatare.ts` (Liste spiegelt Tabelle `avatars` — beide pflegen!) |
+| `Avatar`-Komponente (Bild oder Initial) in Profil, Bestenliste, Duellliste; Auswahl im Profil; Level-Up zeigt neu freigeschaltete | `Figur.tsx`, `ProfilePage.tsx`, `LevelUpClouds.tsx` |
+| Missionskarte auf der Startseite | `src/components/Missionen.tsx`, `src/lib/missionen.ts` |
+
+Test: `tools/test-missionen.mjs` 18/18. Prüfstand: Stub `missionen.ts`; ⚠ innerhalb von
+`src/lib` heißt der Import `./supabase` — dafür braucht der Prüfstand einen eigenen Alias.
+`test-push-versand` schlug einmal fehl und lief beim zweiten Mal grün (Zeitplan räumt
+parallel auf, bekannt).
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { avatarBild, neueAvatare } from '../lib/avatare';
 
 /**
  * Levelaufstieg: Zwei Wolken schieben sich von den Seiten ins Bild, treffen
@@ -17,6 +18,8 @@ export default function LevelUpClouds({
   onDone: () => void;
 }) {
   const { t } = useTranslation();
+  // Neu freigeschaltete Avatare zeigen — sie sind der greifbare Lohn des Levels.
+  const neu = neueAvatare(level);
   const [reduced] = useState(
     () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
   );
@@ -63,6 +66,21 @@ export default function LevelUpClouds({
           {level}
         </div>
         <div className="mt-1 text-lg font-semibold">{t('level.title', { level })}</div>
+        {neu.length > 0 && (
+          <div className="mt-5 flex flex-col items-center gap-2">
+            <div className="flex gap-2">
+              {neu.map((a) => (
+                <img
+                  key={a.id}
+                  src={avatarBild(a.id) ?? ''}
+                  alt=""
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white/80 bg-[#ededed]"
+                />
+              ))}
+            </div>
+            <div className="text-sm text-violet-100/90">{t('avatar.neu')}</div>
+          </div>
+        )}
       </div>
     </div>
   );
