@@ -34,6 +34,7 @@ export default defineConfig({
       { find: /^.*\/lib\/ads$/, replacement: `${S}/ads.ts` },
       { find: /^.*\/lib\/purchases$/, replacement: `${S}/purchases.ts` },
       { find: /^.*\/lib\/push$/, replacement: `${S}/push.ts` },
+      { find: /^.*\/lib\/supabase$/, replacement: `${S}/supabase.ts` },
     ],
   },
 });

@@ -20,7 +20,7 @@ export const OPERATOR = {
 const opDE = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nE-Mail: ${OPERATOR.email}`;
 const opEN = `${OPERATOR.name}\n${OPERATOR.address}\n${OPERATOR.city}\nEmail: ${OPERATOR.email}`;
 
-export const LAST_UPDATED = '08.10.2026';
+export const LAST_UPDATED = '09.10.2026';
 
 export interface LegalSection {
   heading: string;
@@ -216,6 +216,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Welche Daten wir verarbeiten',
           body:
             'Konto: E-Mail-Adresse und Passwort (verschlüsselt gespeichert, für uns nicht lesbar).\n\n' +
+            'Gastkonto: Spielst du ohne E-Mail („Sofort spielen“), legen wir ein Konto ohne E-Mail-Adresse an, das nur über das Anmeldetoken auf deinem Gerät erreichbar ist. Es enthält Spielernamen und Spielstände wie jedes andere Konto. Fügst du später eine E-Mail-Adresse hinzu, wird daraus ein gewöhnliches Konto mit derselben Kennung.\n\n' +
             'Profil: selbst gewählter Spielername, Sprache und ein Avatar aus der vorgegebenen Auswahl der App (kein eigenes Bild, kein Upload).\n\n' +
             'Spielstand: Erfahrungspunkte, Level, Tagesserie, Elo-Wertung, gespielte Runden und gegebene Antworten, Duelle mit anderen Spielerinnen und Spielern.\n\n' +
             'Meldungen: wenn du eine Frage meldest, speichern wir welche Frage, den Grund und dein Konto.\n\n' +
@@ -275,6 +276,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Speicherdauer',
           body:
             'Wir speichern deine Daten, solange dein Konto besteht.\n\n' +
+            'Ein Gastkonto ohne E-Mail-Adresse, das 90 Tage lang nicht benutzt wurde, löschen wir automatisch samt Spielständen — wer die App ohne Sicherung löscht, kommt ohnehin nicht mehr an dieses Konto.\n\n' +
             'Löschst du dein Konto in der App, werden Konto, Profil und Spielstände unverzüglich und vollständig gelöscht. Das gilt auch für alle Duelle, an denen du teilgenommen hast — sie verschwinden damit auch aus dem Verlauf deines Gegenübers.',
         },
         {
@@ -305,6 +307,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'What data we process',
           body:
             'Account: email address and password (stored encrypted, unreadable to us).\n\n' +
+            'Guest account: if you play without an email (“Play now”), we create an account without an email address that can only be reached through the sign-in token on your device. Like any account, it holds your player name and game data. If you add an email address later, it becomes a regular account with the same ID.\n\n' +
             'Profile: your chosen player name, language and an avatar from the app’s built-in selection (no own picture, no upload).\n\n' +
             'Game data: experience points, level, daily streak, Elo rating, rounds played and answers given, duels with other players.\n\n' +
             'Reports: if you report a question, we store which question, the reason and your account.\n\n' +
@@ -364,6 +367,7 @@ export const legalDocs: Record<'imprint' | 'privacy' | 'terms' | 'deletion', { d
           heading: 'Retention',
           body:
             'We store your data for as long as your account exists.\n\n' +
+            'A guest account without an email address that has not been used for 90 days is deleted automatically together with its game data — anyone who deletes the app without securing the account can no longer reach it anyway.\n\n' +
             'If you delete your account in the app, account, profile and game data are erased immediately and completely. This includes all duels you took part in — they also disappear from your opponent’s history.',
         },
         {

@@ -152,6 +152,31 @@ Tests: `test-joker-daily.mjs` 32/32 (16 neu), `test-werbung.mjs` grün,
 solo/duel/matchmaking/freundesduell unverändert grün. **Am Gerät ungetestet:**
 Video-Abbruch, Bewertungsdialog.
 
+## Gastmodus + Figuren + Wordle-Teilen (09.10.2026, Paket 1 des Ausbauplans, Branch `claude/dazzling-babbage-9asvk0`)
+
+Anlass, gemessen: **19 von 29 echten Konten hatten die Bestätigungsmail nie angeklickt** —
+nie eine Frage gesehen. `statistik.mjs` zählte sie bis dahin als „hängt bei der Namenswahl"
+und führte damit auf die falsche Spur; jetzt stehen Gäste und Unbestätigte getrennt da.
+
+| Was | Wo |
+|---|---|
+| **Sofort spielen** ohne E-Mail (Supabase Anonymous Sign-in, am 09.10. im Projekt **eingeschaltet**). Altershäkchen gilt auch für Gäste. E-Mail-Formular klappt erst auf Wunsch auf | `AuthPage.tsx`, `AuthContext.tsx` (`signInAsGuest`, `isGuest`) |
+| Spielername vorgeschlagen (`Shinobi4821`), Würfel für neuen Vorschlag | `UsernamePage.tsx` |
+| **Konto sichern** in zwei Schritten (Supabase verlangt es so): `updateUser({email})` → Mail bestätigen → `updateUser({password})`. Merker in `localStorage` (`anigosha.konto.passwortOffen`). Die User-ID bleibt → XP, Serie, Duelle und der RevenueCat-Kauf wandern mit | `ProfilePage.tsx` `KontoSichern` |
+| Gast-Abmelden warnt (Konto wäre unerreichbar); Kauf-Hinweis „vorher sichern" | `ProfilePage.tsx` |
+| **Migration 0066 eingespielt**: `cleanup_stale_guests()` täglich 03:41 UTC, löscht Gäste nach 90 Tagen ohne Aktivität. ⚠ Aktivität = jüngstes aus Anmeldung, **Sitzungs-Erneuerung** und letztem Spieltag — `last_sign_in_at` allein wäre falsch, ein Gast meldet sich nur einmal an | `0066_gastkonten.sql`, `tools/test-gast.mjs` (13/13) |
+| **Unsere Figuren** (Junge + Mädchen aus dem Charakterblatt, KEINE fremden Anime-Figuren): Reaktionskopf nach jeder Antwort, Kopf am Ergebnis, ganzer Junge auf der Startseite. Köpfe sind runde Ausschnitte aus `tools/reels/spot/referenz/0-charakterblatt.jpg` — kein Freistellen nötig | `src/components/Figur.tsx`, `public/figuren/*.webp` |
+| **Teilen im Wordle-Stil** für die Tägliche Challenge: `Anigosha #70 · 4/5`, 🟩🟥-Raster, 🔥Serie, Link `/get`. Nummer = Tage seit 01.08.2026 (UTC) | `src/lib/teilen.ts`, `SoloPage.tsx` |
+| Datenschutz DE+EN: Gastkonto + 90-Tage-Löschung, `LAST_UPDATED` 09.10.2026 | `legalContent.ts` |
+
+**Werbung im Gastmodus: unverändert.** `initAds()` hängt nicht am Login, UMP/ATT gelten fürs Gerät.
+
+Pruefstand nachgezogen (war seit 1.1.4 kaputt: `ads`-Stub ohne `belohnungPerVideo`), dazu
+`/auth`, `/name`, `/profile?gast=1` und ein `supabase`-Stub.
+
+**Store-Apps brauchen dafür einen neuen Build.** Noch offen aus dem Ausbauplan: Paket 2
+(Wochenmissionen + Avatare), 3 (Fragetypen/Modi/Kategorien), 4 (Melden/Blockieren).
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker

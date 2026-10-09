@@ -31,9 +31,14 @@
     },
     "resetError": "L’e-mail n’a pas pu être envoyé. Réessaie.",
     "resetNeedsEmail": "Saisis d’abord ton adresse e-mail.",
-    "legalNote": "En t’inscrivant, tu acceptes les <terms>Conditions d’utilisation</terms>. La manière dont nous traitons tes données est expliquée dans la <privacy>Politique de confidentialité</privacy>.",
+    "legalNote": "En commençant, tu acceptes les <terms>Conditions d’utilisation</terms>. Le traitement de tes données est expliqué dans la <privacy>Politique de confidentialité</privacy>.",
     "ageConfirm": "J’ai au moins 16 ans.",
-    "ageRequired": "Confirme que tu as au moins 16 ans."
+    "ageRequired": "Confirme que tu as au moins 16 ans.",
+    "playNow": "Jouer maintenant",
+    "guestHint": "Sans e-mail. Tu pourras sécuriser ton compte plus tard dans ton profil.",
+    "withEmail": "Se connecter ou s’inscrire par e-mail",
+    "backToGuest": "Jouer sans e-mail",
+    "guestError": "Ça n’a pas marché. Réessaie."
   },
   "username": {
     "title": "Choisis ton nom de joueur",
@@ -41,7 +46,8 @@
     "placeholder": "p. ex. MaitreOtaku",
     "rules": "3 à 16 caractères, lettres, chiffres et _ uniquement",
     "taken": "Ce nom est déjà pris.",
-    "invalid": "3 à 16 caractères, lettres, chiffres et _ uniquement"
+    "invalid": "3 à 16 caractères, lettres, chiffres et _ uniquement",
+    "another": "Autre suggestion"
   },
   "nav": {
     "home": "Accueil",
@@ -124,7 +130,9 @@
     "sub": "5 questions — les mêmes pour tous",
     "alreadyDone": "Tu as déjà joué le défi du jour. Cinq nouvelles questions demain !",
     "leaderboard": "Classement du jour",
-    "shareText": "J'ai trouvé {{correct}} bonnes réponses sur {{total}} au défi Anigosha du jour !"
+    "shareText": "J'ai trouvé {{correct}} bonnes réponses sur {{total}} au défi Anigosha du jour !",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Tu fais mieux ?"
   },
   "duel": {
     "new": "Lancer un nouveau duel",
@@ -203,9 +211,31 @@
       "kein_angebot": "Aucune offre disponible.",
       "fehler": "L’achat a échoué.",
       "wiederherstellen": "La restauration a échoué."
-    }
+    },
+    "gastHinweis": "Astuce : sécurise d’abord ton compte pour que l’achat reste lié à ta progression."
   },
   "leaderboard": {
     "kicker": "Mondial · par Elo"
+  },
+  "guest": {
+    "title": "Sécuriser ton compte",
+    "text": "Tu joues en invité. Si tu supprimes l’app, ton XP et ta série disparaissent — avec un e-mail, tu les gardes.",
+    "save": "Sécuriser",
+    "mailSent": "Nous avons envoyé un e-mail à {{email}}. Confirme-le, puis choisis ton mot de passe ici.",
+    "pending": "Confirmation de {{email}} en attente — touche le lien dans l’e-mail.",
+    "confirmed": "J’ai confirmé",
+    "otherMail": "Autre e-mail",
+    "notYet": "Pas encore confirmé. Vérifie aussi tes spams.",
+    "passwordTitle": "Choisir un mot de passe",
+    "passwordText": "Ton e-mail est confirmé. Avec un mot de passe, tu peux aussi te connecter sur d’autres appareils.",
+    "logoutWarn": "Tu joues en invité. Après la déconnexion, tu ne pourras plus accéder à ce compte — ton XP et ta série seraient perdus. Te déconnecter quand même ?"
+  },
+  "figur": {
+    "richtig0": "En plein dans le mille !",
+    "richtig1": "Bien joué !",
+    "richtig2": "Tu t’y connais !",
+    "falsch0": "Presque …",
+    "falsch1": "Maintenant tu sais !",
+    "falsch2": "La prochaine fois !"
   }
 }

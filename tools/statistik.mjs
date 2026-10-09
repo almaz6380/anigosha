@@ -131,7 +131,13 @@ select json_build_object(
     'neu_gestern', (select count(*) from menschen where created_at >= current_date - 1 and created_at < current_date),
     'neu_zeitraum',(select count(*) from menschen where created_at >= now() - interval '${TAGE} days'),
     'mit_push',    (select count(distinct user_id) from tokens),
-    'ohne_namen',  (select count(*) from menschen where username is null)
+    'ohne_namen',  (select count(*) from menschen where username is null),
+    -- Nie bestaetigte Mail: Diese Konten haben die App nie von innen gesehen.
+    -- Bis 09.10.2026 zaehlten sie still unter „ohne Spielername" mit und
+    -- liessen die Namenswahl wie das grosse Leck aussehen.
+    'unbestaetigt',(select count(*) from menschen m join auth.users u on u.id = m.id
+                     where not u.is_anonymous and u.email_confirmed_at is null),
+    'gaeste',      (select count(*) from menschen m join auth.users u on u.id = m.id where u.is_anonymous)
   ),
   'ausgeblendet', (select count(*) from public.profiles p
                    where p.is_bot = false
@@ -199,8 +205,9 @@ KONTEN
   gesamt                     ${z(d.konten.gesamt)}
   neu heute                  ${z(d.konten.neu_heute)}${pfeil(d.konten.neu_heute, d.konten.neu_gestern)}
   neu im Zeitraum            ${z(d.konten.neu_zeitraum)}
-  ohne Spielername           ${z(d.konten.ohne_namen)}${
-    d.konten.gesamt ? `   (${Math.round(100 * d.konten.ohne_namen / d.konten.gesamt)} % haengen bei der Namenswahl)` : ''}
+  davon Gaeste (ohne Mail)   ${z(d.konten.gaeste)}
+  Mail nie bestaetigt        ${z(d.konten.unbestaetigt)}
+  ohne Spielername           ${z(d.konten.ohne_namen)}   (inkl. der Unbestaetigten)
   mit Benachrichtigungen     ${z(d.konten.mit_push)}
 
 AKTIVE SPIELER (haben wirklich gespielt)
@@ -236,12 +243,15 @@ ${(d.meldungen ?? []).map((m) => `  ${String(m.grund).padEnd(27)}${z(m.anzahl)}`
 if (d.solo.runden_zeitraum > 20 && d.solo.abgebrochen / d.solo.runden_zeitraum > 0.3) {
   console.log('⚠ Mehr als 30 % der Solo-Runden werden abgebrochen — dort lohnt ein Blick.\n');
 }
-// Ein Konto ohne Spielernamen hat die Registrierung abgeschlossen und ist dann
-// auf der UsernamePage stehengeblieben — es hat nie eine Frage gesehen. Das ist
-// der teuerste Abbruch von allen, weil davor schon eine Mail bestaetigt wurde.
-if (d.konten.gesamt > 0 && d.konten.ohne_namen / d.konten.gesamt > 0.3) {
-  console.log(`⚠ ${d.konten.ohne_namen} von ${d.konten.gesamt} Konten haben keinen Spielernamen —\n`
-            + '  sie haengen nach der Registrierung auf der Namenswahl fest.\n');
+// Ohne Spielernamen UND mit bestaetigter Mail: angekommen, dann auf der
+// Namenswahl stehengeblieben. Die Unbestaetigten zaehlen hier nicht mit —
+// die haben die Namensseite nie gesehen.
+const haengtAmNamen = d.konten.ohne_namen - d.konten.unbestaetigt;
+if (d.konten.gesamt > 0 && haengtAmNamen / d.konten.gesamt > 0.3) {
+  console.log(`⚠ ${haengtAmNamen} von ${d.konten.gesamt} Konten haengen auf der Namenswahl fest.\n`);
+}
+if (d.konten.gesamt > 0 && d.konten.unbestaetigt / d.konten.gesamt > 0.3) {
+  console.log(`⚠ ${d.konten.unbestaetigt} von ${d.konten.gesamt} Konten haben die Bestaetigungsmail nie angeklickt.\n`);
 }
 if (d.duelle.gegen_mensch === 0 && d.duelle.gegen_bot > 0) {
   console.log('ℹ Noch kein einziges Duell zwischen zwei Menschen — dafuer braucht es\n'

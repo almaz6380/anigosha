@@ -31,9 +31,14 @@
     },
     "resetError": "Não foi possível enviar o e-mail. Tente novamente.",
     "resetNeedsEmail": "Digite primeiro seu endereço de e-mail.",
-    "legalNote": "Ao se cadastrar, você aceita os <terms>Termos de uso</terms>. Como tratamos seus dados está explicado na <privacy>Política de privacidade</privacy>.",
+    "legalNote": "Ao começar, você aceita os <terms>Termos de Uso</terms>. Como tratamos seus dados está na <privacy>Política de Privacidade</privacy>.",
     "ageConfirm": "Tenho pelo menos 16 anos.",
-    "ageRequired": "Confirme que você tem pelo menos 16 anos."
+    "ageRequired": "Confirme que você tem pelo menos 16 anos.",
+    "playNow": "Jogar agora",
+    "guestHint": "Sem e-mail. Você pode proteger sua conta depois no perfil.",
+    "withEmail": "Entrar ou cadastrar com e-mail",
+    "backToGuest": "Jogar sem e-mail",
+    "guestError": "Não deu certo. Tente de novo."
   },
   "username": {
     "title": "Escolha seu nome de jogador",
@@ -41,7 +46,8 @@
     "placeholder": "ex.: MestreOtaku",
     "rules": "3 a 16 caracteres, apenas letras, números e _",
     "taken": "Esse nome já está em uso.",
-    "invalid": "3 a 16 caracteres, apenas letras, números e _"
+    "invalid": "3 a 16 caracteres, apenas letras, números e _",
+    "another": "Outra sugestão"
   },
   "nav": {
     "home": "Início",
@@ -124,7 +130,9 @@
     "sub": "5 perguntas — as mesmas para todo mundo",
     "alreadyDone": "Você já jogou o desafio de hoje. Amanhã tem cinco perguntas novas!",
     "leaderboard": "Ranking do dia",
-    "shareText": "Acertei {{correct}} de {{total}} no desafio Anigosha de hoje!"
+    "shareText": "Acertei {{correct}} de {{total}} no desafio Anigosha de hoje!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Consegue mais?"
   },
   "duel": {
     "new": "Começar um novo duelo",
@@ -203,9 +211,31 @@
       "kein_angebot": "Nenhuma oferta disponível.",
       "fehler": "A compra falhou.",
       "wiederherstellen": "Falha ao restaurar."
-    }
+    },
+    "gastHinweis": "Dica: proteja sua conta antes, para que a compra fique ligada ao seu progresso."
   },
   "leaderboard": {
     "kicker": "Mundial · por Elo"
+  },
+  "guest": {
+    "title": "Proteger sua conta",
+    "text": "Você está jogando como convidado. Se apagar o app, seu XP e sua sequência somem — com um e-mail eles ficam.",
+    "save": "Proteger",
+    "mailSent": "Enviamos um e-mail para {{email}}. Confirme e depois defina sua senha aqui.",
+    "pending": "Confirmação de {{email}} pendente — toque no link do e-mail.",
+    "confirmed": "Já confirmei",
+    "otherMail": "Outro e-mail",
+    "notYet": "Ainda não confirmado. Veja também a pasta de spam.",
+    "passwordTitle": "Definir senha",
+    "passwordText": "Seu e-mail está confirmado. Com uma senha você também entra em outros aparelhos.",
+    "logoutWarn": "Você está jogando como convidado. Depois de sair, não dá para voltar a esta conta — seu XP e sua sequência seriam perdidos. Sair mesmo assim?"
+  },
+  "figur": {
+    "richtig0": "Na mosca!",
+    "richtig1": "Mandou bem!",
+    "richtig2": "Você manja!",
+    "falsch0": "Quase …",
+    "falsch1": "Agora você sabe!",
+    "falsch2": "Na próxima!"
   }
 }
