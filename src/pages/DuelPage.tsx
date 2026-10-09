@@ -2,12 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { datenSprache } from '../i18n';
-import { ArrowRight, Bot, Check, ChevronRight, Flag, Heart, Lightbulb, RotateCcw, Swords, UserPlus, X } from 'lucide-react';
+import { ArrowRight, Bot, Check, ChevronRight, Flag, Heart, Lightbulb, MoreVertical, RotateCcw, Swords, UserPlus, X } from 'lucide-react';
 import { reportQuestion, type SoloQuestion, type AnswerResult } from '../lib/solo';
 import { useAuth } from '../context/AuthContext';
 import { maybeShowInterstitialOnce } from '../lib/ads';
 import AppShell, { PageHeader } from '../components/AppShell';
 import { Avatar } from '../components/Figur';
+import SpielerMenue from '../components/SpielerMenue';
 import {
   answerDuel,
   challengeFriend,
@@ -29,6 +30,8 @@ export default function DuelPage() {
   const [duels, setDuels] = useState<DuelSummary[]>([]);
   const [active, setActive] = useState<string | null>(null);
   const [state, setState] = useState<DuelState | null>(null);
+  /** Melden/Blockieren des Gegners (Apple 1.2). */
+  const [spielerMenue, setSpielerMenue] = useState(false);
   const [questions, setQuestions] = useState<SoloQuestion[]>([]);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -393,11 +396,30 @@ export default function DuelPage() {
         kicker={t('duel.round', { n: state?.round_no ?? 1 })}
         title={state ? gegnerName(state.opponent) : t('nav.duel')}
         right={
-          <span className="text-base font-bold tabular-nums shrink-0">
-            {state?.my_score ?? 0}:{state?.opp_score ?? 0}
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-base font-bold tabular-nums">
+              {state?.my_score ?? 0}:{state?.opp_score ?? 0}
+            </span>
+            {state?.opponent?.username && !state.opponent.is_bot && (
+              <button
+                onClick={() => setSpielerMenue(true)}
+                aria-label={t('spieler.optionen')}
+                className="p-1.5 -mr-1.5"
+              >
+                <MoreVertical className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         }
       />
+      {spielerMenue && state?.opponent?.username && (
+        <SpielerMenue
+          username={state.opponent.username}
+          avatarId={state.opponent.avatar_id}
+          onClose={() => setSpielerMenue(false)}
+          onBlockiert={verlassen}
+        />
+      )}
 
       {state?.opponent?.is_bot && (
         <div className="mt-2 text-[11px] fein flex items-center gap-1">

@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { levelProgress } from '../lib/level';
 import { AVATARE, avatarBild, setAvatar } from '../lib/avatare';
+import { blockierteSpieler, spielerEntblocken } from '../lib/spieler';
 import { Avatar } from '../components/Figur';
 import AppShell, { PageHeader } from '../components/AppShell';
 import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, pushIstAn, webPushMoeglich } from '../lib/push';
@@ -465,6 +466,44 @@ function AvatarWahl() {
   );
 }
 
+/** Blockierte Spieler — nur sichtbar, wenn es welche gibt. */
+function Blockliste() {
+  const { t } = useTranslation();
+  const [liste, setListe] = useState<{ username: string; avatar_id: string | null }[]>([]);
+
+  useEffect(() => {
+    blockierteSpieler().then(setListe).catch(() => {});
+  }, []);
+
+  if (liste.length === 0) return null;
+
+  async function entblocken(name: string) {
+    try {
+      await spielerEntblocken(name);
+      setListe((l) => l.filter((x) => x.username !== name));
+    } catch {
+      /* bleibt stehen, nächster Versuch beim nächsten Öffnen */
+    }
+  }
+
+  return (
+    <div className="glas p-5">
+      <div className="rubrik">{t('spieler.blockliste')}</div>
+      <div className="flex flex-col gap-2 mt-2.5">
+        {liste.map((b) => (
+          <div key={b.username} className="flex items-center gap-3">
+            <Avatar id={b.avatar_id} name={b.username} groesse={32} style={{ background: 'var(--spur)' }} />
+            <span className="flex-1 truncate text-[15px]">{b.username}</span>
+            <button onClick={() => entblocken(b.username)} className="knopf-rand px-3 py-1.5 text-xs">
+              {t('spieler.entblocken')}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -571,6 +610,7 @@ export default function ProfilePage() {
       <PushSchalter />
       <WerbungEntfernen userId={profile?.id ?? null} />
       <WerbeEinwilligung />
+      <Blockliste />
 
       <button onClick={abmelden} className="knopf-rand py-3.5 mt-2 text-[15px]">
         {t('profile.logout')}

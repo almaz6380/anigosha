@@ -116,7 +116,7 @@ Wer das Plugin aktualisiert: nachsehen, ob die Referenz früher gesetzt wird.
 ⚠ **Mindestalter 16 vs. Store-Konsolen:** Play-Zielgruppe und Apple-Altersfreigabe
 von Hand prüfen, damit sie nicht jünger werben als die App zulässt.
 
-**Noch offen — Melden/Blockieren von Spielernamen und Freundesduellen.** Apple
+**~~Noch offen~~ erledigt am 09.10. (Paket 4, Migration 0069) — Melden/Blockieren von Spielernamen und Freundesduellen.** Apple
 verlangt bei nutzergenerierten Inhalten (Richtlinie 1.2) eine Möglichkeit,
 Inhalte zu melden und Nutzer zu blockieren; sichtbar sind hier Spielernamen
 (Bestenliste, Duelle) und Freundes-Herausforderungen. Das braucht eine
@@ -195,6 +195,25 @@ Test: `tools/test-missionen.mjs` 18/18. Prüfstand: Stub `missionen.ts`; ⚠ inn
 `src/lib` heißt der Import `./supabase` — dafür braucht der Prüfstand einen eigenen Alias.
 `test-push-versand` schlug einmal fehl und lief beim zweiten Mal grün (Zeitplan räumt
 parallel auf, bekannt).
+
+## Spieler melden + blockieren (09.10.2026, Paket 4 — Apple 1.2 erledigt)
+
+**Migration 0069 eingespielt.** Die vier geänderten Funktionen (`start_duel`,
+`challenge_friend`, `global_leaderboard`, `daily_leaderboard`) sind die **Live-Fassungen
+aus `pg_get_functiondef`**, nur um den Filter `ist_blockiert()` ergänzt — nicht aus alten
+Migrationsdateien abgeschrieben (Lehre aus 0021).
+
+| Was | Wo |
+|---|---|
+| `report_player(name, grund)` (name/cheating/other, eine offene je Paar, 20/Tag), `block_player`, `unblock_player`, `list_blocked`; Tabellen für Clients komplett gesperrt | `0069_melden_blockieren.sql` |
+| Blockieren wirkt **in beide Richtungen**: kein Einstieg in offene Partien, Herausforderung antwortet wie „nicht gefunden", Bestenlisten blenden aus (Rang bleibt der echte), laufende Freundschaftsduelle verfallen | ebenda |
+| Schublade „Melden/Blockieren": Tippen auf Spieler in der Bestenliste, ⋮ im Duell; Blockliste im Profil | `SpielerMenue.tsx`, `src/lib/spieler.ts` |
+| Datenschutz DE+EN: Meldungen und Blockliste | `legalContent.ts` |
+
+⚠ **Die App verspricht: „Wir prüfen die Meldung innerhalb von 24 Stunden."** Apple erwartet
+das bei 1.2. Offene Meldungen zeigt `node tools/statistik.mjs` unter „GEMELDETE SPIELER";
+erledigen = `update player_reports set erledigt_at = now() where …` (bei anstößigem Namen
+den Namen per SQL ändern). Test: `tools/test-blockieren.mjs` 18/18.
 
 ## Kern-Features (V1)
 

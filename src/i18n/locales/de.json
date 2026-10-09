@@ -265,5 +265,20 @@
     "waehlen": "Avatar wählen",
     "ab": "Ab Level {{level}}",
     "lvl": "Lv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Spieler-Optionen",
+    "melden": "Spieler melden",
+    "gemeldet": "Danke! Wir prüfen die Meldung innerhalb von 24 Stunden.",
+    "blockieren": "Blockieren",
+    "blockFrage": "{{name}} blockieren? Ihr trefft euch dann nicht mehr in Duellen und seht euch nicht in den Bestenlisten.",
+    "blockliste": "Blockierte Spieler",
+    "entblocken": "Entblocken",
+    "tippHinweis": "Tippe auf einen Spieler, um ihn zu melden oder zu blockieren.",
+    "grund": {
+      "name": "Anstößiger Name",
+      "cheating": "Schummeln",
+      "other": "Sonstiges"
+    }
   }
 }

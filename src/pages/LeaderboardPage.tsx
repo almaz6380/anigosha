@@ -5,6 +5,7 @@ import { Bot, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AppShell, { PageHeader } from '../components/AppShell';
 import { Avatar } from '../components/Figur';
+import SpielerMenue from '../components/SpielerMenue';
 import { globalLeaderboard, type GlobalRow } from '../lib/duel';
 
 /** Gold, Silber, Bronze — die einzigen drei festen Farben der App, weil ein
@@ -15,10 +16,14 @@ const PODEST = [
   { rand: '#d97742', flaeche: 'rgba(217,119,66,0.3)', hoehe: 46, avatar: 50, zahl: 16 },
 ];
 
-function Stufe({ row, platz, ich }: { row: GlobalRow; platz: 0 | 1 | 2; ich: boolean }) {
+function Stufe({ row, platz, ich, onTipp }: { row: GlobalRow; platz: 0 | 1 | 2; ich: boolean; onTipp: () => void }) {
   const p = PODEST[platz];
   return (
-    <div className="flex flex-col items-center gap-2" style={{ width: platz === 0 ? 108 : 96 }}>
+    <div
+      className="flex flex-col items-center gap-2"
+      style={{ width: platz === 0 ? 108 : 96 }}
+      onClick={ich || row.is_bot ? undefined : onTipp}
+    >
       {platz === 0 && <Trophy className="w-5 h-5" style={{ color: p.rand }} strokeWidth={2} />}
       <Avatar
         id={row.avatar_id}
@@ -56,6 +61,8 @@ export default function LeaderboardPage() {
   const { profile } = useAuth();
   const [rows, setRows] = useState<GlobalRow[]>([]);
   const [error, setError] = useState<string | null>(null);
+  /** Angetippter Spieler → Melden/Blockieren (Apple 1.2). */
+  const [menue, setMenue] = useState<GlobalRow | null>(null);
 
   useEffect(() => {
     globalLeaderboard()
@@ -77,9 +84,9 @@ export default function LeaderboardPage() {
           Grund, warum überhaupt jemand auf eine Bestenliste schaut. */}
       {podest.length === 3 && (
         <div className="flex items-end justify-center gap-3 mt-7">
-          <Stufe row={podest[1]} platz={1} ich={istIch(podest[1])} />
-          <Stufe row={podest[0]} platz={0} ich={istIch(podest[0])} />
-          <Stufe row={podest[2]} platz={2} ich={istIch(podest[2])} />
+          <Stufe row={podest[1]} platz={1} ich={istIch(podest[1])} onTipp={() => setMenue(podest[1])} />
+          <Stufe row={podest[0]} platz={0} ich={istIch(podest[0])} onTipp={() => setMenue(podest[0])} />
+          <Stufe row={podest[2]} platz={2} ich={istIch(podest[2])} onTipp={() => setMenue(podest[2])} />
         </div>
       )}
 
@@ -89,7 +96,9 @@ export default function LeaderboardPage() {
           return (
             <div
               key={r.rank}
-              className="relative flex items-center gap-3 px-4 py-3 text-[15px]"
+              role={ich || r.is_bot ? undefined : 'button'}
+              onClick={ich || r.is_bot ? undefined : () => setMenue(r)}
+              className={`relative flex items-center gap-3 px-4 py-3 text-[15px] ${ich || r.is_bot ? '' : 'cursor-pointer'}`}
               style={
                 ich
                   ? {
@@ -118,6 +127,15 @@ export default function LeaderboardPage() {
       </div>
 
       <p className="mt-4 text-[11px] fein text-center">{t('duel.botHint')}</p>
+      <p className="mt-1 text-[11px] fein text-center">{t('spieler.tippHinweis')}</p>
+      {menue && (
+        <SpielerMenue
+          username={menue.username}
+          avatarId={menue.avatar_id}
+          onClose={() => setMenue(null)}
+          onBlockiert={() => setRows((rs) => rs.filter((x) => x.username !== menue.username))}
+        />
+      )}
     </AppShell>
   );
 }
