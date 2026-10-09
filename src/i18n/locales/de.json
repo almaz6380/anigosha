@@ -123,7 +123,20 @@
     "chooseSeries": "Wähle eine Serie",
     "fiftyFiftyVideo": "Noch ein 50:50 · Video",
     "videoAborted": "Video abgebrochen — ohne ganzes Video gibt es keine Belohnung.",
-    "videoUnavailable": "Gerade ist kein Video verfügbar. Versuch es später noch einmal."
+    "videoUnavailable": "Gerade ist kein Video verfügbar. Versuch es später noch einmal.",
+    "whoamiBonus": "Jetzt richtig: +{{xp}} XP Bonus",
+    "lebenRest_one": "Noch {{count}} Leben",
+    "lebenRest_other": "Noch {{count}} Leben",
+    "modusStand": "{{richtig}} von {{gesamt}} richtig",
+    "modus": {
+      "titel": "Modus",
+      "normal": "Klassisch",
+      "blitz": "Blitz",
+      "survival": "Survival",
+      "normalHint": "10 Fragen in Ruhe, mit Joker.",
+      "blitzHint": "60 Sekunden — so viele richtige Antworten wie möglich.",
+      "survivalHint": "Spiel, bis du dreimal danebenliegst."
+    }
   },
   "daily": {
     "title": "Tägliche Challenge",

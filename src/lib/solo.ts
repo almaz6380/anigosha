@@ -33,7 +33,17 @@ export interface AnswerResult {
   correct_index: number;
   explanation: string | null;
   counted: boolean;
+  /** Blitz: Die 60 Sekunden waren um, die Antwort zählte nicht. */
+  time_up?: boolean;
+  /** Survival: verbleibende Leben nach dieser Antwort. */
+  lives_left?: number | null;
+  out_of_lives?: boolean;
 }
+
+/** Spielmodi (0068): normal = 10 Fragen, blitz = 60 s, survival = 3 Leben. */
+export type SoloModus = 'normal' | 'blitz' | 'survival';
+export const BLITZ_SEKUNDEN = 60;
+export const SURVIVAL_LEBEN = 3;
 
 export interface SoloResult {
   correct: number;
@@ -59,13 +69,15 @@ export async function startSolo(
   slug: string,
   difficulty: number,
   lang: string,
-  limit = 10
+  limit = 10,
+  mode: SoloModus = 'normal'
 ): Promise<{ session_id: string; questions: SoloQuestion[] }> {
   const { data, error } = await supabase.rpc('start_solo_session', {
     p_category: slug,
     p_difficulty: difficulty,
     p_lang: lang,
     p_limit: limit,
+    p_mode: mode,
   });
   if (error) throw error;
   return data as { session_id: string; questions: SoloQuestion[] };
@@ -164,4 +176,15 @@ export async function reportQuestion(
     .insert({ question_id: questionId, user_id: userId, reason });
   // Doppelmeldung derselben Frage ist kein Fehler, den der Nutzer sehen muss
   if (error && error.code !== '23505') throw error;
+}
+
+/**
+ * „Wer bin ich?": nächsten Hinweis holen. Der Server zählt mit — wer ohne
+ * weiteren Hinweis richtig rät, bekommt mehr XP. Liefert alle bisher
+ * freigegebenen Hinweise.
+ */
+export async function revealHint(sessionId: string, questionId: string): Promise<string[]> {
+  const { data, error } = await supabase.rpc('reveal_hint', { p_session: sessionId, p_question: questionId });
+  if (error) throw error;
+  return (data ?? []) as string[];
 }

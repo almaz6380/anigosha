@@ -123,7 +123,20 @@
     "chooseSeries": "Escolha uma série",
     "fiftyFiftyVideo": "Mais um 50:50 · vídeo",
     "videoAborted": "Vídeo fechado antes do fim — a recompensa exige o vídeo inteiro.",
-    "videoUnavailable": "Nenhum vídeo disponível agora. Tente de novo mais tarde."
+    "videoUnavailable": "Nenhum vídeo disponível agora. Tente de novo mais tarde.",
+    "whoamiBonus": "Acertando agora: +{{xp}} XP de bônus",
+    "lebenRest_one": "Resta {{count}} vida",
+    "lebenRest_other": "Restam {{count}} vidas",
+    "modusStand": "{{richtig}} de {{gesamt}} certas",
+    "modus": {
+      "titel": "Modo",
+      "normal": "Clássico",
+      "blitz": "Relâmpago",
+      "survival": "Sobrevivência",
+      "normalHint": "10 perguntas com calma, com coringa.",
+      "blitzHint": "60 segundos: o máximo de respostas certas.",
+      "survivalHint": "Jogue até errar três vezes."
+    }
   },
   "daily": {
     "title": "Desafio diário",

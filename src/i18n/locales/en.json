@@ -123,7 +123,20 @@
     "chooseSeries": "Pick a series",
     "fiftyFiftyVideo": "One more 50:50 · video",
     "videoAborted": "Video closed early — the reward needs the full video.",
-    "videoUnavailable": "No video available right now. Please try again later."
+    "videoUnavailable": "No video available right now. Please try again later.",
+    "whoamiBonus": "Right now: +{{xp}} XP bonus",
+    "lebenRest_one": "{{count}} life left",
+    "lebenRest_other": "{{count}} lives left",
+    "modusStand": "{{richtig}} of {{gesamt}} correct",
+    "modus": {
+      "titel": "Mode",
+      "normal": "Classic",
+      "blitz": "Blitz",
+      "survival": "Survival",
+      "normalHint": "10 questions at your own pace, with jokers.",
+      "blitzHint": "60 seconds — as many correct answers as you can.",
+      "survivalHint": "Keep playing until you miss three times."
+    }
   },
   "daily": {
     "title": "Daily Challenge",
