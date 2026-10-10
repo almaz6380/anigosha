@@ -233,6 +233,24 @@ mit Bonusanzeige (`SoloPage.tsx`, `src/lib/solo.ts`). Farben der neuen Serien in
 Test: `tools/test-modi.mjs`. ⚠ Survival endet auch, wenn die Stufe einer Serie keine Fragen mehr hat
 (22–23 je Stufe).
 
+## Store-Release 1.1.5 (10.10.2026) — alles aus den Paketen 1–4
+
+⚠ **„1.1.3/1.1.4 nichts eingereicht“ (Abschnitte weiter oben) war überholt:** Laut ASC-Status
+vom 10.10. stand **1.1.4 / Build 22 seit dem 04.10. auf WAITING_FOR_REVIEW** (Einreichung
+`25dce460`). Josefs Entscheidung: zurückziehen und gleich 1.1.5 mit allem einreichen.
+
+Ablauf (alles `laeufer: mac`): PR #18 (Versionen + whatsNew) → `aufraeumen` (1.1.4 → CANCELING)
+→ `iOS Release` Build 23 hochgeladen → `Android Release` vc12 `internal` → `versionsnummer 1.1.5`
+→ `build 23` → `texte-schreiben` (7 Sprachen) → `einreichen` (Einreichung `68df0db0`, WAITING_FOR_REVIEW) → `Play promote` vc12 → `production` (⚠ `dry_run` steht dort standardmäßig auf true — erster Lauf war deshalb nur ein Trockenlauf).
+
+⚠ **Der Mac-Runner nahm mehrfach stundenlang nichts an**, obwohl der Mac lief (Status „queued“,
+kein Läufer). Einmal scheiterte ein Lauf nach dem Einschlafen mit *„could not read Username for
+https://github.com“* beim Checkout. Abhilfe: Mac am Netzteil, Deckel offen, nicht schlafen lassen;
+unter Settings → Actions → Runners muss er auf **Idle** stehen, sonst `cd ~/actions-runner && ./svc.sh start`.
+
+**Noch von Hand:** App-Datenschutz (ASC) und Datensicherheit (Play) um Melden/Blockieren prüfen;
+Store-Screenshots zeigen Missionen/Modi noch nicht.
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker
