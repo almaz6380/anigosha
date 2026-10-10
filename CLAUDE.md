@@ -248,8 +248,14 @@ kein Läufer). Einmal scheiterte ein Lauf nach dem Einschlafen mit *„could not
 https://github.com“* beim Checkout. Abhilfe: Mac am Netzteil, Deckel offen, nicht schlafen lassen;
 unter Settings → Actions → Runners muss er auf **Idle** stehen, sonst `cd ~/actions-runner && ./svc.sh start`.
 
-**Noch von Hand:** App-Datenschutz (ASC) und Datensicherheit (Play) um Melden/Blockieren prüfen;
-Store-Screenshots zeigen Missionen/Modi noch nicht.
+**Neue Store-Screenshots (10.10., PR #20):** 7 Motive (Start, Quiz, Modi, Wer bin ich?,
+Bestenliste, Profil, Duell) × DE/EN/ES/FR/PT, für iPhone, iPad und Play. Play: alle sieben
+Store-Sprachen hochgeladen. ⚠ **`Play-Eintrag aktualisieren` nie parallel starten** — gleichzeitige
+Läufe zerschießen sich gegenseitig die Edit-Transaktion (*„This Edit has been deleted“*), also eine
+Sprache nach der anderen. Apple: dafür 1.1.5 per `aufraeumen` zurückgezogen → `screenshots` →
+`einreichen` neu (Einreichung `d5623964`, WAITING_FOR_REVIEW, 10.10. 16:13 UTC).
+
+**Noch von Hand:** App-Datenschutz (ASC) und Datensicherheit (Play) um Melden/Blockieren prüfen.
 
 ## Kern-Features (V1)
 
