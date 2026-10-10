@@ -19,22 +19,38 @@ const FORMATE = [
   { name: 'play', width: 360,  height: 720,  dsf: 3 },  // 1080x2160
   { name: 'ipad', width: 1024, height: 1366, dsf: 2 },  // 2048x2732, iPad 12,9"
 ];
+// Reihenfolge = Reihenfolge im Store. Die ersten zwei sieht man ohne Wischen,
+// deshalb vorn: Startseite (Missionen, Challenge) und eine Frage mit Figur
+// und „Wusstest du?". `tun` klickt sich bis zum gewünschten Zustand.
+const kategorie = (p) => p.locator('.grid button').first().click();
 const SCREENS = [
   { file: '1-home',        path: '/' },
-  { file: '2-solo',        path: '/solo' },
-  { file: '3-duell',       path: '/duel' },
-  { file: '4-bestenliste', path: '/leaderboard' },
-  { file: '5-profil',      path: '/profile' },
+  { file: '2-quiz',        path: '/daily',
+    tun: async (p) => { await p.getByText('Conan Edogawa').click(); } },
+  { file: '3-modi',        path: '/solo',
+    tun: async (p) => { await kategorie(p); await p.locator('[role=radio]').nth(1).click(); } },
+  { file: '4-wer-bin-ich', path: '/solo?wer=1',
+    tun: async (p) => {
+      await kategorie(p);
+      await p.locator('button:has(.lucide-chevron-right)').first().click();
+      await p.waitForTimeout(500);
+      // Der Prüfstand gibt beide Hinweise auf einmal heraus, danach ist der Knopf weg.
+      await p.locator('button:has(.lucide-lightbulb)').first().click();
+    } },
+  { file: '5-bestenliste', path: '/leaderboard' },
+  { file: '6-profil',      path: '/profile' },
+  { file: '7-duell',       path: '/duel' },
 ];
 // Store-Bilder sind je Sprache eigene Bilder. Wer nur die deutschen hochlaedt,
 // zeigt englischen Besuchern deutsche Oberflaeche.
-const SPRACHEN = (process.env.SPRACHEN ?? 'de,en').split(',');
+const SPRACHEN = (process.env.SPRACHEN ?? 'de,en,es,fr,pt').split(',');
 const STUNDE = Number(process.env.STUNDE ?? 13);
 const URL = process.env.PRUEFSTAND ?? 'http://localhost:4501';
 const CHROM = process.env.CHROMIUM_PFAD ?? '/opt/pw-browsers/chromium';
 
 const browser = await chromium.launch({ executablePath: CHROM });
-for (const f of FORMATE) {
+const NUR = process.env.FORMAT;
+for (const f of FORMATE.filter((x) => !NUR || x.name === NUR)) {
   for (const lang of SPRACHEN) {
     const dir = `store-assets/${f.name}/${lang}`;
     mkdirSync(dir, { recursive: true });
@@ -54,6 +70,7 @@ for (const f of FORMATE) {
     for (const s of SCREENS) {
       await page.goto(URL + s.path, { waitUntil: 'networkidle' });
       await page.waitForTimeout(900);
+      if (s.tun) { await s.tun(page); await page.waitForTimeout(600); }
       await page.screenshot({ path: `${dir}/${s.file}.png` });
     }
     await ctx.close();

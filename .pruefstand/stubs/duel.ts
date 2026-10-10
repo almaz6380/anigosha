@@ -10,6 +10,6 @@ export const challengeFriend = async () => ({ match_id: 'm1', opponent: geg('Fre
 export const duelState = async () => ({ match_id: 'm1', status: 'active', round_no: 3, my_turn: true, my_score: 5, opp_score: 4, winner_id: null, opponent: geg('KiraFan88') });
 export const getDuelRound = async () => [] as never[];
 export const answerDuel = async () => ({ correct: true, correct_index: 3, explanation: null, counted: true });
-const N = ['YukiBlade','RenjiX','NozomiQ','HikariNeko','Zoro92','TanukiRen','Josef','SakuraDrop','GonFreaks','MioFuji'];
+const N = ['YukiBlade','RenjiX','NozomiQ','HikariNeko','Zoro92','TanukiRen','KitsuneKai','SakuraDrop','GonFreaks','MioFuji'];
 export const globalLeaderboard = async () =>
-  N.map((username, i) => ({ username, avatar_id: ['maedchen-yukata','junge-sport','maedchen-winter',null,null,'junge-schule',null,'maedchen-frech'][i] ?? null, is_bot: i === 4 || i === 8, elo: 1487 - i * 32, xp: 4800 - i * 240, rank: i + 1 }));
+  N.map((username, i) => ({ username, avatar_id: ['maedchen-yukata','junge-sport','maedchen-winter',null,null,'junge-schule','junge-winter','maedchen-frech'][i] ?? null, is_bot: i === 4 || i === 8, elo: 1487 - i * 32, xp: 4800 - i * 240, rank: i + 1 }));
