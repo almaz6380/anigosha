@@ -1283,6 +1283,13 @@ Passwort: RESEND_API_KEY (derselbe wie bei WELLbooked)
   wandert NICHT mit. Genau das ist am 28.07. passiert.
 - **Bei jeder neuen Datenverarbeitung** (Push, Käufe, Analyse) die Datenschutzerklärung
   ergänzen — sonst stimmt sie nicht mehr.
+- ⚠ **Die Store-URLs zeigen auf `almaz6380.github.io/anigosha/datenschutz.html`** (bzw.
+  `privacy.html`), nicht auf die App. Diese statischen Seiten erzeugt
+  `werkzeug/erzeugen.mjs` im öffentlichen Repo `almaz6380/almaz6380.github.io` aus
+  `legalContent.ts` — **nach jeder Änderung an `legalContent.ts` dort neu erzeugen und
+  pushen**. Vergessen am 09.10.: Die Stores zeigten bis 11.10. den Stand vom 04.10. (ohne
+  Gastkonto und Melden/Blockieren). Die App-Route `/legal/datenschutz` taugt nicht als
+  Store-URL: Sie ist eine SPA, ohne JavaScript steht dort kein Text.
 
 ## Auf einem zweiten Rechner einrichten
 
