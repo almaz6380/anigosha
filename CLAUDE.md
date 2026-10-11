@@ -254,7 +254,7 @@ Läufe zerschießen sich gegenseitig die Edit-Transaktion (*„This Edit has bee
 Sprache nach der anderen. Apple: dafür 1.1.5 per `aufraeumen` zurückgezogen → `screenshots` →
 `einreichen` neu (Einreichung `d5623964`, WAITING_FOR_REVIEW, 10.10. 16:13 UTC).
 
-**Noch von Hand:** App-Datenschutz (ASC) und Datensicherheit (Play) um Melden/Blockieren prüfen.
+✅ **App-Datenschutz (ASC) und Datensicherheit (Play) am 11.10. geprüft** — beide deckten Melden/Blockieren schon ab (ASC: „Sonstige Benutzerinhalte“). Die verlinkte Datenschutzerklärung auf github.io am selben Tag auf Stand 09.10. gebracht.
 
 ## Kern-Features (V1)
 
