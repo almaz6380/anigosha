@@ -48,6 +48,12 @@ question_translations group by lang`. Weitere Sprachen sind reine Übersetzungsp
 **Reihenfolge zwingend, falls eine dazukommt:** erst die Sprach-Migration (Constraints +
 RPCs + `seed_uebersetzung`), dann ihre Seed-Migrationen, je mit Trockenlauf. Eine
 Seed-Migration vor ihrer Sprach-Migration bricht am Check-Constraint ab.
+**Startsprache = Gerätesprache (seit 11.10.2026, `geraeteSprache()` in `src/i18n/index.ts`):**
+unterstützte Sprache des Handys/Browsers, sonst Englisch; eine Wahl im Profil
+(`localStorage.language`) gewinnt. Vorher startete die App für JEDEN auf Deutsch. Ein Profil
+ohne Spielernamen gilt als frisch — sein `language = 'de'` ist nur der Spalten-Vorgabewert und
+wird von der Gerätesprache überschrieben (`spracheAbgleichen` in `AuthContext.tsx`).
+⚠ Store-Apps bekommen das erst mit 1.1.6 (1.1.5 war schon eingereicht).
 **Sprachweiche zentral in `appSprache()`** (`src/i18n/index.ts`) — sie ist die einzige
 Stelle, die Regionalcodes wie `pt-BR` auf unsere Codes abbildet; früher stand die
 de/en-Weiche viermal verstreut im Code, wodurch fremdsprachige Nutzer deutsche Fragen
