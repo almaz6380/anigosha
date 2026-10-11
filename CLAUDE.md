@@ -262,6 +262,15 @@ Sprache nach der anderen. Apple: dafür 1.1.5 per `aufraeumen` zurückgezogen �
 
 ✅ **App-Datenschutz (ASC) und Datensicherheit (Play) am 11.10. geprüft** — beide deckten Melden/Blockieren schon ab (ASC: „Sonstige Benutzerinhalte“). Die verlinkte Datenschutzerklärung auf github.io am selben Tag auf Stand 09.10. gebracht.
 
+## Store-Release 1.1.6 (11.10.2026) — ersetzt 1.1.5
+
+1.1.5 (Einreichung `d5623964`) per `aufraeumen` zurückgezogen, damit die Startsprache
+(Gerätesprache statt Deutsch) gleich mitkommt. Ablauf, alles `laeufer: mac`: PR #26
+(Versionen + whatsNew, 1.1.5-Inhalt plus Sprachzeile) → `aufraeumen` → `iOS Release`
+Build 24 → `Android Release` vc13 direkt `production` (an alle) → `versionsnummer 1.1.6`
+→ `build 24` → `texte-schreiben` → `einreichen`: Einreichung `d18fa5f9`, WAITING_FOR_REVIEW.
+Damit war 1.1.5 auf iOS nie öffentlich.
+
 ## Kern-Features (V1)
 
 - Solo-Quiz: ~10 Kategorien × 3 Schwierigkeiten, XP/Level, Streak, 50:50-Joker
