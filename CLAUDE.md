@@ -53,7 +53,7 @@ unterstützte Sprache des Handys/Browsers, sonst Englisch; eine Wahl im Profil
 (`localStorage.language`) gewinnt. Vorher startete die App für JEDEN auf Deutsch. Ein Profil
 ohne Spielernamen gilt als frisch — sein `language = 'de'` ist nur der Spalten-Vorgabewert und
 wird von der Gerätesprache überschrieben (`spracheAbgleichen` in `AuthContext.tsx`).
-⚠ Store-Apps bekommen das erst mit 1.1.6 (1.1.5 war schon eingereicht).
+Store-Apps: mit 1.1.6 (iOS Build 24 eingereicht, Android vc13 in Produktion, 11.10.2026).
 **Sprachweiche zentral in `appSprache()`** (`src/i18n/index.ts`) — sie ist die einzige
 Stelle, die Regionalcodes wie `pt-BR` auf unsere Codes abbildet; früher stand die
 de/en-Weiche viermal verstreut im Code, wodurch fremdsprachige Nutzer deutsche Fragen
