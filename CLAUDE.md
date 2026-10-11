@@ -174,8 +174,7 @@ und führte damit auf die falsche Spur; jetzt stehen Gäste und Unbestätigte ge
 Pruefstand nachgezogen (war seit 1.1.4 kaputt: `ads`-Stub ohne `belohnungPerVideo`), dazu
 `/auth`, `/name`, `/profile?gast=1` und ein `supabase`-Stub.
 
-**Store-Apps brauchen dafür einen neuen Build.** Noch offen aus dem Ausbauplan: Paket 2
-(Wochenmissionen + Avatare), 3 (Fragetypen/Modi/Kategorien), 4 (Melden/Blockieren).
+Alle vier Pakete des Ausbauplans sind fertig (Abschnitte unten) und stecken in Store-Release 1.1.5.
 
 ## Wochenmissionen + Avatar-Sammlung (09.10.2026, Paket 2)
 
