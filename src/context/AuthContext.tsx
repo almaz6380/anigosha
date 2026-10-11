@@ -81,8 +81,11 @@ function spracheSchreiben(userId: string, lang: AppSprache) {
  * Hat jemand auf diesem Gerät ausdrücklich eine Sprache gewählt
  * (`localStorage.language`), gewinnt sie und wandert ins Profil. Sonst ist das
  * Gerät frisch — dann übernimmt die App die Sprache des Profils, statt ein
- * englisches Konto beim ersten Login auf dem neuen Handy auf Deutsch
- * umzuschreiben (die Oberfläche startet ohne Wahl auf Deutsch).
+ * englisches Konto beim ersten Login auf dem neuen Handy umzuschreiben.
+ *
+ * Ausnahme: ein Profil ohne Spielernamen ist gerade erst entstanden. Seine
+ * Sprache ist nur der Spalten-Vorgabewert 'de', keine Wahl — dort gewinnt die
+ * Gerätesprache, mit der die Oberfläche gestartet ist.
  */
 function spracheAbgleichen(p: Profile) {
   let gewaehlt: string | null = null;
@@ -91,7 +94,7 @@ function spracheAbgleichen(p: Profile) {
   } catch {
     /* Speicher gesperrt: wie „nichts gewählt" behandeln */
   }
-  if (!gewaehlt && SPRACHEN.includes(p.language)) {
+  if (!gewaehlt && p.username && SPRACHEN.includes(p.language)) {
     if (i18n.language !== p.language) void i18n.changeLanguage(p.language);
     return;
   }

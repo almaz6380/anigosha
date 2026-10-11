@@ -7,7 +7,32 @@ import fr from './locales/fr.json';
 import pt from './locales/pt.json';
 
 // Weitere Sprachen: neue JSON-Datei in locales/ + Eintrag in resources — sonst nichts.
-const savedLanguage = localStorage.getItem('language') || 'de';
+const UNTERSTUETZT = ['de', 'en', 'es', 'fr', 'pt'];
+
+/**
+ * Sprache des Geräts, auf unsere Codes gebracht (`pt-BR` → `pt`, `de-AT` → `de`).
+ * Was wir nicht haben, bekommt Englisch — bis 11.10.2026 startete die App für
+ * jeden auf Deutsch, auch für Nutzer, die sie im Store auf Spanisch fanden.
+ */
+export function geraeteSprache(): string {
+  const liste = typeof navigator === 'undefined' ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
+  for (const l of liste) {
+    const code = (l ?? '').toLowerCase().slice(0, 2);
+    if (UNTERSTUETZT.includes(code)) return code;
+  }
+  return 'en';
+}
+
+function gespeicherteSprache(): string | null {
+  try {
+    return localStorage.getItem('language');
+  } catch {
+    return null;
+  }
+}
+
+// Ausdrückliche Wahl im Profil gewinnt, sonst die Gerätesprache.
+const savedLanguage = gespeicherteSprache() || geraeteSprache();
 
 i18n.use(initReactI18next).init({
   resources: {
