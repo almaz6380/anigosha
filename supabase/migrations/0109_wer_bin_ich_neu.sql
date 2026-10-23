@@ -851,3 +851,78 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Seit meiner Kindheit liebe
   'Quem sou eu? Desde criança amo uma garota que escolheu outro. (Tokyo Revengers)',
   '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'Por muito tempo, Takemichi achou que ele também viajava no tempo, como ele.',
   '["Meu cúmplice mais próximo tem “Pecado” e “Castigo” nas mãos.", "Uso óculos e quero controlar a Toman por dentro."]');
+
+-- one_punch_man, Stufe 1
+select public.seed_raetsel('one_punch_man', 1, 2, 'who_am_i',
+  'Wer bin ich? Bei der Heldenprüfung kam ich wegen des schriftlichen Teils nur auf 71 Punkte. (One Punch Man)',
+  '["Genos", "King", "Saitama", "Mumen Rider"]', 'Er wurde nach eigener Aussage nur aus Spaß an der Sache zum Helden.',
+  '["Durch mein hartes Training habe ich alle Haare verloren.", "Ich besiege jeden Gegner mit einem einzigen Schlag."]',
+  'Who am I? In the hero exam, I only scored 71 points because of the written part. (One Punch Man)',
+  '["Genos", "King", "Saitama", "Mumen Rider"]', 'By his own account, he only became a hero for fun.',
+  '["My hard training made me lose all my hair.", "I defeat every opponent with a single punch."]');
+
+-- one_punch_man, Stufe 2
+select public.seed_raetsel('one_punch_man', 2, 1, 'who_am_i',
+  'Wer bin ich? Mein Meister verlangte, dass ich meine Lebensgeschichte in höchstens 20 Worten erzähle. (One Punch Man)',
+  '["King", "Genos", "Garou", "Drive Knight"]', 'Ein wahnsinniger Cyborg hatte einst seine Familie getötet.',
+  '["Dr. Kuseno hat meinen Körper gebaut und repariert ihn nach jedem Kampf.", "Ich bin ein blonder Cyborg und Saitamas Schüler."]',
+  'Who am I? My master demanded that I tell my life story in 20 words or less. (One Punch Man)',
+  '["King", "Genos", "Garou", "Drive Knight"]', 'A mad cyborg once killed his family.',
+  '["Dr. Kuseno built my body and repairs it after every fight.", "I am a blond cyborg and Saitama’s disciple."]');
+
+-- one_punch_man, Stufe 3
+select public.seed_raetsel('one_punch_man', 3, 3, 'who_am_i',
+  'Wer bin ich? Mein lautes Herzklopfen halten alle für das Geräusch einer gewaltigen Kampfkraft. (One Punch Man)',
+  '["Bang", "Zombieman", "Blast", "King"]', 'In Wahrheit hat er keinerlei Kräfte und liebt Videospiele.',
+  '["Alle meine Siege hat in Wahrheit ein kahlköpfiger Freund errungen.", "Ich bin die Nummer 7 der S-Klasse und gelte als stärkster Mann der Welt."]',
+  'Who am I? Everyone mistakes my pounding heartbeat for the sound of immense fighting power. (One Punch Man)',
+  '["Bang", "Zombieman", "Blast", "King"]', 'In truth, he has no powers at all and loves video games.',
+  '["All my victories were actually won by a bald friend.", "I am number 7 in S-Class and considered the strongest man in the world."]');
+
+-- ES
+select public.seed_uebersetzung_raetsel('Wer bin ich? Bei der Heldenprüfung kam ich wegen des schriftlichen Teils nur auf 71 Punkte. (One Punch Man)', 'es',
+  '¿Quién soy? En el examen de héroe solo saqué 71 puntos por culpa de la parte escrita. (One Punch Man)',
+  '["Genos", "King", "Saitama", "Mumen Rider"]', 'Según él mismo, se hizo héroe solo por diversión.',
+  '["Por mi duro entrenamiento perdí todo el pelo.", "Derroto a cualquier rival de un solo golpe."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Meister verlangte, dass ich meine Lebensgeschichte in höchstens 20 Worten erzähle. (One Punch Man)', 'es',
+  '¿Quién soy? Mi maestro me exigió contar mi historia en 20 palabras como máximo. (One Punch Man)',
+  '["King", "Genos", "Garou", "Drive Knight"]', 'Un cíborg enloquecido mató a su familia.',
+  '["El Dr. Kuseno construyó mi cuerpo y lo repara después de cada combate.", "Soy un cíborg rubio y el discípulo de Saitama."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein lautes Herzklopfen halten alle für das Geräusch einer gewaltigen Kampfkraft. (One Punch Man)', 'es',
+  '¿Quién soy? Todos confunden los fuertes latidos de mi corazón con el sonido de un inmenso poder de combate. (One Punch Man)',
+  '["Bang", "Zombieman", "Blast", "King"]', 'En realidad no tiene ningún poder y le encantan los videojuegos.',
+  '["Todas mis victorias las consiguió en realidad un amigo calvo.", "Soy el número 7 de la clase S y me consideran el hombre más fuerte del mundo."]');
+
+-- FR
+select public.seed_uebersetzung_raetsel('Wer bin ich? Bei der Heldenprüfung kam ich wegen des schriftlichen Teils nur auf 71 Punkte. (One Punch Man)', 'fr',
+  'Qui suis-je ? À l’examen de héros, je n’ai obtenu que 71 points à cause de l’épreuve écrite. (One Punch Man)',
+  '["Genos", "King", "Saitama", "Mumen Rider"]', 'D’après lui, il est devenu héros juste pour le plaisir.',
+  '["Mon entraînement intensif m’a fait perdre tous mes cheveux.", "Je bats chaque adversaire d’un seul coup de poing."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Meister verlangte, dass ich meine Lebensgeschichte in höchstens 20 Worten erzähle. (One Punch Man)', 'fr',
+  'Qui suis-je ? Mon maître a exigé que je raconte mon histoire en 20 mots maximum. (One Punch Man)',
+  '["King", "Genos", "Garou", "Drive Knight"]', 'Un cyborg fou a autrefois tué sa famille.',
+  '["Le Dr Kuseno a construit mon corps et le répare après chaque combat.", "Je suis un cyborg blond et le disciple de Saitama."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein lautes Herzklopfen halten alle für das Geräusch einer gewaltigen Kampfkraft. (One Punch Man)', 'fr',
+  'Qui suis-je ? Tout le monde prend mes battements de cœur bruyants pour le son d’une immense puissance de combat. (One Punch Man)',
+  '["Bang", "Zombieman", "Blast", "King"]', 'En réalité, il n’a aucun pouvoir et adore les jeux vidéo.',
+  '["Toutes mes victoires ont en fait été remportées par un ami chauve.", "Je suis le numéro 7 de la classe S et passe pour l’homme le plus fort du monde."]');
+
+-- PT
+select public.seed_uebersetzung_raetsel('Wer bin ich? Bei der Heldenprüfung kam ich wegen des schriftlichen Teils nur auf 71 Punkte. (One Punch Man)', 'pt',
+  'Quem sou eu? No exame de herói, só fiz 71 pontos por causa da prova escrita. (One Punch Man)',
+  '["Genos", "King", "Saitama", "Mumen Rider"]', 'Segundo ele mesmo, virou herói só por diversão.',
+  '["Meu treino pesado me fez perder todo o cabelo.", "Venço qualquer inimigo com um único soco."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Meister verlangte, dass ich meine Lebensgeschichte in höchstens 20 Worten erzähle. (One Punch Man)', 'pt',
+  'Quem sou eu? Meu mestre exigiu que eu contasse minha história em no máximo 20 palavras. (One Punch Man)',
+  '["King", "Genos", "Garou", "Drive Knight"]', 'Um ciborgue enlouquecido matou a família dele.',
+  '["O Dr. Kuseno construiu meu corpo e o conserta depois de cada luta.", "Sou um ciborgue loiro e discípulo de Saitama."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein lautes Herzklopfen halten alle für das Geräusch einer gewaltigen Kampfkraft. (One Punch Man)', 'pt',
+  'Quem sou eu? Todos confundem as batidas fortes do meu coração com o som de um poder de luta imenso. (One Punch Man)',
+  '["Bang", "Zombieman", "Blast", "King"]', 'Na verdade, ele não tem poder nenhum e adora videogames.',
+  '["Todas as minhas vitórias foram conquistadas, na verdade, por um amigo careca.", "Sou o número 7 da classe S e sou considerado o homem mais forte do mundo."]');
