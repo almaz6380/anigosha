@@ -273,12 +273,12 @@ export default function DuelPage() {
       <button
         key={d.match_id}
         onClick={() => openMatch(d.match_id)}
-        className={`glas relative overflow-hidden text-left flex items-center gap-3.5 ${
-          wach ? 'px-[18px] py-4 pl-[21px]' : 'glas-stumm px-[18px] py-3.5 opacity-60'
+        className={`glas relative overflow-hidden text-start flex items-center gap-3.5 ${
+          wach ? 'px-[18px] py-4 ps-[21px]' : 'glas-stumm px-[18px] py-3.5 opacity-60'
         }`}
         style={wach ? { borderColor: 'rgba(244,114,182,0.45)' } : undefined}
       >
-        {wach && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1 akzent-flaeche" />}
+        {wach && <span aria-hidden className="absolute start-0 top-0 bottom-0 w-1 akzent-flaeche" />}
         <Avatar
           id={d.opponent?.avatar_id}
           name={d.opponent?.username}
@@ -304,7 +304,7 @@ export default function DuelPage() {
             {t('duel.play')}
           </span>
         ) : (
-          <ChevronRight className="w-4 h-4 fein shrink-0" />
+          <ChevronRight className="w-4 h-4 fein shrink-0 rtl:-scale-x-100" />
         )}
       </button>
     );
@@ -404,7 +404,7 @@ export default function DuelPage() {
               <button
                 onClick={() => setSpielerMenue(true)}
                 aria-label={t('spieler.optionen')}
-                className="p-1.5 -mr-1.5"
+                className="p-1.5 -me-1.5"
               >
                 <MoreVertical className="w-5 h-5" />
               </button>
@@ -486,7 +486,7 @@ export default function DuelPage() {
                   disabled={picked !== null}
                   onClick={() => pick(i)}
                   className={[
-                    'rounded-[18px] px-4 py-3.5 text-left flex items-center gap-3 text-base transition-opacity',
+                    'rounded-[18px] px-4 py-3.5 text-start flex items-center gap-3 text-base transition-opacity',
                     voll ? 'font-semibold text-white' : 'glas font-medium',
                     picked !== null && !voll ? 'opacity-50' : '',
                   ].join(' ')}
@@ -510,7 +510,7 @@ export default function DuelPage() {
           {feedback && (
             <div className="mt-5">
               {feedback.explanation && (
-                <div className="notiz pl-5 pr-[18px] py-[17px]">
+                <div className="notiz ps-5 pe-[18px] py-[17px]">
                   <span className="notiz-kante" aria-hidden />
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Lightbulb className="w-[15px] h-[15px]" style={{ color: 'var(--notiz-akzent)' }} />
@@ -531,7 +531,7 @@ export default function DuelPage() {
                   className="flex-1 knopf py-4 flex items-center justify-center gap-2 text-base disabled:opacity-50"
                 >
                   {index + 1 < questions.length ? t('common.continue') : t('duel.endRound')}
-                  <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.4} />
+                  <ArrowRight className="w-[17px] h-[17px] rtl:-scale-x-100" strokeWidth={2.4} />
                 </button>
                 {/* Gleiches Muster wie im Solo: neben der Hauptaktion, untergeordnet */}
                 <button

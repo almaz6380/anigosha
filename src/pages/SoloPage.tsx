@@ -360,9 +360,9 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
                   setError(null);
                   setStep('difficulty');
                 }}
-                className="glas relative overflow-hidden p-3.5 pl-4 flex flex-col gap-2 justify-between text-left"
+                className="glas relative overflow-hidden p-3.5 ps-4 flex flex-col gap-2 justify-between text-start"
               >
-                <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[5px]" style={{ background: f }} />
+                <span aria-hidden className="absolute start-0 top-0 bottom-0 w-[5px]" style={{ background: f }} />
                 <span aria-hidden className="w-[22px] h-[22px] rounded-[7px]" style={{ background: f, opacity: 0.18 }} />
                 <span className="text-sm font-semibold leading-tight tracking-[-0.01em]">
                   {kategorieName(c, appSprache())}
@@ -407,7 +407,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
               key={d}
               disabled={busy}
               onClick={() => begin(d)}
-              className="glas px-5 py-[19px] flex items-center gap-4 text-left disabled:opacity-50"
+              className="glas px-5 py-[19px] flex items-center gap-4 text-start disabled:opacity-50"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2.5">
@@ -425,7 +425,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
                 </div>
                 <div className="text-[13px] mt-0.5 leise">{t(`solo.difficultyHint.${d}`)}</div>
               </div>
-              <ChevronRight className="w-[18px] h-[18px] fein shrink-0" strokeWidth={2.4} />
+              <ChevronRight className="w-[18px] h-[18px] fein shrink-0 rtl:-scale-x-100" strokeWidth={2.4} />
             </button>
           ))}
         </div>
@@ -524,7 +524,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
                   <span className="w-6 fein tabular-nums">{r.rank}</span>
                   <span className="flex-1 truncate">
                     {r.username}
-                    {r.is_bot && <span className="ml-1.5 text-[10px] fein">{t('common.bot')}</span>}
+                    {r.is_bot && <span className="ms-1.5 text-[10px] fein">{t('common.bot')}</span>}
                   </span>
                   <span className="font-semibold tabular-nums">{r.correct}</span>
                 </div>
@@ -574,8 +574,8 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
     <AppShell>
       {/* Kopf nennt jetzt Serie und Stufe — vorher stand dort nur „3 / 10" */}
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate('/')} className="p-1 -ml-1 shrink-0" aria-label={t('common.back')}>
-          <ArrowRight className="w-[22px] h-[22px] rotate-180" strokeWidth={2.2} />
+        <button onClick={() => navigate('/')} className="p-1 -ms-1 shrink-0" aria-label={t('common.back')}>
+          <ArrowRight className="w-[22px] h-[22px] rotate-180 rtl:-scale-x-100" strokeWidth={2.2} />
         </button>
         <span className="glas text-[13px] font-semibold px-3 py-1 rounded-full truncate">
           {daily ? t('daily.title') : `${katName}${stufe ? ` · ${t(`solo.difficulty.${stufe}`)}` : ''}`}
@@ -660,7 +660,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
               disabled={picked !== null}
               onClick={() => pick(i)}
               className={[
-                'rounded-[18px] px-4 py-3.5 text-left flex items-center gap-3 text-base transition-opacity',
+                'rounded-[18px] px-4 py-3.5 text-start flex items-center gap-3 text-base transition-opacity',
                 // Volle Fläche statt 10 % Tönung: der Moment darf laut sein
                 voll ? 'font-semibold text-white' : 'glas font-medium',
                 picked !== null && !voll ? 'opacity-50' : '',
@@ -725,7 +725,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
             </p>
           </div>
           {feedback.explanation && (
-            <div className="notiz pl-5 pr-[18px] py-[17px]">
+            <div className="notiz ps-5 pe-[18px] py-[17px]">
               <span className="notiz-kante" aria-hidden />
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Lightbulb className="w-[15px] h-[15px]" style={{ color: 'var(--notiz-akzent)' }} />
@@ -747,7 +747,7 @@ export default function SoloPage({ daily = false }: { daily?: boolean }) {
               className="flex-1 knopf py-4 flex items-center justify-center gap-2 text-base disabled:opacity-50"
             >
               {rundeVorbei ? t('solo.finish') : t('common.continue')}
-              <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.4} />
+              <ArrowRight className="w-[17px] h-[17px] rtl:-scale-x-100" strokeWidth={2.4} />
             </button>
             {/* „Frage melden" war ein grauer Link ÜBER der Hauptaktion und lag
                 damit auf dem Weg zum Weiter-Knopf. Jetzt daneben, gleich groß

@@ -8,7 +8,7 @@ on:
       mode:
         description: 'Was aktualisiert wird'
         type: choice
-        options: [screenshots, texte, texte-lesen, grafiken]
+        options: [screenshots, texte, texte-lesen, grafiken, standardsprache]
         default: screenshots
       lang:
         description: 'Sprache des Store-Eintrags'
@@ -18,15 +18,24 @@ on:
         description: 'Trockenlauf (nur anzeigen, nichts aendern)'
         type: boolean
         default: true
+      laeufer:
+        description: 'Wo laufen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
+        type: choice
+        default: 'github'
+        options: ['github', 'mac']
 
 jobs:
   upload:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Abhaengigkeiten
-        run: pip3 install --quiet pyjwt cryptography
+        # Eigene venv: auf dem Mac verweigert das System-Python ein pip install.
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet pyjwt cryptography
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
 
       - name: Play-Eintrag aktualisieren
         env:
@@ -42,8 +51,10 @@ jobs:
             echo "Secret PLAY_SERVICE_ACCOUNT_JSON fehlt im Repository." >&2
             exit 1
           fi
-          mkdir -p ~/.config/play-publisher
-          printf '%s' "$PLAY_KEY_JSON" > ~/.config/play-publisher/key.json
+          # Unter RUNNER_TEMP, nicht im Home: auf dem eigenen Mac darf der Lauf
+          # nichts Privates anfassen (wie play-promote).
+          printf '%s' "$PLAY_KEY_JSON" > "$RUNNER_TEMP/play-key.json"
+          export PLAY_KEY="$RUNNER_TEMP/play-key.json"
 
           GEMEINSAM=(--lang "$LANG_INPUT")
           if [ "$DRY_RUN" = "true" ]; then
@@ -54,6 +65,10 @@ jobs:
           fi
 
           case "$MODE" in
+            standardsprache)
+              # lang wird zur Standardsprache (Rueckfall fuer alle Laender).
+              python3 scripts/play-upload.py --standardsprache "${GEMEINSAM[@]}"
+              ;;
             texte-lesen)
               python3 scripts/play-upload.py --listing-lesen --lang "$LANG_INPUT"
               ;;
@@ -89,4 +104,4 @@ jobs:
 
       - name: Schluessel entfernen
         if: always()
-        run: rm -f ~/.config/play-publisher/key.json
+        run: rm -f "$RUNNER_TEMP/play-key.json"

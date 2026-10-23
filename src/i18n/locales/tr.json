@@ -1,0 +1,297 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "Yükleniyor…",
+    "error": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+    "back": "Geri",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "continue": "Devam",
+    "bot": "Bot",
+    "retry": "Tekrar dene",
+    "profileError": "Profilin yüklenemedi. Bağlantını kontrol et ve tekrar dene."
+  },
+  "auth": {
+    "login": "Giriş yap",
+    "register": "Kayıt ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordMin": "En az 8 karakter",
+    "noAccount": "Hesabın yok mu? Kayıt ol",
+    "haveAccount": "Zaten hesabın var mı? Giriş yap",
+    "forgotPassword": "Şifreni mi unuttun?",
+    "resetSent": "Şifre sıfırlama e-postası gönderildi.",
+    "confirmSent": "Onay e-postası gönderildi — gelen kutunu kontrol et.",
+    "errors": {
+      "invalid_credentials": "E-posta veya şifre hatalı.",
+      "email_not_confirmed": "Önce e-posta adresini onayla.",
+      "user_already_exists": "Bu e-posta zaten kayıtlı.",
+      "weak_password": "Şifre çok zayıf (en az 8 karakter).",
+      "generic": "Giriş başarısız. Lütfen tekrar dene."
+    },
+    "resetError": "E-posta gönderilemedi. Lütfen tekrar dene.",
+    "resetNeedsEmail": "Önce e-posta adresini gir.",
+    "legalNote": "Başlayarak <terms>Kullanım Koşulları</terms>nı kabul edersin. Verilerini nasıl işlediğimizi <privacy>Gizlilik Politikası</privacy> açıklar.",
+    "ageConfirm": "En az 16 yaşındayım.",
+    "ageRequired": "Lütfen en az 16 yaşında olduğunu onayla.",
+    "playNow": "Hemen oyna",
+    "guestHint": "E-posta gerekmez. Hesabını daha sonra profilinden güvenceye alabilirsin.",
+    "withEmail": "E-postayla giriş yap veya kayıt ol",
+    "backToGuest": "E-postasız oyna",
+    "guestError": "Olmadı. Lütfen tekrar dene."
+  },
+  "username": {
+    "title": "Oyuncu adını seç",
+    "subtitle": "Düellolarda ve sıralamada diğerleri seni böyle görür.",
+    "placeholder": "örn. OtakuMaster",
+    "rules": "3–16 karakter, sadece harf, rakam ve _",
+    "taken": "Üzgünüz, bu ad zaten alınmış.",
+    "invalid": "3–16 karakter, sadece harf, rakam ve _",
+    "another": "Başka öneri"
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "solo": "Solo",
+    "duel": "Düello",
+    "leaderboard": "Sıralama",
+    "profile": "Profil",
+    "daily": "Günlük Görev"
+  },
+  "home": {
+    "greetingMorning": "Günaydın, {{name}}",
+    "greetingDay": "Merhaba, {{name}}",
+    "greetingEvening": "İyi akşamlar, {{name}}",
+    "greetingNight": "Hâlâ uyanık mısın, {{name}}?",
+    "solo": "Solo Quiz",
+    "soloSub": "Kategoriler, zorluk, XP",
+    "duel": "Düello",
+    "leaderboard": "Sıralama",
+    "profile": "Profil",
+    "daily": "Günlük Görev",
+    "dailyKicker": "Bugün",
+    "dailyGo": "Hemen oyna",
+    "streakAtRisk_one": "Dün kaçırdın! {{count}} günlük serini kurtar.",
+    "streakAtRisk_other": "Dün kaçırdın! {{count}} günlük serini kurtar.",
+    "streakSave": "Kurtar",
+    "streakSaved_one": "Seri kurtarıldı: {{count}} gün. Devam etmesi için bugün bir tur oyna.",
+    "streakSaved_other": "Seri kurtarıldı: {{count}} gün. Devam etmesi için bugün bir tur oyna."
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Dil",
+    "stats": "İstatistikler",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Seviye",
+    "logout": "Çıkış yap",
+    "deleteAccount": "Hesabı sil",
+    "deleteConfirmTitle": "Hesabını gerçekten silmek istiyor musun?",
+    "deleteConfirmText": "Tüm verilerin (profil, düellolar, istatistikler) kalıcı olarak silinecek. Bu geri alınamaz.",
+    "deleteConfirmButton": "Evet, kalıcı olarak sil",
+    "deleteError": "Silme başarısız. Lütfen daha sonra tekrar dene.",
+    "streak": "Günlük seri",
+    "streakBest": "En iyi",
+    "adConsent": "Reklam gizlilik ayarları",
+    "adConsentHint": "Kişiselleştirilmiş reklam iznini istediğin zaman değiştir veya geri çek."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Kolay",
+      "2": "Orta",
+      "3": "Zor"
+    },
+    "difficultyHint": {
+      "1": "Diziyi bilen herkes için",
+      "2": "Dikkatli izleyiciler için",
+      "3": "Gerçek uzmanlar için"
+    },
+    "noQuestions": "Bu kategoride henüz soru yok. Başka birini dene!",
+    "didYouKnow": "Biliyor muydun?",
+    "nextHint": "Sonraki ipucu",
+    "report": "Soruyu bildir",
+    "reported": "Teşekkürler, bildirildi!",
+    "finish": "Turu bitir",
+    "resultTitle": "Sonuç",
+    "xpEarned": "+{{xp}} XP kazandın",
+    "noXpAgain": "Bu tur zaten puanlandı.",
+    "again": "Tekrar oyna",
+    "share": "Sonucu paylaş",
+    "shareText": "{{category}} hakkında {{total}} sorudan {{correct}} tanesini bildim! Sen geçebilir misin?",
+    "fiftyFifty": "50:50 — iki cevabı kaldır",
+    "streakDays_one": "Üst üste {{count}} gün",
+    "streakDays_other": "Üst üste {{count}} gün",
+    "chooseSeries": "Bir seri seç",
+    "fiftyFiftyVideo": "Bir 50:50 daha · video",
+    "videoAborted": "Video erken kapandı — ödül için videonun tamamı gerekli.",
+    "videoUnavailable": "Şu an video yok. Lütfen daha sonra tekrar dene.",
+    "whoamiBonus": "Şimdi bilirsen: +{{xp}} XP bonus",
+    "lebenRest_one": "{{count}} can kaldı",
+    "lebenRest_other": "{{count}} can kaldı",
+    "modusStand": "{{gesamt}} sorudan {{richtig}} doğru",
+    "modus": {
+      "titel": "Mod",
+      "normal": "Klasik",
+      "blitz": "Blitz",
+      "survival": "Hayatta Kal",
+      "normalHint": "Kendi hızında 10 soru, jokerlerle.",
+      "blitzHint": "60 saniye — olabildiğince çok doğru cevap.",
+      "survivalHint": "Üç kez yanılana kadar oyna."
+    }
+  },
+  "daily": {
+    "title": "Günlük Görev",
+    "sub": "5 soru — herkes için aynı",
+    "alreadyDone": "Bugünün görevini zaten oynadın. Yarın beş yeni soru!",
+    "leaderboard": "Bugünün sıralaması",
+    "shareText": "Bugünkü Anigosha görevinde {{total}} sorudan {{correct}} doğru yaptım!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Beni geçebilir misin?"
+  },
+  "duel": {
+    "new": "Yeni düello başlat",
+    "empty": "Henüz düello yok. İlkini başlat!",
+    "yourTurn": "Sıra sende",
+    "waiting": "Sıra rakipte",
+    "waitingLong": "{{name}} oynuyor. Sonra tekrar bak!",
+    "round": "Tur {{n}}/4",
+    "won": "Kazandın",
+    "lost": "Kaybettin",
+    "draw": "Berabere",
+    "endRound": "Turu teslim et",
+    "queued": "Şu an boşta rakip yok. Aramaya devam ediyoruz — birazdan tekrar dene.",
+    "botHint": "Bu işareti taşıyan rakipler bilgisayar tarafından yönetilir.",
+    "challengeFriend": "Arkadaşına meydan oku",
+    "challengeHint": "Arkadaşının oyuncu adı",
+    "challengePlaceholder": "örn. AnimeFan42",
+    "challengeGo": "Başla",
+    "friendly": "Dostluk düellosu",
+    "friendlyNote": "Dostluk düellosu — sıralamaya sayılmaz.",
+    "challengeError": {
+      "notFound": "“{{name}}” adında bir oyuncu yok. Yazımı kontrol et.",
+      "self": "Kendine meydan okuyamazsın.",
+      "bot": "Bu bir bilgisayar rakibi — bir insan seç.",
+      "running": "{{name}} ile zaten bir düello sürüyor. Önce onu bitir.",
+      "tooMany": "Aynı anda çok fazla meydan okuma. Bir saat sonra tekrar dene.",
+      "unknown": "Olmadı. Lütfen tekrar dene."
+    },
+    "play": "Oyna",
+    "finished": "Bitti",
+    "format": "3 sorudan 4 tur",
+    "searching": "Rakip aranıyor…",
+    "searchingLong": "Sana bir rakip arıyoruz. Biri bulunur bulunmaz düello devam eder — sonra tekrar bak!",
+    "forfeitWon": "Kazandın – rakibinin süresi doldu",
+    "forfeitLost": "Kaybettin – süren doldu",
+    "expired": "Süresi doldu"
+  },
+  "legal": {
+    "imprint": "Künye",
+    "privacy": "Gizlilik",
+    "terms": "Kullanım Koşulları",
+    "legal": "Yasal"
+  },
+  "level": {
+    "reached": "Seviye atladın",
+    "title": "Seviye {{level}}"
+  },
+  "push": {
+    "titel": "Bildirimler",
+    "text": "Düelloda sıra sana geldiğinde haber al.",
+    "einschalten": "Aç",
+    "aktiv": "Açık",
+    "an": "Bildirimler açık.",
+    "aus": "Bildirimler kapalı.",
+    "homescreen": "iPhone'da önce siteyi Paylaş → Ana Ekrana Ekle ile ana ekrana ekle — Apple bildirimlere başka türlü izin vermiyor.",
+    "fehler": {
+      "abgelehnt": "Bildirimlere izin verilmedi.",
+      "nicht_unterstuetzt": "Bu tarayıcı bildirimleri desteklemiyor.",
+      "homescreen": "iPhone'da önce “Paylaş → Ana Ekrana Ekle” ile yükle.",
+      "nicht_eingerichtet": "Bildirimler henüz ayarlanmadı.",
+      "fehler": "Bildirimler açılamadı."
+    }
+  },
+  "kauf": {
+    "titel": "Reklamları kaldır",
+    "text": "Tek seferlik satın alma — artık reklam yok.",
+    "aktiv": "Satın alındı. Desteğin için teşekkürler!",
+    "kaufen": "Satın al",
+    "wiederherstellen": "Geri yükle",
+    "danke": "Artık reklam yok. Teşekkürler!",
+    "nichtsGefunden": "Önceki bir satın alma bulunamadı.",
+    "abgebrochen": "Satın alma tamamlanmadı.",
+    "fehler": {
+      "nur_app": "Satın alma sadece mağazadan indirilen uygulamada mümkün.",
+      "nicht_eingerichtet": "Satın alma henüz ayarlanmadı.",
+      "kein_angebot": "Teklif yok.",
+      "fehler": "Satın alma başarısız.",
+      "wiederherstellen": "Geri yükleme başarısız."
+    },
+    "gastHinweis": "İpucu: önce hesabını güvenceye al, böylece satın alma ilerlemene bağlı kalır."
+  },
+  "leaderboard": {
+    "kicker": "Dünya geneli · Elo'ya göre"
+  },
+  "guest": {
+    "title": "Hesabını güvenceye al",
+    "text": "Misafir olarak oynuyorsun. Uygulamayı silersen XP'n ve serin gider — saklamak için bir e-posta ekle.",
+    "save": "Kaydet",
+    "mailSent": "{{email}} adresine bir e-posta gönderdik. Onayla, sonra şifreni burada belirle.",
+    "pending": "{{email}} onayı bekleniyor — e-postadaki bağlantıya dokun.",
+    "confirmed": "Onayladım",
+    "otherMail": "Başka e-posta",
+    "notYet": "Henüz onaylanmadı. Spam klasörüne de bak.",
+    "passwordTitle": "Şifre belirle",
+    "passwordText": "E-postan onaylandı. Şifreyle diğer cihazlarda da giriş yapabilirsin.",
+    "logoutWarn": "Misafir olarak oynuyorsun. Çıkış yaptıktan sonra bu hesaba geri dönemezsin — XP'n ve serin kaybolur. Yine de çıkılsın mı?"
+  },
+  "figur": {
+    "richtig0": "Tam isabet!",
+    "richtig1": "Süper, aynen!",
+    "richtig2": "Bu işi biliyorsun!",
+    "falsch0": "Az kalsın …",
+    "falsch1": "Artık unutmazsın!",
+    "falsch2": "Bir dahakine!"
+  },
+  "missionen": {
+    "titel": "Haftalık görevler",
+    "art": {
+      "solo_runden_one": "{{count}} solo tur oyna",
+      "solo_runden_other": "{{count}} solo tur oyna",
+      "richtige_one": "{{count}} soruyu doğru cevapla",
+      "richtige_other": "{{count}} soruyu doğru cevapla",
+      "daily_one": "{{count}} Günlük Görev oyna",
+      "daily_other": "{{count}} Günlük Görev oyna",
+      "fehlerfrei_one": "{{count}} kusursuz tur bitir",
+      "fehlerfrei_other": "{{count}} kusursuz tur bitir",
+      "schwer_one": "“Zor” seviyede {{count}} tur oyna",
+      "schwer_other": "“Zor” seviyede {{count}} tur oyna",
+      "duelle_one": "{{count}} düello bitir",
+      "duelle_other": "{{count}} düello bitir",
+      "siege_one": "{{count}} düello kazan",
+      "siege_other": "{{count}} düello kazan",
+      "spieltage_one": "{{count}} gün oyna",
+      "spieltage_other": "{{count}} farklı günde oyna"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Yeni avatar açıldı!",
+    "waehlen": "Avatar seç",
+    "ab": "Seviye {{level}} ve üstü",
+    "lvl": "Sv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Oyuncu seçenekleri",
+    "melden": "Oyuncuyu bildir",
+    "gemeldet": "Teşekkürler! Bildirimleri 24 saat içinde inceliyoruz.",
+    "blockieren": "Engelle",
+    "blockFrage": "{{name}} engellensin mi? Düellolarda artık karşılaşmayacak, sıralamalarda birbirinizi görmeyeceksiniz.",
+    "blockliste": "Engellenen oyuncular",
+    "entblocken": "Engeli kaldır",
+    "tippHinweis": "Bildirmek veya engellemek için bir oyuncuya dokun.",
+    "grund": {
+      "name": "Rahatsız edici ad",
+      "cheating": "Hile",
+      "other": "Diğer"
+    }
+  }
+}

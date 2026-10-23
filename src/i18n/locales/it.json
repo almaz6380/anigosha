@@ -1,0 +1,297 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "Caricamento…",
+    "error": "Qualcosa è andato storto. Riprova.",
+    "back": "Indietro",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "continue": "Continua",
+    "bot": "Bot",
+    "retry": "Riprova",
+    "profileError": "Impossibile caricare il tuo profilo. Controlla la connessione e riprova."
+  },
+  "auth": {
+    "login": "Accedi",
+    "register": "Registrati",
+    "email": "Email",
+    "password": "Password",
+    "passwordMin": "Almeno 8 caratteri",
+    "noAccount": "Non hai un account? Registrati",
+    "haveAccount": "Hai già un account? Accedi",
+    "forgotPassword": "Password dimenticata?",
+    "resetSent": "Email per reimpostare la password inviata.",
+    "confirmSent": "Email di conferma inviata — controlla la tua casella.",
+    "errors": {
+      "invalid_credentials": "Email o password errata.",
+      "email_not_confirmed": "Conferma prima il tuo indirizzo email.",
+      "user_already_exists": "Questa email è già registrata.",
+      "weak_password": "Password troppo debole (min. 8 caratteri).",
+      "generic": "Accesso non riuscito. Riprova."
+    },
+    "resetError": "Impossibile inviare l'email. Riprova.",
+    "resetNeedsEmail": "Inserisci prima il tuo indirizzo email.",
+    "legalNote": "Iniziando accetti i <terms>Termini di utilizzo</terms>. Come trattiamo i tuoi dati è spiegato nell'<privacy>Informativa sulla privacy</privacy>.",
+    "ageConfirm": "Ho almeno 16 anni.",
+    "ageRequired": "Conferma di avere almeno 16 anni.",
+    "playNow": "Gioca ora",
+    "guestHint": "Nessuna email necessaria. Puoi proteggere il tuo account più tardi nel profilo.",
+    "withEmail": "Accedi o registrati con email",
+    "backToGuest": "Gioca senza email",
+    "guestError": "Non ha funzionato. Riprova."
+  },
+  "username": {
+    "title": "Scegli il tuo nome giocatore",
+    "subtitle": "Così ti vedono gli altri nei duelli e in classifica.",
+    "placeholder": "es. OtakuMaster",
+    "rules": "3–16 caratteri, solo lettere, numeri e _",
+    "taken": "Spiacenti, questo nome è già preso.",
+    "invalid": "3–16 caratteri, solo lettere, numeri e _",
+    "another": "Altro suggerimento"
+  },
+  "nav": {
+    "home": "Home",
+    "solo": "Solo",
+    "duel": "Duello",
+    "leaderboard": "Classifica",
+    "profile": "Profilo",
+    "daily": "Sfida del giorno"
+  },
+  "home": {
+    "greetingMorning": "Buongiorno, {{name}}",
+    "greetingDay": "Ciao, {{name}}",
+    "greetingEvening": "Buonasera, {{name}}",
+    "greetingNight": "Ancora in piedi, {{name}}?",
+    "solo": "Quiz solo",
+    "soloSub": "Categorie, difficoltà, XP",
+    "duel": "Duello",
+    "leaderboard": "Classifica",
+    "profile": "Profilo",
+    "daily": "Sfida del giorno",
+    "dailyKicker": "Oggi",
+    "dailyGo": "Gioca ora",
+    "streakAtRisk_one": "Ieri hai saltato! Salva la tua serie di {{count}} giorno.",
+    "streakAtRisk_other": "Ieri hai saltato! Salva la tua serie di {{count}} giorni.",
+    "streakSave": "Salva",
+    "streakSaved_one": "Serie salvata: {{count}} giorno. Gioca un round oggi per continuarla.",
+    "streakSaved_other": "Serie salvata: {{count}} giorni. Gioca un round oggi per continuarla."
+  },
+  "profile": {
+    "title": "Profilo",
+    "language": "Lingua",
+    "stats": "Statistiche",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Livello",
+    "logout": "Esci",
+    "deleteAccount": "Elimina account",
+    "deleteConfirmTitle": "Eliminare davvero l'account?",
+    "deleteConfirmText": "Tutti i tuoi dati (profilo, duelli, statistiche) verranno eliminati per sempre. Non si può annullare.",
+    "deleteConfirmButton": "Sì, elimina per sempre",
+    "deleteError": "Eliminazione non riuscita. Riprova più tardi.",
+    "streak": "Serie giornaliera",
+    "streakBest": "Record",
+    "adConsent": "Privacy degli annunci",
+    "adConsentHint": "Modifica o revoca quando vuoi il consenso agli annunci personalizzati."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Facile",
+      "2": "Medio",
+      "3": "Difficile"
+    },
+    "difficultyHint": {
+      "1": "Per chi conosce la serie",
+      "2": "Per spettatori attenti",
+      "3": "Per veri esperti"
+    },
+    "noQuestions": "Non ci sono ancora domande in questa categoria. Provane un'altra!",
+    "didYouKnow": "Lo sapevi?",
+    "nextHint": "Prossimo indizio",
+    "report": "Segnala domanda",
+    "reported": "Grazie, segnalata!",
+    "finish": "Termina round",
+    "resultTitle": "Risultato",
+    "xpEarned": "+{{xp}} XP guadagnati",
+    "noXpAgain": "Questo round è già stato conteggiato.",
+    "again": "Gioca ancora",
+    "share": "Condividi risultato",
+    "shareText": "Ho indovinato {{correct}} domande su {{total}} su {{category}}! Riesci a fare meglio?",
+    "fiftyFifty": "50:50 — elimina due risposte",
+    "streakDays_one": "{{count}} giorno di fila",
+    "streakDays_other": "{{count}} giorni di fila",
+    "chooseSeries": "Scegli una serie",
+    "fiftyFiftyVideo": "Un altro 50:50 · video",
+    "videoAborted": "Video chiuso prima — per la ricompensa serve il video completo.",
+    "videoUnavailable": "Nessun video disponibile ora. Riprova più tardi.",
+    "whoamiBonus": "Se indovini ora: +{{xp}} XP bonus",
+    "lebenRest_one": "{{count}} vita rimasta",
+    "lebenRest_other": "{{count}} vite rimaste",
+    "modusStand": "{{richtig}} su {{gesamt}} giuste",
+    "modus": {
+      "titel": "Modalità",
+      "normal": "Classica",
+      "blitz": "Blitz",
+      "survival": "Sopravvivenza",
+      "normalHint": "10 domande al tuo ritmo, con jolly.",
+      "blitzHint": "60 secondi — più risposte giuste possibili.",
+      "survivalHint": "Vai avanti finché non sbagli tre volte."
+    }
+  },
+  "daily": {
+    "title": "Sfida del giorno",
+    "sub": "5 domande — uguali per tutti",
+    "alreadyDone": "Hai già giocato la sfida di oggi. Domani cinque nuove domande!",
+    "leaderboard": "Classifica di oggi",
+    "shareText": "Ho fatto {{correct}} su {{total}} nella sfida Anigosha di oggi!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Riesci a battermi?"
+  },
+  "duel": {
+    "new": "Inizia un nuovo duello",
+    "empty": "Ancora nessun duello. Inizia il primo!",
+    "yourTurn": "Tocca a te",
+    "waiting": "Tocca all'avversario",
+    "waitingLong": "{{name}} sta giocando. Ricontrolla più tardi!",
+    "round": "Round {{n}}/4",
+    "won": "Vinto",
+    "lost": "Perso",
+    "draw": "Pareggio",
+    "endRound": "Consegna il round",
+    "queued": "Nessun avversario libero ora. Continuiamo a cercare — riprova tra poco.",
+    "botHint": "Gli avversari con questo segno sono controllati dal computer.",
+    "challengeFriend": "Sfida un amico",
+    "challengeHint": "Il nome giocatore del tuo amico",
+    "challengePlaceholder": "es. AnimeFan42",
+    "challengeGo": "Vai",
+    "friendly": "Duello amichevole",
+    "friendlyNote": "Duello amichevole — non conta per la classifica.",
+    "challengeError": {
+      "notFound": "Nessuno gioca come “{{name}}”. Controlla come si scrive.",
+      "self": "Non puoi sfidare te stesso.",
+      "bot": "È un avversario computer — scegli una persona.",
+      "running": "Hai già un duello in corso contro {{name}}. Finiscilo prima.",
+      "tooMany": "Troppe sfide tutte insieme. Riprova tra un'ora.",
+      "unknown": "Non ha funzionato. Riprova."
+    },
+    "play": "Gioca",
+    "finished": "Finito",
+    "format": "4 round da 3 domande",
+    "searching": "Cerco un avversario…",
+    "searchingLong": "Stiamo cercando un avversario per te. Il duello continua appena lo troviamo — ricontrolla più tardi!",
+    "forfeitWon": "Vinto – l'avversario ha finito il tempo",
+    "forfeitLost": "Perso – il tuo tempo è scaduto",
+    "expired": "Scaduto"
+  },
+  "legal": {
+    "imprint": "Note legali",
+    "privacy": "Privacy",
+    "terms": "Termini di utilizzo",
+    "legal": "Legale"
+  },
+  "level": {
+    "reached": "Nuovo livello",
+    "title": "Livello {{level}}"
+  },
+  "push": {
+    "titel": "Notifiche",
+    "text": "Ricevi un avviso quando tocca a te in un duello.",
+    "einschalten": "Attiva",
+    "aktiv": "Attive",
+    "an": "Le notifiche sono attive.",
+    "aus": "Le notifiche sono disattivate.",
+    "homescreen": "Su iPhone aggiungi prima il sito alla schermata Home con Condividi → Aggiungi alla schermata Home — Apple non consente notifiche in altro modo.",
+    "fehler": {
+      "abgelehnt": "Le notifiche non sono state consentite.",
+      "nicht_unterstuetzt": "Questo browser non supporta le notifiche.",
+      "homescreen": "Su iPhone installa prima con “Condividi → Aggiungi alla schermata Home”.",
+      "nicht_eingerichtet": "Le notifiche non sono ancora configurate.",
+      "fehler": "Impossibile attivare le notifiche."
+    }
+  },
+  "kauf": {
+    "titel": "Rimuovi annunci",
+    "text": "Acquisto unico — niente più annunci.",
+    "aktiv": "Acquistato. Grazie per il supporto!",
+    "kaufen": "Acquista",
+    "wiederherstellen": "Ripristina",
+    "danke": "Da ora niente più annunci. Grazie!",
+    "nichtsGefunden": "Nessun acquisto precedente trovato.",
+    "abgebrochen": "Acquisto non completato.",
+    "fehler": {
+      "nur_app": "Gli acquisti sono possibili solo nell'app scaricata dallo store.",
+      "nicht_eingerichtet": "Gli acquisti non sono ancora configurati.",
+      "kein_angebot": "Nessuna offerta disponibile.",
+      "fehler": "Acquisto non riuscito.",
+      "wiederherstellen": "Ripristino non riuscito."
+    },
+    "gastHinweis": "Consiglio: proteggi prima il tuo account, così l'acquisto resta legato ai tuoi progressi."
+  },
+  "leaderboard": {
+    "kicker": "Mondiale · per Elo"
+  },
+  "guest": {
+    "title": "Proteggi il tuo account",
+    "text": "Stai giocando come ospite. Se elimini l'app, XP e serie andranno persi — aggiungi un'email per tenerli.",
+    "save": "Salva",
+    "mailSent": "Abbiamo inviato un'email a {{email}}. Confermala, poi imposta qui la password.",
+    "pending": "In attesa della conferma di {{email}} — tocca il link nell'email.",
+    "confirmed": "Ho confermato",
+    "otherMail": "Altra email",
+    "notYet": "Non ancora confermata. Controlla anche lo spam.",
+    "passwordTitle": "Imposta una password",
+    "passwordText": "La tua email è confermata. Con una password puoi accedere anche da altri dispositivi.",
+    "logoutWarn": "Stai giocando come ospite. Dopo l'uscita non potrai più rientrare in questo account — XP e serie andrebbero persi. Uscire comunque?"
+  },
+  "figur": {
+    "richtig0": "Centro!",
+    "richtig1": "Grande, esatto!",
+    "richtig2": "Te ne intendi!",
+    "falsch0": "Per un pelo …",
+    "falsch1": "Ora te lo ricordi!",
+    "falsch2": "Alla prossima!"
+  },
+  "missionen": {
+    "titel": "Missioni settimanali",
+    "art": {
+      "solo_runden_one": "Gioca {{count}} round solo",
+      "solo_runden_other": "Gioca {{count}} round solo",
+      "richtige_one": "Rispondi bene a {{count}} domanda",
+      "richtige_other": "Rispondi bene a {{count}} domande",
+      "daily_one": "Gioca {{count}} sfida del giorno",
+      "daily_other": "Gioca {{count}} sfide del giorno",
+      "fehlerfrei_one": "Completa {{count}} round perfetto",
+      "fehlerfrei_other": "Completa {{count}} round perfetti",
+      "schwer_one": "Gioca {{count}} round su “Difficile”",
+      "schwer_other": "Gioca {{count}} round su “Difficile”",
+      "duelle_one": "Completa {{count}} duello",
+      "duelle_other": "Completa {{count}} duelli",
+      "siege_one": "Vinci {{count}} duello",
+      "siege_other": "Vinci {{count}} duelli",
+      "spieltage_one": "Gioca per {{count}} giorno",
+      "spieltage_other": "Gioca in {{count}} giorni diversi"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Nuovo avatar sbloccato!",
+    "waehlen": "Scegli avatar",
+    "ab": "Dal livello {{level}}",
+    "lvl": "Liv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Opzioni giocatore",
+    "melden": "Segnala giocatore",
+    "gemeldet": "Grazie! Esaminiamo le segnalazioni entro 24 ore.",
+    "blockieren": "Blocca",
+    "blockFrage": "Bloccare {{name}}? Non vi incontrerete più nei duelli e non vi vedrete nelle classifiche.",
+    "blockliste": "Giocatori bloccati",
+    "entblocken": "Sblocca",
+    "tippHinweis": "Tocca un giocatore per segnalarlo o bloccarlo.",
+    "grund": {
+      "name": "Nome offensivo",
+      "cheating": "Imbrogli",
+      "other": "Altro"
+    }
+  }
+}

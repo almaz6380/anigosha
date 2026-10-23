@@ -143,7 +143,7 @@ export default function HomePage() {
       <Link to="/daily" className="glas p-5 relative overflow-hidden grow max-h-[300px] flex flex-col justify-end">
         <div
           aria-hidden
-          className="absolute -right-7 -top-7 w-[116px] h-[116px] rounded-full"
+          className="absolute -end-7 -top-7 w-[116px] h-[116px] rounded-full"
           style={{ background: 'radial-gradient(circle, rgba(255,214,120,0.55), rgba(255,214,120,0))' }}
         />
         <div className="relative">
@@ -156,7 +156,7 @@ export default function HomePage() {
           <div className="mt-1 text-sm leise">{t('daily.sub')}</div>
           <div className="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 knopf text-[15px]">
             {t('home.dailyGo')}
-            <ArrowRight className="w-4 h-4" strokeWidth={2.4} />
+            <ArrowRight className="w-4 h-4 rtl:-scale-x-100" strokeWidth={2.4} />
           </div>
         </div>
       </Link>
@@ -167,7 +167,7 @@ export default function HomePage() {
           <div className="text-lg font-bold tracking-[-0.01em]">{t('home.solo')}</div>
           <div className="text-[13px] leise truncate">{t('home.soloSub')}</div>
         </div>
-        <ChevronRight className="w-[18px] h-[18px] fein shrink-0" strokeWidth={2.4} />
+        <ChevronRight className="w-[18px] h-[18px] fein shrink-0 rtl:-scale-x-100" strokeWidth={2.4} />
       </Link>
 
       <div className="grid grid-cols-3 gap-2.5">

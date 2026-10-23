@@ -1464,6 +1464,88 @@ def datenschutz_url_setzen(tok):
             print(f'    FEHLER: {fehler_text(res)}' if res.get('_fehler') else '    gesetzt')
 
 
+def sprachen_anlegen(tok):
+    """Legt fehlende Store-Sprachen an (22.10.2026, zehn neue Sprachen).
+
+    texte-schreiben aendert nur Sprachen, die es schon gibt. Neue brauchen
+    zwei Eintraege: den appInfo-Teil (Name, Untertitel, Datenschutz-URL) aus
+    store-assets/asc-appinfo.json und den Versions-Teil (Beschreibung,
+    Keywords, whatsNew …) aus store-assets/asc-texte.json. Vorhandene
+    Sprachen bleiben unangetastet.
+    """
+    with open(os.path.join(WURZEL, 'store-assets', 'asc-appinfo.json'), encoding='utf-8') as f:
+        appinfo = json.load(f)
+    with open(os.path.join(WURZEL, 'store-assets', 'asc-texte.json'), encoding='utf-8') as f:
+        texte = json.load(f)
+    aid = app_id(tok)
+
+    print('\n── App-Info-Sprachen (Name, Untertitel) ──')
+    infos = api(tok, f'apps/{aid}/appInfos')
+    for info in infos.get('data', []):
+        zustand = info['attributes'].get('appStoreState') or \
+                  info['attributes'].get('state') or '?'
+        if zustand in ('READY_FOR_SALE', 'READY_FOR_DISTRIBUTION',
+                       'REPLACED_WITH_NEW_INFO'):
+            continue
+        da = {l['attributes']['locale'] for l in
+              api(tok, f'appInfos/{info["id"]}/appInfoLocalizations').get('data', [])}
+        for locale, werte in appinfo.items():
+            if locale in da:
+                continue
+            attr = {'locale': locale, 'name': werte['name'],
+                    'privacyPolicyUrl': DATENSCHUTZ_URL.get(locale, DATENSCHUTZ_URL_SONST)}
+            if werte.get('subtitle'):
+                attr['subtitle'] = werte['subtitle']
+            print(f'  {locale}: neu — {werte["name"]!r} / {werte.get("subtitle")!r}')
+            if TROCKEN:
+                continue
+            res = api(tok, 'appInfoLocalizations', 'POST', {'data': {
+                'type': 'appInfoLocalizations', 'attributes': attr,
+                'relationships': {'appInfo': {'data': {'type': 'appInfos', 'id': info['id']}}},
+            }}, fatal=False)
+            print(f'    FEHLER: {fehler_text(res)}' if res.get('_fehler') else '    angelegt')
+
+    print('\n── Versions-Sprachen (Beschreibung, Keywords, whatsNew) ──')
+    v = offene_version(tok, aid)
+    da = {l['attributes']['locale'] for l in
+          api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations').get('data', [])}
+    for locale, werte in texte.items():
+        if locale in da:
+            continue
+        attr = {'locale': locale}
+        attr.update({f: werte[f] for f in FELDER if werte.get(f)})
+        print(f'  {locale}: neu — {", ".join(sorted(k for k in attr if k != "locale"))}')
+        if TROCKEN:
+            continue
+        res = api(tok, 'appStoreVersionLocalizations', 'POST', {'data': {
+            'type': 'appStoreVersionLocalizations', 'attributes': attr,
+            'relationships': {'appStoreVersion': {'data': {'type': 'appStoreVersions', 'id': v['id']}}},
+        }}, fatal=False)
+        print(f'    FEHLER: {fehler_text(res)}' if res.get('_fehler') else '    angelegt')
+
+
+def hauptsprache(tok, locale):
+    """Setzt die Hauptsprache der App (primaryLocale), z. B. en-US.
+
+    Sie ist der Rueckfall fuer jedes Land ohne eigene Uebersetzung. Bis zum
+    22.10.2026 stand sie auf de-DE — ein Japaner ohne japanischen Eintrag
+    haette also Deutsch gesehen. Die Sprache muss schon angelegt sein.
+    """
+    aid = app_id(tok)
+    alt = (api(tok, f'apps/{aid}').get('data') or {}).get('attributes', {}).get('primaryLocale')
+    print(f'  primaryLocale: {alt!r} -> {locale!r}')
+    if alt == locale:
+        print('  steht schon richtig')
+        return
+    if TROCKEN:
+        return
+    res = api(tok, f'apps/{aid}', 'PATCH', {'data': {
+        'type': 'apps', 'id': aid, 'attributes': {'primaryLocale': locale}}}, fatal=False)
+    if res.get('_fehler'):
+        sys.exit(f'  FEHLER: {fehler_text(res)}')
+    print('  gesetzt')
+
+
 def zeige_status(tok):
     aid = app_id(tok)
 
@@ -1566,6 +1648,10 @@ def main():
                    help='Store-Texte der offenen Version zeigen (liest nur)')
     p.add_argument('--texte-sichern', action='store_true',
                    help='Store-Texte nach store-assets/asc-texte.json holen (liest nur)')
+    p.add_argument('--sprachen-anlegen', action='store_true',
+                   help='fehlende Store-Sprachen aus asc-appinfo.json + asc-texte.json anlegen')
+    p.add_argument('--hauptsprache', metavar='LOCALE',
+                   help='Hauptsprache der App setzen, z. B. en-US')
     p.add_argument('--texte-schreiben', action='store_true',
                    help='store-assets/asc-texte.json in die offene Version zurueckschreiben')
     p.add_argument('--einreichungen', action='store_true',
@@ -1604,6 +1690,7 @@ def main():
     tat = [a.status, a.name, a.build, a.versionsnummer, a.version_anlegen, a.testflight, a.sandbox, a.kauf_einreichen,
            a.screenshots, a.abo_screenshot,
            a.warum, a.texte_lesen, a.texte_sichern, a.texte_schreiben,
+           a.sprachen_anlegen, a.hauptsprache,
            a.einreichungen, a.aufraeumen, a.abo_namen, a.abo_notiz,
            a.inhaberrechte, a.exportfrage, a.pruefnotiz,
            a.einreichen, a.erneut, a.alter, a.alter_setzen, a.alles]
@@ -1652,6 +1739,10 @@ def main():
         texte_lesen(tok)
     if a.texte_sichern:
         texte_sichern(tok)
+    if a.sprachen_anlegen:
+        sprachen_anlegen(tok)
+    if a.hauptsprache:
+        hauptsprache(tok, a.hauptsprache)
     if a.texte_schreiben:
         texte_schreiben(tok)
     if a.einreichungen:

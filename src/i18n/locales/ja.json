@@ -1,0 +1,285 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "読み込み中…",
+    "error": "問題が発生しました。もう一度お試しください。",
+    "back": "戻る",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "continue": "続ける",
+    "bot": "Bot",
+    "retry": "再試行",
+    "profileError": "プロフィールを読み込めませんでした。接続を確認してもう一度お試しください。"
+  },
+  "auth": {
+    "login": "ログイン",
+    "register": "新規登録",
+    "email": "メール",
+    "password": "パスワード",
+    "passwordMin": "8文字以上",
+    "noAccount": "アカウントがない？新規登録",
+    "haveAccount": "アカウントをお持ち？ログイン",
+    "forgotPassword": "パスワードを忘れた？",
+    "resetSent": "パスワード再設定メールを送信しました。",
+    "confirmSent": "確認メールを送信しました。受信箱を確認してください。",
+    "errors": {
+      "invalid_credentials": "メールまたはパスワードが正しくありません。",
+      "email_not_confirmed": "先にメールアドレスを確認してください。",
+      "user_already_exists": "このメールはすでに登録されています。",
+      "weak_password": "パスワードが弱すぎます（8文字以上）。",
+      "generic": "ログインに失敗しました。もう一度お試しください。"
+    },
+    "resetError": "メールを送信できませんでした。もう一度お試しください。",
+    "resetNeedsEmail": "先にメールアドレスを入力してください。",
+    "legalNote": "開始すると<terms>利用規約</terms>に同意したものとみなされます。データの取り扱いは<privacy>プライバシーポリシー</privacy>をご覧ください。",
+    "ageConfirm": "16歳以上です。",
+    "ageRequired": "16歳以上であることを確認してください。",
+    "playNow": "今すぐプレイ",
+    "guestHint": "メール不要。アカウントの保護はあとでプロフィールからできます。",
+    "withEmail": "メールでログイン・登録",
+    "backToGuest": "メールなしでプレイ",
+    "guestError": "うまくいきませんでした。もう一度お試しください。"
+  },
+  "username": {
+    "title": "プレイヤー名を決めよう",
+    "subtitle": "対戦やランキングでほかの人に表示される名前です。",
+    "placeholder": "例：OtakuMaster",
+    "rules": "3〜16文字、英字・数字・_ のみ",
+    "taken": "その名前はすでに使われています。",
+    "invalid": "3〜16文字、英字・数字・_ のみ",
+    "another": "ほかの候補"
+  },
+  "nav": {
+    "home": "ホーム",
+    "solo": "ソロ",
+    "duel": "対戦",
+    "leaderboard": "ランキング",
+    "profile": "プロフィール",
+    "daily": "デイリー"
+  },
+  "home": {
+    "greetingMorning": "おはよう、{{name}}",
+    "greetingDay": "こんにちは、{{name}}",
+    "greetingEvening": "こんばんは、{{name}}",
+    "greetingNight": "まだ起きてる？{{name}}",
+    "solo": "ソロクイズ",
+    "soloSub": "カテゴリ・難易度・XP",
+    "duel": "対戦",
+    "leaderboard": "ランキング",
+    "profile": "プロフィール",
+    "daily": "デイリーチャレンジ",
+    "dailyKicker": "今日",
+    "dailyGo": "今すぐプレイ",
+    "streakAtRisk_other": "昨日はお休みでした！{{count}}日の連続記録を守ろう。",
+    "streakSave": "守る",
+    "streakSaved_other": "連続記録を守りました：{{count}}日。今日1ラウンド遊べば続きます。"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "language": "言語",
+    "stats": "統計",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "レベル",
+    "logout": "ログアウト",
+    "deleteAccount": "アカウントを削除",
+    "deleteConfirmTitle": "本当にアカウントを削除しますか？",
+    "deleteConfirmText": "すべてのデータ（プロフィール、対戦、統計）が完全に削除されます。元に戻せません。",
+    "deleteConfirmButton": "はい、完全に削除",
+    "deleteError": "削除できませんでした。後でもう一度お試しください。",
+    "streak": "連続日数",
+    "streakBest": "最高",
+    "adConsent": "広告のプライバシー設定",
+    "adConsentHint": "パーソナライズ広告への同意はいつでも変更・撤回できます。"
+  },
+  "solo": {
+    "difficulty": {
+      "1": "かんたん",
+      "2": "ふつう",
+      "3": "むずかしい"
+    },
+    "difficultyHint": {
+      "1": "作品を知っている人向け",
+      "2": "しっかり観ている人向け",
+      "3": "真のマニア向け"
+    },
+    "noQuestions": "このカテゴリにはまだ問題がありません。ほかを試してみて！",
+    "didYouKnow": "知ってた？",
+    "nextHint": "次のヒント",
+    "report": "問題を報告",
+    "reported": "報告ありがとう！",
+    "finish": "ラウンド終了",
+    "resultTitle": "結果",
+    "xpEarned": "+{{xp}} XP獲得",
+    "noXpAgain": "このラウンドはすでに集計済みです。",
+    "again": "もう一度",
+    "share": "結果をシェア",
+    "shareText": "{{category}}のクイズで{{total}}問中{{correct}}問正解！これを超えられる？",
+    "fiftyFifty": "50:50 — 選択肢を2つ消す",
+    "streakDays_other": "{{count}}日連続",
+    "chooseSeries": "作品を選ぼう",
+    "fiftyFiftyVideo": "もう一回50:50 · 動画",
+    "videoAborted": "動画が途中で閉じられました。報酬には最後まで視聴が必要です。",
+    "videoUnavailable": "今は動画がありません。後でもう一度お試しください。",
+    "whoamiBonus": "今正解なら：+{{xp}} XPボーナス",
+    "lebenRest_other": "残りライフ{{count}}",
+    "modusStand": "{{gesamt}}問中{{richtig}}問正解",
+    "modus": {
+      "titel": "モード",
+      "normal": "クラシック",
+      "blitz": "ブリッツ",
+      "survival": "サバイバル",
+      "normalHint": "自分のペースで10問、ジョーカーあり。",
+      "blitzHint": "60秒でできるだけ多く正解しよう。",
+      "survivalHint": "3回ミスするまで続く。"
+    }
+  },
+  "daily": {
+    "title": "デイリーチャレンジ",
+    "sub": "5問 — 全員共通",
+    "alreadyDone": "今日のチャレンジはプレイ済みです。明日また新しい5問！",
+    "leaderboard": "今日のランキング",
+    "shareText": "今日のAnigoshaチャレンジで{{total}}問中{{correct}}問正解！",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "私に勝てる？"
+  },
+  "duel": {
+    "new": "新しい対戦を始める",
+    "empty": "まだ対戦がありません。最初の対戦を始めよう！",
+    "yourTurn": "あなたの番",
+    "waiting": "相手の番",
+    "waitingLong": "{{name}}がプレイ中。あとで確認してね！",
+    "round": "ラウンド {{n}}/4",
+    "won": "勝利",
+    "lost": "敗北",
+    "draw": "引き分け",
+    "endRound": "ラウンドを提出",
+    "queued": "今は空いている相手がいません。探し続けるので、少ししてからまた試してね。",
+    "botHint": "このマークの相手はコンピューターです。",
+    "challengeFriend": "友だちに挑戦",
+    "challengeHint": "友だちのプレイヤー名",
+    "challengePlaceholder": "例：AnimeFan42",
+    "challengeGo": "挑戦",
+    "friendly": "フレンド対戦",
+    "friendlyNote": "フレンド対戦 — ランキングには反映されません。",
+    "challengeError": {
+      "notFound": "「{{name}}」というプレイヤーはいません。正確な綴りを確認してね。",
+      "self": "自分自身には挑戦できません。",
+      "bot": "それはコンピューターの相手です。人を選んでね。",
+      "running": "{{name}}との対戦がすでに進行中です。先に終わらせてね。",
+      "tooMany": "一度に挑戦しすぎです。1時間後にまた試してね。",
+      "unknown": "うまくいきませんでした。もう一度お試しください。"
+    },
+    "play": "プレイ",
+    "finished": "終了",
+    "format": "3問×4ラウンド",
+    "searching": "対戦相手を探しています…",
+    "searchingLong": "対戦相手を探しています。見つかり次第、対戦が進みます。あとで確認してね！",
+    "forfeitWon": "勝利 – 相手の時間切れ",
+    "forfeitLost": "敗北 – あなたの時間切れ",
+    "expired": "期限切れ"
+  },
+  "legal": {
+    "imprint": "運営者情報",
+    "privacy": "プライバシー",
+    "terms": "利用規約",
+    "legal": "法的情報"
+  },
+  "level": {
+    "reached": "レベルアップ",
+    "title": "レベル {{level}}"
+  },
+  "push": {
+    "titel": "通知",
+    "text": "対戦で自分の番になったらお知らせします。",
+    "einschalten": "オンにする",
+    "aktiv": "オン",
+    "an": "通知はオンです。",
+    "aus": "通知はオフです。",
+    "homescreen": "iPhoneでは、先に「共有 → ホーム画面に追加」でサイトをホーム画面に追加してください。Appleはそれ以外の方法で通知を許可していません。",
+    "fehler": {
+      "abgelehnt": "通知が許可されませんでした。",
+      "nicht_unterstuetzt": "このブラウザは通知に対応していません。",
+      "homescreen": "iPhoneでは、先に「共有 → ホーム画面に追加」でインストールしてください。",
+      "nicht_eingerichtet": "通知はまだ設定されていません。",
+      "fehler": "通知をオンにできませんでした。"
+    }
+  },
+  "kauf": {
+    "titel": "広告を削除",
+    "text": "買い切り — もう広告は出ません。",
+    "aktiv": "購入済み。応援ありがとう！",
+    "kaufen": "購入",
+    "wiederherstellen": "復元",
+    "danke": "これで広告はオフです。ありがとう！",
+    "nichtsGefunden": "以前の購入は見つかりませんでした。",
+    "abgebrochen": "購入は完了しませんでした。",
+    "fehler": {
+      "nur_app": "購入はストアからインストールしたアプリでのみ可能です。",
+      "nicht_eingerichtet": "購入はまだ設定されていません。",
+      "kein_angebot": "利用できる商品がありません。",
+      "fehler": "購入に失敗しました。",
+      "wiederherstellen": "復元に失敗しました。"
+    },
+    "gastHinweis": "ヒント：先にアカウントを保護すると、購入が進行状況とひも付いたままになります。"
+  },
+  "leaderboard": {
+    "kicker": "世界 · Elo順"
+  },
+  "guest": {
+    "title": "アカウントを保護",
+    "text": "ゲストでプレイ中です。アプリを削除するとXPと連続記録が消えます。メールを追加して残そう。",
+    "save": "保存",
+    "mailSent": "{{email}}にメールを送りました。確認したら、ここでパスワードを設定してね。",
+    "pending": "{{email}}の確認待ち — メール内のリンクをタップしてね。",
+    "confirmed": "確認しました",
+    "otherMail": "別のメール",
+    "notYet": "まだ確認されていません。迷惑メールフォルダも見てね。",
+    "passwordTitle": "パスワードを設定",
+    "passwordText": "メールが確認されました。パスワードがあればほかの端末でもログインできます。",
+    "logoutWarn": "ゲストでプレイ中です。ログアウトするとこのアカウントに戻れず、XPと連続記録が失われます。それでもログアウトしますか？"
+  },
+  "figur": {
+    "richtig0": "ど真ん中！",
+    "richtig1": "いいね、その通り！",
+    "richtig2": "よく知ってるね！",
+    "falsch0": "惜しい …",
+    "falsch1": "これで覚えたね！",
+    "falsch2": "次こそ！"
+  },
+  "missionen": {
+    "titel": "ウィークリーミッション",
+    "art": {
+      "solo_runden_other": "ソロを{{count}}ラウンドプレイ",
+      "richtige_other": "{{count}}問正解する",
+      "daily_other": "デイリーチャレンジを{{count}}回プレイ",
+      "fehlerfrei_other": "全問正解ラウンドを{{count}}回達成",
+      "schwer_other": "「むずかしい」で{{count}}ラウンドプレイ",
+      "duelle_other": "対戦を{{count}}回終える",
+      "siege_other": "対戦で{{count}}回勝つ",
+      "spieltage_other": "{{count}}日プレイする"
+    }
+  },
+  "avatar": {
+    "titel": "アバター",
+    "neu": "新しいアバターを解放！",
+    "waehlen": "アバターを選ぶ",
+    "ab": "レベル{{level}}から",
+    "lvl": "Lv {{level}}"
+  },
+  "spieler": {
+    "optionen": "プレイヤーオプション",
+    "melden": "プレイヤーを報告",
+    "gemeldet": "ありがとう！報告は24時間以内に確認します。",
+    "blockieren": "ブロック",
+    "blockFrage": "{{name}}をブロックしますか？対戦で当たらなくなり、ランキングでもお互いに表示されなくなります。",
+    "blockliste": "ブロック中のプレイヤー",
+    "entblocken": "ブロック解除",
+    "tippHinweis": "プレイヤーをタップして報告・ブロックできます。",
+    "grund": {
+      "name": "不快な名前",
+      "cheating": "不正行為",
+      "other": "その他"
+    }
+  }
+}
