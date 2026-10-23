@@ -1,0 +1,42 @@
+{
+  "ar-SA": {
+    "name": "Anigosha: مسابقة أنمي ومبارزات",
+    "subtitle": "اختبر معرفتك بعالم الأنمي"
+  },
+  "id": {
+    "name": "Anigosha: Kuis Anime & Duel",
+    "subtitle": "Uji pengetahuan anime-mu"
+  },
+  "it": {
+    "name": "Anigosha: Quiz Anime e Duelli",
+    "subtitle": "Quanto ne sai davvero?"
+  },
+  "ja": {
+    "name": "Anigosha: アニメクイズ＆対戦",
+    "subtitle": "アニメ知識で勝負しよう"
+  },
+  "ko": {
+    "name": "Anigosha: 애니 퀴즈 & 대결",
+    "subtitle": "애니 지식으로 겨뤄 보자"
+  },
+  "pl": {
+    "name": "Anigosha: Quiz Anime i Duele",
+    "subtitle": "Sprawdź swoją wiedzę o anime"
+  },
+  "ru": {
+    "name": "Anigosha: Аниме-квиз и дуэли",
+    "subtitle": "Проверь свои знания аниме"
+  },
+  "th": {
+    "name": "Anigosha: ควิซอนิเมะ & ดวล",
+    "subtitle": "วัดความรู้อนิเมะของคุณ"
+  },
+  "tr": {
+    "name": "Anigosha: Anime Quiz & Düello",
+    "subtitle": "Anime bilgini test et"
+  },
+  "vi": {
+    "name": "Anigosha: Quiz Anime & Đối Đầu",
+    "subtitle": "Thử thách kiến thức anime"
+  }
+}
