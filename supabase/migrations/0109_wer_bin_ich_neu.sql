@@ -397,3 +397,80 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Die Devil-Slayer-Magie erh
   'Quem sou eu? Recebi a magia de Devil Slayer do meu pai ressuscitado. (Fairy Tail)',
   '["Lyon Vastia", "Gray Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia é perdidamente apaixonada por ele desde a primeira luta dos dois.',
   '["Minha mestra Ur se sacrificou para selar o demônio Deliora.", "Luto com gelo e vivo tirando a roupa sem perceber."]');
+
+-- Wer bin ich? — Tokyo Ghoul
+
+-- tokyo_ghoul, Stufe 1
+select public.seed_raetsel('tokyo_ghoul', 1, 2, 'who_am_i',
+  'Wer bin ich? Mein Lieblingsautor ist Sen Takatsuki. (Tokyo Ghoul)',
+  '["Hideyoshi Nagachika", "Nishiki Nishio", "Ken Kaneki", "Shuu Tsukiyama"]', 'Nach seiner Gefangenschaft bei Aogiri Tree wird sein Haar weiß.',
+  '["Nur mein linkes Auge verwandelt sich in ein Ghul-Auge.", "Ich bin ein Student, der durch eine Organtransplantation zum Halbghul wurde."]',
+  'Who am I? My favorite author is Sen Takatsuki. (Tokyo Ghoul)',
+  '["Hideyoshi Nagachika", "Nishiki Nishio", "Ken Kaneki", "Shuu Tsukiyama"]', 'After his captivity with Aogiri Tree, his hair turns white.',
+  '["Only my left eye turns into a ghoul eye.", "I am a student who became a half-ghoul through an organ transplant."]');
+
+-- tokyo_ghoul, Stufe 2
+select public.seed_raetsel('tokyo_ghoul', 2, 0, 'who_am_i',
+  'Wer bin ich? Meine beste Freundin Yoriko kocht für mich, obwohl mir menschliches Essen nicht schmeckt. (Tokyo Ghoul)',
+  '["Touka Kirishima", "Hinami Fueguchi", "Akira Mado", "Rize Kamishiro"]', 'In „Tokyo Ghoul:re“ führt sie das Café :re.',
+  '["Mein jüngerer Bruder Ayato gehört zu Aogiri Tree.", "Ich arbeite als Kellnerin im Café Anteiku und trage eine Hasenmaske."]',
+  'Who am I? My best friend Yoriko cooks for me, even though human food doesn’t taste good to me. (Tokyo Ghoul)',
+  '["Touka Kirishima", "Hinami Fueguchi", "Akira Mado", "Rize Kamishiro"]', 'In “Tokyo Ghoul:re”, she runs the café :re.',
+  '["My younger brother Ayato belongs to Aogiri Tree.", "I work as a waitress at the café Anteiku and wear a rabbit mask."]');
+
+-- tokyo_ghoul, Stufe 3
+select public.seed_raetsel('tokyo_ghoul', 3, 3, 'who_am_i',
+  'Wer bin ich? Als Kind nannte mich die Ghulin, die mich großzog, „Rei“. (Tokyo Ghoul)',
+  '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'Sein Quinque „13’s Jason“ wurde aus Yamoris Kagune gefertigt.',
+  '["Mein Partner und Mentor ist Yukinori Shinohara.", "Ich bin ein junger CCG-Ermittler mit roten Haarspangen."]',
+  'Who am I? As a child, the ghoul who raised me called me “Rei”. (Tokyo Ghoul)',
+  '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'His quinque “13’s Jason” was made from Yamori’s kagune.',
+  '["My partner and mentor is Yukinori Shinohara.", "I am a young CCG investigator with red hair clips."]');
+
+-- ES
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Lieblingsautor ist Sen Takatsuki. (Tokyo Ghoul)', 'es',
+  '¿Quién soy? Mi autor favorito es Sen Takatsuki. (Tokyo Ghoul)',
+  '["Hideyoshi Nagachika", "Nishiki Nishio", "Ken Kaneki", "Shuu Tsukiyama"]', 'Tras su cautiverio con Aogiri Tree, su pelo se vuelve blanco.',
+  '["Solo mi ojo izquierdo se convierte en un ojo de ghoul.", "Soy un estudiante que se convirtió en medio ghoul por un trasplante de órganos."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine beste Freundin Yoriko kocht für mich, obwohl mir menschliches Essen nicht schmeckt. (Tokyo Ghoul)', 'es',
+  '¿Quién soy? Mi mejor amiga Yoriko cocina para mí, aunque la comida humana no me sabe bien. (Tokyo Ghoul)',
+  '["Touka Kirishima", "Hinami Fueguchi", "Akira Mado", "Rize Kamishiro"]', 'En “Tokyo Ghoul:re” lleva la cafetería :re.',
+  '["Mi hermano menor, Ayato, pertenece a Aogiri Tree.", "Trabajo de camarera en la cafetería Anteiku y llevo una máscara de conejo."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind nannte mich die Ghulin, die mich großzog, „Rei“. (Tokyo Ghoul)', 'es',
+  '¿Quién soy? De niño, la ghoul que me crio me llamaba “Rei”. (Tokyo Ghoul)',
+  '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'Su quinque “13’s Jason” se fabricó con el kagune de Yamori.',
+  '["Mi compañero y mentor es Yukinori Shinohara.", "Soy un joven investigador de la CCG con horquillas rojas."]');
+
+-- FR
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Lieblingsautor ist Sen Takatsuki. (Tokyo Ghoul)', 'fr',
+  'Qui suis-je ? Mon auteur préféré est Sen Takatsuki. (Tokyo Ghoul)',
+  '["Hideyoshi Nagachika", "Nishiki Nishio", "Ken Kaneki", "Shuu Tsukiyama"]', 'Après sa captivité chez Aogiri Tree, ses cheveux deviennent blancs.',
+  '["Seul mon œil gauche se transforme en œil de goule.", "Je suis un étudiant devenu demi-goule à la suite d’une greffe d’organes."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine beste Freundin Yoriko kocht für mich, obwohl mir menschliches Essen nicht schmeckt. (Tokyo Ghoul)', 'fr',
+  'Qui suis-je ? Ma meilleure amie Yoriko cuisine pour moi, même si la nourriture humaine n’a pas bon goût pour moi. (Tokyo Ghoul)',
+  '["Touka Kirishima", "Hinami Fueguchi", "Akira Mado", "Rize Kamishiro"]', 'Dans « Tokyo Ghoul:re », elle tient le café :re.',
+  '["Mon petit frère Ayato fait partie d’Aogiri Tree.", "Je suis serveuse au café Anteiku et je porte un masque de lapin."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind nannte mich die Ghulin, die mich großzog, „Rei“. (Tokyo Ghoul)', 'fr',
+  'Qui suis-je ? Enfant, la goule qui m’a élevé m’appelait « Rei ». (Tokyo Ghoul)',
+  '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'Sa quinque « 13’s Jason » a été fabriquée à partir du kagune de Yamori.',
+  '["Mon partenaire et mentor est Yukinori Shinohara.", "Je suis un jeune enquêteur du CCG avec des barrettes rouges."]');
+
+-- PT
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Lieblingsautor ist Sen Takatsuki. (Tokyo Ghoul)', 'pt',
+  'Quem sou eu? Meu autor favorito é Sen Takatsuki. (Tokyo Ghoul)',
+  '["Hideyoshi Nagachika", "Nishiki Nishio", "Ken Kaneki", "Shuu Tsukiyama"]', 'Depois do cativeiro com a Aogiri Tree, seu cabelo fica branco.',
+  '["Só meu olho esquerdo se transforma em olho de ghoul.", "Sou um estudante que virou meio-ghoul por causa de um transplante de órgãos."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine beste Freundin Yoriko kocht für mich, obwohl mir menschliches Essen nicht schmeckt. (Tokyo Ghoul)', 'pt',
+  'Quem sou eu? Minha melhor amiga, Yoriko, cozinha para mim, mesmo que comida humana não tenha gosto bom para mim. (Tokyo Ghoul)',
+  '["Touka Kirishima", "Hinami Fueguchi", "Akira Mado", "Rize Kamishiro"]', 'Em “Tokyo Ghoul:re”, ela administra o café :re.',
+  '["Meu irmão mais novo, Ayato, faz parte da Aogiri Tree.", "Trabalho como garçonete no café Anteiku e uso uma máscara de coelho."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind nannte mich die Ghulin, die mich großzog, „Rei“. (Tokyo Ghoul)', 'pt',
+  'Quem sou eu? Quando criança, a ghoul que me criou me chamava de “Rei”. (Tokyo Ghoul)',
+  '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'Sua quinque “13’s Jason” foi feita com o kagune de Yamori.',
+  '["Meu parceiro e mentor é Yukinori Shinohara.", "Sou um jovem investigador da CCG com presilhas vermelhas."]');
