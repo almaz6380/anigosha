@@ -630,3 +630,78 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Seit dem frühen Tod meine
   'Quem sou eu? Desde que minha mãe morreu cedo, acredito que fui escolhida para salvar o mundo. (Dandadan)',
   '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'No começo, ela achava que Momo e Okarun eram demônios que precisava exorcizar.',
   '["Absorvi os poderes de Acrobatic Silky.", "Sou o ídolo da escola e estou de olho no Okarun."]');
+
+-- oshi_no_ko, Stufe 1
+select public.seed_raetsel('oshi_no_ko', 1, 2, 'who_am_i',
+  'Wer bin ich? Ich wuchs in einem Kinderheim auf und wurde mit zwölf Jahren als Idol entdeckt. (Oshi no Ko)',
+  '["Kana Arima", "Ruby", "Ai Hoshino", "MEM-cho"]', 'Ihr Vorname Ai bedeutet auf Japanisch „Liebe“.',
+  '["Mit 16 bekam ich heimlich Zwillinge.", "Ich war das Center von B-Komachi und habe Sterne in den Augen."]',
+  'Who am I? I grew up in an orphanage and was scouted as an idol at the age of twelve. (Oshi no Ko)',
+  '["Kana Arima", "Ruby", "Ai Hoshino", "MEM-cho"]', 'Her first name Ai means “love” in Japanese.',
+  '["At 16, I secretly had twins.", "I was the center of B-Komachi and have stars in my eyes."]');
+
+-- oshi_no_ko, Stufe 2
+select public.seed_raetsel('oshi_no_ko', 2, 0, 'who_am_i',
+  'Wer bin ich? Als Kind war ich berühmt dafür, auf Kommando in zehn Sekunden weinen zu können. (Oshi no Ko)',
+  '["Kana Arima", "Akane Kurokawa", "Frill Shiranui", "Yuki Sumi"]', 'Im japanischen Original spricht sie Megumi Han.',
+  '["In der Verfilmung von „Sweet Today“ spiele ich die weibliche Hauptrolle.", "Ich bin das Center der neuen B-Komachi und ein Jahr älter als Aqua."]',
+  'Who am I? As a child, I was famous for being able to cry on cue in ten seconds. (Oshi no Ko)',
+  '["Kana Arima", "Akane Kurokawa", "Frill Shiranui", "Yuki Sumi"]', 'In the Japanese original, she is voiced by Megumi Han.',
+  '["I play the female lead in the adaptation of “Sweet Today”.", "I am the center of the new B-Komachi and one year older than Aqua."]');
+
+-- oshi_no_ko, Stufe 3
+select public.seed_raetsel('oshi_no_ko', 3, 3, 'who_am_i',
+  'Wer bin ich? Ich analysiere Menschen so genau, dass ich ihre Persönlichkeit glaubhaft nachspielen kann. (Oshi no Ko)',
+  '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'Im japanischen Original spricht sie Manaka Iwami.',
+  '["Ich gehöre der Theatertruppe Lalalai an.", "In der Reality-Show „Love Now“ werde ich nach einem Missgeschick im Netz angefeindet."]',
+  'Who am I? I analyze people so closely that I can convincingly play their personality. (Oshi no Ko)',
+  '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'In the Japanese original, she is voiced by Manaka Iwami.',
+  '["I belong to the Lalalai theater troupe.", "On the reality show “Love Now”, I am attacked online after a mishap."]');
+
+-- ES
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich wuchs in einem Kinderheim auf und wurde mit zwölf Jahren als Idol entdeckt. (Oshi no Ko)', 'es',
+  '¿Quién soy? Crecí en un orfanato y me descubrieron como idol a los doce años. (Oshi no Ko)',
+  '["Kana Arima", "Ruby", "Ai Hoshino", "MEM-cho"]', 'Su nombre, Ai, significa “amor” en japonés.',
+  '["A los 16 tuve gemelos en secreto.", "Fui la center de B-Komachi y tengo estrellas en los ojos."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind war ich berühmt dafür, auf Kommando in zehn Sekunden weinen zu können. (Oshi no Ko)', 'es',
+  '¿Quién soy? De niña era famosa por poder llorar a voluntad en diez segundos. (Oshi no Ko)',
+  '["Kana Arima", "Akane Kurokawa", "Frill Shiranui", "Yuki Sumi"]', 'En la versión original japonesa le da voz Megumi Han.',
+  '["Interpreto a la protagonista en la adaptación de “Sweet Today”.", "Soy la center de la nueva B-Komachi y tengo un año más que Aqua."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich analysiere Menschen so genau, dass ich ihre Persönlichkeit glaubhaft nachspielen kann. (Oshi no Ko)', 'es',
+  '¿Quién soy? Analizo a las personas con tanta precisión que puedo interpretar su personalidad de forma convincente. (Oshi no Ko)',
+  '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'En la versión original japonesa le da voz Manaka Iwami.',
+  '["Pertenezco a la compañía de teatro Lalalai.", "En el reality “Love Now” me atacan en internet tras un percance."]');
+
+-- FR
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich wuchs in einem Kinderheim auf und wurde mit zwölf Jahren als Idol entdeckt. (Oshi no Ko)', 'fr',
+  'Qui suis-je ? J’ai grandi dans un orphelinat et j’ai été repérée comme idole à douze ans. (Oshi no Ko)',
+  '["Kana Arima", "Ruby", "Ai Hoshino", "MEM-cho"]', 'Son prénom Ai signifie « amour » en japonais.',
+  '["À 16 ans, j’ai eu des jumeaux en secret.", "J’étais la center de B-Komachi et j’ai des étoiles dans les yeux."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind war ich berühmt dafür, auf Kommando in zehn Sekunden weinen zu können. (Oshi no Ko)', 'fr',
+  'Qui suis-je ? Enfant, j’étais célèbre pour pouvoir pleurer sur commande en dix secondes. (Oshi no Ko)',
+  '["Kana Arima", "Akane Kurokawa", "Frill Shiranui", "Yuki Sumi"]', 'Dans la version originale japonaise, elle est doublée par Megumi Han.',
+  '["Je tiens le rôle principal féminin dans l’adaptation de « Sweet Today ».", "Je suis la center du nouveau B-Komachi et j’ai un an de plus qu’Aqua."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich analysiere Menschen so genau, dass ich ihre Persönlichkeit glaubhaft nachspielen kann. (Oshi no Ko)', 'fr',
+  'Qui suis-je ? J’analyse les gens avec une telle précision que je peux incarner leur personnalité de façon convaincante. (Oshi no Ko)',
+  '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'Dans la version originale japonaise, elle est doublée par Manaka Iwami.',
+  '["J’appartiens à la troupe de théâtre Lalalai.", "Dans l’émission « Love Now », je suis harcelée en ligne après un incident."]');
+
+-- PT
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich wuchs in einem Kinderheim auf und wurde mit zwölf Jahren als Idol entdeckt. (Oshi no Ko)', 'pt',
+  'Quem sou eu? Cresci num orfanato e fui descoberta como idol aos doze anos. (Oshi no Ko)',
+  '["Kana Arima", "Ruby", "Ai Hoshino", "MEM-cho"]', 'O nome Ai significa “amor” em japonês.',
+  '["Aos 16, tive gêmeos em segredo.", "Fui a center do B-Komachi e tenho estrelas nos olhos."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind war ich berühmt dafür, auf Kommando in zehn Sekunden weinen zu können. (Oshi no Ko)', 'pt',
+  'Quem sou eu? Quando criança, eu era famosa por conseguir chorar na hora em dez segundos. (Oshi no Ko)',
+  '["Kana Arima", "Akane Kurokawa", "Frill Shiranui", "Yuki Sumi"]', 'No original japonês, ela é dublada por Megumi Han.',
+  '["Faço a protagonista na adaptação de “Sweet Today”.", "Sou a center do novo B-Komachi e tenho um ano a mais que Aqua."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Ich analysiere Menschen so genau, dass ich ihre Persönlichkeit glaubhaft nachspielen kann. (Oshi no Ko)', 'pt',
+  'Quem sou eu? Analiso as pessoas com tanta precisão que consigo interpretar a personalidade delas de forma convincente. (Oshi no Ko)',
+  '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'No original japonês, ela é dublada por Manaka Iwami.',
+  '["Faço parte da companhia de teatro Lalalai.", "No reality “Love Now”, sou atacada na internet depois de um incidente."]');
