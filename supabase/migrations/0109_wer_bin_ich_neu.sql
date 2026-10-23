@@ -705,3 +705,149 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Ich analysiere Menschen so
   'Quem sou eu? Analiso as pessoas com tanta precisão que consigo interpretar a personalidade delas de forma convincente. (Oshi no Ko)',
   '["MEM-cho", "Kana Arima", "Frill Shiranui", "Akane Kurokawa"]', 'No original japonês, ela é dublada por Manaka Iwami.',
   '["Faço parte da companhia de teatro Lalalai.", "No reality “Love Now”, sou atacada na internet depois de um incidente."]');
+
+-- haikyu, Stufe 1
+select public.seed_raetsel('haikyu', 1, 2, 'who_am_i',
+  'Wer bin ich? Mein Vorbild sah ich zum ersten Mal auf einem Fernseher in einem Schaufenster. (Haikyu!!)',
+  '["Tobio Kageyama", "Yu Nishinoya", "Shoyo Hinata", "Kei Tsukishima"]', 'In der Mittelschule hatte er kaum Mitspieler und musste sich für sein einziges Turnier Leute aus anderen Clubs leihen.',
+  '["Jeden Tag fahre ich mit dem Fahrrad über einen Berg zur Schule.", "Ich bin klein, springe aber enorm hoch und trage bei Karasuno die Nummer 10."]',
+  'Who am I? I first saw my idol on a TV in a shop window. (Haikyu!!)',
+  '["Tobio Kageyama", "Yu Nishinoya", "Shoyo Hinata", "Kei Tsukishima"]', 'In middle school he barely had any teammates and had to borrow players from other clubs for his only tournament.',
+  '["Every day I ride my bike over a mountain to get to school.", "I am short but jump incredibly high, and I wear number 10 at Karasuno."]');
+
+-- haikyu, Stufe 2
+select public.seed_raetsel('haikyu', 2, 3, 'who_am_i',
+  'Wer bin ich? Nach der Schule gründete ich eine Firma und wurde Sponsor eines früheren Gegners. (Haikyu!!)',
+  '["Tetsuro Kuroo", "Lev Haiba", "Morisuke Yaku", "Kenma Kozume"]', 'Sein Lieblingsessen ist Apfelkuchen.',
+  '["Mein Freund aus Kindertagen nahm mich zum Volleyball mit – eigentlich spiele ich lieber Videospiele.", "Ich bin Zuspieler bei Nekoma und habe blond gefärbte Haare mit schwarzem Ansatz."]',
+  'Who am I? After school, I founded a company and became the sponsor of a former opponent. (Haikyu!!)',
+  '["Tetsuro Kuroo", "Lev Haiba", "Morisuke Yaku", "Kenma Kozume"]', 'His favourite food is apple pie.',
+  '["My childhood friend got me into volleyball – I would actually rather play video games.", "I am Nekoma’s setter and have dyed blond hair with black roots."]');
+
+-- haikyu, Stufe 3
+select public.seed_raetsel('haikyu', 3, 0, 'who_am_i',
+  'Wer bin ich? Nach der Schule arbeite ich in einem Museum in Sendai und spiele nebenbei für die Sendai Frogs. (Haikyu!!)',
+  '["Kei Tsukishima", "Tadashi Yamaguchi", "Koshi Sugawara", "Chikara Ennoshita"]', 'Sein Lieblingsessen ist Erdbeertorte.',
+  '["Mein älterer Bruder Akiteru spielte ebenfalls für Karasuno.", "Ich trage eine Brille, bin Mittelblocker bei Karasuno, und mein bester Freund ist Yamaguchi."]',
+  'Who am I? After school, I work at a museum in Sendai and play for the Sendai Frogs on the side. (Haikyu!!)',
+  '["Kei Tsukishima", "Tadashi Yamaguchi", "Koshi Sugawara", "Chikara Ennoshita"]', 'His favourite food is strawberry shortcake.',
+  '["My older brother Akiteru also played for Karasuno.", "I wear glasses, I am a middle blocker at Karasuno, and my best friend is Yamaguchi."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Vorbild sah ich zum ersten Mal auf einem Fernseher in einem Schaufenster. (Haikyu!!)', 'es',
+  '¿Quién soy? Vi a mi ídolo por primera vez en un televisor de un escaparate. (Haikyu!!)',
+  '["Tobio Kageyama", "Yu Nishinoya", "Shoyo Hinata", "Kei Tsukishima"]', 'En la secundaria apenas tenía compañeros y tuvo que pedir prestados jugadores de otros clubes para su único torneo.',
+  '["Cada día voy al instituto en bicicleta cruzando una montaña.", "Soy bajito, pero salto muchísimo y llevo el número 10 en Karasuno."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule gründete ich eine Firma und wurde Sponsor eines früheren Gegners. (Haikyu!!)', 'es',
+  '¿Quién soy? Tras el instituto fundé una empresa y me convertí en patrocinador de un antiguo rival. (Haikyu!!)',
+  '["Tetsuro Kuroo", "Lev Haiba", "Morisuke Yaku", "Kenma Kozume"]', 'Su comida favorita es la tarta de manzana.',
+  '["Mi amigo de la infancia me llevó al voleibol; en realidad prefiero los videojuegos.", "Soy el colocador de Nekoma y llevo el pelo teñido de rubio con las raíces negras."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule arbeite ich in einem Museum in Sendai und spiele nebenbei für die Sendai Frogs. (Haikyu!!)', 'es',
+  '¿Quién soy? Tras el instituto trabajo en un museo de Sendai y además juego en los Sendai Frogs. (Haikyu!!)',
+  '["Kei Tsukishima", "Tadashi Yamaguchi", "Koshi Sugawara", "Chikara Ennoshita"]', 'Su comida favorita es la tarta de fresas.',
+  '["Mi hermano mayor, Akiteru, también jugó en Karasuno.", "Llevo gafas, soy central en Karasuno y mi mejor amigo es Yamaguchi."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Vorbild sah ich zum ersten Mal auf einem Fernseher in einem Schaufenster. (Haikyu!!)', 'fr',
+  'Qui suis-je ? J’ai vu mon idole pour la première fois sur une télé dans une vitrine. (Haikyu!!)',
+  '["Tobio Kageyama", "Yu Nishinoya", "Shoyo Hinata", "Kei Tsukishima"]', 'Au collège, il n’avait presque pas de coéquipiers et a dû emprunter des joueurs d’autres clubs pour son unique tournoi.',
+  '["Chaque jour, je vais au lycée à vélo en franchissant une montagne.", "Je suis petit, mais je saute très haut et je porte le numéro 10 à Karasuno."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule gründete ich eine Firma und wurde Sponsor eines früheren Gegners. (Haikyu!!)', 'fr',
+  'Qui suis-je ? Après le lycée, j’ai fondé une entreprise et suis devenu le sponsor d’un ancien adversaire. (Haikyu!!)',
+  '["Tetsuro Kuroo", "Lev Haiba", "Morisuke Yaku", "Kenma Kozume"]', 'Son plat préféré est la tarte aux pommes.',
+  '["Mon ami d’enfance m’a entraîné au volley – en vrai, je préfère les jeux vidéo.", "Je suis le passeur de Nekoma et j’ai les cheveux teints en blond avec des racines noires."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule arbeite ich in einem Museum in Sendai und spiele nebenbei für die Sendai Frogs. (Haikyu!!)', 'fr',
+  'Qui suis-je ? Après le lycée, je travaille dans un musée de Sendai et je joue en parallèle pour les Sendai Frogs. (Haikyu!!)',
+  '["Kei Tsukishima", "Tadashi Yamaguchi", "Koshi Sugawara", "Chikara Ennoshita"]', 'Son dessert préféré est le fraisier.',
+  '["Mon grand frère Akiteru a lui aussi joué à Karasuno.", "Je porte des lunettes, je suis central à Karasuno et mon meilleur ami est Yamaguchi."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Mein Vorbild sah ich zum ersten Mal auf einem Fernseher in einem Schaufenster. (Haikyu!!)', 'pt',
+  'Quem sou eu? Vi meu ídolo pela primeira vez numa TV na vitrine de uma loja. (Haikyu!!)',
+  '["Tobio Kageyama", "Yu Nishinoya", "Shoyo Hinata", "Kei Tsukishima"]', 'No fundamental, ele quase não tinha colegas de time e precisou pegar emprestados jogadores de outros clubes para seu único torneio.',
+  '["Todo dia vou para a escola de bicicleta atravessando uma montanha.", "Sou baixinho, mas pulo muito alto e uso o número 10 no Karasuno."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule gründete ich eine Firma und wurde Sponsor eines früheren Gegners. (Haikyu!!)', 'pt',
+  'Quem sou eu? Depois do colégio, fundei uma empresa e virei patrocinador de um antigo adversário. (Haikyu!!)',
+  '["Tetsuro Kuroo", "Lev Haiba", "Morisuke Yaku", "Kenma Kozume"]', 'Sua comida favorita é torta de maçã.',
+  '["Meu amigo de infância me levou para o vôlei – na verdade, prefiro videogames.", "Sou o levantador do Nekoma e tenho o cabelo pintado de loiro com a raiz preta."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach der Schule arbeite ich in einem Museum in Sendai und spiele nebenbei für die Sendai Frogs. (Haikyu!!)', 'pt',
+  'Quem sou eu? Depois do colégio, trabalho num museu em Sendai e jogo pelo Sendai Frogs nas horas vagas. (Haikyu!!)',
+  '["Kei Tsukishima", "Tadashi Yamaguchi", "Koshi Sugawara", "Chikara Ennoshita"]', 'Sua comida favorita é torta de morango.',
+  '["Meu irmão mais velho, Akiteru, também jogou no Karasuno.", "Uso óculos, sou central no Karasuno e meu melhor amigo é o Yamaguchi."]');
+
+-- Tokyo Revengers: „Wer bin ich?“ (3 Stufen) + ES/FR/PT
+
+-- tokyo_revengers, Stufe 1
+select public.seed_raetsel('tokyo_revengers', 1, 3, 'who_am_i',
+  'Wer bin ich? Am Bahnhof wurde ich auf die Gleise gestoßen – und wachte zwölf Jahre früher wieder auf. (Tokyo Revengers)',
+  '["Naoto Tachibana", "Chifuyu Matsuno", "Atsushi Sendo", "Takemichi Hanagaki"]', 'Mikey nennt ihn „Takemitchy“ – und Inupi macht ihn sogar zum Anführer der Black Dragons.',
+  '["In meiner Mittelschulzeit trug ich eine blond gebleichte Tolle.", "Ich springe immer wieder in die Vergangenheit, um meine Freundin Hinata zu retten."]',
+  'Who am I? I was pushed onto the tracks at a train station – and woke up twelve years earlier. (Tokyo Revengers)',
+  '["Naoto Tachibana", "Chifuyu Matsuno", "Atsushi Sendo", "Takemichi Hanagaki"]', 'Mikey calls him “Takemitchy” – and Inupi even makes him leader of the Black Dragons.',
+  '["In middle school, I wore a bleached blond pompadour.", "I keep leaping into the past to save my girlfriend Hinata."]');
+
+-- tokyo_revengers, Stufe 2
+select public.seed_raetsel('tokyo_revengers', 2, 0, 'who_am_i',
+  'Wer bin ich? Beim Sommerfest wurde ich niedergestochen und überlebte nur dank Takemichi. (Tokyo Revengers)',
+  '["Ken „Draken“ Ryuguji", "Takashi Mitsuya", "Keisuke Baji", "Haruki „Pah-chin“ Hayashida"]', 'Mikey nennt ihn „Kenchin“ – und Mikeys Schwester Emma ist in ihn verliebt.',
+  '["Ich bin der Vizechef der Tokyo Manji Gang und Mikeys bester Freund.", "An meiner Schläfe trage ich ein Drachen-Tattoo."]',
+  'Who am I? I was stabbed at the summer festival and only survived thanks to Takemichi. (Tokyo Revengers)',
+  '["Ken “Draken” Ryuguji", "Takashi Mitsuya", "Keisuke Baji", "Haruki “Pah-chin” Hayashida"]', 'Mikey calls him “Kenchin” – and Mikey’s sister Emma is in love with him.',
+  '["I am the vice-president of the Tokyo Manji Gang and Mikey’s best friend.", "I have a dragon tattoo on my temple."]');
+
+-- tokyo_revengers, Stufe 3
+select public.seed_raetsel('tokyo_revengers', 3, 1, 'who_am_i',
+  'Wer bin ich? Seit meiner Kindheit liebe ich ein Mädchen, das sich für einen anderen entschieden hat. (Tokyo Revengers)',
+  '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'Takemichi hielt ihn lange für einen Zeitspringer wie sich selbst.',
+  '["Mein engster Komplize trägt „Sünde“ und „Strafe“ auf den Händen.", "Ich trage eine Brille und will Toman von innen heraus beherrschen."]',
+  'Who am I? Since childhood, I have loved a girl who chose someone else. (Tokyo Revengers)',
+  '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'For a long time, Takemichi thought he was a time leaper just like himself.',
+  '["My closest accomplice has “Sin” and “Punishment” on his hands.", "I wear glasses and want to control Toman from within."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Am Bahnhof wurde ich auf die Gleise gestoßen – und wachte zwölf Jahre früher wieder auf. (Tokyo Revengers)', 'es',
+  '¿Quién soy? En una estación me empujaron a las vías… y desperté doce años antes. (Tokyo Revengers)',
+  '["Naoto Tachibana", "Chifuyu Matsuno", "Atsushi Sendo", "Takemichi Hanagaki"]', 'Mikey lo llama “Takemitchy”, e Inupi incluso lo nombra líder de los Black Dragon.',
+  '["En la secundaria llevaba un tupé rubio decolorado.", "Viajo una y otra vez al pasado para salvar a mi novia Hinata."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Sommerfest wurde ich niedergestochen und überlebte nur dank Takemichi. (Tokyo Revengers)', 'es',
+  '¿Quién soy? Me apuñalaron en el festival de verano y solo sobreviví gracias a Takemichi. (Tokyo Revengers)',
+  '["Ken “Draken” Ryuguji", "Takashi Mitsuya", "Keisuke Baji", "Haruki “Pah-chin” Hayashida"]', 'Mikey lo llama “Kenchin”, y Emma, la hermana de Mikey, está enamorada de él.',
+  '["Soy el vicepresidente de la Tokyo Manji Gang y el mejor amigo de Mikey.", "Llevo un tatuaje de dragón en la sien."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit meiner Kindheit liebe ich ein Mädchen, das sich für einen anderen entschieden hat. (Tokyo Revengers)', 'es',
+  '¿Quién soy? Desde niño amo a una chica que eligió a otro. (Tokyo Revengers)',
+  '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'Durante mucho tiempo, Takemichi creyó que también viajaba en el tiempo como él.',
+  '["Mi cómplice más cercano lleva “Pecado” y “Castigo” en las manos.", "Llevo gafas y quiero controlar Toman desde dentro."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Am Bahnhof wurde ich auf die Gleise gestoßen – und wachte zwölf Jahre früher wieder auf. (Tokyo Revengers)', 'fr',
+  'Qui suis-je ? À la gare, on m’a poussé sur les voies… et je me suis réveillé douze ans plus tôt. (Tokyo Revengers)',
+  '["Naoto Tachibana", "Chifuyu Matsuno", "Atsushi Sendo", "Takemichi Hanagaki"]', 'Mikey l’appelle « Takemitchy » – et Inupi va jusqu’à en faire le chef des Black Dragon.',
+  '["Au collège, je portais une banane blond décoloré.", "Je remonte sans cesse dans le passé pour sauver ma petite amie Hinata."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Sommerfest wurde ich niedergestochen und überlebte nur dank Takemichi. (Tokyo Revengers)', 'fr',
+  'Qui suis-je ? On m’a poignardé au festival d’été, et je n’ai survécu que grâce à Takemichi. (Tokyo Revengers)',
+  '["Ken « Draken » Ryuguji", "Takashi Mitsuya", "Keisuke Baji", "Haruki « Pah-chin » Hayashida"]', 'Mikey l’appelle « Kenchin » – et Emma, la sœur de Mikey, est amoureuse de lui.',
+  '["Je suis le vice-président du Tokyo Manji Gang et le meilleur ami de Mikey.", "Je porte un tatouage de dragon sur la tempe."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit meiner Kindheit liebe ich ein Mädchen, das sich für einen anderen entschieden hat. (Tokyo Revengers)', 'fr',
+  'Qui suis-je ? Depuis l’enfance, j’aime une fille qui en a choisi un autre. (Tokyo Revengers)',
+  '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'Pendant longtemps, Takemichi l’a cru capable de voyager dans le temps, comme lui.',
+  '["Mon plus proche complice porte « Crime » et « Châtiment » sur les mains.", "Je porte des lunettes et je veux contrôler Toman de l’intérieur."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Am Bahnhof wurde ich auf die Gleise gestoßen – und wachte zwölf Jahre früher wieder auf. (Tokyo Revengers)', 'pt',
+  'Quem sou eu? Fui empurrado nos trilhos de uma estação… e acordei doze anos antes. (Tokyo Revengers)',
+  '["Naoto Tachibana", "Chifuyu Matsuno", "Atsushi Sendo", "Takemichi Hanagaki"]', 'Mikey o chama de “Takemitchy” – e Inupi chega a fazê-lo líder dos Black Dragon.',
+  '["Na época da escola, eu usava um topete loiro descolorido.", "Volto ao passado várias vezes para salvar minha namorada, Hinata."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Sommerfest wurde ich niedergestochen und überlebte nur dank Takemichi. (Tokyo Revengers)', 'pt',
+  'Quem sou eu? Fui esfaqueado no festival de verão e só sobrevivi graças a Takemichi. (Tokyo Revengers)',
+  '["Ken “Draken” Ryuguji", "Takashi Mitsuya", "Keisuke Baji", "Haruki “Pah-chin” Hayashida"]', 'Mikey o chama de “Kenchin” – e Emma, a irmã de Mikey, é apaixonada por ele.',
+  '["Sou o vice-presidente da Tokyo Manji Gang e o melhor amigo de Mikey.", "Tenho uma tatuagem de dragão na têmpora."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit meiner Kindheit liebe ich ein Mädchen, das sich für einen anderen entschieden hat. (Tokyo Revengers)', 'pt',
+  'Quem sou eu? Desde criança amo uma garota que escolheu outro. (Tokyo Revengers)',
+  '["Shuji Hanma", "Tetta Kisaki", "Kazutora Hanemiya", "Izana Kurokawa"]', 'Por muito tempo, Takemichi achou que ele também viajava no tempo, como ele.',
+  '["Meu cúmplice mais próximo tem “Pecado” e “Castigo” nas mãos.", "Uso óculos e quero controlar a Toman por dentro."]');
