@@ -72,9 +72,11 @@
     "dailyGo": "Gioca ora",
     "streakAtRisk_one": "Ieri hai saltato! Salva la tua serie di {{count}} giorno.",
     "streakAtRisk_other": "Ieri hai saltato! Salva la tua serie di {{count}} giorni.",
+    "streakAtRisk_many": "Ieri hai saltato! Salva la tua serie di {{count}} giorni.",
     "streakSave": "Salva",
     "streakSaved_one": "Serie salvata: {{count}} giorno. Gioca un round oggi per continuarla.",
-    "streakSaved_other": "Serie salvata: {{count}} giorni. Gioca un round oggi per continuarla."
+    "streakSaved_other": "Serie salvata: {{count}} giorni. Gioca un round oggi per continuarla.",
+    "streakSaved_many": "Serie salvata: {{count}} giorni. Gioca un round oggi per continuarla."
   },
   "profile": {
     "title": "Profilo",
@@ -120,6 +122,7 @@
     "fiftyFifty": "50:50 — elimina due risposte",
     "streakDays_one": "{{count}} giorno di fila",
     "streakDays_other": "{{count}} giorni di fila",
+    "streakDays_many": "{{count}} giorni di fila",
     "chooseSeries": "Scegli una serie",
     "fiftyFiftyVideo": "Un altro 50:50 · video",
     "videoAborted": "Video chiuso prima — per la ricompensa serve il video completo.",
@@ -127,6 +130,7 @@
     "whoamiBonus": "Se indovini ora: +{{xp}} XP bonus",
     "lebenRest_one": "{{count}} vita rimasta",
     "lebenRest_other": "{{count}} vite rimaste",
+    "lebenRest_many": "{{count}} vite rimaste",
     "modusStand": "{{richtig}} su {{gesamt}} giuste",
     "modus": {
       "titel": "Modalità",
@@ -256,20 +260,28 @@
     "art": {
       "solo_runden_one": "Gioca {{count}} round solo",
       "solo_runden_other": "Gioca {{count}} round solo",
+      "solo_runden_many": "Gioca {{count}} round solo",
       "richtige_one": "Rispondi bene a {{count}} domanda",
       "richtige_other": "Rispondi bene a {{count}} domande",
+      "richtige_many": "Rispondi bene a {{count}} domande",
       "daily_one": "Gioca {{count}} sfida del giorno",
       "daily_other": "Gioca {{count}} sfide del giorno",
+      "daily_many": "Gioca {{count}} sfide del giorno",
       "fehlerfrei_one": "Completa {{count}} round perfetto",
       "fehlerfrei_other": "Completa {{count}} round perfetti",
+      "fehlerfrei_many": "Completa {{count}} round perfetti",
       "schwer_one": "Gioca {{count}} round su “Difficile”",
       "schwer_other": "Gioca {{count}} round su “Difficile”",
+      "schwer_many": "Gioca {{count}} round su “Difficile”",
       "duelle_one": "Completa {{count}} duello",
       "duelle_other": "Completa {{count}} duelli",
+      "duelle_many": "Completa {{count}} duelli",
       "siege_one": "Vinci {{count}} duello",
       "siege_other": "Vinci {{count}} duelli",
+      "siege_many": "Vinci {{count}} duelli",
       "spieltage_one": "Gioca per {{count}} giorno",
-      "spieltage_other": "Gioca in {{count}} giorni diversi"
+      "spieltage_other": "Gioca in {{count}} giorni diversi",
+      "spieltage_many": "Gioca in {{count}} giorni diversi"
     }
   },
   "avatar": {

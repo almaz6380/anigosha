@@ -474,3 +474,84 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind nannte mich die G
   'Quem sou eu? Quando criança, a ghoul que me criou me chamava de “Rei”. (Tokyo Ghoul)',
   '["Kotarou Amon", "Seidou Takizawa", "Kishou Arima", "Juuzou Suzuya"]', 'Sua quinque “13’s Jason” foi feita com o kagune de Yamori.',
   '["Meu parceiro e mentor é Yukinori Shinohara.", "Sou um jovem investigador da CCG com presilhas vermelhas."]');
+
+-- kaiju_no_8, Stufe 1
+select public.seed_raetsel('kaiju_no_8', 1, 2, 'who_am_i',
+  'Wer bin ich? Beim Eignungstest zeigte mein Anzug eine freigesetzte Kampfkraft von 0 % an. (Kaiju No. 8)',
+  '["Reno Ichikawa", "Iharu Furuhashi", "Kafka Hibino", "Soshiro Hoshina"]', 'Bevor er Rekrut wurde, räumte er bei Monster Sweeper Inc. Kaiju-Kadaver weg.',
+  '["Seit ein winziges Kaiju in meinen Körper gelangt ist, kann ich mich selbst in eines verwandeln.", "Ich bin 32 und will mein Kindheitsversprechen an Mina Ashiro einlösen."]',
+  'Who am I? In the aptitude test, my suit showed an unleashed combat power of 0%. (Kaiju No. 8)',
+  '["Reno Ichikawa", "Iharu Furuhashi", "Kafka Hibino", "Soshiro Hoshina"]', 'Before becoming a recruit, he cleared away kaiju corpses at Monster Sweeper Inc.',
+  '["Ever since a tiny kaiju got inside my body, I can turn into one myself.", "I am 32 and want to keep my childhood promise to Mina Ashiro."]');
+
+-- kaiju_no_8, Stufe 2
+select public.seed_raetsel('kaiju_no_8', 2, 1, 'who_am_i',
+  'Wer bin ich? Später kämpfe ich in einer Rüstung, die aus Kaiju Nr. 10 gefertigt wurde. (Kaiju No. 8)',
+  '["Gen Narumi", "Soshiro Hoshina", "Eiji Hasegawa", "Jūgo Ogata"]', 'An seinem freien Tag spendet er Ausrüstung an ein Katastrophenschutzzentrum.',
+  '["Mein älterer Bruder Soichiro führt die 6. Division.", "Ich bin Vizekapitän der 3. Division und kämpfe mit zwei Schwertern."]',
+  'Who am I? Later, I fight in armor made from Kaiju No. 10. (Kaiju No. 8)',
+  '["Gen Narumi", "Soshiro Hoshina", "Eiji Hasegawa", "Jūgo Ogata"]', 'On his day off, he donates equipment to a disaster prevention center.',
+  '["My older brother Soichiro leads the Sixth Division.", "I am vice-captain of the Third Division and fight with two swords."]');
+
+-- kaiju_no_8, Stufe 3
+select public.seed_raetsel('kaiju_no_8', 3, 3, 'who_am_i',
+  'Wer bin ich? Implantate in meinen Augen lassen mich die Bewegungen meiner Gegner vorhersehen. (Kaiju No. 8)',
+  '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'Er ist auch die Hauptfigur des Ablegers „Kaiju No. 8: B-Side“.',
+  '["In meiner Freizeit spiele ich am liebsten Videospiele.", "Ich bin Kapitän der 1. Division und gelte als stärkster aktiver Kämpfer."]',
+  'Who am I? Implants in my eyes let me predict my opponents’ movements. (Kaiju No. 8)',
+  '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'He is also the protagonist of the spin-off “Kaiju No. 8: B-Side”.',
+  '["In my free time, I love playing video games.", "I am captain of the First Division and considered the strongest active fighter."]');
+
+-- ===========================================================================
+-- ES
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Eignungstest zeigte mein Anzug eine freigesetzte Kampfkraft von 0 % an. (Kaiju No. 8)', 'es',
+  '¿Quién soy? En la prueba de aptitud, mi traje mostró un poder de combate liberado del 0 %. (Kaiju No. 8)',
+  '["Reno Ichikawa", "Iharu Furuhashi", "Kafka Hibino", "Soshiro Hoshina"]', 'Antes de ser recluta, retiraba cadáveres de kaiju en Monster Sweeper Inc.',
+  '["Desde que un kaiju diminuto entró en mi cuerpo, puedo convertirme en uno.", "Tengo 32 años y quiero cumplir mi promesa de infancia a Mina Ashiro."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Später kämpfe ich in einer Rüstung, die aus Kaiju Nr. 10 gefertigt wurde. (Kaiju No. 8)', 'es',
+  '¿Quién soy? Más adelante lucho con una armadura hecha del Kaiju n.º 10. (Kaiju No. 8)',
+  '["Gen Narumi", "Soshiro Hoshina", "Eiji Hasegawa", "Jūgo Ogata"]', 'En su día libre dona equipo a un centro de prevención de desastres.',
+  '["Mi hermano mayor, Soichiro, dirige la Sexta División.", "Soy el vicecapitán de la Tercera División y lucho con dos espadas."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Implantate in meinen Augen lassen mich die Bewegungen meiner Gegner vorhersehen. (Kaiju No. 8)', 'es',
+  '¿Quién soy? Unos implantes en mis ojos me permiten prever los movimientos de mis rivales. (Kaiju No. 8)',
+  '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'También es el protagonista del spin-off “Kaiju No. 8: B-Side”.',
+  '["En mi tiempo libre, lo que más me gusta es jugar a videojuegos.", "Soy el capitán de la Primera División y me consideran el combatiente en activo más fuerte."]');
+
+-- ===========================================================================
+-- FR
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Eignungstest zeigte mein Anzug eine freigesetzte Kampfkraft von 0 % an. (Kaiju No. 8)', 'fr',
+  'Qui suis-je ? Lors du test d’aptitude, ma combinaison a affiché une puissance de combat libérée de 0 %. (Kaiju No. 8)',
+  '["Reno Ichikawa", "Iharu Furuhashi", "Kafka Hibino", "Soshiro Hoshina"]', 'Avant de devenir recrue, il évacuait des cadavres de kaiju chez Monster Sweeper Inc.',
+  '["Depuis qu’un minuscule kaiju a pénétré dans mon corps, je peux moi-même en devenir un.", "J’ai 32 ans et je veux tenir ma promesse d’enfance envers Mina Ashiro."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Später kämpfe ich in einer Rüstung, die aus Kaiju Nr. 10 gefertigt wurde. (Kaiju No. 8)', 'fr',
+  'Qui suis-je ? Plus tard, je combats dans une armure fabriquée à partir du Kaiju n° 10. (Kaiju No. 8)',
+  '["Gen Narumi", "Soshiro Hoshina", "Eiji Hasegawa", "Jūgo Ogata"]', 'Pendant son jour de congé, il fait don de matériel à un centre de prévention des catastrophes.',
+  '["Mon frère aîné Soichiro dirige la 6e division.", "Je suis vice-capitaine de la 3e division et je combats avec deux sabres."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Implantate in meinen Augen lassen mich die Bewegungen meiner Gegner vorhersehen. (Kaiju No. 8)', 'fr',
+  'Qui suis-je ? Des implants dans mes yeux me permettent de prévoir les mouvements de mes adversaires. (Kaiju No. 8)',
+  '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'Il est aussi le héros du spin-off « Kaiju No. 8: B-Side ».',
+  '["Pendant mon temps libre, j’adore jouer aux jeux vidéo.", "Je suis capitaine de la 1re division et considéré comme le combattant en activité le plus fort."]');
+
+-- ===========================================================================
+-- PT
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Beim Eignungstest zeigte mein Anzug eine freigesetzte Kampfkraft von 0 % an. (Kaiju No. 8)', 'pt',
+  'Quem sou eu? No teste de aptidão, meu traje mostrou um poder de combate liberado de 0%. (Kaiju No. 8)',
+  '["Reno Ichikawa", "Iharu Furuhashi", "Kafka Hibino", "Soshiro Hoshina"]', 'Antes de virar recruta, ele removia cadáveres de kaiju na Monster Sweeper Inc.',
+  '["Desde que um kaiju minúsculo entrou no meu corpo, consigo me transformar em um.", "Tenho 32 anos e quero cumprir minha promessa de infância com Mina Ashiro."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Später kämpfe ich in einer Rüstung, die aus Kaiju Nr. 10 gefertigt wurde. (Kaiju No. 8)', 'pt',
+  'Quem sou eu? Mais tarde, luto com uma armadura feita do Kaiju nº 10. (Kaiju No. 8)',
+  '["Gen Narumi", "Soshiro Hoshina", "Eiji Hasegawa", "Jūgo Ogata"]', 'No dia de folga, ele doa equipamentos a um centro de prevenção de desastres.',
+  '["Meu irmão mais velho, Soichiro, comanda a Sexta Divisão.", "Sou vice-capitão da Terceira Divisão e luto com duas espadas."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Implantate in meinen Augen lassen mich die Bewegungen meiner Gegner vorhersehen. (Kaiju No. 8)', 'pt',
+  'Quem sou eu? Implantes nos meus olhos me permitem prever os movimentos dos adversários. (Kaiju No. 8)',
+  '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'Ele também é o protagonista do spin-off “Kaiju No. 8: B-Side”.',
+  '["No meu tempo livre, o que mais gosto é jogar videogame.", "Sou capitão da Primeira Divisão e considerado o combatente ativo mais forte."]');
