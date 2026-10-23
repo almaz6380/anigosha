@@ -237,3 +237,163 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Chibiusa ist eine enge Fre
   'Quem sou eu? Chibiusa é uma amiga próxima e me chama de “Puu”. (Sailor Moon)',
   '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'O bastão dela guarda um orbe de granada, um dos três talismãs.',
   '["Meu bastão tem a forma de uma chave.", "Como Sailor Plutão, protejo a Porta do Tempo."]');
+
+-- evangelion, Stufe 1
+select public.seed_raetsel('evangelion', 1, 2, 'who_am_i',
+  'Wer bin ich? Nach dem Verschwinden meiner Mutter gab mich mein Vater bei einem Lehrer in Pflege. (Evangelion)',
+  '["Toji Suzuhara", "Kaworu Nagisa", "Shinji Ikari", "Kensuke Aida"]', 'Er spielt Cello und hört ständig Musik über seine Kopfhörer.',
+  '["Mit 14 Jahren rief mich mein Vater überraschend nach Tokyo-3.", "Ich steuere die Eva-01 und sage mir immer wieder: „Ich darf nicht davonlaufen.“"]',
+  'Who am I? After my mother vanished, my father left me in the care of a teacher. (Evangelion)',
+  '["Toji Suzuhara", "Kaworu Nagisa", "Shinji Ikari", "Kensuke Aida"]', 'He plays the cello and constantly listens to music through his headphones.',
+  '["At 14, my father unexpectedly summoned me to Tokyo-3.", "I pilot Eva-01 and keep telling myself: “I mustn’t run away.”"]');
+
+-- evangelion, Stufe 2
+select public.seed_raetsel('evangelion', 2, 1, 'who_am_i',
+  'Wer bin ich? Als Kind überlebte ich als Einzige die Antarktis-Expedition meines Vaters. (Evangelion)',
+  '["Ritsuko Akagi", "Misato Katsuragi", "Maya Ibuki", "Yui Ikari"]', 'Ihr silbernes Kreuz trägt sie zur Erinnerung an ihren Vater.',
+  '["Ich fahre einen Renault Alpine und trinke am liebsten Bier.", "Ich leite die Einsätze bei NERV und wohne mit Shinji und dem Pinguin Pen Pen zusammen."]',
+  'Who am I? As a child, I was the sole survivor of my father’s Antarctic expedition. (Evangelion)',
+  '["Ritsuko Akagi", "Misato Katsuragi", "Maya Ibuki", "Yui Ikari"]', 'She wears her silver cross in memory of her father.',
+  '["I drive a Renault Alpine and my favorite drink is beer.", "I direct operations at NERV and live with Shinji and the penguin Pen Pen."]');
+
+-- evangelion, Stufe 3
+select public.seed_raetsel('evangelion', 3, 0, 'who_am_i',
+  'Wer bin ich? In meinem kahlen Zimmer bewahre ich die zerbrochene Brille eines Mannes auf. (Evangelion)',
+  '["Rei Ayanami", "Asuka Langley Soryu", "Hikari Horaki", "Maya Ibuki"]', 'Gendo rettete sie einst aus dem überhitzten Entry Plug der Eva-00 und verbrannte sich dabei die Hände.',
+  '["Mein Körper wurde aus dem Erbgut von Shinjis Mutter erschaffen.", "Ich steuere die Eva-00 und habe blaues Haar und rote Augen."]',
+  'Who am I? In my bare room, I keep a man’s broken glasses. (Evangelion)',
+  '["Rei Ayanami", "Asuka Langley Soryu", "Hikari Horaki", "Maya Ibuki"]', 'Gendo once rescued her from Eva-00’s overheated entry plug and burned his hands doing so.',
+  '["My body was created from the genetic material of Shinji’s mother.", "I pilot Eva-00 and have blue hair and red eyes."]');
+
+-- ===========================================================================
+-- ES
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach dem Verschwinden meiner Mutter gab mich mein Vater bei einem Lehrer in Pflege. (Evangelion)', 'es',
+  '¿Quién soy? Cuando mi madre desapareció, mi padre me dejó al cuidado de un profesor. (Evangelion)',
+  '["Toji Suzuhara", "Kaworu Nagisa", "Shinji Ikari", "Kensuke Aida"]', 'Toca el violonchelo y escucha música todo el tiempo con sus auriculares.',
+  '["A los 14 años, mi padre me llamó de repente a Tokio-3.", "Piloto el Eva-01 y me repito una y otra vez: «No debo huir»."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind überlebte ich als Einzige die Antarktis-Expedition meines Vaters. (Evangelion)', 'es',
+  '¿Quién soy? De niña fui la única superviviente de la expedición de mi padre a la Antártida. (Evangelion)',
+  '["Ritsuko Akagi", "Misato Katsuragi", "Maya Ibuki", "Yui Ikari"]', 'Lleva su cruz plateada en recuerdo de su padre.',
+  '["Conduzco un Renault Alpine y mi bebida favorita es la cerveza.", "Dirijo las operaciones de NERV y vivo con Shinji y el pingüino Pen Pen."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? In meinem kahlen Zimmer bewahre ich die zerbrochene Brille eines Mannes auf. (Evangelion)', 'es',
+  '¿Quién soy? En mi habitación casi vacía guardo las gafas rotas de un hombre. (Evangelion)',
+  '["Rei Ayanami", "Asuka Langley Soryu", "Hikari Horaki", "Maya Ibuki"]', 'Gendo la rescató una vez del entry plug sobrecalentado del Eva-00 y se quemó las manos.',
+  '["Mi cuerpo fue creado a partir del material genético de la madre de Shinji.", "Piloto el Eva-00 y tengo el pelo azul y los ojos rojos."]');
+
+-- ===========================================================================
+-- FR
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach dem Verschwinden meiner Mutter gab mich mein Vater bei einem Lehrer in Pflege. (Evangelion)', 'fr',
+  'Qui suis-je ? Après la disparition de ma mère, mon père m’a confié à un professeur. (Evangelion)',
+  '["Toji Suzuhara", "Kaworu Nagisa", "Shinji Ikari", "Kensuke Aida"]', 'Il joue du violoncelle et écoute sans cesse de la musique avec ses écouteurs.',
+  '["À 14 ans, mon père m’a soudain fait venir à Tokyo-3.", "Je pilote l’Eva-01 et je me répète sans cesse : « Je ne dois pas fuir. »"]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind überlebte ich als Einzige die Antarktis-Expedition meines Vaters. (Evangelion)', 'fr',
+  'Qui suis-je ? Enfant, j’ai été la seule survivante de l’expédition de mon père en Antarctique. (Evangelion)',
+  '["Ritsuko Akagi", "Misato Katsuragi", "Maya Ibuki", "Yui Ikari"]', 'Elle porte sa croix en argent en souvenir de son père.',
+  '["Je conduis une Renault Alpine et ma boisson préférée est la bière.", "Je dirige les opérations de la NERV et je vis avec Shinji et le manchot Pen Pen."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? In meinem kahlen Zimmer bewahre ich die zerbrochene Brille eines Mannes auf. (Evangelion)', 'fr',
+  'Qui suis-je ? Dans ma chambre presque vide, je garde les lunettes cassées d’un homme. (Evangelion)',
+  '["Rei Ayanami", "Asuka Langley Soryu", "Hikari Horaki", "Maya Ibuki"]', 'Gendo l’a un jour sauvée de l’entry plug surchauffé de l’Eva-00 et s’y est brûlé les mains.',
+  '["Mon corps a été créé à partir du matériel génétique de la mère de Shinji.", "Je pilote l’Eva-00 et j’ai les cheveux bleus et les yeux rouges."]');
+
+-- ===========================================================================
+-- PT
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? Nach dem Verschwinden meiner Mutter gab mich mein Vater bei einem Lehrer in Pflege. (Evangelion)', 'pt',
+  'Quem sou eu? Depois que minha mãe desapareceu, meu pai me deixou aos cuidados de um professor. (Evangelion)',
+  '["Toji Suzuhara", "Kaworu Nagisa", "Shinji Ikari", "Kensuke Aida"]', 'Ele toca violoncelo e vive ouvindo música nos fones de ouvido.',
+  '["Aos 14 anos, meu pai me chamou de repente para Tóquio-3.", "Eu piloto o Eva-01 e repito sem parar: “Eu não posso fugir.”"]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Als Kind überlebte ich als Einzige die Antarktis-Expedition meines Vaters. (Evangelion)', 'pt',
+  'Quem sou eu? Quando criança, fui a única sobrevivente da expedição do meu pai à Antártida. (Evangelion)',
+  '["Ritsuko Akagi", "Misato Katsuragi", "Maya Ibuki", "Yui Ikari"]', 'Ela usa a cruz prateada em memória do pai.',
+  '["Dirijo um Renault Alpine e minha bebida favorita é cerveja.", "Comando as operações da NERV e moro com Shinji e o pinguim Pen Pen."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? In meinem kahlen Zimmer bewahre ich die zerbrochene Brille eines Mannes auf. (Evangelion)', 'pt',
+  'Quem sou eu? No meu quarto quase vazio, guardo os óculos quebrados de um homem. (Evangelion)',
+  '["Rei Ayanami", "Asuka Langley Soryu", "Hikari Horaki", "Maya Ibuki"]', 'Gendo a salvou certa vez do entry plug superaquecido do Eva-00 e queimou as mãos.',
+  '["Meu corpo foi criado a partir do material genético da mãe de Shinji.", "Eu piloto o Eva-00 e tenho cabelo azul e olhos vermelhos."]');
+
+-- „Wer bin ich?“ — Fairy Tail (für 0083-Nachfolger)
+
+-- fairy_tail, Stufe 1
+select public.seed_raetsel('fairy_tail', 1, 2, 'who_am_i',
+  'Wer bin ich? In jedem Fahrzeug wird mir sofort übel. (Fairy Tail)',
+  '["Gray Fullbuster", "Gajeel Redfox", "Natsu Dragneel", "Laxus Dreyar"]', 'Sein rotes Gildenzeichen trägt er auf der rechten Schulter.',
+  '["Ich trage einen weißen Schal aus Drachenschuppen.", "Der Feuerdrache Igneel hat mich aufgezogen."]',
+  'Who am I? I get sick the moment I board any vehicle. (Fairy Tail)',
+  '["Gray Fullbuster", "Gajeel Redfox", "Natsu Dragneel", "Laxus Dreyar"]', 'He wears his red guild mark on his right shoulder.',
+  '["I wear a white scarf made of dragon scales.", "I was raised by the fire dragon Igneel."]');
+
+-- fairy_tail, Stufe 2
+select public.seed_raetsel('fairy_tail', 2, 0, 'who_am_i',
+  'Wer bin ich? Meinen Nachnamen gab mir als Kind ein Junge – wegen meiner Haarfarbe. (Fairy Tail)',
+  '["Erza Scarlet", "Mirajane Strauss", "Kagura Mikazuchi", "Juvia Lockser"]', 'Als Kind musste sie im Turm des Himmels Sklavenarbeit leisten.',
+  '["Mein Lieblingsessen ist Erdbeerkuchen.", "Man nennt mich Titania, und ich wechsle blitzschnell meine Rüstungen."]',
+  'Who am I? As a child, a boy gave me my surname – because of my hair color. (Fairy Tail)',
+  '["Erza Scarlet", "Mirajane Strauss", "Kagura Mikazuchi", "Juvia Lockser"]', 'As a child, she was forced into slave labor in the Tower of Heaven.',
+  '["My favorite food is strawberry cake.", "They call me Titania, and I swap armor in a flash."]');
+
+-- fairy_tail, Stufe 3
+select public.seed_raetsel('fairy_tail', 3, 1, 'who_am_i',
+  'Wer bin ich? Die Devil-Slayer-Magie erhielt ich von meinem wiedererweckten Vater. (Fairy Tail)',
+  '["Lyon Vastia", "Gray Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia ist seit ihrem ersten Kampf unsterblich in ihn verliebt.',
+  '["Meine Lehrmeisterin Ur opferte sich, um den Dämon Deliora zu versiegeln.", "Ich kämpfe mit Eis und ziehe mich ständig unbewusst aus."]',
+  'Who am I? I received Devil Slayer magic from my resurrected father. (Fairy Tail)',
+  '["Lyon Vastia", "Gray Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia has been madly in love with him since their first fight.',
+  '["My teacher Ur sacrificed herself to seal the demon Deliora.", "I fight with ice and keep stripping without noticing."]');
+
+-- ES
+select public.seed_uebersetzung_raetsel('Wer bin ich? In jedem Fahrzeug wird mir sofort übel. (Fairy Tail)', 'es',
+  '¿Quién soy? Me mareo en cuanto subo a cualquier vehículo. (Fairy Tail)',
+  '["Gray Fullbuster", "Gajeel Redfox", "Natsu Dragneel", "Laxus Dreyar"]', 'Lleva su marca roja del gremio en el hombro derecho.',
+  '["Llevo una bufanda blanca hecha de escamas de dragón.", "Me crio el dragón de fuego Igneel."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meinen Nachnamen gab mir als Kind ein Junge – wegen meiner Haarfarbe. (Fairy Tail)', 'es',
+  '¿Quién soy? De niña, un chico me dio mi apellido por el color de mi pelo. (Fairy Tail)',
+  '["Erza Scarlet", "Mirajane Strauss", "Kagura Mikazuchi", "Juvia Lockser"]', 'De niña tuvo que hacer trabajos forzados en la Torre del Cielo.',
+  '["Mi comida favorita es la tarta de fresa.", "Me llaman Titania y cambio de armadura en un instante."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Die Devil-Slayer-Magie erhielt ich von meinem wiedererweckten Vater. (Fairy Tail)', 'es',
+  '¿Quién soy? Recibí la magia de Devil Slayer de mi padre resucitado. (Fairy Tail)',
+  '["Lyon Vastia", "Gray Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia está locamente enamorada de él desde su primer combate.',
+  '["Mi maestra Ur se sacrificó para sellar al demonio Deliora.", "Lucho con hielo y no paro de desnudarme sin darme cuenta."]');
+
+
+-- FR
+select public.seed_uebersetzung_raetsel('Wer bin ich? In jedem Fahrzeug wird mir sofort übel. (Fairy Tail)', 'fr',
+  'Qui suis-je ? J’ai le mal des transports dès que je monte dans un véhicule. (Fairy Tail)',
+  '["Grey Fullbuster", "Gajil Redfox", "Natsu Dragneel", "Luxus Dreyar"]', 'Il porte son emblème rouge de la guilde sur l’épaule droite.',
+  '["Je porte une écharpe blanche faite d’écailles de dragon.", "J’ai été élevé par le dragon de feu Igneel."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meinen Nachnamen gab mir als Kind ein Junge – wegen meiner Haarfarbe. (Fairy Tail)', 'fr',
+  'Qui suis-je ? Enfant, un garçon m’a donné mon nom de famille – à cause de la couleur de mes cheveux. (Fairy Tail)',
+  '["Erza Scarlett", "Mirajane Strauss", "Kagura Mikazuchi", "Juvia Lockser"]', 'Enfant, elle a été réduite en esclavage dans la Tour du Paradis.',
+  '["Mon plat préféré est le fraisier.", "On m’appelle Titania, et je change d’armure en un éclair."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Die Devil-Slayer-Magie erhielt ich von meinem wiedererweckten Vater. (Fairy Tail)', 'fr',
+  'Qui suis-je ? J’ai reçu la magie de Devil Slayer de mon père ressuscité. (Fairy Tail)',
+  '["Lyon Vastia", "Grey Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia est follement amoureuse de lui depuis leur premier combat.',
+  '["Ma maîtresse Oul s’est sacrifiée pour sceller le démon Deliora.", "Je combats avec la glace et je me déshabille sans arrêt sans m’en rendre compte."]');
+
+
+-- PT
+select public.seed_uebersetzung_raetsel('Wer bin ich? In jedem Fahrzeug wird mir sofort übel. (Fairy Tail)', 'pt',
+  'Quem sou eu? Fico enjoado assim que entro em qualquer veículo. (Fairy Tail)',
+  '["Gray Fullbuster", "Gajeel Redfox", "Natsu Dragneel", "Laxus Dreyar"]', 'Ele tem a marca vermelha da guilda no ombro direito.',
+  '["Uso um cachecol branco feito de escamas de dragão.", "Fui criado pelo dragão de fogo Igneel."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meinen Nachnamen gab mir als Kind ein Junge – wegen meiner Haarfarbe. (Fairy Tail)', 'pt',
+  'Quem sou eu? Quando criança, um garoto me deu meu sobrenome – por causa da cor do meu cabelo. (Fairy Tail)',
+  '["Erza Scarlet", "Mirajane Strauss", "Kagura Mikazuchi", "Juvia Lockser"]', 'Quando criança, ela foi forçada a trabalhar como escrava na Torre do Paraíso.',
+  '["Minha comida favorita é bolo de morango.", "Me chamam de Titânia, e troco de armadura num instante."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Die Devil-Slayer-Magie erhielt ich von meinem wiedererweckten Vater. (Fairy Tail)', 'pt',
+  'Quem sou eu? Recebi a magia de Devil Slayer do meu pai ressuscitado. (Fairy Tail)',
+  '["Lyon Vastia", "Gray Fullbuster", "Sting Eucliffe", "Rogue Cheney"]', 'Juvia é perdidamente apaixonada por ele desde a primeira luta dos dois.',
+  '["Minha mestra Ur se sacrificou para selar o demônio Deliora.", "Luto com gelo e vivo tirando a roupa sem perceber."]');
