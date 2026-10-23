@@ -555,3 +555,78 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Implantate in meinen Augen
   'Quem sou eu? Implantes nos meus olhos me permitem prever os movimentos dos adversários. (Kaiju No. 8)',
   '["Isao Shinomiya", "Soshiro Hoshina", "Eiji Hasegawa", "Gen Narumi"]', 'Ele também é o protagonista do spin-off “Kaiju No. 8: B-Side”.',
   '["No meu tempo livre, o que mais gosto é jogar videogame.", "Sou capitão da Primeira Divisão e considerado o combatente ativo mais forte."]');
+
+-- dandadan, Stufe 1
+select public.seed_raetsel('dandadan', 1, 3, 'who_am_i',
+  'Wer bin ich? In einem Spuktunnel wurde ich von einem Yōkai besessen, der mir seine Geschwindigkeit verlieh. (Dandadan)',
+  '["Jiji", "Kinta Sakata", "Unji Zuma", "Okarun"]', 'Er glaubte an Außerirdische, aber nicht an Geister – bis zu jener Nacht im Tunnel.',
+  '["Ich trage eine Brille, und meine langen Haare fallen mir oft ins Gesicht.", "Ich heiße genauso wie Momos Lieblingsschauspieler."]',
+  'Who am I? In a haunted tunnel, I was possessed by a yōkai that gave me its speed. (Dandadan)',
+  '["Jiji", "Kinta Sakata", "Unji Zuma", "Okarun"]', 'He believed in aliens but not in ghosts – until that night in the tunnel.',
+  '["I wear glasses, and my long hair often falls into my face.", "I have the same name as Momo’s favourite actor."]');
+
+-- dandadan, Stufe 2
+select public.seed_raetsel('dandadan', 2, 0, 'who_am_i',
+  'Wer bin ich? Meine Kraft leihe ich mir von einer örtlichen Gottheit – sie wirkt nur innerhalb der Stadt. (Dandadan)',
+  '["Seiko Ayase", "Aira Shiratori", "Momo Ayase", "Vamola"]', 'Dass es Außerirdische gibt, will sie partout nicht zugeben.',
+  '["Mit einer Wahrsagesendung im Fernsehen bin ich reich geworden.", "Ich bin Momos Großmutter und ein Geistermedium."]',
+  'Who am I? I borrow my power from a local deity – it only works within the city. (Dandadan)',
+  '["Seiko Ayase", "Aira Shiratori", "Momo Ayase", "Vamola"]', 'She flatly refuses to admit that aliens exist.',
+  '["I became rich with a fortune-telling show on TV.", "I am Momo’s grandmother and a spirit medium."]');
+
+-- dandadan, Stufe 3
+select public.seed_raetsel('dandadan', 3, 1, 'who_am_i',
+  'Wer bin ich? Seit dem frühen Tod meiner Mutter glaube ich, ich sei auserwählt, die Welt zu retten. (Dandadan)',
+  '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'Anfangs hielt sie Momo und Okarun für Dämonen, die sie austreiben müsse.',
+  '["Ich habe die Kräfte von Acrobatic Silky in mich aufgenommen.", "An der Schule gelte ich als Idol und habe ein Auge auf Okarun geworfen."]',
+  'Who am I? Ever since my mother died young, I have believed I was chosen to save the world. (Dandadan)',
+  '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'At first, she thought Momo and Okarun were demons she had to exorcise.',
+  '["I absorbed the powers of Acrobatic Silky.", "I am the school idol and have my eye on Okarun."]');
+
+-- ES
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem Spuktunnel wurde ich von einem Yōkai besessen, der mir seine Geschwindigkeit verlieh. (Dandadan)', 'es',
+  '¿Quién soy? En un túnel encantado me poseyó un yōkai que me dio su velocidad. (Dandadan)',
+  '["Jiji", "Kinta Sakata", "Unji Zuma", "Okarun"]', 'Creía en los extraterrestres, pero no en los fantasmas… hasta aquella noche en el túnel.',
+  '["Llevo gafas y el pelo largo me cae a menudo sobre la cara.", "Me llamo igual que el actor favorito de Momo."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine Kraft leihe ich mir von einer örtlichen Gottheit – sie wirkt nur innerhalb der Stadt. (Dandadan)', 'es',
+  '¿Quién soy? Tomo prestado mi poder de una deidad local, y solo funciona dentro de la ciudad. (Dandadan)',
+  '["Seiko Ayase", "Aira Shiratori", "Momo Ayase", "Vamola"]', 'Se niega en redondo a admitir que existen los extraterrestres.',
+  '["Me hice rica con un programa de adivinación en la televisión.", "Soy la abuela de Momo y médium espiritual."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit dem frühen Tod meiner Mutter glaube ich, ich sei auserwählt, die Welt zu retten. (Dandadan)', 'es',
+  '¿Quién soy? Desde que mi madre murió joven, creo que soy la elegida para salvar el mundo. (Dandadan)',
+  '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'Al principio creía que Momo y Okarun eran demonios a los que debía exorcizar.',
+  '["Absorbí los poderes de Acrobatic Silky.", "Soy el ídolo del instituto y me gusta Okarun."]');
+
+-- FR
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem Spuktunnel wurde ich von einem Yōkai besessen, der mir seine Geschwindigkeit verlieh. (Dandadan)', 'fr',
+  'Qui suis-je ? Dans un tunnel hanté, j’ai été possédé par un yōkai qui m’a transmis sa vitesse. (Dandadan)',
+  '["Jiji", "Kinta Sakata", "Unji Zuma", "Okarun"]', 'Il croyait aux extraterrestres, mais pas aux fantômes – jusqu’à cette nuit dans le tunnel.',
+  '["Je porte des lunettes, et mes longs cheveux me tombent souvent sur le visage.", "Je porte le même nom que l’acteur préféré de Momo."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine Kraft leihe ich mir von einer örtlichen Gottheit – sie wirkt nur innerhalb der Stadt. (Dandadan)', 'fr',
+  'Qui suis-je ? J’emprunte mon pouvoir à une divinité locale – il ne fonctionne qu’en ville. (Dandadan)',
+  '["Seiko Ayase", "Aira Shiratori", "Momo Ayase", "Vamola"]', 'Elle refuse catégoriquement d’admettre que les extraterrestres existent.',
+  '["Je me suis enrichie grâce à une émission de voyance à la télé.", "Je suis la grand-mère de Momo et médium."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit dem frühen Tod meiner Mutter glaube ich, ich sei auserwählt, die Welt zu retten. (Dandadan)', 'fr',
+  'Qui suis-je ? Depuis la mort précoce de ma mère, je crois être l’élue qui doit sauver le monde. (Dandadan)',
+  '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'Au début, elle prenait Momo et Okarun pour des démons qu’elle devait exorciser.',
+  '["J’ai absorbé les pouvoirs d’Acrobatic Silky.", "Je suis l’idole du lycée et j’ai un faible pour Okarun."]');
+
+-- PT
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem Spuktunnel wurde ich von einem Yōkai besessen, der mir seine Geschwindigkeit verlieh. (Dandadan)', 'pt',
+  'Quem sou eu? Num túnel assombrado, fui possuído por um yōkai que me deu sua velocidade. (Dandadan)',
+  '["Jiji", "Kinta Sakata", "Unji Zuma", "Okarun"]', 'Ele acreditava em alienígenas, mas não em fantasmas – até aquela noite no túnel.',
+  '["Uso óculos, e meu cabelo comprido vive caindo no rosto.", "Tenho o mesmo nome do ator favorito da Momo."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Meine Kraft leihe ich mir von einer örtlichen Gottheit – sie wirkt nur innerhalb der Stadt. (Dandadan)', 'pt',
+  'Quem sou eu? Pego meu poder emprestado de uma divindade local – ele só funciona dentro da cidade. (Dandadan)',
+  '["Seiko Ayase", "Aira Shiratori", "Momo Ayase", "Vamola"]', 'Ela se recusa terminantemente a admitir que alienígenas existem.',
+  '["Fiquei rica com um programa de adivinhação na TV.", "Sou a avó da Momo e médium espiritual."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Seit dem frühen Tod meiner Mutter glaube ich, ich sei auserwählt, die Welt zu retten. (Dandadan)', 'pt',
+  'Quem sou eu? Desde que minha mãe morreu cedo, acredito que fui escolhida para salvar o mundo. (Dandadan)',
+  '["Momo Ayase", "Aira Shiratori", "Rin Sawaki", "Vamola"]', 'No começo, ela achava que Momo e Okarun eram demônios que precisava exorcizar.',
+  '["Absorvi os poderes de Acrobatic Silky.", "Sou o ídolo da escola e estou de olho no Okarun."]');
