@@ -156,3 +156,84 @@ select public.seed_uebersetzung_raetsel('Wer bin ich? Auf meinem Rücken trage i
   'Quem sou eu? Carrego nas costas a pesquisa secreta do meu pai. (Fullmetal Alchemist)',
   '["Maria Ross", "Riza Hawkeye", "Olivier Mira Armstrong", "Lan Fan"]', 'Ainda jovem soldado, ela já lutou como atiradora de elite na guerra de Ishval.',
   '["Meu cachorro se chama Black Hayate.", "Sou uma atiradora de elite e a fiel ajudante de Roy Mustang."]');
+
+-- sailor_moon, Stufe 1
+select public.seed_raetsel('sailor_moon', 1, 1, 'who_am_i',
+  'Wer bin ich? In einem früheren Leben war ich eine Prinzessin auf dem Mond. (Sailor Moon)',
+  '["Amy Mizuno", "Bunny Tsukino", "Raye Hino", "Minako Aino"]', 'Ihre Verwandlungsbrosche bekam sie von der sprechenden Katze Luna.',
+  '["Ich trage meine blonden Haare in zwei Haarknoten.", "Im Namen des Mondes werde ich dich bestrafen!"]',
+  'Who am I? In a past life, I was a princess on the Moon. (Sailor Moon)',
+  '["Ami Mizuno", "Usagi Tsukino", "Rei Hino", "Minako Aino"]', 'She got her transformation brooch from the talking cat Luna.',
+  '["I wear my blonde hair in two buns.", "In the name of the Moon, I’ll punish you!"]');
+
+-- sailor_moon, Stufe 2
+select public.seed_raetsel('sailor_moon', 2, 3, 'who_am_i',
+  'Wer bin ich? An meinem Zuhause leben zwei Krähen namens Phobos und Deimos. (Sailor Moon)',
+  '["Makoto Kino", "Amy Mizuno", "Minako Aino", "Raye Hino"]', 'Sie streitet ständig mit Bunny – und ist trotzdem eine ihrer besten Freundinnen.',
+  '["Ich bin Schreinmädchen am Hikawa-Schrein meines Großvaters.", "Als Sailor Mars kämpfe ich mit Feuer."]',
+  'Who am I? Two crows named Phobos and Deimos live at my home. (Sailor Moon)',
+  '["Makoto Kino", "Ami Mizuno", "Minako Aino", "Rei Hino"]', 'She argues with Usagi all the time – and is still one of her best friends.',
+  '["I am a shrine maiden at my grandfather’s Hikawa Shrine.", "As Sailor Mars, I fight with fire."]');
+
+-- sailor_moon, Stufe 3
+select public.seed_raetsel('sailor_moon', 3, 0, 'who_am_i',
+  'Wer bin ich? Chibiusa ist eine enge Freundin von mir und nennt mich „Puu“. (Sailor Moon)',
+  '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'In ihrem Stab steckt eine Granatkugel – einer der drei Talismane.',
+  '["Mein Stab hat die Form eines Schlüssels.", "Als Sailor Pluto bewache ich das Tor der Zeit."]',
+  'Who am I? Chibiusa is a close friend of mine and calls me “Puu”. (Sailor Moon)',
+  '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'Her staff holds a garnet orb – one of the three talismans.',
+  '["My staff is shaped like a key.", "As Sailor Pluto, I guard the Door of Time."]');
+
+-- ===========================================================================
+-- ES
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem früheren Leben war ich eine Prinzessin auf dem Mond. (Sailor Moon)', 'es',
+  '¿Quién soy? En una vida anterior fui una princesa en la Luna. (Sailor Moon)',
+  '["Ami Mizuno", "Usagi Tsukino", "Rei Hino", "Minako Aino"]', 'Recibió su broche de transformación de la gata parlante Luna.',
+  '["Llevo mi pelo rubio recogido en dos moños.", "¡En el nombre de la Luna, te castigaré!"]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? An meinem Zuhause leben zwei Krähen namens Phobos und Deimos. (Sailor Moon)', 'es',
+  '¿Quién soy? En mi casa viven dos cuervos llamados Fobos y Deimos. (Sailor Moon)',
+  '["Makoto Kino", "Ami Mizuno", "Minako Aino", "Rei Hino"]', 'Discute con Usagi todo el tiempo y, aun así, es una de sus mejores amigas.',
+  '["Soy sacerdotisa en el templo Hikawa de mi abuelo.", "Como Sailor Marte, lucho con fuego."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Chibiusa ist eine enge Freundin von mir und nennt mich „Puu“. (Sailor Moon)', 'es',
+  '¿Quién soy? Chibiusa es una amiga íntima mía y me llama «Puu». (Sailor Moon)',
+  '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'Su báculo contiene un orbe de granate, uno de los tres talismanes.',
+  '["Mi báculo tiene forma de llave.", "Como Sailor Plutón, custodio la Puerta del Tiempo."]');
+
+-- ===========================================================================
+-- FR
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem früheren Leben war ich eine Prinzessin auf dem Mond. (Sailor Moon)', 'fr',
+  'Qui suis-je ? Dans une vie antérieure, j’étais une princesse sur la Lune. (Sailor Moon)',
+  '["Ami Mizuno", "Usagi Tsukino", "Rei Hino", "Minako Aino"]', 'Elle a reçu sa broche de transformation de la chatte qui parle, Luna.',
+  '["Je coiffe mes cheveux blonds en deux chignons.", "Au nom de la Lune, je vais te punir !"]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? An meinem Zuhause leben zwei Krähen namens Phobos und Deimos. (Sailor Moon)', 'fr',
+  'Qui suis-je ? Deux corbeaux nommés Phobos et Déimos vivent chez moi. (Sailor Moon)',
+  '["Makoto Kino", "Ami Mizuno", "Minako Aino", "Rei Hino"]', 'Elle se dispute sans cesse avec Usagi – et reste pourtant l’une de ses meilleures amies.',
+  '["Je suis prêtresse au temple Hikawa de mon grand-père.", "En tant que Sailor Mars, je combats avec le feu."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Chibiusa ist eine enge Freundin von mir und nennt mich „Puu“. (Sailor Moon)', 'fr',
+  'Qui suis-je ? Chibiusa est une amie proche et m’appelle « Puu ». (Sailor Moon)',
+  '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'Son bâton renferme un orbe de grenat, l’un des trois talismans.',
+  '["Mon bâton a la forme d’une clé.", "En tant que Sailor Pluton, je garde la Porte du Temps."]');
+
+-- ===========================================================================
+-- PT
+-- ===========================================================================
+select public.seed_uebersetzung_raetsel('Wer bin ich? In einem früheren Leben war ich eine Prinzessin auf dem Mond. (Sailor Moon)', 'pt',
+  'Quem sou eu? Em uma vida passada, fui uma princesa na Lua. (Sailor Moon)',
+  '["Ami Mizuno", "Usagi Tsukino", "Rei Hino", "Minako Aino"]', 'Ela ganhou o broche de transformação da gata falante Luna.',
+  '["Uso meu cabelo loiro preso em dois coques.", "Em nome da Lua, eu vou te castigar!"]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? An meinem Zuhause leben zwei Krähen namens Phobos und Deimos. (Sailor Moon)', 'pt',
+  'Quem sou eu? Dois corvos chamados Fobos e Deimos vivem na minha casa. (Sailor Moon)',
+  '["Makoto Kino", "Ami Mizuno", "Minako Aino", "Rei Hino"]', 'Ela vive brigando com Usagi – e mesmo assim é uma das melhores amigas dela.',
+  '["Sou sacerdotisa no Templo Hikawa do meu avô.", "Como Sailor Marte, luto com fogo."]');
+
+select public.seed_uebersetzung_raetsel('Wer bin ich? Chibiusa ist eine enge Freundin von mir und nennt mich „Puu“. (Sailor Moon)', 'pt',
+  'Quem sou eu? Chibiusa é uma amiga próxima e me chama de “Puu”. (Sailor Moon)',
+  '["Setsuna Meioh", "Michiru Kaioh", "Haruka Tenoh", "Hotaru Tomoe"]', 'O bastão dela guarda um orbe de granada, um dos três talismãs.',
+  '["Meu bastão tem a forma de uma chave.", "Como Sailor Plutão, protejo a Porta do Tempo."]');
