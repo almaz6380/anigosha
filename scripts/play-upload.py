@@ -324,9 +324,61 @@ def setze_listing(tok, datei, lang, dry_run=False):
     commit_edit(tok, eid)
 
 
+# Texte der Einmalkaeufe je Sprache. Google laesst die Standardsprache erst
+# wechseln, wenn jedes Kaufprodukt in der neuen Sprache uebersetzt ist
+# (403 „provide translations for all your in-app products“, 26.10.2026).
+KAUF_TEXTE = {
+    'en-US': ('Remove Ads', 'Removes all ads from Anigosha. One-time purchase.'),
+}
+
+
+def kaeufe_uebersetzen(tok, lang, dry_run=False):
+    """Ergaenzt fehlende Uebersetzungen der Einmalkaeufe in `lang`."""
+    if lang not in KAUF_TEXTE:
+        sys.exit(f'Kein Kaufprodukt-Text fuer {lang} in KAUF_TEXTE hinterlegt.')
+    titel, text = KAUF_TEXTE[lang]
+    # Neue Schnittstelle (oneTimeProducts); Listings sind eine Liste.
+    try:
+        res = call(tok, 'GET', f'{API}/applications/{PKG}/oneTimeProducts', fatal=False)
+        produkte = res.get('oneTimeProducts', [])
+        print(f'Einmalkaeufe (oneTimeProducts): {[p.get("productId") for p in produkte]}')
+        for p in produkte:
+            sprachen = [l.get('languageCode') for l in p.get('listings', [])]
+            print(f'  {p["productId"]}: Sprachen {sprachen}')
+            if lang in sprachen:
+                continue
+            print(f'    ergaenze {lang}: {titel!r}')
+            if dry_run:
+                continue
+            p['listings'] = p.get('listings', []) + [
+                {'languageCode': lang, 'title': titel, 'description': text}]
+            call(tok, 'PATCH', f'{API}/applications/{PKG}/oneTimeProducts/{p["productId"]}'
+                 '?updateMask=listings&regionsVersion.version=2022%2F02', data=p)
+            print('    gesetzt')
+        return
+    except ApiError as e:
+        print(f'oneTimeProducts nicht nutzbar ({e.code}), versuche inappproducts')
+    # Alte Schnittstelle (inappproducts); Listings sind ein Woerterbuch.
+    res = call(tok, 'GET', f'{API}/applications/{PKG}/inappproducts')
+    for p in res.get('inappproduct', []):
+        listings = p.get('listings', {})
+        print(f'  {p["sku"]}: Sprachen {sorted(listings)}')
+        if lang in listings:
+            continue
+        print(f'    ergaenze {lang}: {titel!r}')
+        if dry_run:
+            continue
+        listings[lang] = {'title': titel, 'description': text}
+        p['listings'] = listings
+        call(tok, 'PATCH', f'{API}/applications/{PKG}/inappproducts/{p["sku"]}'
+             '?autoConvertMissingPrices=true', data=p)
+        print('    gesetzt')
+
+
 def setze_standardsprache(tok, lang, dry_run=False):
     """Standardsprache des Play-Eintrags (Rueckfall fuer alle Laender ohne
     eigene Uebersetzung). Bis 22.10.2026 de-DE, seitdem en-US."""
+    kaeufe_uebersetzen(tok, lang, dry_run)
     eid = call(tok, 'POST', f'{API}/applications/{PKG}/edits')['id']
     url = f'{API}/applications/{PKG}/edits/{eid}/details'
     alt = call(tok, 'GET', url).get('defaultLanguage')
