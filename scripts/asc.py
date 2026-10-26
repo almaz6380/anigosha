@@ -1621,6 +1621,15 @@ def zeige_status(tok):
                 typ = st['attributes']['screenshotDisplayType']
                 shots = api(tok, f'appScreenshotSets/{st["id"]}/appScreenshots')
                 print(f'  {lc:8} {typ:28} {len(shots.get("data", []))} Bilder')
+                # Gezaehlt ist nicht verarbeitet: ein Bild in FAILED oder noch in
+                # Verarbeitung macht die Version „not in valid state“ (26.10.2026).
+                for sh in shots.get('data', []):
+                    ad = sh['attributes'].get('assetDeliveryState') or {}
+                    if ad.get('state') != 'COMPLETE':
+                        fehler = '; '.join(e.get('description') or e.get('code', '')
+                                           for e in ad.get('errors') or [])
+                        print(f'      ⚠ {sh["attributes"].get("fileName")}: '
+                              f'{ad.get("state")} {fehler}')
 
     print('\n── Offene Einreichungen ──')
     subm = api(tok, f'apps/{aid}/reviewSubmissions?limit=5', fatal=False)
