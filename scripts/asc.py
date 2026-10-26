@@ -652,11 +652,18 @@ device ID as used for tracking (third-party advertising). Consent can be
 changed at any time under Profile -> "Ad privacy settings". New accounts must confirm
 they are at least 16 years old.
 
-Demo account: store-review@anigosha.app / AnigoshaReview2026
+Demo account: store-review@anigosha.app / {passwort}
 """
 
 
 def setze_pruefnotiz(tok):
+    # Das Passwort steht nicht im Repo (öffentlich seit 26.10.2026), sondern im
+    # GitHub-Secret PRUEFKONTO_PASSWORT.
+    pw = os.environ.get('PRUEFKONTO_PASSWORT', '').strip()
+    if not pw:
+        sys.exit('  PRUEFKONTO_PASSWORT fehlt (GitHub-Secret) — Notiz nicht gesetzt.')
+    global PRUEFNOTIZ
+    PRUEFNOTIZ = PRUEFNOTIZ.replace('{passwort}', pw)
     aid = app_id(tok)
     v = offene_version(tok, aid)
     print(f'  Version {v["attributes"]["versionString"]}')

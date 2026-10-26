@@ -18,15 +18,10 @@ on:
         description: 'Trockenlauf (nur anzeigen, nichts aendern)'
         type: boolean
         default: true
-      laeufer:
-        description: 'Wo laufen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
-        type: choice
-        default: 'github'
-        options: ['github', 'mac']
 
 jobs:
   upload:
-    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 

@@ -23,16 +23,16 @@ Namenskandidat wird **zuerst in TMview** geprüft (Klassen 9 = Software, 41 = Sp
 `wrangler.jsonc`, Kurzlinks in `public/_redirects`). Vorher `anigosha.vercel.app` —
 Vercel hat den Account gesperrt (402). ⚠ Supabase Auth `site_url` + Redirect-Liste müssen
 auf die Cloudflare-Adresse zeigen, sonst führt der Bestätigungslink der Registrierungsmail
-auf die tote Seite (genau so am 05.10. passiert). Der TikTok-Redirect in
-`tools/social/tiktok-zugang.mjs` zeigt noch auf Vercel — erst umstellen, wenn er auch im
-TikTok-Entwicklerportal geändert ist.
+auf die tote Seite (genau so am 05.10. passiert). Der TikTok-Zugangs-Workflow ist
+mit dem Wechsel auf öffentlich (26.10.2026) gelöscht — er gab den Refresh-Token ins Protokoll aus.
 ⚠ **Offen: Web-Push in der Web-Fassung geht seit dem Umzug nicht.** Die Supabase-Werte
 stehen öffentlich in `.env.production` (sonst blieb die Seite leer, `supabaseUrl is
 required`). Die fünf `VITE_FIREBASE_*`-Werte gibt es nur als GitHub-Secrets — sie müssen
 noch in Cloudflare (Projekt anigosha → Settings → Build → Variables) oder ebenfalls in
 `.env.production` (alle öffentlich, auch der VAPID-Schlüssel). Die Store-Apps sind nicht
 betroffen, ihre Builds bekommen die Werte aus den Secrets.
-**Repository:** https://github.com/almaz6380/anigosha (privat, seit 28.07.2026)
+**Repository:** https://github.com/almaz6380/anigosha (**öffentlich seit 26.10.2026**, vorher privat ab 28.07.). Damit sind GitHub-Actions-Minuten
+kostenlos; im Gegenzug: **nie Geheimnisse ins Repo oder ins Laufprotokoll**, kein Self-hosted Runner.
 **Deploy:** Cloudflare Workers Builds ist mit dem Repo verbunden — **jeder Push auf `main` deployt automatisch**.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
@@ -862,7 +862,8 @@ Dafuer wurde die laufende Einreichung mit `--aufraeumen` zurueckgezogen, Build
 erweitert. Der Preis dafuer: 1.0 verliert seinen Platz in der Pruefschlange und
 faengt nach dem Einreichen von vorn an (1–3 Tage).
 
-Pruefkonto beide Stores: `store-review@anigosha.app` / `AnigoshaReview2026`
+Pruefkonto beide Stores: `store-review@anigosha.app`, Passwort im GitHub-Secret `PRUEFKONTO_PASSWORT`
+(stand bis 26.10. hier im Klartext und wurde beim Öffentlichmachen gewechselt)
 (Supabase-User `28be9120-…`, Spielername „StoreReview", Sprache EN).
 
 **Store-Texte liegen jetzt im Repo: `store-assets/asc-texte.json`** (Apple) neben
@@ -1143,6 +1144,10 @@ neuen Build** — die Datenbank-Fixes wirken dort schon.
 
 ### Release-Builds wahlweise auf dem eigenen Mac (25.09.2026)
 
+⚠ **Für anigosha seit 26.10.2026 abgeschaltet:** Das Repo ist öffentlich, die `laeufer`-Eingabe ist
+aus allen Workflows entfernt, der Runner muss beim Repo abgemeldet sein. Alles läuft auf GitHub-Rechnern
+(für öffentliche Repos kostenlos). Der Rest dieses Abschnitts gilt nur noch für die anderen Repos.
+
 `iOS Release` und `Android Release` haben die Eingabe **`laeufer`**: `github`
 (Standard) oder `mac` = Josefs Mac als Self-hosted Runner — **kostet keine
 GitHub-Minuten**, die mehrfach knapp waren (macOS zählt zehnfach). Einrichtung
@@ -1158,7 +1163,7 @@ Stand 25.09.:
 
 | Repo | Runner | Build + Upload auf dem Mac | Einreichen / Produktion auf dem Mac |
 |---|---|---|---|
-| anigosha | ✅ | ✅ | ✅ (`App Store Connect`, `Play promote` haben `laeufer`) |
+| anigosha | ❌ seit 26.10. (öffentlich) | — | — |
 | mahjong-app | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `asc-submit`, `play-rollout`, `play-listing`, `store-texte`, `store-zahlen` |
 | swaply, mypeak (= „FullRep") | ✅ | ✅ | ✅ seit 25.09. abends: `asc`, `play-listing` (Android-Produktion geht dort über den `track` von `Android Release`) |
 | geschichte | ✅ seit 25.09. abends (Repo dafür **privat** gestellt, GitHub Pages entfernt) | ✅ `iOS App`, `Android App` — nur noch auf Zuruf, kein push-Ausloeser mehr; AAB landet zusaetzlich in `~/Downloads` | — (kein Einreich-Workflow) |
@@ -1470,11 +1475,10 @@ Karussell, eine veraltete `apps.json` —, und ihr Zeitplan feuerte trotzdem
 jeden Morgen um 05:00 und starb nach vier Sekunden am aufgebrauchten
 Minuten-Kontingent. Ein täglich rot laufender Zeitplan verdeckt echte Fehler.
 
-**Was in diesem Repo bleibt und bleiben muss:** `tools/social/tiktok-zugang.mjs`
-samt Workflow „TikTok-Zugang holen". Das Skript gibt den Refresh-Token ins
-Protokoll aus — nur ein Mensch kann ihn ins Secret eintragen. Auf einem
-privaten Repo ist das vertretbar, auf dem öffentlichen `wellapps-social` wäre
-das Protokoll für jeden lesbar. Deshalb steht es hier und nicht dort.
+`tools/social/tiktok-zugang.mjs` samt Workflow „TikTok-Zugang holen" lag bis
+26.10.2026 hier, weil das Skript den Refresh-Token ins Protokoll ausgibt. Mit dem
+Öffentlichmachen ist beides gelöscht (samt alter Laufprotokolle). Wer den Zugang
+neu holen muss, braucht dafür ein **privates** Repo.
 
 ⚠ **Wer etwas an der Social-Automatik ändern will, ändert es in
 `wellapps-social`.** Eine Änderung hier wirkt nirgends.

@@ -94,6 +94,10 @@ Beide Release-Workflows haben die Eingabe **`laeufer`**: `github` (Standard, kos
 Minuten — macOS zählt zehnfach, ein iOS-Build also ~90–250 Minuten) oder `mac`
 (Josefs Mac als *Self-hosted Runner*, kostenlos und unbegrenzt).
 
+> ⚠ **Für anigosha seit 26.10.2026 abgeschaltet** — das Repo ist öffentlich, ein Self-hosted
+> Runner wäre dort ein Einfallstor (Fork-PRs). Die `laeufer`-Eingabe ist aus den Workflows entfernt.
+> Die Anleitung bleibt als Vorlage für die privaten Repos.
+
 ### Einmal einrichten (~20 Minuten, am Mac)
 
 1. **Xcode 26 oder neuer** — der iOS-Lauf prüft das und bricht sonst ab.
