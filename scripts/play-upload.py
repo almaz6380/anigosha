@@ -359,7 +359,11 @@ def kaeufe_uebersetzen(tok, lang, dry_run=False):
         # Die Preisregionen-Version muss zu den hinterlegten Waehrungen passen
         # (2022/02 kennt Bulgarien noch mit BGN, das Produkt hat seit 2026 EUR).
         # Neueste zuerst; eine passende reicht.
-        for rv in ('2025/03', '2025/01', '2024/03', '2022/02'):
+        # Google veroeffentlicht die gueltigen Versionen nicht als Liste
+        # (Stand 26.10.2026 abgelehnt: 2025/01, 2025/03, 2022/02 wegen BG=EUR).
+        # Deshalb alle Monate rueckwaerts; unbekannte lehnt Google sofort ab.
+        kandidaten = [f'{j}/{m:02d}' for j in (2026, 2025) for m in range(12, 0, -1)]
+        for rv in kandidaten:
             try:
                 call(tok, 'PATCH', f'{API}/applications/{PKG}/onetimeproducts/{p["productId"]}'
                      f'?updateMask=listings&regionsVersion.version={urllib.parse.quote(rv, safe="")}',
@@ -367,7 +371,8 @@ def kaeufe_uebersetzen(tok, lang, dry_run=False):
                 print(f'    gesetzt (regionsVersion {rv})')
                 break
             except ApiError as e:
-                print(f'    regionsVersion {rv}: {e.code} {e.detail[:200]}')
+                if 'Invalid regions version' not in e.detail:
+                    print(f'    regionsVersion {rv}: {e.code} {e.detail[:200]}')
         else:
             sys.exit('    keine regionsVersion angenommen')
 
