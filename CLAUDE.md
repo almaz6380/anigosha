@@ -37,7 +37,8 @@ betroffen, ihre Builds bekommen die Werte aus den Secrets.
 Deshalb vor der Arbeit immer `git fetch` (wie bei RechtsKarten), sonst überschreibt ein
 alter Stand die Live-Version.
 **Stack:** React + Vite + TypeScript, Tailwind v4, Capacitor (iOS+Android), Supabase (Auth, Postgres, Edge Functions)
-**Sprachen: DE, EN, ES, FR und PT sind LIVE** (Migrationen 0022–0063 eingespielt,
+**Sprachen: seit 26.10.2026 FÜNFZEHN live** — DE, EN, ES, FR, PT, IT, ID, TR, PL, VI, JA, KO, TH, RU, AR
+(Stand und Ablauf im Abschnitt „15 Sprachen + 12 neue Serien“ unten). Ursprünglich fünf (Migrationen 0022–0063 eingespielt,
 UI in `src/i18n/locales/*.json`). Am 01.09.2026 nachgemessen: **804 Übersetzungen je
 Sprache, alle 12 Kategorien, keine fehlende Erklärung**, und `start_solo_session` wie
 `start_daily_challenge` liefern für jede der fünf die richtige Sprache.
@@ -63,6 +64,33 @@ lusophone Anime-Markt, Portugal versteht pt-BR, ein zweiter Code wäre doppelte 
 Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded, personalisiert per UMP + ATT seit 1.1.1) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
+
+## 15 Sprachen + 12 neue Serien (22.–26.10.2026, Release 1.2.0 vorbereitet, Branch `claude/gallant-rubin-b37byj`)
+
+**Datenbank live, App-Code auf dem Branch (noch nicht auf `main`, nichts gebaut, nichts eingereicht).**
+Gemessen am 26.10.: **2145 Einträge je Sprache, 15 Sprachen, 31 Kategorien** (30 Serien + Emoji-Rätsel);
+`node tools/test-sprachen.mjs` grün (jede Sprache × 31 Kategorien × 3 Stufen volle Runden).
+
+| Was | Wo |
+|---|---|
+| 12 neue Serien (Bleach, FMA, Sailor Moon, Evangelion, Fairy Tail, Tokyo Ghoul, Dandadan, Kaiju No. 8, Oshi no Ko, Haikyu!!, One Punch Man, Tokyo Revengers), je 67 Fragen DE/EN/ES/FR/PT + 3 „Wer bin ich?“ | 0085–0096, 0097–0108, 0109 (Emoji-Rätsel jetzt sort_order 40) |
+| Sprachliste auf 15 + `categories.names` (lokalisierte Seriennamen, z. B. ワンピース) | 0110, erzeugt von `tools/sprach-migration.mjs` **aus dem Live-Stand** (`pg_get_functiondef`) |
+| Übersetzungen it/id/tr/pl/vi (Gruppe A) und ja/ko/th/ru/ar (Gruppe B) aller 31 Kategorien | 0111–0192 `<nr>_a_<slug>.sql` / `<nr>_b_<slug>.sql` |
+| ~35 Fehler in Altfragen korrigiert, die die Übersetzer fanden (u. a. 3 falsch markierte Lösungen: Pokémon/Glurak 0116, JJK/Seelenberührung 0144, Death Note/40 Sekunden 0132) | `*_fix_*.sql` zwischen 0116 und 0186 |
+| UI-Texte, RTL für Arabisch (`dir`, logische Tailwind-Klassen, gespiegelte Pfeile), Gerätesprache `in`→`id` | `src/i18n/`, `src/index.css`, Seiten |
+| Push-Texte 15 Sprachen (**Edge Function noch nicht neu veröffentlicht**), ATT-Texte iOS | `send-push`, `tools/ios-projekt.mjs` |
+| Store: Englisch als Hauptsprache, 10 neue Einträge | `asc.py --sprachen-anlegen/--hauptsprache`, `play-upload.py --standardsprache`, `asc-appinfo.json`, Screenshots `store-assets/{ios,ipad,play}/<code>/` |
+
+**Übersetzungs-Pipeline (für weitere Sprachen wiederverwenden):** `tools/uebersetzung/export.mjs` (DE-Schlüssel + EN → JSON),
+Agenten liefern JSON je Sprache, `tools/uebersetzung/bauen.mjs` prüft (4 Optionen, Hinweise, Emoji-Kette) und baut die
+Seed-Migration. Neue Sprache = `sprach-migration.mjs` + Export + Bauen — **nie SQL von Hand**.
+
+⚠ **Gelernt:** (1) Mehr als 3 parallele Agenten sprengen das Sitzungs-/Wochenlimit — 15 gleichzeitig brachen alle ab.
+(2) Übersetzer müssen die markierte Lösung sehen (`richtig` im Export), sonst finden sie falsche Schlüssel nicht.
+(3) Erklärungen über die *deutsche* Synchro („heißt auf Deutsch …“) nicht wörtlich übersetzen.
+
+**Offen bis zum Release:** PR auf `main` (deployt Web), `send-push` veröffentlichen, iOS/Android 1.2.0 bauen (Build 25 / vc14),
+ASC/Play-Kette laut Plan, `legalContent`/github.io unverändert (Rechtstexte bleiben DE/EN).
 
 ## DSGVO-Nachzug (17.09.2026): Resend, Kaufdiagnose, Altersgrenze 14
 
