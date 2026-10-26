@@ -1411,6 +1411,11 @@ def texte_schreiben(tok):
     print(f'  Version {v["attributes"]["versionString"]} '
           f'({v["attributes"].get("appStoreState")})')
     locs = api(tok, f'appStoreVersions/{v["id"]}/appStoreVersionLocalizations')
+    # Die Support-URL ist Pflicht, steht aber nicht in der Datei. Neue Sprachen
+    # (26.10.2026: zehn auf einmal) bekamen keine, und Apple lehnte die
+    # Einreichung mit „not in valid state“ ab. Fehlt sie, kommt die aus en-US.
+    support = next((l['attributes'].get('supportUrl') for l in locs.get('data', [])
+                    if l['attributes']['locale'] == 'en-US'), None)
     for loc in locs.get('data', []):
         a = loc['attributes']
         wunsch = soll.get(a['locale'])
@@ -1419,6 +1424,8 @@ def texte_schreiben(tok):
             continue
         aendern = {f: wunsch[f] for f in FELDER
                    if wunsch.get(f) is not None and wunsch.get(f) != a.get(f)}
+        if not a.get('supportUrl') and not wunsch.get('supportUrl') and support:
+            aendern['supportUrl'] = support
         if not aendern:
             print(f'  {a["locale"]}: steht schon richtig')
             continue

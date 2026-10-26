@@ -356,9 +356,20 @@ def kaeufe_uebersetzen(tok, lang, dry_run=False):
             continue
         p['listings'] = p.get('listings', []) + [
             {'languageCode': lang, 'title': titel, 'description': text}]
-        call(tok, 'PATCH', f'{API}/applications/{PKG}/onetimeproducts/{p["productId"]}'
-             '?updateMask=listings&regionsVersion.version=2022%2F02', data=p)
-        print('    gesetzt')
+        # Die Preisregionen-Version muss zu den hinterlegten Waehrungen passen
+        # (2022/02 kennt Bulgarien noch mit BGN, das Produkt hat seit 2026 EUR).
+        # Neueste zuerst; eine passende reicht.
+        for rv in ('2025/03', '2025/01', '2024/03', '2022/02'):
+            try:
+                call(tok, 'PATCH', f'{API}/applications/{PKG}/onetimeproducts/{p["productId"]}'
+                     f'?updateMask=listings&regionsVersion.version={urllib.parse.quote(rv, safe="")}',
+                     data=p, fatal=False)
+                print(f'    gesetzt (regionsVersion {rv})')
+                break
+            except ApiError as e:
+                print(f'    regionsVersion {rv}: {e.code} {e.detail[:200]}')
+        else:
+            sys.exit('    keine regionsVersion angenommen')
 
 
 def setze_standardsprache(tok, lang, dry_run=False):
