@@ -333,34 +333,18 @@ KAUF_TEXTE = {
 
 
 def kaeufe_uebersetzen(tok, lang, dry_run=False):
-    """Ergaenzt fehlende Uebersetzungen der Einmalkaeufe in `lang`."""
+    """Ergaenzt fehlende Uebersetzungen der Einmalkaeufe in `lang`.
+
+    Lesen geht ueber oneTimeProducts, ein PATCH dort lieferte am 26.10.2026
+    aber 404. Geschrieben wird deshalb ueber die alte, weiter unterstuetzte
+    inappproducts-Schnittstelle (Listings als Woerterbuch)."""
     if lang not in KAUF_TEXTE:
         sys.exit(f'Kein Kaufprodukt-Text fuer {lang} in KAUF_TEXTE hinterlegt.')
     titel, text = KAUF_TEXTE[lang]
-    # Neue Schnittstelle (oneTimeProducts); Listings sind eine Liste.
-    try:
-        res = call(tok, 'GET', f'{API}/applications/{PKG}/oneTimeProducts', fatal=False)
-        produkte = res.get('oneTimeProducts', [])
-        print(f'Einmalkaeufe (oneTimeProducts): {[p.get("productId") for p in produkte]}')
-        for p in produkte:
-            sprachen = [l.get('languageCode') for l in p.get('listings', [])]
-            print(f'  {p["productId"]}: Sprachen {sprachen}')
-            if lang in sprachen:
-                continue
-            print(f'    ergaenze {lang}: {titel!r}')
-            if dry_run:
-                continue
-            p['listings'] = p.get('listings', []) + [
-                {'languageCode': lang, 'title': titel, 'description': text}]
-            call(tok, 'PATCH', f'{API}/applications/{PKG}/oneTimeProducts/{p["productId"]}'
-                 '?updateMask=listings&regionsVersion.version=2022%2F02', data=p)
-            print('    gesetzt')
-        return
-    except ApiError as e:
-        print(f'oneTimeProducts nicht nutzbar ({e.code}), versuche inappproducts')
-    # Alte Schnittstelle (inappproducts); Listings sind ein Woerterbuch.
     res = call(tok, 'GET', f'{API}/applications/{PKG}/inappproducts')
-    for p in res.get('inappproduct', []):
+    produkte = res.get('inappproduct', [])
+    print(f'Einmalkaeufe (inappproducts): {[p.get("sku") for p in produkte]}')
+    for p in produkte:
         listings = p.get('listings', {})
         print(f'  {p["sku"]}: Sprachen {sorted(listings)}')
         if lang in listings:
