@@ -54,7 +54,7 @@ unterstützte Sprache des Handys/Browsers, sonst Englisch; eine Wahl im Profil
 (`localStorage.language`) gewinnt. Vorher startete die App für JEDEN auf Deutsch. Ein Profil
 ohne Spielernamen gilt als frisch — sein `language = 'de'` ist nur der Spalten-Vorgabewert und
 wird von der Gerätesprache überschrieben (`spracheAbgleichen` in `AuthContext.tsx`).
-Store-Apps: mit 1.1.6 (iOS Build 24 eingereicht, Android vc13 in Produktion, 11.10.2026).
+Store-Apps: 1.1.6 live; 1.2.0 seit 26.10.2026 (Android vc14 in Produktion, iOS Build 25 in Prüfung).
 **Sprachweiche zentral in `appSprache()`** (`src/i18n/index.ts`) — sie ist die einzige
 Stelle, die Regionalcodes wie `pt-BR` auf unsere Codes abbildet; früher stand die
 de/en-Weiche viermal verstreut im Code, wodurch fremdsprachige Nutzer deutsche Fragen
@@ -67,7 +67,18 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 
 ## 15 Sprachen + 12 neue Serien (22.–26.10.2026, Release 1.2.0 vorbereitet, Branch `claude/gallant-rubin-b37byj`)
 
-**Datenbank live, App-Code auf dem Branch (noch nicht auf `main`, nichts gebaut, nichts eingereicht).**
+**Ausgeliefert am 26.10.2026:** Web live (PR #29), `send-push` veröffentlicht, **Android 1.2.0 / vc14 in Produktion an alle**,
+**iOS 1.2.0 / Build 25 eingereicht** (Einreichung `3bafd2ec`, WAITING_FOR_REVIEW). Englisch ist in beiden Stores Hauptsprache.
+
+⚠ **Fallen aus diesem Release (alle in den Skripten behoben):**
+- ASC „not in valid state“ hatte zwei Ursachen nacheinander: (1) neue Sprachen ohne **Support-URL** (Pflichtfeld,
+  `texte-schreiben` übernimmt sie jetzt aus en-US), (2) frisch hochgeladene Screenshots noch in `UPLOAD_COMPLETE`
+  statt `COMPLETE`. `status` zeigt solche Bilder jetzt mit ⚠ — **nach `screenshots` ein paar Minuten warten, dann einreichen.**
+- Play-Standardsprache wechseln verlangt (a) jedes Kaufprodukt in der neuen Sprache (`setze_standardsprache` ergänzt es
+  über `onetimeproducts`, PATCH-Pfad klein geschrieben, alte `inappproducts`-API antwortet 403) und (b) ein App-Symbol
+  in der neuen Sprache (`grafiken` mit `lang`). Die Preisregionen-Version muss zu den Währungen passen (Bulgarien = EUR → `2026/01`).
+
+**Damals (vor dem Release):** Datenbank live, App-Code auf dem Branch.
 Gemessen am 26.10.: **2145 Einträge je Sprache, 15 Sprachen, 31 Kategorien** (30 Serien + Emoji-Rätsel);
 `node tools/test-sprachen.mjs` grün (jede Sprache × 31 Kategorien × 3 Stufen volle Runden).
 
@@ -89,8 +100,8 @@ Seed-Migration. Neue Sprache = `sprach-migration.mjs` + Export + Bauen — **nie
 (2) Übersetzer müssen die markierte Lösung sehen (`richtig` im Export), sonst finden sie falsche Schlüssel nicht.
 (3) Erklärungen über die *deutsche* Synchro („heißt auf Deutsch …“) nicht wörtlich übersetzen.
 
-**Offen bis zum Release:** PR auf `main` (deployt Web), `send-push` veröffentlichen, iOS/Android 1.2.0 bauen (Build 25 / vc14),
-ASC/Play-Kette laut Plan, `legalContent`/github.io unverändert (Rechtstexte bleiben DE/EN).
+**Noch offen:** Apples Prüfung von 1.2.0 abwarten. Prüfkonto-Passwort wechseln (stand bis 26.10. im jetzt öffentlichen Repo):
+neues Passwort als Secret `PRUEFKONTO_PASSWORT`, in Supabase setzen, `pruefnotiz` laufen lassen, in der Play Console von Hand.
 
 ## DSGVO-Nachzug (17.09.2026): Resend, Kaufdiagnose, Altersgrenze 14
 
