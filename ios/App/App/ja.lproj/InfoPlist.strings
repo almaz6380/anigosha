@@ -1,0 +1,3 @@
+/* Erzeugt von tools/ios-projekt.mjs. Nicht von Hand aendern — dort aendern
+   und das Werkzeug laufen lassen. */
+"NSUserTrackingUsageDescription" = "許可していただくと、より関連性の高い広告を表示できます。クイズ自体には影響しません。";

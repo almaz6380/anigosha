@@ -40,6 +40,16 @@ const TEXTE = {
   es: 'Tu permiso nos permite mostrarte anuncios más relevantes. El quiz en sí no se ve afectado.',
   fr: 'Ton autorisation nous permet de t’afficher des publicités plus pertinentes. Le quiz lui-même n’est pas concerné.',
   pt: 'Sua permissão nos permite mostrar anúncios mais relevantes para você. O quiz em si não é afetado.',
+  it: 'Il tuo consenso ci permette di mostrarti annunci più pertinenti. Il quiz in sé non cambia.',
+  id: 'Izinmu memungkinkan kami menampilkan iklan yang lebih relevan. Kuisnya sendiri tidak terpengaruh.',
+  tr: 'İznin, sana daha alakalı reklamlar göstermemizi sağlar. Testin kendisi bundan etkilenmez.',
+  pl: 'Twoja zgoda pozwala nam wyświetlać ci trafniejsze reklamy. Sam quiz pozostaje bez zmian.',
+  vi: 'Sự cho phép của bạn giúp chúng tôi hiển thị quảng cáo phù hợp hơn. Bản thân trò chơi đố vui không bị ảnh hưởng.',
+  ja: '許可していただくと、より関連性の高い広告を表示できます。クイズ自体には影響しません。',
+  ko: '허용하면 더 관련성 높은 광고를 보여 드릴 수 있어요. 퀴즈 자체에는 영향이 없어요.',
+  th: 'การอนุญาตของคุณช่วยให้เราแสดงโฆษณาที่ตรงกับคุณมากขึ้น ตัวควิซจะไม่ได้รับผลกระทบ',
+  ru: 'Твоё разрешение позволяет нам показывать более подходящую рекламу. На саму викторину это не влияет.',
+  ar: 'يتيح لنا إذنك عرض إعلانات أكثر صلة بك. لا يتأثر الاختبار نفسه بذلك.',
 };
 
 const pbxWert = (s) => (/^[A-Za-z0-9_$/:.]+$/.test(s) ? s : `"${s}"`);

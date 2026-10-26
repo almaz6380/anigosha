@@ -1,0 +1,285 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "불러오는 중…",
+    "error": "문제가 생겼어요. 다시 시도해 주세요.",
+    "back": "뒤로",
+    "save": "저장",
+    "cancel": "취소",
+    "continue": "계속",
+    "bot": "봇",
+    "retry": "다시 시도",
+    "profileError": "프로필을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요."
+  },
+  "auth": {
+    "login": "로그인",
+    "register": "가입하기",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordMin": "8자 이상",
+    "noAccount": "계정이 없나요? 가입하기",
+    "haveAccount": "이미 계정이 있나요? 로그인",
+    "forgotPassword": "비밀번호를 잊었나요?",
+    "resetSent": "비밀번호 재설정 메일을 보냈어요.",
+    "confirmSent": "확인 메일을 보냈어요 — 받은편지함을 확인해 주세요.",
+    "errors": {
+      "invalid_credentials": "이메일 또는 비밀번호가 틀렸어요.",
+      "email_not_confirmed": "먼저 이메일 주소를 확인해 주세요.",
+      "user_already_exists": "이미 가입된 이메일이에요.",
+      "weak_password": "비밀번호가 너무 약해요 (최소 8자).",
+      "generic": "로그인에 실패했어요. 다시 시도해 주세요."
+    },
+    "resetError": "메일을 보내지 못했어요. 다시 시도해 주세요.",
+    "resetNeedsEmail": "먼저 이메일 주소를 입력해 주세요.",
+    "legalNote": "시작하면 <terms>이용약관</terms>에 동의하게 돼요. 데이터 처리 방식은 <privacy>개인정보처리방침</privacy>에서 확인할 수 있어요.",
+    "ageConfirm": "만 16세 이상이에요.",
+    "ageRequired": "만 16세 이상인지 확인해 주세요.",
+    "playNow": "지금 플레이",
+    "guestHint": "이메일 없이 OK. 계정 보호는 나중에 프로필에서 할 수 있어요.",
+    "withEmail": "이메일로 로그인 또는 가입",
+    "backToGuest": "이메일 없이 플레이",
+    "guestError": "잘 안 됐어요. 다시 시도해 주세요."
+  },
+  "username": {
+    "title": "플레이어 이름을 정하세요",
+    "subtitle": "대결과 랭킹에서 다른 사람들에게 보이는 이름이에요.",
+    "placeholder": "예: OtakuMaster",
+    "rules": "3–16자, 영문·숫자·_만 가능",
+    "taken": "이미 사용 중인 이름이에요.",
+    "invalid": "3–16자, 영문·숫자·_만 가능",
+    "another": "다른 추천"
+  },
+  "nav": {
+    "home": "홈",
+    "solo": "솔로",
+    "duel": "대결",
+    "leaderboard": "랭킹",
+    "profile": "프로필",
+    "daily": "데일리 챌린지"
+  },
+  "home": {
+    "greetingMorning": "좋은 아침이에요, {{name}}",
+    "greetingDay": "안녕하세요, {{name}}",
+    "greetingEvening": "좋은 저녁이에요, {{name}}",
+    "greetingNight": "아직 안 자요, {{name}}?",
+    "solo": "솔로 퀴즈",
+    "soloSub": "카테고리, 난이도, XP",
+    "duel": "대결",
+    "leaderboard": "랭킹",
+    "profile": "프로필",
+    "daily": "데일리 챌린지",
+    "dailyKicker": "오늘",
+    "dailyGo": "지금 플레이",
+    "streakAtRisk_other": "어제 놓쳤어요! {{count}}일 연속 기록을 지키세요.",
+    "streakSave": "지키기",
+    "streakSaved_other": "연속 기록을 지켰어요: {{count}}일. 오늘 한 판 하면 계속 이어져요."
+  },
+  "profile": {
+    "title": "프로필",
+    "language": "언어",
+    "stats": "통계",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "레벨",
+    "logout": "로그아웃",
+    "deleteAccount": "계정 삭제",
+    "deleteConfirmTitle": "정말 계정을 삭제할까요?",
+    "deleteConfirmText": "모든 데이터(프로필, 대결, 통계)가 영구 삭제돼요. 되돌릴 수 없어요.",
+    "deleteConfirmButton": "네, 영구 삭제",
+    "deleteError": "삭제에 실패했어요. 나중에 다시 시도해 주세요.",
+    "streak": "연속 출석",
+    "streakBest": "최고 기록",
+    "adConsent": "광고 개인정보 설정",
+    "adConsentHint": "맞춤형 광고 동의는 언제든 바꾸거나 철회할 수 있어요."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "쉬움",
+      "2": "보통",
+      "3": "어려움"
+    },
+    "difficultyHint": {
+      "1": "작품을 아는 누구나",
+      "2": "꼼꼼히 본 시청자용",
+      "3": "진짜 덕후용"
+    },
+    "noQuestions": "이 카테고리에는 아직 문제가 없어요. 다른 걸 골라 보세요!",
+    "didYouKnow": "알고 있었나요?",
+    "nextHint": "다음 힌트",
+    "report": "문제 신고",
+    "reported": "고마워요, 신고됐어요!",
+    "finish": "라운드 종료",
+    "resultTitle": "결과",
+    "xpEarned": "+{{xp}} XP 획득",
+    "noXpAgain": "이 라운드는 이미 집계됐어요.",
+    "again": "다시 하기",
+    "share": "결과 공유",
+    "shareText": "{{category}} 퀴즈에서 {{total}}문제 중 {{correct}}개 맞혔어요! 이길 수 있어요?",
+    "fiftyFifty": "50:50 — 오답 두 개 지우기",
+    "streakDays_other": "{{count}}일 연속",
+    "chooseSeries": "작품을 고르세요",
+    "fiftyFiftyVideo": "50:50 한 번 더 · 영상",
+    "videoAborted": "영상을 일찍 닫았어요 — 보상은 끝까지 봐야 받을 수 있어요.",
+    "videoUnavailable": "지금은 볼 수 있는 영상이 없어요. 나중에 다시 시도해 주세요.",
+    "whoamiBonus": "지금 맞히면: +{{xp}} XP 보너스",
+    "lebenRest_other": "목숨 {{count}}개 남음",
+    "modusStand": "{{gesamt}}개 중 {{richtig}}개 정답",
+    "modus": {
+      "titel": "모드",
+      "normal": "클래식",
+      "blitz": "블리츠",
+      "survival": "서바이벌",
+      "normalHint": "내 속도로 10문제, 조커 사용 가능.",
+      "blitzHint": "60초 — 최대한 많이 맞혀 보세요.",
+      "survivalHint": "세 번 틀릴 때까지 계속해요."
+    }
+  },
+  "daily": {
+    "title": "데일리 챌린지",
+    "sub": "5문제 — 모두에게 똑같아요",
+    "alreadyDone": "오늘의 챌린지는 이미 했어요. 내일 새 문제 다섯 개!",
+    "leaderboard": "오늘의 랭킹",
+    "shareText": "오늘 Anigosha 챌린지에서 {{total}}개 중 {{correct}}개 맞혔어요!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "나를 이길 수 있어요?"
+  },
+  "duel": {
+    "new": "새 대결 시작",
+    "empty": "아직 대결이 없어요. 첫 대결을 시작해 보세요!",
+    "yourTurn": "내 차례",
+    "waiting": "상대 차례",
+    "waitingLong": "{{name}} 님이 플레이 중이에요. 나중에 다시 확인하세요!",
+    "round": "라운드 {{n}}/4",
+    "won": "승리",
+    "lost": "패배",
+    "draw": "무승부",
+    "endRound": "라운드 넘기기",
+    "queued": "지금은 대기 중인 상대가 없어요. 계속 찾을게요 — 잠시 후 다시 시도해 주세요.",
+    "botHint": "이 표시가 있는 상대는 컴퓨터예요.",
+    "challengeFriend": "친구에게 도전",
+    "challengeHint": "친구의 플레이어 이름",
+    "challengePlaceholder": "예: AnimeFan42",
+    "challengeGo": "도전",
+    "friendly": "친선 대결",
+    "friendlyNote": "친선 대결 — 랭킹에 반영되지 않아요.",
+    "challengeError": {
+      "notFound": "“{{name}}”라는 플레이어가 없어요. 철자를 정확히 확인해 주세요.",
+      "self": "자기 자신에게는 도전할 수 없어요.",
+      "bot": "컴퓨터 상대예요 — 사람을 골라 주세요.",
+      "running": "{{name}} 님과의 대결이 이미 진행 중이에요. 먼저 끝내 주세요.",
+      "tooMany": "한 번에 도전이 너무 많아요. 한 시간 뒤에 다시 시도해 주세요.",
+      "unknown": "잘 안 됐어요. 다시 시도해 주세요."
+    },
+    "play": "플레이",
+    "finished": "종료",
+    "format": "3문제 × 4라운드",
+    "searching": "상대를 찾는 중…",
+    "searchingLong": "상대를 찾고 있어요. 상대가 나타나면 바로 대결이 이어져요 — 나중에 다시 확인하세요!",
+    "forfeitWon": "승리 – 상대의 시간이 끝났어요",
+    "forfeitLost": "패배 – 내 시간이 끝났어요",
+    "expired": "만료됨"
+  },
+  "legal": {
+    "imprint": "법적 고지",
+    "privacy": "개인정보",
+    "terms": "이용약관",
+    "legal": "법적 정보"
+  },
+  "level": {
+    "reached": "레벨 업",
+    "title": "레벨 {{level}}"
+  },
+  "push": {
+    "titel": "알림",
+    "text": "대결에서 내 차례가 되면 알려 드려요.",
+    "einschalten": "켜기",
+    "aktiv": "켜짐",
+    "an": "알림이 켜져 있어요.",
+    "aus": "알림이 꺼져 있어요.",
+    "homescreen": "iPhone에서는 먼저 공유 → 홈 화면에 추가로 사이트를 홈 화면에 추가하세요 — Apple은 다른 방법으로는 알림을 허용하지 않아요.",
+    "fehler": {
+      "abgelehnt": "알림이 허용되지 않았어요.",
+      "nicht_unterstuetzt": "이 브라우저는 알림을 지원하지 않아요.",
+      "homescreen": "iPhone에서는 먼저 “공유 → 홈 화면에 추가”로 설치하세요.",
+      "nicht_eingerichtet": "알림이 아직 설정되지 않았어요.",
+      "fehler": "알림을 켤 수 없었어요."
+    }
+  },
+  "kauf": {
+    "titel": "광고 제거",
+    "text": "한 번만 구매 — 광고 없이 즐기세요.",
+    "aktiv": "구매 완료. 응원해 줘서 고마워요!",
+    "kaufen": "구매",
+    "wiederherstellen": "복원",
+    "danke": "이제 광고가 꺼졌어요. 고마워요!",
+    "nichtsGefunden": "이전 구매 내역을 찾지 못했어요.",
+    "abgebrochen": "구매가 완료되지 않았어요.",
+    "fehler": {
+      "nur_app": "구매는 스토어에서 받은 앱에서만 할 수 있어요.",
+      "nicht_eingerichtet": "구매가 아직 설정되지 않았어요.",
+      "kein_angebot": "구매할 수 있는 상품이 없어요.",
+      "fehler": "구매에 실패했어요.",
+      "wiederherstellen": "복원에 실패했어요."
+    },
+    "gastHinweis": "팁: 먼저 계정을 보호하면 구매가 내 진행 상황과 계속 연결돼요."
+  },
+  "leaderboard": {
+    "kicker": "전 세계 · Elo 순"
+  },
+  "guest": {
+    "title": "계정 보호하기",
+    "text": "게스트로 플레이 중이에요. 앱을 삭제하면 XP와 연속 기록이 사라져요 — 이메일을 추가해서 지키세요.",
+    "save": "저장",
+    "mailSent": "{{email}}(으)로 메일을 보냈어요. 확인한 뒤 여기서 비밀번호를 설정하세요.",
+    "pending": "{{email}} 확인을 기다리는 중 — 메일의 링크를 눌러 주세요.",
+    "confirmed": "확인했어요",
+    "otherMail": "다른 이메일",
+    "notYet": "아직 확인되지 않았어요. 스팸함도 확인해 보세요.",
+    "passwordTitle": "비밀번호 설정",
+    "passwordText": "이메일이 확인됐어요. 비밀번호가 있으면 다른 기기에서도 로그인할 수 있어요.",
+    "logoutWarn": "게스트로 플레이 중이에요. 로그아웃하면 이 계정으로 돌아올 수 없고 XP와 연속 기록을 잃어요. 그래도 로그아웃할까요?"
+  },
+  "figur": {
+    "richtig0": "정확히 명중!",
+    "richtig1": "좋아요, 정답!",
+    "richtig2": "제대로 아네요!",
+    "falsch0": "아깝다 …",
+    "falsch1": "이제 기억하겠죠!",
+    "falsch2": "다음엔 꼭!"
+  },
+  "missionen": {
+    "titel": "주간 미션",
+    "art": {
+      "solo_runden_other": "솔로 {{count}}판 플레이",
+      "richtige_other": "{{count}}문제 맞히기",
+      "daily_other": "데일리 챌린지 {{count}}번 플레이",
+      "fehlerfrei_other": "만점 라운드 {{count}}번 달성",
+      "schwer_other": "“어려움”으로 {{count}}판 플레이",
+      "duelle_other": "대결 {{count}}번 끝내기",
+      "siege_other": "대결 {{count}}번 이기기",
+      "spieltage_other": "서로 다른 {{count}}일 플레이"
+    }
+  },
+  "avatar": {
+    "titel": "아바타",
+    "neu": "새 아바타 잠금 해제!",
+    "waehlen": "아바타 선택",
+    "ab": "레벨 {{level}}부터",
+    "lvl": "Lv {{level}}"
+  },
+  "spieler": {
+    "optionen": "플레이어 옵션",
+    "melden": "플레이어 신고",
+    "gemeldet": "고마워요! 신고는 24시간 안에 검토해요.",
+    "blockieren": "차단",
+    "blockFrage": "{{name}} 님을 차단할까요? 대결에서 더 이상 만나지 않고 랭킹에서도 서로 보이지 않아요.",
+    "blockliste": "차단한 플레이어",
+    "entblocken": "차단 해제",
+    "tippHinweis": "플레이어를 눌러 신고하거나 차단하세요.",
+    "grund": {
+      "name": "불쾌한 이름",
+      "cheating": "부정행위",
+      "other": "기타"
+    }
+  }
+}

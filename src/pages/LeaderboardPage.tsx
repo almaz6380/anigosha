@@ -109,7 +109,7 @@ export default function LeaderboardPage() {
                   : undefined
               }
             >
-              {ich && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[3px] akzent-flaeche" />}
+              {ich && <span aria-hidden className="absolute start-0 top-0 bottom-0 w-[3px] akzent-flaeche" />}
               <span className={`w-6 tabular-nums ${ich ? 'font-bold' : 'fein'}`}>{r.rank}</span>
               <Avatar id={r.avatar_id} name={r.username} groesse={30} style={{ background: 'var(--spur)' }} />
               <span className={`flex-1 truncate flex items-center gap-1.5 ${ich ? 'font-bold' : ''}`}>
@@ -117,7 +117,7 @@ export default function LeaderboardPage() {
                 {r.is_bot && <Bot className="w-3.5 h-3.5 fein shrink-0" />}
               </span>
               <span className="text-xs fein tabular-nums">{r.xp} XP</span>
-              <span className="font-bold tabular-nums w-11 text-right">{r.elo}</span>
+              <span className="font-bold tabular-nums w-11 text-end">{r.elo}</span>
             </div>
           );
         })}

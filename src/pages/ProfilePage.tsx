@@ -104,7 +104,7 @@ function PushSchalter() {
   );
 }
 
-// Alle fünf Sprachen stehen zur Wahl. Fehlen einer Sprache noch die Fragen
+// Alle Sprachen stehen zur Wahl, jede in ihrer eigenen Schreibweise. Fehlen einer Sprache noch die Fragen
 // in der Datenbank, fängt datenSprache() das ab und holt sie auf Englisch —
 // die Oberfläche bleibt trotzdem übersetzt.
 const LANGUAGES = [
@@ -113,6 +113,16 @@ const LANGUAGES = [
   { code: 'es', label: 'Español' },
   { code: 'fr', label: 'Français' },
   { code: 'pt', label: 'Português' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'id', label: 'Bahasa Indonesia' },
+  { code: 'tr', label: 'Türkçe' },
+  { code: 'pl', label: 'Polski' },
+  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+  { code: 'th', label: 'ไทย' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'ar', label: 'العربية' },
 ];
 
 /**
@@ -245,7 +255,7 @@ function WerbeEinwilligung() {
         void changeAdConsent().finally(() => setBusy(false));
       }}
       disabled={busy}
-      className="glas p-5 flex items-center gap-3.5 text-left disabled:opacity-50"
+      className="glas p-5 flex items-center gap-3.5 text-start disabled:opacity-50"
     >
       <ShieldCheck size={22} className="shrink-0 fein" strokeWidth={2} />
       <div className="flex-1 min-w-0">

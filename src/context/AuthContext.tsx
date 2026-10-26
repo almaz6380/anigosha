@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import i18n, { datenSprache, type AppSprache } from '../i18n';
+import i18n, { datenSprache, SPRACHEN, type AppSprache } from '../i18n';
 
 export interface Profile {
   id: string;
@@ -57,8 +57,6 @@ function mapAuthError(message: string): string {
   return 'generic';
 }
 
-const SPRACHEN: readonly string[] = ['de', 'en', 'es', 'fr', 'pt'];
-
 /**
  * `profiles.language` schrieb der Client bisher nie — der Server nimmt sie
  * aber für die Fragen im Duell. Fehler werden verschluckt: Schlimmstenfalls
@@ -94,7 +92,7 @@ function spracheAbgleichen(p: Profile) {
   } catch {
     /* Speicher gesperrt: wie „nichts gewählt" behandeln */
   }
-  if (!gewaehlt && p.username && SPRACHEN.includes(p.language)) {
+  if (!gewaehlt && p.username && (SPRACHEN as readonly string[]).includes(p.language)) {
     if (i18n.language !== p.language) void i18n.changeLanguage(p.language);
     return;
   }

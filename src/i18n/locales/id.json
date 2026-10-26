@@ -1,0 +1,285 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "Memuat…",
+    "error": "Terjadi kesalahan. Coba lagi.",
+    "back": "Kembali",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "continue": "Lanjut",
+    "bot": "Bot",
+    "retry": "Coba lagi",
+    "profileError": "Profilmu tidak bisa dimuat. Cek koneksimu dan coba lagi."
+  },
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "email": "Email",
+    "password": "Kata sandi",
+    "passwordMin": "Minimal 8 karakter",
+    "noAccount": "Belum punya akun? Daftar",
+    "haveAccount": "Sudah punya akun? Masuk",
+    "forgotPassword": "Lupa kata sandi?",
+    "resetSent": "Email reset kata sandi sudah dikirim.",
+    "confirmSent": "Email konfirmasi sudah dikirim — cek kotak masukmu.",
+    "errors": {
+      "invalid_credentials": "Email atau kata sandi salah.",
+      "email_not_confirmed": "Konfirmasi alamat emailmu dulu.",
+      "user_already_exists": "Email ini sudah terdaftar.",
+      "weak_password": "Kata sandi terlalu lemah (min. 8 karakter).",
+      "generic": "Gagal masuk. Coba lagi."
+    },
+    "resetError": "Email tidak bisa dikirim. Coba lagi.",
+    "resetNeedsEmail": "Masukkan alamat emailmu dulu.",
+    "legalNote": "Dengan mulai bermain, kamu menyetujui <terms>Ketentuan Penggunaan</terms>. Cara kami memproses datamu dijelaskan di <privacy>Kebijakan Privasi</privacy>.",
+    "ageConfirm": "Umurku minimal 16 tahun.",
+    "ageRequired": "Konfirmasi bahwa umurmu minimal 16 tahun.",
+    "playNow": "Main sekarang",
+    "guestHint": "Tanpa email. Kamu bisa mengamankan akunmu nanti di profil.",
+    "withEmail": "Masuk atau daftar dengan email",
+    "backToGuest": "Main tanpa email",
+    "guestError": "Gagal. Coba lagi."
+  },
+  "username": {
+    "title": "Pilih nama pemainmu",
+    "subtitle": "Nama ini dilihat orang lain di duel dan papan peringkat.",
+    "placeholder": "mis. OtakuMaster",
+    "rules": "3–16 karakter, hanya huruf, angka, dan _",
+    "taken": "Maaf, nama itu sudah dipakai.",
+    "invalid": "3–16 karakter, hanya huruf, angka, dan _",
+    "another": "Saran lain"
+  },
+  "nav": {
+    "home": "Beranda",
+    "solo": "Solo",
+    "duel": "Duel",
+    "leaderboard": "Peringkat",
+    "profile": "Profil",
+    "daily": "Tantangan Harian"
+  },
+  "home": {
+    "greetingMorning": "Selamat pagi, {{name}}",
+    "greetingDay": "Halo, {{name}}",
+    "greetingEvening": "Selamat malam, {{name}}",
+    "greetingNight": "Masih bangun, {{name}}?",
+    "solo": "Kuis Solo",
+    "soloSub": "Kategori, tingkat kesulitan, XP",
+    "duel": "Duel",
+    "leaderboard": "Peringkat",
+    "profile": "Profil",
+    "daily": "Tantangan Harian",
+    "dailyKicker": "Hari ini",
+    "dailyGo": "Main sekarang",
+    "streakAtRisk_other": "Kemarin kamu absen! Selamatkan streak {{count}} harimu.",
+    "streakSave": "Selamatkan",
+    "streakSaved_other": "Streak diselamatkan: {{count}} hari. Main satu ronde hari ini agar tetap berlanjut."
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Bahasa",
+    "stats": "Statistik",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Level",
+    "logout": "Keluar",
+    "deleteAccount": "Hapus akun",
+    "deleteConfirmTitle": "Yakin hapus akunmu?",
+    "deleteConfirmText": "Semua datamu (profil, duel, statistik) akan dihapus permanen. Ini tidak bisa dibatalkan.",
+    "deleteConfirmButton": "Ya, hapus permanen",
+    "deleteError": "Gagal menghapus. Coba lagi nanti.",
+    "streak": "Streak harian",
+    "streakBest": "Terbaik",
+    "adConsent": "Pengaturan privasi iklan",
+    "adConsentHint": "Ubah atau tarik persetujuanmu untuk iklan yang dipersonalisasi kapan saja."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Mudah",
+      "2": "Sedang",
+      "3": "Sulit"
+    },
+    "difficultyHint": {
+      "1": "Untuk siapa pun yang kenal serinya",
+      "2": "Untuk penonton yang jeli",
+      "3": "Untuk ahli sejati"
+    },
+    "noQuestions": "Belum ada pertanyaan di kategori ini. Coba kategori lain!",
+    "didYouKnow": "Tahukah kamu?",
+    "nextHint": "Petunjuk berikutnya",
+    "report": "Laporkan pertanyaan",
+    "reported": "Terima kasih, sudah dilaporkan!",
+    "finish": "Selesaikan ronde",
+    "resultTitle": "Hasil",
+    "xpEarned": "+{{xp}} XP didapat",
+    "noXpAgain": "Ronde ini sudah dinilai.",
+    "again": "Main lagi",
+    "share": "Bagikan hasil",
+    "shareText": "Aku benar {{correct}} dari {{total}} pertanyaan tentang {{category}}! Bisa lebih baik?",
+    "fiftyFifty": "50:50 — hapus dua jawaban",
+    "streakDays_other": "{{count}} hari berturut-turut",
+    "chooseSeries": "Pilih serial",
+    "fiftyFiftyVideo": "50:50 lagi · video",
+    "videoAborted": "Video ditutup lebih awal — hadiah butuh video penuh.",
+    "videoUnavailable": "Belum ada video tersedia. Coba lagi nanti.",
+    "whoamiBonus": "Benar sekarang: bonus +{{xp}} XP",
+    "lebenRest_other": "Sisa {{count}} nyawa",
+    "modusStand": "{{richtig}} dari {{gesamt}} benar",
+    "modus": {
+      "titel": "Mode",
+      "normal": "Klasik",
+      "blitz": "Kilat",
+      "survival": "Bertahan",
+      "normalHint": "10 pertanyaan sesuai tempomu, dengan joker.",
+      "blitzHint": "60 detik — jawab benar sebanyak mungkin.",
+      "survivalHint": "Terus main sampai salah tiga kali."
+    }
+  },
+  "daily": {
+    "title": "Tantangan Harian",
+    "sub": "5 pertanyaan — sama untuk semua",
+    "alreadyDone": "Kamu sudah main tantangan hari ini. Lima pertanyaan baru besok!",
+    "leaderboard": "Peringkat hari ini",
+    "shareText": "Aku dapat {{correct}} dari {{total}} di tantangan Anigosha hari ini!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Bisa kalahkan aku?"
+  },
+  "duel": {
+    "new": "Mulai duel baru",
+    "empty": "Belum ada duel. Mulai yang pertama!",
+    "yourTurn": "Giliranmu",
+    "waiting": "Giliran lawan",
+    "waitingLong": "{{name}} sedang main. Cek lagi nanti!",
+    "round": "Ronde {{n}}/4",
+    "won": "Menang",
+    "lost": "Kalah",
+    "draw": "Seri",
+    "endRound": "Serahkan ronde",
+    "queued": "Belum ada lawan yang tersedia. Kami terus mencari — coba lagi sebentar lagi.",
+    "botHint": "Lawan dengan tanda ini dikendalikan komputer.",
+    "challengeFriend": "Tantang teman",
+    "challengeHint": "Nama pemain temanmu",
+    "challengePlaceholder": "mis. AnimeFan42",
+    "challengeGo": "Ayo",
+    "friendly": "Duel persahabatan",
+    "friendlyNote": "Duel persahabatan — tidak dihitung di peringkat.",
+    "challengeError": {
+      "notFound": "Tidak ada pemain bernama “{{name}}”. Cek ejaannya.",
+      "self": "Kamu tidak bisa menantang dirimu sendiri.",
+      "bot": "Itu lawan komputer — pilih manusia.",
+      "running": "Duel melawan {{name}} masih berjalan. Selesaikan dulu.",
+      "tooMany": "Terlalu banyak tantangan sekaligus. Coba lagi dalam satu jam.",
+      "unknown": "Gagal. Coba lagi."
+    },
+    "play": "Main",
+    "finished": "Selesai",
+    "format": "4 ronde, masing-masing 3 pertanyaan",
+    "searching": "Mencari lawan…",
+    "searchingLong": "Kami sedang mencarikan lawan untukmu. Duel berlanjut begitu ada yang ditemukan — cek lagi nanti!",
+    "forfeitWon": "Menang – waktu lawanmu habis",
+    "forfeitLost": "Kalah – waktumu habis",
+    "expired": "Kedaluwarsa"
+  },
+  "legal": {
+    "imprint": "Informasi Hukum",
+    "privacy": "Privasi",
+    "terms": "Ketentuan Penggunaan",
+    "legal": "Hukum"
+  },
+  "level": {
+    "reached": "Naik level",
+    "title": "Level {{level}}"
+  },
+  "push": {
+    "titel": "Notifikasi",
+    "text": "Dapat kabar saat giliranmu di duel.",
+    "einschalten": "Aktifkan",
+    "aktiv": "Aktif",
+    "an": "Notifikasi aktif.",
+    "aus": "Notifikasi nonaktif.",
+    "homescreen": "Di iPhone, tambahkan situs ke layar utama dulu lewat Bagikan → Tambah ke Layar Utama — Apple tidak mengizinkan notifikasi dengan cara lain.",
+    "fehler": {
+      "abgelehnt": "Notifikasi tidak diizinkan.",
+      "nicht_unterstuetzt": "Browser ini tidak mendukung notifikasi.",
+      "homescreen": "Di iPhone, pasang dulu lewat “Bagikan → Tambah ke Layar Utama”.",
+      "nicht_eingerichtet": "Notifikasi belum diatur.",
+      "fehler": "Notifikasi tidak bisa diaktifkan."
+    }
+  },
+  "kauf": {
+    "titel": "Hapus iklan",
+    "text": "Sekali beli — tanpa iklan lagi.",
+    "aktiv": "Sudah dibeli. Terima kasih atas dukungannya!",
+    "kaufen": "Beli",
+    "wiederherstellen": "Pulihkan",
+    "danke": "Mulai sekarang tanpa iklan. Terima kasih!",
+    "nichtsGefunden": "Tidak ditemukan pembelian sebelumnya.",
+    "abgebrochen": "Pembelian tidak selesai.",
+    "fehler": {
+      "nur_app": "Pembelian hanya bisa di aplikasi dari store.",
+      "nicht_eingerichtet": "Pembelian belum diatur.",
+      "kein_angebot": "Tidak ada penawaran.",
+      "fehler": "Pembelian gagal.",
+      "wiederherstellen": "Pemulihan gagal."
+    },
+    "gastHinweis": "Tips: amankan akunmu dulu agar pembelian tetap terhubung dengan progresmu."
+  },
+  "leaderboard": {
+    "kicker": "Seluruh dunia · berdasarkan Elo"
+  },
+  "guest": {
+    "title": "Amankan akunmu",
+    "text": "Kamu main sebagai tamu. Kalau aplikasinya dihapus, XP dan streak-mu hilang — tambahkan email untuk menyimpannya.",
+    "save": "Simpan",
+    "mailSent": "Kami mengirim email ke {{email}}. Konfirmasi, lalu buat kata sandimu di sini.",
+    "pending": "Menunggu konfirmasi {{email}} — ketuk tautan di email.",
+    "confirmed": "Sudah kukonfirmasi",
+    "otherMail": "Email lain",
+    "notYet": "Belum dikonfirmasi. Cek juga folder spam.",
+    "passwordTitle": "Buat kata sandi",
+    "passwordText": "Emailmu sudah dikonfirmasi. Dengan kata sandi, kamu bisa masuk di perangkat lain juga.",
+    "logoutWarn": "Kamu main sebagai tamu. Setelah keluar, kamu tidak bisa masuk lagi ke akun ini — XP dan streak-mu akan hilang. Tetap keluar?"
+  },
+  "figur": {
+    "richtig0": "Tepat sasaran!",
+    "richtig1": "Mantap, betul!",
+    "richtig2": "Kamu jago!",
+    "falsch0": "Hampir …",
+    "falsch1": "Sekarang pasti ingat!",
+    "falsch2": "Lain kali!"
+  },
+  "missionen": {
+    "titel": "Misi mingguan",
+    "art": {
+      "solo_runden_other": "Main {{count}} ronde solo",
+      "richtige_other": "Jawab benar {{count}} pertanyaan",
+      "daily_other": "Main {{count}} Tantangan Harian",
+      "fehlerfrei_other": "Selesaikan {{count}} ronde sempurna",
+      "schwer_other": "Main {{count}} ronde di “Sulit”",
+      "duelle_other": "Selesaikan {{count}} duel",
+      "siege_other": "Menangkan {{count}} duel",
+      "spieltage_other": "Main di {{count}} hari berbeda"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Avatar baru terbuka!",
+    "waehlen": "Pilih avatar",
+    "ab": "Mulai level {{level}}",
+    "lvl": "Lv {{level}}"
+  },
+  "spieler": {
+    "optionen": "Opsi pemain",
+    "melden": "Laporkan pemain",
+    "gemeldet": "Terima kasih! Kami meninjau laporan dalam 24 jam.",
+    "blockieren": "Blokir",
+    "blockFrage": "Blokir {{name}}? Kalian tidak akan bertemu lagi di duel dan tidak saling terlihat di peringkat.",
+    "blockliste": "Pemain diblokir",
+    "entblocken": "Buka blokir",
+    "tippHinweis": "Ketuk pemain untuk melaporkan atau memblokirnya.",
+    "grund": {
+      "name": "Nama tidak pantas",
+      "cheating": "Curang",
+      "other": "Lainnya"
+    }
+  }
+}

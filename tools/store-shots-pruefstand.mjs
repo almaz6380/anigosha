@@ -22,11 +22,13 @@ const FORMATE = [
 // Reihenfolge = Reihenfolge im Store. Die ersten zwei sieht man ohne Wischen,
 // deshalb vorn: Startseite (Missionen, Challenge) und eine Frage mit Figur
 // und „Wusstest du?". `tun` klickt sich bis zum gewünschten Zustand.
+// Richtige Antwort der Attrappen-Frage je Schrift (.pruefstand/stubs/solo.ts).
+const CONAN = { ja: '江戸川コナン', ko: '에도가와 코난', th: 'เอโดงาวะ โคนัน', ru: 'Конан Эдогава', ar: 'كونان إدوغاوا' };
 const kategorie = (p) => p.locator('.grid button').first().click();
 const SCREENS = [
   { file: '1-home',        path: '/' },
   { file: '2-quiz',        path: '/daily',
-    tun: async (p) => { await p.getByText('Conan Edogawa').click(); } },
+    tun: async (p, lang) => { await p.getByText(CONAN[lang] ?? 'Conan Edogawa').click(); } },
   { file: '3-modi',        path: '/solo',
     tun: async (p) => { await kategorie(p); await p.locator('[role=radio]').nth(1).click(); } },
   { file: '4-wer-bin-ich', path: '/solo?wer=1',
@@ -70,7 +72,7 @@ for (const f of FORMATE.filter((x) => !NUR || x.name === NUR)) {
     for (const s of SCREENS) {
       await page.goto(URL + s.path, { waitUntil: 'networkidle' });
       await page.waitForTimeout(900);
-      if (s.tun) { await s.tun(page); await page.waitForTimeout(600); }
+      if (s.tun) { await s.tun(page, lang); await page.waitForTimeout(600); }
       await page.screenshot({ path: `${dir}/${s.file}.png` });
     }
     await ctx.close();

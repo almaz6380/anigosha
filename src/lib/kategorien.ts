@@ -29,6 +29,18 @@ const FARBEN: Record<string, string> = {
   solo_leveling: '#4a5ad1',
   blue_lock: '#2b6fe0',
   hunter_x_hunter: '#3c9a48',
+  bleach: '#d0563a',
+  fullmetal_alchemist: '#b8862e',
+  sailor_moon: '#d6559a',
+  evangelion: '#6a4bb8',
+  fairy_tail: '#d24a4f',
+  tokyo_ghoul: '#5b5f78',
+  dandadan: '#3fa58c',
+  kaiju_no_8: '#4c8a3e',
+  oshi_no_ko: '#e0607e',
+  haikyu: '#e08a1e',
+  one_punch_man: '#c9a21c',
+  tokyo_revengers: '#2f7f8f',
   emoji_raetsel: '#e3a516',
 };
 

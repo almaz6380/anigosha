@@ -14,6 +14,8 @@ name: App Store Connect
 #   texte-lesen     Store-Texte der offenen Version zeigen (liest nur)
 #   texte-sichern   Store-Texte nach store-assets/asc-texte.json holen (liest nur)
 #   texte-schreiben store-assets/asc-texte.json zurueckschreiben
+#   sprachen-anlegen fehlende Store-Sprachen anlegen (asc-appinfo.json + asc-texte.json)
+#   hauptsprache    Hauptsprache der App setzen (Eingabe nummer, z. B. en-US)
 #   einreichungen   alle Einreichungen samt Zustand zeigen (liest nur)
 #   aufraeumen      festhaengende Einreichungen zurueckziehen
 #   abo-notiz       Prueferhinweis am Abo setzen
@@ -44,6 +46,8 @@ on:
           - texte-lesen
           - texte-sichern
           - texte-schreiben
+          - sprachen-anlegen
+          - hauptsprache
           - einreichungen
           - aufraeumen
           - inhaberrechte
@@ -56,7 +60,7 @@ on:
           - pruefnotiz
         default: status
       nummer:
-        description: 'Build-Nummer (build/testflight) bzw. Versionsnummer (versionsnummer, version-anlegen)'
+        description: 'Build-Nummer (build/testflight) bzw. Versionsnummer (versionsnummer, version-anlegen) bzw. Sprache (hauptsprache, z. B. en-US)'
         type: string
         default: ''
       dry_run:
@@ -109,7 +113,7 @@ jobs:
 
           # --build und --testflight brauchen eine Nummer, die uebrigen nicht.
           # Der Trockenlauf gilt nur fuer die schreibenden Befehle.
-          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ] || [ "$MODE" = "versionsnummer" ] || [ "$MODE" = "version-anlegen" ]; then
+          if [ "$MODE" = "build" ] || [ "$MODE" = "testflight" ] || [ "$MODE" = "versionsnummer" ] || [ "$MODE" = "version-anlegen" ] || [ "$MODE" = "hauptsprache" ]; then
             if [ -z "$NUMMER" ]; then
               echo "::error::Modus $MODE braucht die Eingabe 'nummer'."
               exit 1

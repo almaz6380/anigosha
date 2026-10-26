@@ -1,0 +1,7 @@
+-- 0158: Hunter x Hunter — die Dowsing Chain sitzt am Zeigefinger, nicht am kleinen Finger
+-- (dort sitzt die Judgment Chain). Idempotent.
+update question_translations set explanation = 'Lies, on the other hand, are detected by the Dowsing Chain on his index finger.' where lang = 'en' and question_id = (select question_id from question_translations where lang = 'de' and prompt = 'Was bewirkt Kurapikas „Holy Chain“?');
+update question_translations set explanation = 'Las mentiras, en cambio, las detecta la Dowsing Chain de su dedo índice.' where lang = 'es' and question_id = (select question_id from question_translations where lang = 'de' and prompt = 'Was bewirkt Kurapikas „Holy Chain“?');
+update question_translations set explanation = 'Les mensonges, eux, sont détectés par la Dowsing Chain de son index.' where lang = 'fr' and question_id = (select question_id from question_translations where lang = 'de' and prompt = 'Was bewirkt Kurapikas „Holy Chain“?');
+update question_translations set explanation = 'Já as mentiras são detectadas pela Dowsing Chain do dedo indicador dele.' where lang = 'pt' and question_id = (select question_id from question_translations where lang = 'de' and prompt = 'Was bewirkt Kurapikas „Holy Chain“?');
+update question_translations set explanation = 'Lügen erkennt dagegen die „Dowsing Chain“ an seinem Zeigefinger.' where lang = 'de' and question_id = (select question_id from question_translations where lang = 'de' and prompt = 'Was bewirkt Kurapikas „Holy Chain“?');

@@ -1,0 +1,3 @@
+/* Erzeugt von tools/ios-projekt.mjs. Nicht von Hand aendern — dort aendern
+   und das Werkzeug laufen lassen. */
+"NSUserTrackingUsageDescription" = "การอนุญาตของคุณช่วยให้เราแสดงโฆษณาที่ตรงกับคุณมากขึ้น ตัวควิซจะไม่ได้รับผลกระทบ";

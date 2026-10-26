@@ -95,7 +95,8 @@ async function getAccessToken(sa: { client_email: string; private_key: string })
 // Sprache des Geräts ankommen, und die steht am Token, nicht am Spielzug.
 // ---------------------------------------------------------------------------
 type Text = { title: string; body: string };
-type Sprache = 'de' | 'en' | 'es' | 'fr' | 'pt';
+const SPRACHEN = ['de', 'en', 'es', 'fr', 'pt', 'it', 'id', 'tr', 'pl', 'vi', 'ja', 'ko', 'th', 'ru', 'ar'] as const;
+type Sprache = typeof SPRACHEN[number];
 
 // Vorher: `const de = lang !== 'en'` — spanische, französische und
 // portugiesische Geräte bekamen deutsche Meldungen. Unbekannte Sprachen
@@ -106,10 +107,20 @@ const ERGEBNIS: Record<Sprache, { won: string; lost: string; draw: string }> = {
   es: { won: 'Has ganado', lost: 'Has perdido', draw: 'Empate' },
   fr: { won: 'Victoire', lost: 'Défaite', draw: 'Match nul' },
   pt: { won: 'Você venceu', lost: 'Você perdeu', draw: 'Empate' },
+  it: { won: 'Hai vinto', lost: 'Hai perso', draw: 'Pareggio' },
+  id: { won: 'Kamu menang', lost: 'Kamu kalah', draw: 'Seri' },
+  tr: { won: 'Kazandın', lost: 'Kaybettin', draw: 'Berabere' },
+  pl: { won: 'Wygrana', lost: 'Przegrana', draw: 'Remis' },
+  vi: { won: 'Bạn thắng', lost: 'Bạn thua', draw: 'Hòa' },
+  ja: { won: '勝利', lost: '敗北', draw: '引き分け' },
+  ko: { won: '승리', lost: '패배', draw: '무승부' },
+  th: { won: 'คุณชนะ', lost: 'คุณแพ้', draw: 'เสมอ' },
+  ru: { won: 'Победа', lost: 'Поражение', draw: 'Ничья' },
+  ar: { won: 'فزت', lost: 'خسرت', draw: 'تعادل' },
 };
 
 function texte(kind: string, lang: string, gegner: string, extra: Record<string, unknown>): Text {
-  const l: Sprache = (['de', 'en', 'es', 'fr', 'pt'] as const).includes(lang as Sprache) ? (lang as Sprache) : 'en';
+  const l: Sprache = (SPRACHEN as readonly string[]).includes(lang) ? (lang as Sprache) : 'en';
   switch (kind) {
     case 'your_turn':
       return {
@@ -118,6 +129,16 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
         es: { title: '¡Te toca!', body: `${gegner} ya ha jugado — ahora es tu turno.` },
         fr: { title: 'À toi de jouer !', body: `${gegner} a joué — c'est ton tour.` },
         pt: { title: 'Sua vez!', body: `${gegner} já jogou — agora é a sua vez.` },
+        it: { title: 'Tocca a te!', body: `${gegner} ha giocato — ora è il tuo turno.` },
+        id: { title: 'Giliranmu!', body: `${gegner} sudah main — sekarang giliranmu.` },
+        tr: { title: 'Sıra sende!', body: `${gegner} oynadı — şimdi sıra sende.` },
+        pl: { title: 'Twój ruch!', body: `${gegner} już zagrał(a) — teraz twoja kolej.` },
+        vi: { title: 'Đến lượt bạn!', body: `${gegner} đã chơi — giờ đến lượt bạn.` },
+        ja: { title: 'あなたの番です！', body: `${gegner}さんがプレイしました。次はあなたの番です。` },
+        ko: { title: '내 차례예요!', body: `${gegner} 님이 플레이했어요. 이제 당신 차례예요.` },
+        th: { title: 'ถึงตาคุณแล้ว!', body: `${gegner} เล่นแล้ว — ตอนนี้ถึงตาคุณ` },
+        ru: { title: 'Твой ход!', body: `${gegner} сделал(а) ход — теперь твоя очередь.` },
+        ar: { title: 'دورك!', body: `لعب ${gegner} — الآن حان دورك.` },
       }[l];
     case 'match_found':
       return {
@@ -126,6 +147,16 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
         es: { title: '¡Rival encontrado!', body: `Tu duelo contra ${gegner} puede empezar.` },
         fr: { title: 'Adversaire trouvé !', body: `Ton duel contre ${gegner} peut commencer.` },
         pt: { title: 'Adversário encontrado!', body: `Seu duelo contra ${gegner} pode começar.` },
+        it: { title: 'Avversario trovato!', body: `Il tuo duello contro ${gegner} può iniziare.` },
+        id: { title: 'Lawan ditemukan!', body: `Duelmu melawan ${gegner} siap dimulai.` },
+        tr: { title: 'Rakip bulundu!', body: `${gegner} ile düellon başlayabilir.` },
+        pl: { title: 'Znaleziono przeciwnika!', body: `Twój pojedynek z ${gegner} może się zacząć.` },
+        vi: { title: 'Đã tìm thấy đối thủ!', body: `Trận đấu của bạn với ${gegner} đã sẵn sàng.` },
+        ja: { title: '対戦相手が見つかりました！', body: `${gegner}さんとのデュエルを始めましょう。` },
+        ko: { title: '상대를 찾았어요!', body: `${gegner} 님과의 대결을 시작할 수 있어요.` },
+        th: { title: 'พบคู่แข่งแล้ว!', body: `การดวลกับ ${gegner} พร้อมแล้ว` },
+        ru: { title: 'Соперник найден!', body: `Твоя дуэль с ${gegner} может начаться.` },
+        ar: { title: 'تم العثور على خصم!', body: `مبارزتك ضد ${gegner} جاهزة.` },
       }[l];
     case 'challenge': {
       // Der Name kommt aus der Nutzlast, nicht aus `gegner`: Beim Anlegen ist
@@ -137,6 +168,16 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
         es: { title: `¡${von} te desafía!`, body: 'Duelo amistoso — sin clasificación. Demuestra lo que sabes.' },
         fr: { title: `${von} te défie !`, body: 'Duel amical — non classé. Montre ce que tu sais.' },
         pt: { title: `${von} desafia você!`, body: 'Duelo amistoso — sem ranking. Mostre o que você sabe.' },
+        it: { title: `${von} ti sfida!`, body: 'Duello amichevole — senza classifica. Mostra cosa sai.' },
+        id: { title: `${von} menantangmu!`, body: 'Duel persahabatan — tanpa peringkat. Tunjukkan kemampuanmu.' },
+        tr: { title: `${von} sana meydan okuyor!`, body: 'Dostluk düellosu — sıralamasız. Ne bildiğini göster.' },
+        pl: { title: `${von} rzuca ci wyzwanie!`, body: 'Pojedynek towarzyski — bez rankingu. Pokaż, co umiesz.' },
+        vi: { title: `${von} thách đấu bạn!`, body: 'Trận giao hữu — không tính xếp hạng. Hãy thể hiện nào.' },
+        ja: { title: `${von}さんから挑戦状！`, body: 'フレンド対戦（ランキング対象外）。実力を見せよう。' },
+        ko: { title: `${von} 님이 도전했어요!`, body: '친선 대결 — 랭킹 미반영. 실력을 보여 주세요.' },
+        th: { title: `${von} ท้าดวลคุณ!`, body: 'ดวลกระชับมิตร — ไม่นับอันดับ แสดงฝีมือให้เห็น' },
+        ru: { title: `${von} бросает тебе вызов!`, body: 'Дружеская дуэль — без рейтинга. Покажи, что знаешь.' },
+        ar: { title: `${von} يتحداك!`, body: 'مبارزة ودية — بدون تصنيف. أظهر ما تعرفه.' },
       }[l];
     }
     case 'match_finished': {
@@ -150,6 +191,16 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
         es: { title: 'Duelo terminado', body: `${erg} contra ${gegner} — ${mein}:${sein}.` },
         fr: { title: 'Duel terminé', body: `${erg} contre ${gegner} — ${mein}:${sein}.` },
         pt: { title: 'Duelo encerrado', body: `${erg} contra ${gegner} — ${mein}:${sein}.` },
+        it: { title: 'Duello finito', body: `${erg} contro ${gegner} — ${mein}:${sein}.` },
+        id: { title: 'Duel selesai', body: `${erg} melawan ${gegner} — ${mein}:${sein}.` },
+        tr: { title: 'Düello bitti', body: `${gegner} karşısında: ${erg} — ${mein}:${sein}.` },
+        pl: { title: 'Pojedynek zakończony', body: `${erg} z ${gegner} — ${mein}:${sein}.` },
+        vi: { title: 'Trận đấu kết thúc', body: `${erg} trước ${gegner} — ${mein}:${sein}.` },
+        ja: { title: 'デュエル終了', body: `${gegner}さんに${erg} — ${mein}:${sein}` },
+        ko: { title: '대결 종료', body: `${gegner} 님과의 대결: ${erg} — ${mein}:${sein}` },
+        th: { title: 'การดวลจบแล้ว', body: `${erg} กับ ${gegner} — ${mein}:${sein}` },
+        ru: { title: 'Дуэль окончена', body: `${erg} в дуэли с ${gegner} — ${mein}:${sein}.` },
+        ar: { title: 'انتهت المبارزة', body: `${erg} ضد ${gegner} — ${mein}:${sein}.` },
       }[l];
     }
     default:
@@ -159,6 +210,16 @@ function texte(kind: string, lang: string, gegner: string, extra: Record<string,
         es: { title: 'Anigosha', body: 'Hay novedades.' },
         fr: { title: 'Anigosha', body: 'Il y a du nouveau.' },
         pt: { title: 'Anigosha', body: 'Tem novidade.' },
+        it: { title: 'Anigosha', body: 'Ci sono novità.' },
+        id: { title: 'Anigosha', body: 'Ada kabar baru.' },
+        tr: { title: 'Anigosha', body: 'Yeni bir şey var.' },
+        pl: { title: 'Anigosha', body: 'Są nowości.' },
+        vi: { title: 'Anigosha', body: 'Có tin mới.' },
+        ja: { title: 'Anigosha', body: 'お知らせがあります。' },
+        ko: { title: 'Anigosha', body: '새 소식이 있어요.' },
+        th: { title: 'Anigosha', body: 'มีอัปเดตใหม่' },
+        ru: { title: 'Anigosha', body: 'Есть новости.' },
+        ar: { title: 'Anigosha', body: 'هناك جديد.' },
       }[l];
   }
 }

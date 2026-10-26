@@ -17,6 +17,7 @@
 import { Capacitor } from '@capacitor/core';
 import type { PluginListenerHandle } from '@capacitor/core';
 import { supabase } from './supabase';
+import type { AppSprache } from '../i18n';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
@@ -39,7 +40,7 @@ export type PushErgebnis =
   | { ok: true; token: string; platform: 'ios' | 'android' | 'web' }
   | { ok: false; grund: PushFehlergrund; detail?: string };
 
-type Sprache = 'de' | 'en' | 'es' | 'fr' | 'pt';
+type Sprache = AppSprache;
 
 /**
  * Merker, damit dasselbe Token nicht bei jedem Seitenwechsel neu gemeldet wird.

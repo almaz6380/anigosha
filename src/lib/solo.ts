@@ -5,18 +5,21 @@ export interface Category {
   slug: string;
   name_de: string;
   name_en: string;
+  /** Abweichende Titel je Sprache (seit 0110), z. B. `{ ja: 'ワンピース' }`. */
+  names?: Record<string, string> | null;
   sort_order: number;
 }
 
 /**
- * Anzeigename einer Kategorie. Die Tabelle kennt nur Deutsch und Englisch —
- * alle anderen Sprachen bekommen den englischen Namen. Vorher stand in den
- * Seiten `lang === 'en' ? name_en : name_de`, und ein spanisches Gerät sah
- * deutsche Serientitel („Detektiv Conan").
+ * Anzeigename einer Kategorie: eigener Titel der Sprache (`names`, z. B.
+ * japanisch), sonst Deutsch für Deutsch und Englisch für alle anderen.
+ * Vorher stand in den Seiten `lang === 'en' ? name_en : name_de`, und ein
+ * spanisches Gerät sah deutsche Serientitel („Detektiv Conan").
  */
-export function kategorieName(c: Pick<Category, 'name_de' | 'name_en'> | null | undefined, lang: string): string | undefined {
+export function kategorieName(c: Pick<Category, 'name_de' | 'name_en' | 'names'> | null | undefined, lang: string): string | undefined {
   if (!c) return undefined;
-  return lang === 'de' ? c.name_de : c.name_en;
+  if (lang === 'de') return c.name_de;
+  return c.names?.[lang] || c.name_en;
 }
 
 export interface SoloQuestion {
@@ -59,7 +62,7 @@ export interface SoloResult {
 export async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from('categories')
-    .select('id, slug, name_de, name_en, sort_order')
+    .select('id, slug, name_de, name_en, names, sort_order')
     .order('sort_order');
   if (error) throw error;
   return data ?? [];

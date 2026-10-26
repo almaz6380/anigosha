@@ -1,0 +1,285 @@
+{
+  "common": {
+    "appName": "Anigosha",
+    "loading": "Đang tải…",
+    "error": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+    "back": "Quay lại",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "continue": "Tiếp tục",
+    "bot": "Bot",
+    "retry": "Thử lại",
+    "profileError": "Không tải được hồ sơ của bạn. Kiểm tra kết nối rồi thử lại."
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "passwordMin": "Ít nhất 8 ký tự",
+    "noAccount": "Chưa có tài khoản? Đăng ký",
+    "haveAccount": "Đã có tài khoản? Đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "resetSent": "Đã gửi email đặt lại mật khẩu.",
+    "confirmSent": "Đã gửi email xác nhận — hãy kiểm tra hộp thư.",
+    "errors": {
+      "invalid_credentials": "Email hoặc mật khẩu không đúng.",
+      "email_not_confirmed": "Hãy xác nhận địa chỉ email trước.",
+      "user_already_exists": "Email này đã được đăng ký.",
+      "weak_password": "Mật khẩu quá yếu (tối thiểu 8 ký tự).",
+      "generic": "Đăng nhập thất bại. Vui lòng thử lại."
+    },
+    "resetError": "Không gửi được email. Vui lòng thử lại.",
+    "resetNeedsEmail": "Hãy nhập địa chỉ email trước.",
+    "legalNote": "Khi bắt đầu, bạn đồng ý với <terms>Điều khoản sử dụng</terms>. Cách chúng tôi xử lý dữ liệu của bạn được nêu trong <privacy>Chính sách quyền riêng tư</privacy>.",
+    "ageConfirm": "Mình đã đủ 16 tuổi.",
+    "ageRequired": "Hãy xác nhận bạn đã đủ 16 tuổi.",
+    "playNow": "Chơi ngay",
+    "guestHint": "Không cần email. Bạn có thể bảo vệ tài khoản sau trong hồ sơ.",
+    "withEmail": "Đăng nhập hoặc đăng ký bằng email",
+    "backToGuest": "Chơi không cần email",
+    "guestError": "Không thành công. Vui lòng thử lại."
+  },
+  "username": {
+    "title": "Chọn tên người chơi",
+    "subtitle": "Người khác sẽ thấy tên này trong đấu và bảng xếp hạng.",
+    "placeholder": "vd. OtakuMaster",
+    "rules": "3–16 ký tự, chỉ chữ, số và _",
+    "taken": "Rất tiếc, tên này đã có người dùng.",
+    "invalid": "3–16 ký tự, chỉ chữ, số và _",
+    "another": "Gợi ý khác"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "solo": "Solo",
+    "duel": "Đấu",
+    "leaderboard": "Xếp hạng",
+    "profile": "Hồ sơ",
+    "daily": "Thử thách ngày"
+  },
+  "home": {
+    "greetingMorning": "Chào buổi sáng, {{name}}",
+    "greetingDay": "Xin chào, {{name}}",
+    "greetingEvening": "Chào buổi tối, {{name}}",
+    "greetingNight": "Vẫn còn thức à, {{name}}?",
+    "solo": "Quiz Solo",
+    "soloSub": "Chủ đề, độ khó, XP",
+    "duel": "Đấu",
+    "leaderboard": "Xếp hạng",
+    "profile": "Hồ sơ",
+    "daily": "Thử thách ngày",
+    "dailyKicker": "Hôm nay",
+    "dailyGo": "Chơi ngay",
+    "streakAtRisk_other": "Hôm qua bạn bỏ lỡ! Cứu chuỗi {{count}} ngày của bạn.",
+    "streakSave": "Cứu",
+    "streakSaved_other": "Đã cứu chuỗi: {{count}} ngày. Chơi một vòng hôm nay để tiếp tục."
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "language": "Ngôn ngữ",
+    "stats": "Thống kê",
+    "xp": "XP",
+    "elo": "Elo",
+    "level": "Cấp",
+    "logout": "Đăng xuất",
+    "deleteAccount": "Xóa tài khoản",
+    "deleteConfirmTitle": "Bạn chắc chắn muốn xóa tài khoản?",
+    "deleteConfirmText": "Mọi dữ liệu của bạn (hồ sơ, trận đấu, thống kê) sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+    "deleteConfirmButton": "Có, xóa vĩnh viễn",
+    "deleteError": "Xóa thất bại. Vui lòng thử lại sau.",
+    "streak": "Chuỗi ngày",
+    "streakBest": "Cao nhất",
+    "adConsent": "Cài đặt quyền riêng tư quảng cáo",
+    "adConsentHint": "Thay đổi hoặc rút lại đồng ý quảng cáo cá nhân hóa bất cứ lúc nào."
+  },
+  "solo": {
+    "difficulty": {
+      "1": "Dễ",
+      "2": "Vừa",
+      "3": "Khó"
+    },
+    "difficultyHint": {
+      "1": "Cho ai đã xem bộ này",
+      "2": "Cho người xem tinh ý",
+      "3": "Cho chuyên gia thực thụ"
+    },
+    "noQuestions": "Chủ đề này chưa có câu hỏi. Thử chủ đề khác nhé!",
+    "didYouKnow": "Bạn có biết?",
+    "nextHint": "Gợi ý tiếp",
+    "report": "Báo cáo câu hỏi",
+    "reported": "Cảm ơn, đã báo cáo!",
+    "finish": "Kết thúc vòng",
+    "resultTitle": "Kết quả",
+    "xpEarned": "+{{xp}} XP nhận được",
+    "noXpAgain": "Vòng này đã được tính điểm.",
+    "again": "Chơi lại",
+    "share": "Chia sẻ kết quả",
+    "shareText": "Mình trả lời đúng {{correct}}/{{total}} câu về {{category}}! Bạn làm được hơn không?",
+    "fiftyFifty": "50:50 — bỏ hai đáp án",
+    "streakDays_other": "{{count}} ngày liên tiếp",
+    "chooseSeries": "Chọn một bộ",
+    "fiftyFiftyVideo": "Thêm 50:50 · video",
+    "videoAborted": "Video bị đóng sớm — cần xem hết video để nhận thưởng.",
+    "videoUnavailable": "Hiện chưa có video. Vui lòng thử lại sau.",
+    "whoamiBonus": "Đoán đúng ngay: +{{xp}} XP thưởng",
+    "lebenRest_other": "Còn {{count}} mạng",
+    "modusStand": "Đúng {{richtig}}/{{gesamt}}",
+    "modus": {
+      "titel": "Chế độ",
+      "normal": "Cổ điển",
+      "blitz": "Chớp nhoáng",
+      "survival": "Sinh tồn",
+      "normalHint": "10 câu theo nhịp của bạn, có trợ giúp.",
+      "blitzHint": "60 giây — trả lời đúng càng nhiều càng tốt.",
+      "survivalHint": "Chơi tiếp đến khi sai ba lần."
+    }
+  },
+  "daily": {
+    "title": "Thử thách ngày",
+    "sub": "5 câu hỏi — giống nhau cho mọi người",
+    "alreadyDone": "Bạn đã chơi thử thách hôm nay. Ngày mai có năm câu mới!",
+    "leaderboard": "Xếp hạng hôm nay",
+    "shareText": "Mình đạt {{correct}}/{{total}} trong thử thách Anigosha hôm nay!",
+    "shareHead": "Anigosha #{{nr}} · {{correct}}/{{total}}",
+    "shareCta": "Bạn thắng được mình không?"
+  },
+  "duel": {
+    "new": "Bắt đầu trận đấu mới",
+    "empty": "Chưa có trận đấu nào. Bắt đầu trận đầu tiên!",
+    "yourTurn": "Lượt của bạn",
+    "waiting": "Lượt đối thủ",
+    "waitingLong": "{{name}} đang chơi. Quay lại sau nhé!",
+    "round": "Vòng {{n}}/4",
+    "won": "Thắng",
+    "lost": "Thua",
+    "draw": "Hòa",
+    "endRound": "Nộp vòng",
+    "queued": "Chưa có đối thủ rảnh. Chúng tôi vẫn đang tìm — thử lại sau chút nữa.",
+    "botHint": "Đối thủ có dấu này do máy điều khiển.",
+    "challengeFriend": "Thách đấu bạn bè",
+    "challengeHint": "Tên người chơi của bạn bè",
+    "challengePlaceholder": "vd. AnimeFan42",
+    "challengeGo": "Đấu",
+    "friendly": "Đấu giao hữu",
+    "friendlyNote": "Đấu giao hữu — không tính vào bảng xếp hạng.",
+    "challengeError": {
+      "notFound": "Không có ai tên “{{name}}”. Kiểm tra lại chính tả.",
+      "self": "Bạn không thể tự thách đấu chính mình.",
+      "bot": "Đó là đối thủ máy — hãy chọn người thật.",
+      "running": "Trận đấu với {{name}} đang diễn ra. Hãy hoàn thành trước.",
+      "tooMany": "Quá nhiều lời thách đấu cùng lúc. Thử lại sau một giờ.",
+      "unknown": "Không thành công. Vui lòng thử lại."
+    },
+    "play": "Chơi",
+    "finished": "Đã kết thúc",
+    "format": "4 vòng, mỗi vòng 3 câu",
+    "searching": "Đang tìm đối thủ…",
+    "searchingLong": "Chúng tôi đang tìm đối thủ cho bạn. Trận đấu sẽ tiếp tục khi tìm được người — quay lại sau nhé!",
+    "forfeitWon": "Thắng – đối thủ đã hết giờ",
+    "forfeitLost": "Thua – bạn đã hết giờ",
+    "expired": "Hết hạn"
+  },
+  "legal": {
+    "imprint": "Thông tin pháp lý",
+    "privacy": "Quyền riêng tư",
+    "terms": "Điều khoản sử dụng",
+    "legal": "Pháp lý"
+  },
+  "level": {
+    "reached": "Lên cấp",
+    "title": "Cấp {{level}}"
+  },
+  "push": {
+    "titel": "Thông báo",
+    "text": "Nhận thông báo khi đến lượt bạn trong trận đấu.",
+    "einschalten": "Bật",
+    "aktiv": "Đang bật",
+    "an": "Thông báo đang bật.",
+    "aus": "Thông báo đang tắt.",
+    "homescreen": "Trên iPhone, hãy thêm trang vào màn hình chính trước qua Chia sẻ → Thêm vào MH chính — Apple không cho phép thông báo theo cách khác.",
+    "fehler": {
+      "abgelehnt": "Thông báo chưa được cho phép.",
+      "nicht_unterstuetzt": "Trình duyệt này không hỗ trợ thông báo.",
+      "homescreen": "Trên iPhone, hãy cài trước qua “Chia sẻ → Thêm vào MH chính”.",
+      "nicht_eingerichtet": "Thông báo chưa được thiết lập.",
+      "fehler": "Không bật được thông báo."
+    }
+  },
+  "kauf": {
+    "titel": "Xóa quảng cáo",
+    "text": "Mua một lần — không còn quảng cáo.",
+    "aktiv": "Đã mua. Cảm ơn bạn đã ủng hộ!",
+    "kaufen": "Mua",
+    "wiederherstellen": "Khôi phục",
+    "danke": "Từ giờ không còn quảng cáo. Cảm ơn bạn!",
+    "nichtsGefunden": "Không tìm thấy giao dịch mua trước đó.",
+    "abgebrochen": "Giao dịch chưa hoàn tất.",
+    "fehler": {
+      "nur_app": "Chỉ có thể mua trong ứng dụng tải từ cửa hàng.",
+      "nicht_eingerichtet": "Tính năng mua chưa được thiết lập.",
+      "kein_angebot": "Hiện không có gói nào.",
+      "fehler": "Mua thất bại.",
+      "wiederherstellen": "Khôi phục thất bại."
+    },
+    "gastHinweis": "Mẹo: hãy bảo vệ tài khoản trước để giao dịch mua gắn với tiến trình của bạn."
+  },
+  "leaderboard": {
+    "kicker": "Toàn cầu · theo Elo"
+  },
+  "guest": {
+    "title": "Bảo vệ tài khoản",
+    "text": "Bạn đang chơi với tư cách khách. Nếu xóa ứng dụng, XP và chuỗi ngày sẽ mất — thêm email để giữ lại.",
+    "save": "Lưu",
+    "mailSent": "Chúng tôi đã gửi email đến {{email}}. Hãy xác nhận, rồi đặt mật khẩu tại đây.",
+    "pending": "Đang chờ xác nhận {{email}} — nhấn vào liên kết trong email.",
+    "confirmed": "Mình đã xác nhận",
+    "otherMail": "Email khác",
+    "notYet": "Chưa xác nhận. Hãy kiểm tra cả thư mục spam.",
+    "passwordTitle": "Đặt mật khẩu",
+    "passwordText": "Email của bạn đã được xác nhận. Có mật khẩu, bạn có thể đăng nhập trên thiết bị khác.",
+    "logoutWarn": "Bạn đang chơi với tư cách khách. Sau khi đăng xuất, bạn không thể vào lại tài khoản này — XP và chuỗi ngày sẽ mất. Vẫn đăng xuất?"
+  },
+  "figur": {
+    "richtig0": "Trúng phóc!",
+    "richtig1": "Tuyệt, chính xác!",
+    "richtig2": "Bạn rành ghê!",
+    "falsch0": "Suýt nữa …",
+    "falsch1": "Giờ thì nhớ rồi nhé!",
+    "falsch2": "Lần sau nhé!"
+  },
+  "missionen": {
+    "titel": "Nhiệm vụ tuần",
+    "art": {
+      "solo_runden_other": "Chơi {{count}} vòng solo",
+      "richtige_other": "Trả lời đúng {{count}} câu",
+      "daily_other": "Chơi {{count}} Thử thách ngày",
+      "fehlerfrei_other": "Hoàn thành {{count}} vòng không sai",
+      "schwer_other": "Chơi {{count}} vòng ở mức “Khó”",
+      "duelle_other": "Hoàn thành {{count}} trận đấu",
+      "siege_other": "Thắng {{count}} trận đấu",
+      "spieltage_other": "Chơi vào {{count}} ngày khác nhau"
+    }
+  },
+  "avatar": {
+    "titel": "Avatar",
+    "neu": "Đã mở khóa avatar mới!",
+    "waehlen": "Chọn avatar",
+    "ab": "Từ cấp {{level}}",
+    "lvl": "Cấp {{level}}"
+  },
+  "spieler": {
+    "optionen": "Tùy chọn người chơi",
+    "melden": "Báo cáo người chơi",
+    "gemeldet": "Cảm ơn! Chúng tôi xem xét báo cáo trong 24 giờ.",
+    "blockieren": "Chặn",
+    "blockFrage": "Chặn {{name}}? Hai bạn sẽ không gặp nhau trong trận đấu và không thấy nhau trên bảng xếp hạng nữa.",
+    "blockliste": "Người chơi đã chặn",
+    "entblocken": "Bỏ chặn",
+    "tippHinweis": "Nhấn vào người chơi để báo cáo hoặc chặn.",
+    "grund": {
+      "name": "Tên phản cảm",
+      "cheating": "Gian lận",
+      "other": "Khác"
+    }
+  }
+}

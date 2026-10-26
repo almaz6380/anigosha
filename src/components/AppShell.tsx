@@ -58,8 +58,8 @@ export function PageHeader({
   const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3">
-      <button onClick={onBack} className="p-1 -ml-1 shrink-0" aria-label={t('common.back')}>
-        <ArrowLeft className="w-[22px] h-[22px]" strokeWidth={2.2} />
+      <button onClick={onBack} className="p-1 -ms-1 shrink-0" aria-label={t('common.back')}>
+        <ArrowLeft className="w-[22px] h-[22px] rtl:-scale-x-100" strokeWidth={2.2} />
       </button>
       <div className="min-w-0 flex-1">
         {kicker && <p className="rubrik">{kicker}</p>}

@@ -182,11 +182,12 @@ html {
 
   .notiz-kante {
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: 16px;
     bottom: 16px;
     width: 4px;
-    border-radius: 0 4px 4px 0;
+    border-start-end-radius: 4px;
+    border-end-end-radius: 4px;
     background: linear-gradient(180deg, #a78bfa, #f472b6);
   }
 

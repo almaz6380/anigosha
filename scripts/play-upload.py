@@ -283,9 +283,17 @@ def setze_listing(tok, datei, lang, dry_run=False):
 
     eid = call(tok, 'POST', f'{API}/applications/{PKG}/edits')['id']
     url = f'{API}/applications/{PKG}/edits/{eid}/listings/{lang}'
-    alt = call(tok, 'GET', url)
+    # Eine neue Sprache gibt es noch nicht (404) — dann wird sie mit PUT
+    # angelegt statt per PATCH geaendert.
+    try:
+        alt = call(tok, 'GET', url, fatal=False)
+        neu_anlegen = False
+    except ApiError as e:
+        if e.code != 404:
+            raise
+        alt, neu_anlegen = {}, True
 
-    print(f'Store-Eintrag {lang}:')
+    print(f'Store-Eintrag {lang}{" (NEUE Sprache)" if neu_anlegen else ""}:')
     for feld in ('title', 'shortDescription', 'fullDescription'):
         if feld not in neu:
             continue
@@ -311,8 +319,23 @@ def setze_listing(tok, datei, lang, dry_run=False):
         print('\n--dry-run: Edit verworfen, am Eintrag hat sich nichts geaendert.')
         return
 
-    call(tok, 'PATCH', url, data=dict(neu, language=lang))
+    call(tok, 'PUT' if neu_anlegen else 'PATCH', url, data=dict(neu, language=lang))
     print()
+    commit_edit(tok, eid)
+
+
+def setze_standardsprache(tok, lang, dry_run=False):
+    """Standardsprache des Play-Eintrags (Rueckfall fuer alle Laender ohne
+    eigene Uebersetzung). Bis 22.10.2026 de-DE, seitdem en-US."""
+    eid = call(tok, 'POST', f'{API}/applications/{PKG}/edits')['id']
+    url = f'{API}/applications/{PKG}/edits/{eid}/details'
+    alt = call(tok, 'GET', url).get('defaultLanguage')
+    print(f'Standardsprache: {alt!r} -> {lang!r}')
+    if alt == lang or dry_run:
+        call(tok, 'DELETE', f'{API}/applications/{PKG}/edits/{eid}')
+        print('steht schon richtig' if alt == lang else '--dry-run: Edit verworfen.')
+        return
+    call(tok, 'PATCH', url, data={'defaultLanguage': lang})
     commit_edit(tok, eid)
 
 
@@ -342,6 +365,8 @@ def main():
                    help='App-Symbol im Store-Eintrag ersetzen (512x512)')
     p.add_argument('--feature', metavar='PNG',
                    help='Vorstellungsgrafik ersetzen (1024x500)')
+    p.add_argument('--standardsprache', action='store_true',
+                   help='--lang als Standardsprache des Eintrags setzen')
     p.add_argument('--lang', default='de-DE', help='Sprache des Eintrags (Standard: de-DE)')
     p.add_argument('--dry-run', action='store_true',
                    help='nur auflisten, nichts hochladen — das Listing ist oeffentlich')
@@ -351,7 +376,7 @@ def main():
     a = p.parse_args()
 
     if not (a.aab or a.promote or a.status or a.screenshots or a.listing_lesen
-            or a.listing
+            or a.listing or a.standardsprache
             or a.icon or a.feature):
         p.error('--aab, --promote, --status, --screenshots, --listing, '
                 '--icon oder --feature angeben')
@@ -368,6 +393,8 @@ def main():
         return lies_listing(tok, a.lang, ziel)
     if a.listing:
         return setze_listing(tok, a.listing, a.lang, a.dry_run)
+    if a.standardsprache:
+        return setze_standardsprache(tok, a.lang, a.dry_run)
     if a.icon:
         return lade_einzelbild(tok, a.icon, a.lang, 'icon', a.dry_run)
     if a.feature:
