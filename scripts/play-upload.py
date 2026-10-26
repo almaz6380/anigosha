@@ -335,27 +335,29 @@ KAUF_TEXTE = {
 def kaeufe_uebersetzen(tok, lang, dry_run=False):
     """Ergaenzt fehlende Uebersetzungen der Einmalkaeufe in `lang`.
 
-    Lesen geht ueber oneTimeProducts, ein PATCH dort lieferte am 26.10.2026
-    aber 404. Geschrieben wird deshalb ueber die alte, weiter unterstuetzte
-    inappproducts-Schnittstelle (Listings als Woerterbuch)."""
+    Neue Schnittstelle (monetization.onetimeproducts). Die alte
+    inappproducts-Schnittstelle antwortet seit 2026 mit 403 „Please migrate to
+    the new publishing API“. Achtung Schreibweise: Liste und batchUpdate heissen
+    `oneTimeProducts`, der PATCH-Pfad aber `onetimeproducts` (klein) — mit
+    Binnenmajuskel kam am 26.10.2026 ein 404."""
     if lang not in KAUF_TEXTE:
         sys.exit(f'Kein Kaufprodukt-Text fuer {lang} in KAUF_TEXTE hinterlegt.')
     titel, text = KAUF_TEXTE[lang]
-    res = call(tok, 'GET', f'{API}/applications/{PKG}/inappproducts')
-    produkte = res.get('inappproduct', [])
-    print(f'Einmalkaeufe (inappproducts): {[p.get("sku") for p in produkte]}')
+    res = call(tok, 'GET', f'{API}/applications/{PKG}/oneTimeProducts')
+    produkte = res.get('oneTimeProducts', [])
+    print(f'Einmalkaeufe: {[p.get("productId") for p in produkte]}')
     for p in produkte:
-        listings = p.get('listings', {})
-        print(f'  {p["sku"]}: Sprachen {sorted(listings)}')
-        if lang in listings:
+        sprachen = [l.get('languageCode') for l in p.get('listings', [])]
+        print(f'  {p["productId"]}: Sprachen {sprachen}')
+        if lang in sprachen:
             continue
         print(f'    ergaenze {lang}: {titel!r}')
         if dry_run:
             continue
-        listings[lang] = {'title': titel, 'description': text}
-        p['listings'] = listings
-        call(tok, 'PATCH', f'{API}/applications/{PKG}/inappproducts/{p["sku"]}'
-             '?autoConvertMissingPrices=true', data=p)
+        p['listings'] = p.get('listings', []) + [
+            {'languageCode': lang, 'title': titel, 'description': text}]
+        call(tok, 'PATCH', f'{API}/applications/{PKG}/onetimeproducts/{p["productId"]}'
+             '?updateMask=listings&regionsVersion.version=2022%2F02', data=p)
         print('    gesetzt')
 
 
