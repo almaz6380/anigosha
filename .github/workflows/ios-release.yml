@@ -22,11 +22,6 @@ on:
         description: 'Wirklich zu App Store Connect hochladen? (aus = nur bauen)'
         type: boolean
         default: false
-      laeufer:
-        description: 'Wo bauen? github = GitHub-Rechner (kostet Minuten), mac = eigener Mac (Self-hosted Runner)'
-        type: choice
-        default: 'github'
-        options: ['github', 'mac']
 
 permissions:
   contents: read
@@ -36,7 +31,7 @@ jobs:
     # macos-26 bringt Xcode 26 mit. Apple verlangt seit 2026 mindestens das
     # iOS-26-SDK fuer Uploads (sonst Fehler 90725) — auf dem eigenen Mac prueft
     # das der Schritt „Xcode-Version" unten.
-    runs-on: ${{ inputs.laeufer == 'mac' && fromJSON('["self-hosted", "macOS"]') || 'macos-26' }}
+    runs-on: macos-26
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
