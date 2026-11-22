@@ -34,8 +34,8 @@ const rpc = async (fn, body) =>
   (await fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers: H, body: JSON.stringify(body) })).json();
 
 const kats = await (await fetch(`${url}/rest/v1/categories?select=slug,names&order=sort_order`, { headers: H })).json();
-ok(Array.isArray(kats) && kats.length === 31, `31 Kategorien sichtbar (${kats.length})`);
-ok(kats.filter((k) => k.names?.ja).length === 31, 'alle 31 Kategorien haben einen japanischen Namen');
+ok(Array.isArray(kats) && kats.length === 37, `37 Kategorien sichtbar (${kats.length})`);
+ok(kats.filter((k) => k.names?.ja).length === 37, 'alle 37 Kategorien haben einen japanischen Namen');
 
 for (const lang of SPRACHEN) {
   console.log(`\n── ${lang} ──`);

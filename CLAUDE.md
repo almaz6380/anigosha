@@ -65,6 +65,31 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded, personalisiert per UMP + ATT seit 1.1.1) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 
+## 1.3 vorbereitet (Teil 1): sechs neue Serien (22.11.2026, Branch `claude/optimistic-darwin-k01rmb`)
+
+**Nichts eingespielt, nichts gebaut, nichts eingereicht.** Versionen stehen auf iOS 1.3.0 / Build 26,
+Android 1.3.0 / vc15, whatsNew in `store-assets/asc-texte.json` (17 Store-Sprachen) ist gesetzt.
+
+| Was | Wo |
+|---|---|
+| Vinland Saga, Mob Psycho 100, Dr. Stone, Re:Zero, Die Tagebücher der Apothekerin (`apothecary_diaries`), Black Clover — je 67 Fragen DE/EN (22/22/23), sort_order 31–36 | 0193–0198 |
+| 18 „Wer bin ich?“ DE/EN | 0199 |
+| `categories.names` (von Hand, kein DB-Token in der Sitzung — nur Datenzeilen, keine Funktionskörper) | 0200 |
+| Farben der Serien | `src/lib/kategorien.ts` |
+| `test-sprachen.mjs` erwartet 37 Kategorien | `tools/` |
+| Export aus Migrationsdateien statt Live-DB (für Fragen, die noch nicht in der DB stehen) | `tools/uebersetzung/export-lokal.mjs` |
+| Übersetzungsquelle für alle 13 weiteren Sprachen, mit `richtig` | `tools/uebersetzung/quelle-1.3/` |
+| Einspiel-Reihenfolge + Rezept für die Übersetzungs-Migrationen | `docs/anigosha-1.3-migrationen.md` |
+
+⚠ **Die 13 Übersetzungen fehlen noch** (es/fr/pt/it/id/tr/pl/vi/ja/ko/th/ru/ar, ~5.500 Einträge). Die Sitzung
+hatte kein Agent-Werkzeug, und Kind-Sitzungen hätten den Plan-Modus geerbt (blockieren). **0193 ff. erst
+zusammen mit den Übersetzungs-Migrationen einspielen** — sonst sind die Kategorien in 13 Sprachen leer.
+
+Geprüft: Zählskript (je Serie 67 MC, 22/22/23, 3 Rätsel mit je 2 Hinweisen, 4 verschiedene Optionen,
+kein DE-Prompt kollidiert mit den 2145 vorhandenen), `pglast` parst alle acht Dateien, `npm run build` grün.
+Faktentreue: Wacklige Fragen wurden beim Gegenlesen gestrichen oder ersetzt; die verbliebenen unsichersten
+Stellen stehen in der Übergabe (Zahlenfragen zu Bänden/Folgen, einige Distraktoren-Titel, Thai-Titel in 0200).
+
 ## 15 Sprachen + 12 neue Serien (22.–26.10.2026, Release 1.2.0 vorbereitet, Branch `claude/gallant-rubin-b37byj`)
 
 **Ausgeliefert am 26.10.2026:** Web live (PR #29), `send-push` veröffentlicht, **Android 1.2.0 / vc14 in Produktion an alle**,

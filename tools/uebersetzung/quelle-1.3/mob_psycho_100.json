@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "In welches Mädchen ist Mob verliebt?",
+  "richtig": "Tsubomi Takane",
+  "en": {
+   "prompt": "Which girl is Mob in love with?",
+   "options": [
+    "Mezato Ichi",
+    "Emi Kanzaki",
+    "Mitsuura",
+    "Tsubomi Takane"
+   ],
+   "explanation": "She was already Mob’s crush in elementary school."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "Was macht Mob am liebsten nicht?",
+  "richtig": "Using his powers against people",
+  "en": {
+   "prompt": "What does Mob avoid doing above all?",
+   "options": [
+    "Studying",
+    "Doing sports",
+    "Using his powers against people",
+    "Working with Reigen"
+   ],
+   "explanation": "He keeps his powers in check because he does not want to hurt anyone."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "Was passiert, wenn Mobs Gefühlsanzeige 100 % erreicht?",
+  "richtig": "His bottled-up emotions erupt as an enormous force",
+  "en": {
+   "prompt": "What happens when Mob’s emotion meter reaches 100%?",
+   "options": [
+    "His bottled-up emotions erupt as an enormous force",
+    "He falls asleep instantly",
+    "He loses his memory",
+    "He turns into a ghost"
+   ],
+   "explanation": "The percentage meter appears again and again in big letters on screen."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Welche Arbeit erledigt Mob für Reigen?",
+  "richtig": "He exorcises real spirits",
+  "en": {
+   "prompt": "What work does Mob do for Reigen?",
+   "options": [
+    "He cleans the office",
+    "He keeps the books",
+    "He exorcises real spirits",
+    "He hands out flyers"
+   ],
+   "explanation": "Reigen pockets most of the money for it."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Welche Frisur trägt Mob?",
+  "richtig": "A bowl cut",
+  "en": {
+   "prompt": "Which hairstyle does Mob have?",
+   "options": [
+    "Spiky hair",
+    "A ponytail",
+    "A bald head",
+    "A bowl cut"
+   ],
+   "explanation": "His plain look fits his nickname."
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Welche besondere Fähigkeit hat Mob?",
+  "richtig": "He has psychic powers (esper)",
+  "en": {
+   "prompt": "What special ability does Mob have?",
+   "options": [
+    "He can stop time",
+    "He has psychic powers (esper)",
+    "He can make himself invisible",
+    "He can turn thoughts into pictures"
+   ],
+   "explanation": "Mob is considered one of the most powerful espers of all."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Welchem Schulclub tritt Mob bei, um stärker zu werden?",
+  "richtig": "The Body Improvement Club",
+  "en": {
+   "prompt": "Which school club does Mob join to become stronger?",
+   "options": [
+    "The Telepathy Club",
+    "The Kendo Club",
+    "The Chess Club",
+    "The Body Improvement Club"
+   ],
+   "explanation": "The muscular members welcome him warmly."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Welcher Mangaka hat Mob Psycho 100 erschaffen?",
+  "richtig": "ONE",
+  "en": {
+   "prompt": "Which mangaka created Mob Psycho 100?",
+   "options": [
+    "ONE",
+    "Yusuke Murata",
+    "Tatsuki Fujimoto",
+    "Hiro Mashima"
+   ],
+   "explanation": "ONE is also the creator of One Punch Man."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Welches Gefühl zeigt Mob nach außen meistens?",
+  "richtig": "Hardly any – he looks almost expressionless",
+  "en": {
+   "prompt": "Which emotion does Mob usually show on the outside?",
+   "options": [
+    "Anger",
+    "Joy",
+    "Fear",
+    "Hardly any – he looks almost expressionless"
+   ],
+   "explanation": "Inside, however, a lot builds up."
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Welches Studio hat den Anime zu Mob Psycho 100 produziert?",
+  "richtig": "Bones",
+  "en": {
+   "prompt": "Which studio produced the Mob Psycho 100 anime?",
+   "options": [
+    "MAPPA",
+    "Madhouse",
+    "Bones",
+    "Trigger"
+   ],
+   "explanation": "Bones produced all three seasons."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Wer ist der Vorsitzende des Körperertüchtigungsclubs?",
+  "richtig": "Musashi Goda",
+  "en": {
+   "prompt": "Who is the captain of the Body Improvement Club?",
+   "options": [
+    "Teru Hanazawa",
+    "Tome Kurata",
+    "Musashi Goda",
+    "Katsuya Serizawa"
+   ],
+   "explanation": "The huge Goda always treats Mob kindly."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wie heißt Mobs Mentor, ein selbsternannter Hellseher ohne echte Kräfte?",
+  "richtig": "Arataka Reigen",
+  "en": {
+   "prompt": "What is the name of Mob’s mentor, a self-proclaimed psychic without real powers?",
+   "options": [
+    "Katsuya Serizawa",
+    "Toichiro Suzuki",
+    "Musashi Goda",
+    "Arataka Reigen"
+   ],
+   "explanation": "Reigen is a con man, but a surprisingly good adviser."
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wie heißt Mobs Schule?",
+  "richtig": "Salt Middle School",
+  "en": {
+   "prompt": "What is the name of Mob’s school?",
+   "options": [
+    "Salt Middle School",
+    "Black Vinegar Middle School",
+    "Pepper Middle School",
+    "Sugar Middle School"
+   ],
+   "explanation": "Teru, on the other hand, attends Black Vinegar Middle School."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wie heißt Mobs jüngerer Bruder?",
+  "richtig": "Ritsu",
+  "en": {
+   "prompt": "What is the name of Mob’s younger brother?",
+   "options": [
+    "Teru",
+    "Sho",
+    "Ritsu",
+    "Dimple"
+   ],
+   "explanation": "Ritsu is a model student and sits on the student council."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wie heißt das Büro, das Reigen betreibt?",
+  "richtig": "Spirits and Such",
+  "en": {
+   "prompt": "What is the name of the office Reigen runs?",
+   "options": [
+    "Spirits and Such",
+    "Reigen & Partners",
+    "Office for Paranormal Cases",
+    "The Third Eye"
+   ],
+   "explanation": "There Reigen takes on jobs from people who believe they are haunted by spirits."
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt der blonde Esper, der an seiner Schule als Anführer gilt und von Mob besiegt wird?",
+  "richtig": "Teruki Hanazawa",
+  "en": {
+   "prompt": "What is the name of the blond esper who is considered the boss at his school and is defeated by Mob?",
+   "options": [
+    "Teruki Hanazawa",
+    "Ritsu Kageyama",
+    "Sho Suzuki",
+    "Katsuya Serizawa"
+   ],
+   "explanation": "After his defeat he becomes a friend and ally."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt der grüne Geist, der sich Mob anschließt?",
+  "richtig": "Dimple",
+  "en": {
+   "prompt": "What is the name of the green spirit who attaches himself to Mob?",
+   "options": [
+    "Mogami",
+    "Dimple",
+    "Kon",
+    "Puck"
+   ],
+   "explanation": "He originally wanted to take over Mob’s body to become a god."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt die Organisation von Espern, die die Welt erobern will?",
+  "richtig": "Claw",
+  "en": {
+   "prompt": "What is the name of the organization of espers that wants to conquer the world?",
+   "options": [
+    "Kurosu",
+    "Claw",
+    "The Seven",
+    "Black Vinegar"
+   ],
+   "explanation": "Its leader is Toichiro Suzuki."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie lautet der englische Spitzname von Reigens berühmtem „Salzangriff“?",
+  "richtig": "Salt Splash",
+  "en": {
+   "prompt": "What is the English name of Reigen’s famous salt attack?",
+   "options": [
+    "Salt Splash",
+    "Salt Storm",
+    "Holy Salt",
+    "Salt Bomb"
+   ],
+   "explanation": "Reigen throws salt at spirits, which is usually useless."
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie lautet der richtige Name von „Mob“ in Mob Psycho 100?",
+  "richtig": "Shigeo Kageyama",
+  "en": {
+   "prompt": "What is the real name of “Mob” in Mob Psycho 100?",
+   "options": [
+    "Ritsu Kageyama",
+    "Teruki Hanazawa",
+    "Shigeo Kageyama",
+    "Sho Suzuki"
+   ],
+   "explanation": "“Mob” means something like an extra – someone who disappears in the crowd."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wie viele Staffeln hat der Anime Mob Psycho 100?",
+  "richtig": "Three",
+  "en": {
+   "prompt": "How many seasons does the Mob Psycho 100 anime have?",
+   "options": [
+    "Two",
+    "Three",
+    "Four",
+    "Five"
+   ],
+   "explanation": "The final season concluded the manga’s story."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Wo erschien Mob Psycho 100 ursprünglich?",
+  "richtig": "On the online platform Ura Sunday",
+  "en": {
+   "prompt": "Where was Mob Psycho 100 originally published?",
+   "options": [
+    "Weekly Shonen Jump",
+    "On the online platform Ura Sunday",
+    "Weekly Shonen Magazine",
+    "Monthly Afternoon"
+   ],
+   "explanation": "The MangaONE app also published the chapters."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "Mit welchem Gegenstand ist Katsuya Serizawa stets zu sehen?",
+  "richtig": "With an umbrella",
+  "en": {
+   "prompt": "Which object is Katsuya Serizawa always seen with?",
+   "options": [
+    "With a book",
+    "With an umbrella",
+    "With a walking stick",
+    "With a lantern"
+   ],
+   "explanation": "For years he did not dare leave his room."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "Was bietet Reigen Kunden angeblich als übersinnliche Hilfe an?",
+  "richtig": "Massages against “bad energy”",
+  "en": {
+   "prompt": "What does Reigen supposedly offer as psychic help?",
+   "options": [
+    "Amulets",
+    "Talismans",
+    "Massages against “bad energy”",
+    "Crystals"
+   ],
+   "explanation": "His massages really are good – they just aren’t psychic."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Was bleibt von Dimple übrig, nachdem Mob seinen Geisterkörper mit voller Kraft zerschlagen hat?",
+  "richtig": "A tiny remnant that attaches itself to Mob",
+  "en": {
+   "prompt": "What is left of Dimple after Mob smashes his spirit body with full force?",
+   "options": [
+    "A tiny remnant that attaches itself to Mob",
+    "Nothing, he is gone for good",
+    "A giant demon",
+    "A statue"
+   ],
+   "explanation": "In this small form he accompanies Mob from then on."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Was entdeckt Mob über Reigen, das sein Vertrauen kurz erschüttert?",
+  "richtig": "That Reigen has no psychic powers at all",
+  "en": {
+   "prompt": "What does Mob discover about Reigen that briefly shakes his trust?",
+   "options": [
+    "That Reigen is a Claw agent",
+    "That Reigen is a ghost",
+    "That Reigen is Mob’s uncle",
+    "That Reigen has no psychic powers at all"
+   ],
+   "explanation": "Even so, Reigen remains an important mentor to Mob."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Was gründet Dimple, um möglichst viele Anhänger zu gewinnen?",
+  "richtig": "A cult",
+  "en": {
+   "prompt": "What does Dimple found in order to win as many followers as possible?",
+   "options": [
+    "A political party",
+    "A school",
+    "A fan club",
+    "A cult"
+   ],
+   "explanation": "He wants to gather so much faith that he becomes a god."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Was passiert am Ende des Mangas, als Mob Tsubomi seine Liebe gesteht?",
+  "richtig": "She kindly turns him down",
+  "en": {
+   "prompt": "What happens at the end of the manga when Mob confesses his love to Tsubomi?",
+   "options": [
+    "She kindly turns him down",
+    "They become a couple",
+    "She laughs at him",
+    "She moves away without answering"
+   ],
+   "explanation": "Mob accepts the rejection calmly and feels relieved afterwards."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Was sagt Reigen über Mobs Kräfte, das Mob stark prägt?",
+  "richtig": "“Your power doesn’t make you a better person.”",
+  "en": {
+   "prompt": "What does Reigen say about Mob’s powers that shapes Mob strongly?",
+   "options": [
+    "“Power is everything.”",
+    "“Use them whenever you want.”",
+    "“Your power doesn’t make you a better person.”",
+    "“Espers stand above everyone.”"
+   ],
+   "explanation": "Reigen teaches Mob that powers are just one trait among many."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Was verliert Teru im Kampf gegen Mob?",
+  "richtig": "His hair",
+  "en": {
+   "prompt": "What does Teru lose in his fight against Mob?",
+   "options": [
+    "His memory",
+    "His powers",
+    "His voice",
+    "His hair"
+   ],
+   "explanation": "Afterwards he wears a wig for a while."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Welche Fähigkeit hat Shimazaki von der Klaue?",
+  "richtig": "Teleportation",
+  "en": {
+   "prompt": "What ability does Shimazaki from Claw have?",
+   "options": [
+    "Teleportation",
+    "Creating fire",
+    "Mind reading",
+    "Time travel"
+   ],
+   "explanation": "He is blind, yet he can perceive his opponents precisely."
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Welche Mittelschule besucht Teruki Hanazawa?",
+  "richtig": "Black Vinegar Middle School",
+  "en": {
+   "prompt": "Which middle school does Teruki Hanazawa attend?",
+   "options": [
+    "Salt Middle School",
+    "Black Vinegar Middle School",
+    "Pepper Middle School",
+    "Soy Sauce Middle School"
+   ],
+   "explanation": "There he is considered the undisputed boss."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Welche Organisation entführt Ritsu?",
+  "richtig": "Claw",
+  "en": {
+   "prompt": "Which organization kidnaps Ritsu?",
+   "options": [
+    "Claw",
+    "Dimple’s cult",
+    "The student council",
+    "The Telepathy Club"
+   ],
+   "explanation": "Mob then sets out to free his brother."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Welchen Teil seines Gesichts trägt Dimple im Namen?",
+  "richtig": "The dimple",
+  "en": {
+   "prompt": "Which part of his face does Dimple have in his name?",
+   "options": [
+    "The nose",
+    "The dimple",
+    "The eyebrow",
+    "The chin"
+   ],
+   "explanation": "In Japanese he is called Ekubo, which also means “dimple.”"
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Welcher frühere Klaue-Esper arbeitet später in Reigens Büro?",
+  "richtig": "Katsuya Serizawa",
+  "en": {
+   "prompt": "Which former Claw esper later works in Reigen’s office?",
+   "options": [
+    "Sho Suzuki",
+    "Teruki Hanazawa",
+    "Katsuya Serizawa",
+    "Dimple"
+   ],
+   "explanation": "He used to fight with an umbrella."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel von Mob Psycho 100?",
+  "richtig": "“99”",
+  "en": {
+   "prompt": "What is the name of the opening of the first season of Mob Psycho 100?",
+   "options": [
+    "“Unravel”",
+    "“99”",
+    "“Gurenge”",
+    "“Kick Back”"
+   ],
+   "explanation": "The title fits the percentage meter that counts up to 100."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wie heißt der Anführer der Klaue?",
+  "richtig": "Toichiro Suzuki",
+  "en": {
+   "prompt": "What is the name of the leader of Claw?",
+   "options": [
+    "Toichiro Suzuki",
+    "Keiji Mogami",
+    "Katsuya Serizawa",
+    "Ishiguro"
+   ],
+   "explanation": "He is considered the strongest esper in the organization."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt der Club, der Mob unbedingt als Mitglied gewinnen will, um nicht aufgelöst zu werden?",
+  "richtig": "The Telepathy Club",
+  "en": {
+   "prompt": "What is the name of the club that desperately wants Mob as a member so it won’t be disbanded?",
+   "options": [
+    "The Occult Club",
+    "The Telepathy Club",
+    "The Newspaper Club",
+    "The Art Club"
+   ],
+   "explanation": "Its president is Tome Kurata."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt der Sohn des Klaue-Anführers, der selbst ein starker Esper ist?",
+  "richtig": "Sho Suzuki",
+  "en": {
+   "prompt": "What is the name of the Claw leader’s son, who is a powerful esper himself?",
+   "options": [
+    "Ritsu Kageyama",
+    "Teruki Hanazawa",
+    "Katsuya Serizawa",
+    "Sho Suzuki"
+   ],
+   "explanation": "He rebels against his father and helps Ritsu."
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt der Zustand, in dem Mob ohne Bewusstsein und völlig unkontrolliert kämpft?",
+  "richtig": "???%",
+  "en": {
+   "prompt": "What is the state called in which Mob fights unconsciously and completely out of control?",
+   "options": [
+    "???%",
+    "100 %",
+    "0 %",
+    "200 %"
+   ],
+   "explanation": "In this state a kind of second self takes control."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt der mächtige Geist, der Mob in einer Illusion gefangen hält?",
+  "richtig": "Keiji Mogami",
+  "en": {
+   "prompt": "What is the name of the powerful spirit who traps Mob in an illusion?",
+   "options": [
+    "Dimple",
+    "Mezato",
+    "Keiji Mogami",
+    "Shimazaki"
+   ],
+   "explanation": "He wants to prove to Mob that people are evil."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie nennt Mob seinen Mentor Reigen?",
+  "richtig": "Master",
+  "en": {
+   "prompt": "What does Mob call his mentor Reigen?",
+   "options": [
+    "Brother",
+    "Boss",
+    "Master",
+    "Sensei Reigen"
+   ],
+   "explanation": "In Japanese Mob calls him “Shisho.”"
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie viele Folgen hat der Anime Mob Psycho 100 insgesamt?",
+  "richtig": "37",
+  "en": {
+   "prompt": "How many episodes does the Mob Psycho 100 anime have in total?",
+   "options": [
+    "24",
+    "25",
+    "50",
+    "37"
+   ],
+   "explanation": "The three seasons have 12, 13 and 12 episodes."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wie viele Kapitel umfasst der Manga Mob Psycho 100?",
+  "richtig": "101",
+  "en": {
+   "prompt": "How many chapters does the Mob Psycho 100 manga comprise?",
+   "options": [
+    "86",
+    "120",
+    "101",
+    "150"
+   ],
+   "explanation": "The number happens to fit the title nicely."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "In welchem Jahr endete der Manga Mob Psycho 100?",
+  "richtig": "2017",
+  "en": {
+   "prompt": "In which year did the Mob Psycho 100 manga end?",
+   "options": [
+    "2017",
+    "2015",
+    "2020",
+    "2022"
+   ],
+   "explanation": "The story comprises 101 chapters."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "In welchem Jahr lief die dritte und letzte Staffel von Mob Psycho 100?",
+  "richtig": "2022",
+  "en": {
+   "prompt": "In which year did the third and final season of Mob Psycho 100 air?",
+   "options": [
+    "2020",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "explanation": "It has twelve episodes."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "In welchem Jahr lief die zweite Staffel von Mob Psycho 100?",
+  "richtig": "2019",
+  "en": {
+   "prompt": "In which year did the second season of Mob Psycho 100 air?",
+   "options": [
+    "2017",
+    "2018",
+    "2020",
+    "2019"
+   ],
+   "explanation": "With 13 episodes it is the longest season."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "In welchem Jahr startete der Manga Mob Psycho 100?",
+  "richtig": "2012",
+  "en": {
+   "prompt": "In which year did the Mob Psycho 100 manga start?",
+   "options": [
+    "2008",
+    "2010",
+    "2012",
+    "2014"
+   ],
+   "explanation": "It ran until 2017."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "In welchem Jahr startete der Mob-Psycho-100-Anime?",
+  "richtig": "2016",
+  "en": {
+   "prompt": "In which year did the Mob Psycho 100 anime start?",
+   "options": [
+    "2012",
+    "2014",
+    "2018",
+    "2016"
+   ],
+   "explanation": "All seasons were made by studio Bones."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Was ist Dimples Gestalt, wenn er nicht in jemandem steckt?",
+  "richtig": "A small green cloud with red cheeks",
+  "en": {
+   "prompt": "What does Dimple look like when he is not possessing someone?",
+   "options": [
+    "A small green cloud with red cheeks",
+    "A black cat",
+    "A white fox",
+    "A glowing orb"
+   ],
+   "explanation": "He occasionally possesses people to speak through them."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Was ist Reigens größte Stärke, obwohl er keine Kräfte hat?",
+  "richtig": "His people skills and eloquence",
+  "en": {
+   "prompt": "What is Reigen’s greatest strength even though he has no powers?",
+   "options": [
+    "His muscular strength",
+    "His wealth",
+    "His martial arts",
+    "His people skills and eloquence"
+   ],
+   "explanation": "With words he solves problems that defeat espers."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Was ist Ritsus Einstellung zu seinem Bruder zu Beginn der Geschichte?",
+  "richtig": "He admires him but also envies his powers",
+  "en": {
+   "prompt": "What is Ritsu’s attitude towards his brother at the start of the story?",
+   "options": [
+    "He hates him",
+    "He admires him but also envies his powers",
+    "He ignores him",
+    "He thinks he is weak and incapable"
+   ],
+   "explanation": "Later he comes to terms with his feelings."
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Was ist das Ziel von Toichirō Suzuki?",
+  "richtig": "World domination",
+  "en": {
+   "prompt": "What is Toichiro Suzuki’s goal?",
+   "options": [
+    "Immortality",
+    "Revenge on Reigen",
+    "World domination",
+    "Building a spaceship"
+   ],
+   "explanation": "He considers espers superior to humans."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Was tut Mob, als Ritsu von der Klaue entführt wurde?",
+  "richtig": "To storm Claw’s headquarters and free Ritsu",
+  "en": {
+   "prompt": "How does Mob use his powers when Ritsu needs help against Claw?",
+   "options": [
+    "To hide Ritsu",
+    "To storm Claw’s headquarters and free Ritsu",
+    "To negotiate with the police",
+    "To fetch Reigen"
+   ],
+   "explanation": "Teru and others join him in this."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Was tut Reigen in der Pressekonferenz, die ihm zum Verhängnis werden soll?",
+  "richtig": "He publicly admits he has no psychic powers",
+  "en": {
+   "prompt": "What does Reigen do at the press conference that was meant to ruin him?",
+   "options": [
+    "He resigns",
+    "He attacks the journalists",
+    "He betrays Mob",
+    "He publicly admits he has no psychic powers"
+   ],
+   "explanation": "Instead of condemning him, many respect him afterwards."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Was war Keiji Mogami zu Lebzeiten?",
+  "richtig": "One of the strongest espers of his time",
+  "en": {
+   "prompt": "What was Keiji Mogami during his lifetime?",
+   "options": [
+    "A police officer",
+    "A teacher at Mob’s school",
+    "One of the strongest espers of his time",
+    "A leader of Claw"
+   ],
+   "explanation": "He died young and became a powerful spirit."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Was wächst in der letzten Staffel plötzlich in der Stadt und wird zum Kultobjekt?",
+  "richtig": "A giant tree",
+  "en": {
+   "prompt": "What suddenly grows in the city in the final season and becomes an object of worship?",
+   "options": [
+    "A giant tree",
+    "A mushroom forest",
+    "A crystal tower",
+    "A meadow of flowers"
+   ],
+   "explanation": "Many people make pilgrimages to the “Divine Tree.”"
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Welche Abteilung der Klaue hat ihren Sitz in Mobs Stadt?",
+  "richtig": "The 7th Division",
+  "en": {
+   "prompt": "Which division of Claw is based in Mob’s city?",
+   "options": [
+    "The 1st Division",
+    "The 7th Division",
+    "The 3rd Division",
+    "The headquarters"
+   ],
+   "explanation": "Its members are the first to be defeated by Mob and Teru."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Welche Rolle spielt Ichi Mezato in der Geschichte?",
+  "richtig": "She is a reporter for the school newspaper",
+  "en": {
+   "prompt": "What role does Ichi Mezato play in the story?",
+   "options": [
+    "She is a reporter for the school newspaper",
+    "She is Ritsu’s teacher",
+    "She is a Claw esper",
+    "She is Reigen’s sister"
+   ],
+   "explanation": "She senses a story in Mob and the Body Improvement Club."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Welche zusätzliche Adaption von Mob Psycho 100 erschien 2018?",
+  "richtig": "A live-action series",
+  "en": {
+   "prompt": "Which additional adaptation of Mob Psycho 100 was released in 2018?",
+   "options": [
+    "A cinema film",
+    "A live-action series",
+    "A video game",
+    "A musical"
+   ],
+   "explanation": "The live-action series retold the story with real actors."
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Welcher Esper gehört als Sohn des Anführers zu den Stärksten der Klaue?",
+  "richtig": "Sho Suzuki",
+  "en": {
+   "prompt": "Which Claw esper, as the leader’s son, is among the strongest after Toichiro himself?",
+   "options": [
+    "Sho Suzuki",
+    "Shimazaki",
+    "Serizawa",
+    "Mezato"
+   ],
+   "explanation": "Sho is the son of the leader Toichiro Suzuki."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wer singt das Opening „99“ der ersten Staffel?",
+  "richtig": "MOB CHOIR",
+  "en": {
+   "prompt": "Who sings the first-season opening “99”?",
+   "options": [
+    "MOB CHOIR",
+    "ALL OFF",
+    "Survive Said the Prophet",
+    "Kenshi Yonezu"
+   ],
+   "explanation": "The band name is a nod to the series."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie alt ist Mob zu Beginn der Geschichte?",
+  "richtig": "14",
+  "en": {
+   "prompt": "How old is Mob at the start of the story?",
+   "options": [
+    "12",
+    "14",
+    "16",
+    "17"
+   ],
+   "explanation": "He is in his second year of middle school."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie heißt das Ending der ersten Anime-Staffel von Mob Psycho 100?",
+  "richtig": "“Refrain Boy”",
+  "en": {
+   "prompt": "What is the name of the ending of the first season of the Mob Psycho 100 anime?",
+   "options": [
+    "“Kick Back”",
+    "“Shuuen”",
+    "“Refrain Boy”",
+    "“Gurenge”"
+   ],
+   "explanation": "It is by the band ALL OFF."
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie heißt die Stadt, in der Mob lebt?",
+  "richtig": "Seasoning City (Chomi)",
+  "en": {
+   "prompt": "What is the name of the city where Mob lives?",
+   "options": [
+    "Karakura",
+    "Musutafu",
+    "Shinjuku",
+    "Seasoning City (Chomi)"
+   ],
+   "explanation": "Fittingly, the schools are named after salt and black vinegar."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wie lautet der Vorname der Leiterin des Telepathieclubs?",
+  "richtig": "Tome",
+  "en": {
+   "prompt": "What is the first name of the Telepathy Club’s president?",
+   "options": [
+    "Emi",
+    "Mezato",
+    "Tsubomi",
+    "Tome"
+   ],
+   "explanation": "Tome Kurata is convinced that aliens exist."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Wie viele Sammelbände umfasst der Manga Mob Psycho 100?",
+  "richtig": "16",
+  "en": {
+   "prompt": "How many volumes does the Mob Psycho 100 manga comprise?",
+   "options": [
+    "12",
+    "16",
+    "20",
+    "24"
+   ],
+   "explanation": "The story comprises 101 chapters in total."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Man nennt mich „Mob“, weil ich so unscheinbar bin. (Mob Psycho 100)",
+  "richtig": "Shigeo Kageyama",
+  "en": {
+   "prompt": "Who am I? People call me “Mob” because I am so unremarkable. (Mob Psycho 100)",
+   "options": [
+    "Ritsu Kageyama",
+    "Shigeo Kageyama",
+    "Teruki Hanazawa",
+    "Arataka Reigen"
+   ],
+   "explanation": "His emotion meter climbs to 100%.",
+   "hints": [
+    "I am a powerful esper.",
+    "I work in Reigen’s office and train in the Body Improvement Club."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich nenne mich den größten Hellseher des 21. Jahrhunderts. (Mob Psycho 100)",
+  "richtig": "Arataka Reigen",
+  "en": {
+   "prompt": "Who am I? I call myself the greatest psychic of the 21st century. (Mob Psycho 100)",
+   "options": [
+    "Katsuya Serizawa",
+    "Toichiro Suzuki",
+    "Dimple",
+    "Arataka Reigen"
+   ],
+   "explanation": "He has no psychic powers, but a great deal of people skills.",
+   "hints": [
+    "My office is called “Spirits and Such.”",
+    "A middle schooler with a bowl cut works for me."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich wollte ein Gott werden und gründete dafür eine Sekte. (Mob Psycho 100)",
+  "richtig": "Dimple",
+  "en": {
+   "prompt": "Who am I? I wanted to become a god and founded a cult to do it. (Mob Psycho 100)",
+   "options": [
+    "Dimple",
+    "Keiji Mogami",
+    "Sho Suzuki",
+    "Shimazaki"
+   ],
+   "explanation": "He is a green spirit with red cheeks.",
+   "hints": [
+    "My Japanese name, Ekubo, means “dimple.”",
+    "I follow a young esper around and comment on everything."
+   ]
+  }
+ }
+]

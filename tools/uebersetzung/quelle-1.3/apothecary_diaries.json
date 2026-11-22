@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "In welchem Haus des Vergnügungsviertels ist Maomao aufgewachsen?",
+  "richtig": "In the Verdigris House",
+  "en": {
+   "prompt": "In which house of the pleasure district did Maomao grow up?",
+   "options": [
+    "In the House of the Jade Dragon",
+    "In the Purple Pavilion",
+    "In the Verdigris House",
+    "In the House of Peach Blossoms"
+   ],
+   "explanation": "The courtesans there are like older sisters to Maomao."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "In welchem Jahr startete der Anime?",
+  "richtig": "2023",
+  "en": {
+   "prompt": "In which year did the anime start?",
+   "options": [
+    "2019",
+    "2021",
+    "2023",
+    "2025"
+   ],
+   "explanation": "It was produced by TOHO Animation Studio and OLM."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "In welcher Art von Welt spielt die Geschichte?",
+  "richtig": "In a fictional empire reminiscent of ancient China",
+  "en": {
+   "prompt": "In what kind of world is the story set?",
+   "options": [
+    "In modern Tokyo",
+    "In a fictional empire reminiscent of ancient China",
+    "In medieval Europe",
+    "On an alien planet"
+   ],
+   "explanation": "The court, clothing and customs are modelled on the Tang era."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Was bedeutet Maomaos Name wörtlich?",
+  "richtig": "“Cat, cat”",
+  "en": {
+   "prompt": "What does Maomao’s name literally mean?",
+   "options": [
+    "“Cat, cat”",
+    "“Little flower”",
+    "“Green herb”",
+    "“Quiet moon”"
+   ],
+   "explanation": "It is written with the character for cat twice."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Was malt sich Maomao absichtlich ins Gesicht, um unscheinbar zu wirken?",
+  "richtig": "Freckles",
+  "en": {
+   "prompt": "What does Maomao deliberately paint on her face to look plain?",
+   "options": [
+    "A scar",
+    "Freckles",
+    "A moustache",
+    "Tattoos"
+   ],
+   "explanation": "That way she hoped not to be abducted in the pleasure district."
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Was testet Maomao gern an sich selbst?",
+  "richtig": "Poisons and medicines",
+  "en": {
+   "prompt": "What does Maomao like to test on herself?",
+   "options": [
+    "New hairstyles",
+    "Fighting techniques",
+    "Poisons and medicines",
+    "Makeup"
+   ],
+   "explanation": "Her left arm is therefore covered in scars that she hides under bandages."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Was verursacht die Krankheit der kaiserlichen Kinder, die Maomao aufdeckt?",
+  "richtig": "Lead-containing white face powder",
+  "en": {
+   "prompt": "What causes the illness of the imperial children that Maomao uncovers?",
+   "options": [
+    "Contaminated water",
+    "A curse",
+    "Lead-containing white face powder",
+    "Mould in the walls"
+   ],
+   "explanation": "Maomao warns the consorts anonymously with a message."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Was weiß Maomao über Kräuter und Medizin, das andere am Hof überrascht?",
+  "richtig": "An extraordinary amount",
+  "en": {
+   "prompt": "How much does Maomao know about herbs and medicine, to the surprise of others at court?",
+   "options": [
+    "Almost nothing",
+    "Only about poisons",
+    "Only about veterinary medicine",
+    "An extraordinary amount"
+   ],
+   "explanation": "Her knowledge keeps drawing her into new cases."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Welche Haarfarbe hat die Gemahlin Gyokuyou?",
+  "richtig": "Red",
+  "en": {
+   "prompt": "What colour is Consort Gyokuyou’s hair?",
+   "options": [
+    "Red",
+    "Black",
+    "Blonde",
+    "White"
+   ],
+   "explanation": "She also has green eyes, a legacy of her western origins."
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Welchen Beruf hat Maomao gelernt?",
+  "richtig": "Apothecary",
+  "en": {
+   "prompt": "Which profession has Maomao learned?",
+   "options": [
+    "Apothecary",
+    "Cook",
+    "Seamstress",
+    "Warrior"
+   ],
+   "explanation": "Her adoptive father taught her everything about medicinal herbs and poisons."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Wessen Vorkosterin wird Maomao im Hinterpalast?",
+  "richtig": "Consort Gyokuyou",
+  "en": {
+   "prompt": "Whose food taster does Maomao become in the inner palace?",
+   "options": [
+    "The Empress Dowager",
+    "Consort Gyokuyou",
+    "Consort Lihua",
+    "The emperor"
+   ],
+   "explanation": "Gyokuyou is one of the emperor’s highest-ranking consorts."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wie heißt Gyokuyous kleine Tochter, deren Leben Maomao rettet?",
+  "richtig": "Lingli",
+  "en": {
+   "prompt": "What is the name of Gyokuyou’s little daughter, whose life Maomao saves?",
+   "options": [
+    "Lingli",
+    "Lishu",
+    "Suirei",
+    "Shisui"
+   ],
+   "explanation": "Lingli recovers once the poisonous powder is no longer used."
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wie heißt Jinshis treuer Gehilfe?",
+  "richtig": "Gaoshun",
+  "en": {
+   "prompt": "What is the name of Jinshi’s loyal aide?",
+   "options": [
+    "Lakan",
+    "Lahan",
+    "Luomen",
+    "Gaoshun"
+   ],
+   "explanation": "Gaoshun is calm, reliable and often Jinshi’s voice of reason."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wie heißt Maomaos Ziehvater, ein Arzt im Vergnügungsviertel?",
+  "richtig": "Luomen",
+  "en": {
+   "prompt": "What is the name of Maomao’s adoptive father, a doctor in the pleasure district?",
+   "options": [
+    "Luomen",
+    "Lakan",
+    "Gaoshun",
+    "Lahan"
+   ],
+   "explanation": "Luomen was once a physician at the imperial court."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wie heißt der schöne Palastbeamte, der Maomaos Talent entdeckt?",
+  "richtig": "Jinshi",
+  "en": {
+   "prompt": "What is the name of the beautiful palace official who discovers Maomao’s talent?",
+   "options": [
+    "Gaoshun",
+    "Jinshi",
+    "Lakan",
+    "Luomen"
+   ],
+   "explanation": "Jinshi manages the inner palace and is thought to be a eunuch."
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt die Autorin der Romanreihe?",
+  "richtig": "Natsu Hyuga",
+  "en": {
+   "prompt": "What is the name of the author of the novel series?",
+   "options": [
+    "Natsume Akatsuki",
+    "Natsu Hyuga",
+    "Rifujin na Magonote",
+    "Aneko Yusagi"
+   ],
+   "explanation": "The story first appeared as a web novel."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt die Hauptfigur von „Die Tagebücher der Apothekerin“?",
+  "richtig": "Maomao",
+  "en": {
+   "prompt": "What is the name of the main character of The Apothecary Diaries?",
+   "options": [
+    "Xiaolan",
+    "Lishu",
+    "Maomao",
+    "Gyokuyou"
+   ],
+   "explanation": "Maomao grew up in the capital’s pleasure district."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt die fröhliche Dienerin, mit der sich Maomao im Hinterpalast anfreundet?",
+  "richtig": "Xiaolan",
+  "en": {
+   "prompt": "What is the name of the cheerful servant Maomao befriends in the inner palace?",
+   "options": [
+    "Hongniang",
+    "Suirei",
+    "Lishu",
+    "Xiaolan"
+   ],
+   "explanation": "Xiaolan loves gossip and sweets."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie lautet der japanische Titel von „Die Tagebücher der Apothekerin“?",
+  "richtig": "Kusuriya no Hitorigoto",
+  "en": {
+   "prompt": "What is the Japanese title of The Apothecary Diaries?",
+   "options": [
+    "Kimi no Na wa",
+    "Kaguya-sama",
+    "Shojo Shumatsu Ryoko",
+    "Kusuriya no Hitorigoto"
+   ],
+   "explanation": "It literally means “The Apothecary’s Monologue.”"
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie viele Folgen hat die erste Staffel des Animes?",
+  "richtig": "24",
+  "en": {
+   "prompt": "How many episodes does the first season of the anime have?",
+   "options": [
+    "12",
+    "13",
+    "24",
+    "26"
+   ],
+   "explanation": "The second season aired in 2025."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wodurch erkennt Jinshi, dass Maomao die anonyme Warnung geschrieben hat?",
+  "richtig": "By her handwriting",
+  "en": {
+   "prompt": "How does Jinshi realize that Maomao wrote the anonymous warning?",
+   "options": [
+    "By her handwriting",
+    "By her perfume",
+    "Through a witness",
+    "Through a confession"
+   ],
+   "explanation": "Maomao actually wanted to remain unrecognized."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Wohin wird Maomao zu Beginn der Geschichte entführt und verkauft?",
+  "richtig": "To the emperor’s inner palace",
+  "en": {
+   "prompt": "Where is Maomao kidnapped and sold at the start of the story?",
+   "options": [
+    "To a monastery",
+    "To a mine",
+    "To an army camp",
+    "To the emperor’s inner palace"
+   ],
+   "explanation": "There she first works as a lowly servant."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "In welchem Jahr lief die zweite Staffel des Animes?",
+  "richtig": "2025",
+  "en": {
+   "prompt": "In which year did the second season of the anime air?",
+   "options": [
+    "2025",
+    "2024",
+    "2026",
+    "2023"
+   ],
+   "explanation": "It continued the story seamlessly."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "In welchem Verwandtschaftsverhältnis steht Luomen zu Lakan?",
+  "richtig": "He is his uncle",
+  "en": {
+   "prompt": "How is Luomen related to Lakan?",
+   "options": [
+    "He is his brother",
+    "He is his uncle",
+    "He is his father",
+    "He is not related to him"
+   ],
+   "explanation": "That makes Luomen actually Maomao’s great-uncle."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Was erkennt Maomao beim Gartenfest, als sie als Vorkosterin probiert?",
+  "richtig": "That a soup is poisoned",
+  "en": {
+   "prompt": "What does Maomao notice at the garden party while tasting as a food taster?",
+   "options": [
+    "That the wine is diluted",
+    "That the food is too salty",
+    "That the tea is cold",
+    "That a soup is poisoned"
+   ],
+   "explanation": "She spits out the soup and recognizes the poison by its taste."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Was geschieht mit Maomao, nachdem sie aus dem Hinterpalast entlassen wird?",
+  "richtig": "She returns to the pleasure district and is soon hired by Jinshi as a servant",
+  "en": {
+   "prompt": "What happens to Maomao after she is dismissed from the inner palace?",
+   "options": [
+    "She marries Jinshi",
+    "She becomes a court physician",
+    "She returns to the pleasure district and is soon hired by Jinshi as a servant",
+    "She leaves the empire"
+   ],
+   "explanation": "Jinshi buys her out of the Verdigris House."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Was ist Jinshi in Wahrheit?",
+  "richtig": "A member of the imperial family posing as a eunuch",
+  "en": {
+   "prompt": "What is Jinshi in truth?",
+   "options": [
+    "A spy from the west",
+    "A disguised general",
+    "A simple servant",
+    "A member of the imperial family posing as a eunuch"
+   ],
+   "explanation": "His role gives him free access to the inner palace."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Was sammelt Maomao gerade, als sie entführt wird?",
+  "richtig": "Medicinal herbs",
+  "en": {
+   "prompt": "What is Maomao gathering when she is kidnapped?",
+   "options": [
+    "Firewood",
+    "Shells",
+    "Medicinal herbs",
+    "Mushrooms for the market"
+   ],
+   "explanation": "The kidnappers sell her to the inner palace."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Was tut Lakan, nachdem Maomao ihn in einem Spiel besiegt hat?",
+  "richtig": "He buys out a courtesan – Maomao’s mother Fengxian",
+  "en": {
+   "prompt": "What does Lakan do after Maomao beats him in a game?",
+   "options": [
+    "He leaves the capital",
+    "He buys out a courtesan – Maomao’s mother Fengxian",
+    "He officially adopts Maomao",
+    "He becomes a monk"
+   ],
+   "explanation": "In doing so he fulfils a long-held wish."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Welche Besonderheit hat Lakan beim Erkennen von Menschen?",
+  "richtig": "He cannot recognize faces and sees people like game pieces",
+  "en": {
+   "prompt": "What is special about the way Lakan recognizes people?",
+   "options": [
+    "He cannot recognize faces and sees people like game pieces",
+    "He cannot see colours",
+    "He is almost blind",
+    "He recognizes people only by their voice"
+   ],
+   "explanation": "He perceives only a few faces normally, such as Maomao’s."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Welche Gemahlin ist noch ein junges Mädchen und wird von ihren Hofdamen schlecht behandelt?",
+  "richtig": "Lishu",
+  "en": {
+   "prompt": "Which consort is still a young girl and is treated badly by her ladies-in-waiting?",
+   "options": [
+    "Gyokuyou",
+    "Ah-Duo",
+    "Lishu",
+    "Lihua"
+   ],
+   "explanation": "Maomao helps her stand up to her ladies-in-waiting."
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Welche Gemahlin verlässt den Hinterpalast und macht Platz für eine Jüngere?",
+  "richtig": "Ah-Duo",
+  "en": {
+   "prompt": "Which consort leaves the inner palace, making room for a younger one?",
+   "options": [
+    "Ah-Duo",
+    "Gyokuyou",
+    "Lihua",
+    "Lishu"
+   ],
+   "explanation": "Ah-Duo is a childhood friend of the emperor."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Welchen Eindruck macht Jinshi auf fast alle Frauen und Männer am Hof?",
+  "richtig": "He is admired for his otherworldly beauty",
+  "en": {
+   "prompt": "What impression does Jinshi make on almost everyone at court?",
+   "options": [
+    "He seems frightening",
+    "He is admired for his otherworldly beauty",
+    "He is considered boring",
+    "He is laughed at"
+   ],
+   "explanation": "Of all people, Maomao remains completely unimpressed."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Welcher Spuk beschäftigt Maomao, als nachts eine Gestalt auf der Palastmauer tanzt?",
+  "richtig": "A consort who dances secretly",
+  "en": {
+   "prompt": "Which haunting occupies Maomao when a figure dances on the palace wall at night?",
+   "options": [
+    "A fox spirit",
+    "A dragon",
+    "A consort who dances secretly",
+    "A thief"
+   ],
+   "explanation": "The “ghost woman” is Consort Fuyou."
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Welcher Tätigkeit geht Maomao im Vergnügungsviertel nach, bevor sie entführt wird?",
+  "richtig": "She mixes and sells medicines",
+  "en": {
+   "prompt": "What does Maomao do in the pleasure district before she is kidnapped?",
+   "options": [
+    "She mixes and sells medicines",
+    "She dances",
+    "She cooks at a food stall",
+    "She teaches children"
+   ],
+   "explanation": "Many courtesans buy her remedies."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Welches Accessoire trägt Lakan stets?",
+  "richtig": "A monocle",
+  "en": {
+   "prompt": "Which accessory does Lakan always wear?",
+   "options": [
+    "A fan",
+    "A crown",
+    "An earring",
+    "A monocle"
+   ],
+   "explanation": "Maomao can’t stand her biological father."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wessen Sohn stirbt an den Folgen des giftigen Schminkpuders?",
+  "richtig": "Lihua’s",
+  "en": {
+   "prompt": "Whose son dies from the effects of the poisonous face powder?",
+   "options": [
+    "Gyokuyou’s",
+    "Lihua’s",
+    "Lishu’s",
+    "Ah-Duo’s"
+   ],
+   "explanation": "Lihua recovers only slowly from the loss."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt Maomaos Mutter?",
+  "richtig": "Fengxian",
+  "en": {
+   "prompt": "What is the name of Maomao’s mother?",
+   "options": [
+    "Meimei",
+    "Pairin",
+    "Fengxian",
+    "Joka"
+   ],
+   "explanation": "Fengxian was a famous courtesan in the Verdigris House."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt Maomaos leiblicher Vater?",
+  "richtig": "Lakan",
+  "en": {
+   "prompt": "What is the name of Maomao’s biological father?",
+   "options": [
+    "Luomen",
+    "Lakan",
+    "Gaoshun",
+    "Lahan"
+   ],
+   "explanation": "Lakan is an eccentric but brilliant military strategist."
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel?",
+  "richtig": "“Hana ni Natte”",
+  "en": {
+   "prompt": "What is the name of the opening of the first season?",
+   "options": [
+    "“Hana ni Natte”",
+    "“Gurenge”",
+    "“Idol”",
+    "“Zankyo Sanka”"
+   ],
+   "explanation": "It is sung by Ryokuoushoku Shakai."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt die Hofdame, die Gyokuyous Dienerinnen anführt?",
+  "richtig": "Hongniang",
+  "en": {
+   "prompt": "What is the name of the lady-in-waiting who leads Gyokuyou’s attendants?",
+   "options": [
+    "Xiaolan",
+    "Suirei",
+    "Shisui",
+    "Hongniang"
+   ],
+   "explanation": "Hongniang is strict but very caring."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie nennt man Meimei, Pairin und Joka im Grünen Haus?",
+  "richtig": "The three princesses",
+  "en": {
+   "prompt": "What are Meimei, Pairin and Joka called in the Verdigris House?",
+   "options": [
+    "The three sisters",
+    "The three blossoms",
+    "The three moon ladies",
+    "The three princesses"
+   ],
+   "explanation": "The three famous courtesans helped raise Maomao."
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie reagiert Maomao meistens auf Jinshis Annäherungsversuche?",
+  "richtig": "She looks at him like an annoying insect",
+  "en": {
+   "prompt": "How does Maomao usually react to Jinshi’s advances?",
+   "options": [
+    "She blushes",
+    "She runs away",
+    "She screams",
+    "She looks at him like an annoying insect"
+   ],
+   "explanation": "It is precisely this indifference that fascinates Jinshi."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wie viele Gemahlinnen bilden den höchsten Rang im Hinterpalast?",
+  "richtig": "Four",
+  "en": {
+   "prompt": "How many consorts make up the highest rank in the inner palace?",
+   "options": [
+    "Two",
+    "Four",
+    "Six",
+    "Ten"
+   ],
+   "explanation": "At first they include Gyokuyou, Lihua, Lishu and Ah-Duo."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "Auf welcher Plattform erschien die Geschichte ursprünglich?",
+  "richtig": "Shosetsuka ni Naro",
+  "en": {
+   "prompt": "On which platform was the story originally published?",
+   "options": [
+    "Pixiv",
+    "In a newspaper",
+    "Shosetsuka ni Naro",
+    "Weekly Shonen Jump"
+   ],
+   "explanation": "From 2014 it was also published as a novel."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "In welcher offiziellen Beziehung steht Ka Zuigetsu zum Kaiser?",
+  "richtig": "He is his younger brother",
+  "en": {
+   "prompt": "What is Ka Zuigetsu’s official relationship to the emperor?",
+   "options": [
+    "He is his nephew",
+    "He is his personal physician",
+    "He is his cousin",
+    "He is his younger brother"
+   ],
+   "explanation": "As “Jinshi” he appears in the inner palace as a eunuch."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "Mit welchem Brettspiel ist Lakan geradezu besessen?",
+  "richtig": "Go",
+  "en": {
+   "prompt": "Which board game is Lakan downright obsessed with?",
+   "options": [
+    "Chess",
+    "Go",
+    "Mahjong",
+    "Backgammon"
+   ],
+   "explanation": "He also loves playing shogi."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "Was geschah offiziell mit Ah-Duos Kind?",
+  "richtig": "It died as an infant",
+  "en": {
+   "prompt": "What officially happened to Ah-Duo’s child?",
+   "options": [
+    "It became emperor",
+    "It died as an infant",
+    "It was sent abroad",
+    "It lives in the Verdigris House"
+   ],
+   "explanation": "Secrets surround this child at court."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "Was hält Maomao von der Liebe, wie sie anfangs immer wieder zeigt?",
+  "richtig": "She is far more interested in poisons",
+  "en": {
+   "prompt": "What does Maomao think of love, as she shows again and again at first?",
+   "options": [
+    "She dreams of true love",
+    "She wants to marry a rich man",
+    "She has a crush on Gaoshun",
+    "She is far more interested in poisons"
+   ],
+   "explanation": "Romance usually leaves her cold."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Welche Herkunft hat die Gemahlin Gyokuyou?",
+  "richtig": "She comes from the west of the empire",
+  "en": {
+   "prompt": "What is Consort Gyokuyou’s origin?",
+   "options": [
+    "She comes from the capital",
+    "She comes from the west of the empire",
+    "She is a princess from the north",
+    "She comes from the pleasure district"
+   ],
+   "explanation": "Her appearance reveals her origin."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Welche Strafe hatte Luomen einst am Hof erhalten?",
+  "richtig": "One of his kneecaps was removed",
+  "en": {
+   "prompt": "Which punishment did Luomen once receive at court?",
+   "options": [
+    "He was branded",
+    "He was imprisoned until he went blind",
+    "He had to give up his fortune",
+    "One of his kneecaps was removed"
+   ],
+   "explanation": "Since then he has walked with a cane."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Welcher Gemahlin gehört der Kristallpalast?",
+  "richtig": "Lihua",
+  "en": {
+   "prompt": "Which consort does the Crystal Palace belong to?",
+   "options": [
+    "Gyokuyou",
+    "Lishu",
+    "Ah-Duo",
+    "Lihua"
+   ],
+   "explanation": "Lihua mourns her late son there."
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Welcher seltsame Pilz begeistert Maomao ganz besonders?",
+  "richtig": "The caterpillar fungus (cordyceps)",
+  "en": {
+   "prompt": "Which strange fungus fascinates Maomao in particular?",
+   "options": [
+    "The fly agaric",
+    "The caterpillar fungus (cordyceps)",
+    "The porcino",
+    "The shiitake"
+   ],
+   "explanation": "The fungus grows out of insect larvae and is considered a precious medicine."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Welches Wort beschreibt Maomaos Stellung, als sie im Hinterpalast arbeitet?",
+  "richtig": "Servant",
+  "en": {
+   "prompt": "Which word describes Maomao’s position when she starts working in the inner palace?",
+   "options": [
+    "Servant",
+    "Consort",
+    "Princess",
+    "Physician"
+   ],
+   "explanation": "Only through her knowledge does she rise to lady-in-waiting."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Welches der beiden Anime-Studios ist auch für den Pokémon-Anime bekannt?",
+  "richtig": "OLM",
+  "en": {
+   "prompt": "Which of the two anime studios is also known for the Pokémon anime?",
+   "options": [
+    "TOHO Animation Studio",
+    "Wit Studio",
+    "OLM",
+    "Bones"
+   ],
+   "explanation": "OLM has produced the Pokémon series for decades."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Wer illustriert die Romanvorlage?",
+  "richtig": "Touko Shino",
+  "en": {
+   "prompt": "Who illustrates the original novels?",
+   "options": [
+    "Shinichiro Otsuka",
+    "Touko Shino",
+    "Boichi",
+    "Nekokurage"
+   ],
+   "explanation": "Nekokurage draws one of the two manga versions."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Wie alt ist Maomao zu Beginn der Geschichte?",
+  "richtig": "17",
+  "en": {
+   "prompt": "How old is Maomao at the start of the story?",
+   "options": [
+    "14",
+    "15",
+    "17",
+    "20"
+   ],
+   "explanation": "Despite her age she knows more about medicine than many court physicians."
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Wie heißt Gaoshuns Sohn, der Jinshi ebenfalls dient?",
+  "richtig": "Basen",
+  "en": {
+   "prompt": "What is the name of Gaoshun’s son, who also serves Jinshi?",
+   "options": [
+    "Lahan",
+    "Lakan",
+    "Luomen",
+    "Basen"
+   ],
+   "explanation": "Basen is dutiful but awkward around women."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Wie heißt Lakans Adoptivsohn, der mit Zahlen hervorragend umgehen kann?",
+  "richtig": "Lahan",
+  "en": {
+   "prompt": "What is the name of Lakan’s adopted son, who is brilliant with numbers?",
+   "options": [
+    "Gaoshun",
+    "Basen",
+    "Lahan",
+    "Luomen"
+   ],
+   "explanation": "Lahan is actually Maomao’s cousin."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Wie heißt das Haus, das der Gemahlin Gyokuyou gehört?",
+  "richtig": "The Jade Palace",
+  "en": {
+   "prompt": "What is the name of the palace of Consort Gyokuyou?",
+   "options": [
+    "The Crystal Palace",
+    "The Diamond Palace",
+    "The Jade Palace",
+    "The Garnet Palace"
+   ],
+   "explanation": "Maomao works there as a food taster."
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Wie heißt das Mädchen in der zweiten Staffel, das Insekten liebt?",
+  "richtig": "Shisui",
+  "en": {
+   "prompt": "What is the name of the girl in the second season who loves insects?",
+   "options": [
+    "Suirei",
+    "Shisui",
+    "Xiaolan",
+    "Lingli"
+   ],
+   "explanation": "Shisui becomes friends with Maomao."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wie heißt das junge Mädchen, das mit einem „Wiederbelebungsmittel“ einen Scheintod vortäuscht?",
+  "richtig": "Suirei",
+  "en": {
+   "prompt": "What is the name of the young woman who fakes her death with a “resurrection drug”?",
+   "options": [
+    "Suirei",
+    "Xiaolan",
+    "Lishu",
+    "Hongniang"
+   ],
+   "explanation": "Maomao is burning with curiosity about the mysterious drug."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie lautet Jinshis wahrer Name?",
+  "richtig": "Ka Zuigetsu",
+  "en": {
+   "prompt": "What is Jinshi’s real name?",
+   "options": [
+    "Hua Lakan",
+    "Ka Zuigetsu",
+    "Gao Shun",
+    "Kan Luomen"
+   ],
+   "explanation": "Only a few people at court know this name."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie viele Folgen hat die zweite Staffel des Animes?",
+  "richtig": "24",
+  "en": {
+   "prompt": "How many episodes does the second season of the anime have?",
+   "options": [
+    "12",
+    "13",
+    "24",
+    "26"
+   ],
+   "explanation": "Like the first, it ran over two quarters."
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie viele Manga-Adaptionen der Geschichte gibt es?",
+  "richtig": "Two",
+  "en": {
+   "prompt": "How many manga adaptations of the story are there?",
+   "options": [
+    "Two",
+    "One",
+    "Three",
+    "Four"
+   ],
+   "explanation": "They are published by Square Enix and Shogakukan."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wo arbeitet Maomao, nachdem Jinshi sie zurück an den Hof geholt hat?",
+  "richtig": "In the outer court",
+  "en": {
+   "prompt": "Where does Maomao work after Jinshi brings her back to court?",
+   "options": [
+    "In the outer court",
+    "In the inner palace kitchen",
+    "In the army camp",
+    "In the imperial library"
+   ],
+   "explanation": "There she serves Jinshi directly."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Woran erkennen Vorkoster am Hof manche Gifte, wie Maomao erklärt?",
+  "richtig": "By silver tableware that changes colour",
+  "en": {
+   "prompt": "How do food tasters at court detect some poisons, as Maomao explains?",
+   "options": [
+    "By silver tableware that changes colour",
+    "By the smell of the rice",
+    "By the colour of the tea",
+    "By the taste of salt"
+   ],
+   "explanation": "Silver reacts to some arsenic compounds, for example – but it does not help against many poisons."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich bin Apothekerin und teste Gifte am liebsten an mir selbst. (Die Tagebücher der Apothekerin)",
+  "richtig": "Maomao",
+  "en": {
+   "prompt": "Who am I? I am an apothecary and love testing poisons on myself. (The Apothecary Diaries)",
+   "options": [
+    "Xiaolan",
+    "Lishu",
+    "Maomao",
+    "Suirei"
+   ],
+   "explanation": "She grew up in the Verdigris House in the pleasure district.",
+   "hints": [
+    "I was kidnapped and sold to the inner palace.",
+    "I paint freckles on my face."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Am Hof bewundert man meine Schönheit, doch ein gewisses Mädchen sieht mich an wie ein Insekt. (Die Tagebücher der Apothekerin)",
+  "richtig": "Jinshi",
+  "en": {
+   "prompt": "Who am I? People at court admire my beauty, but a certain girl looks at me like an insect. (The Apothecary Diaries)",
+   "options": [
+    "Jinshi",
+    "Gaoshun",
+    "Lakan",
+    "Basen"
+   ],
+   "explanation": "He manages the inner palace.",
+   "hints": [
+    "I pose as a eunuch.",
+    "My loyal aide is called Gaoshun."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich kann Gesichter nicht erkennen und sehe Menschen wie Spielfiguren. (Die Tagebücher der Apothekerin)",
+  "richtig": "Lakan",
+  "en": {
+   "prompt": "Who am I? I cannot recognize faces and see people like game pieces. (The Apothecary Diaries)",
+   "options": [
+    "Luomen",
+    "Gaoshun",
+    "Lahan",
+    "Lakan"
+   ],
+   "explanation": "He is a brilliant military strategist with a monocle.",
+   "hints": [
+    "I am obsessed with Go and shogi.",
+    "My daughter can’t stand me."
+   ]
+  }
+ }
+]

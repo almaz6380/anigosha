@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "Was hat die Diebin Felt zu Beginn der Geschichte Emilia gestohlen?",
+  "richtig": "Her insignia",
+  "en": {
+   "prompt": "What did the thief Felt steal from Emilia at the start of the story?",
+   "options": [
+    "Her spirit",
+    "Her sword",
+    "Her crown",
+    "Her insignia"
+   ],
+   "explanation": "The insignia identifies Emilia as a candidate for the throne."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "Was ist Rem für ein Wesen?",
+  "richtig": "An oni (demon)",
+  "en": {
+   "prompt": "What kind of being is Rem?",
+   "options": [
+    "An elf",
+    "A spirit",
+    "An oni (demon)",
+    "A dragon"
+   ],
+   "explanation": "In battle a horn appears on her forehead."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "Was passiert, wenn Subaru jemandem von seiner Fähigkeit erzählen will?",
+  "richtig": "An invisible hand squeezes his heart",
+  "en": {
+   "prompt": "What happens when Subaru tries to tell someone about his ability?",
+   "options": [
+    "He forgets it immediately",
+    "An invisible hand squeezes his heart",
+    "He loses his voice",
+    "Time stops"
+   ],
+   "explanation": "The Witch of Envy does not allow him to reveal the secret."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Was trägt Subaru, als er in der neuen Welt ankommt?",
+  "richtig": "A tracksuit",
+  "en": {
+   "prompt": "What is Subaru wearing when he arrives in the new world?",
+   "options": [
+    "A tracksuit",
+    "A school uniform",
+    "A suit",
+    "Armour"
+   ],
+   "explanation": "He also has a bag from the convenience store with him."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Welche Fähigkeit besitzt Subaru in Re:Zero?",
+  "richtig": "He returns to an earlier point in time after dying",
+  "en": {
+   "prompt": "What ability does Subaru have in Re:Zero?",
+   "options": [
+    "He can read minds",
+    "He can fly",
+    "He can copy magic",
+    "He returns to an earlier point in time after dying"
+   ],
+   "explanation": "This ability is called “Return by Death.”"
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Welche Haarfarbe hat Rem?",
+  "richtig": "Blue",
+  "en": {
+   "prompt": "What colour is Rem’s hair?",
+   "options": [
+    "Pink",
+    "Silver",
+    "Blonde",
+    "Blue"
+   ],
+   "explanation": "Her twin sister Ram has pink hair."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Welche Waffe benutzt Rem im Kampf?",
+  "richtig": "A morning star",
+  "en": {
+   "prompt": "Which weapon does Rem use in battle?",
+   "options": [
+    "A sword",
+    "A morning star",
+    "A bow",
+    "A spear"
+   ],
+   "explanation": "With the spiked ball on a chain she is a feared fighter."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Welches Studio produziert den Anime zu Re:Zero?",
+  "richtig": "White Fox",
+  "en": {
+   "prompt": "Which studio produces the Re:Zero anime?",
+   "options": [
+    "Madhouse",
+    "Bones",
+    "White Fox",
+    "ufotable"
+   ],
+   "explanation": "White Fox also produced Steins;Gate."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Wer tötet Subaru in der ersten Staffel als Erstes?",
+  "richtig": "Elsa Granhiert",
+  "en": {
+   "prompt": "Who is the first to kill Subaru in the first season?",
+   "options": [
+    "Rem",
+    "Elsa Granhiert",
+    "Petelgeuse",
+    "Reinhard"
+   ],
+   "explanation": "Elsa is an assassin known as the “Bowel Hunter.”"
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Wie heißen die Zwillingsdienstmädchen in Roswaals Villa?",
+  "richtig": "Rem and Ram",
+  "en": {
+   "prompt": "What are the names of the twin maids in Roswaal’s mansion?",
+   "options": [
+    "Mimi and Tivey",
+    "Rem and Ram",
+    "Ferris and Felt",
+    "Petra and Frederica"
+   ],
+   "explanation": "Rem has blue hair, Ram pink."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Wie heißt das Königreich, in dem Re:Zero hauptsächlich spielt?",
+  "richtig": "Lugunica",
+  "en": {
+   "prompt": "What is the name of the kingdom where Re:Zero mainly takes place?",
+   "options": [
+    "Lugunica",
+    "Vollachia",
+    "Gusteko",
+    "Kararagi"
+   ],
+   "explanation": "A new ruler is being sought in Lugunica."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wie heißt das Mädchen, das in der verbotenen Bibliothek der Villa lebt?",
+  "richtig": "Beatrice",
+  "en": {
+   "prompt": "What is the name of the girl who lives in the mansion’s forbidden library?",
+   "options": [
+    "Ram",
+    "Petra",
+    "Beatrice",
+    "Frederica"
+   ],
+   "explanation": "Subaru likes to call her “Beako.”"
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wie heißt der Erzbischof der Trägheit, der „Bist du träge?“ ruft?",
+  "richtig": "Petelgeuse Romanee-Conti",
+  "en": {
+   "prompt": "What is the name of the Archbishop of Sloth who shouts “Are you slothful?”",
+   "options": [
+    "Petelgeuse Romanee-Conti",
+    "Regulus Corneas",
+    "Ley Batenkaitos",
+    "Sirius"
+   ],
+   "explanation": "His maniacal cackling and contortions made him famous."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wie heißt der Herr der Villa, in der Subaru als Diener arbeitet?",
+  "richtig": "Roswaal L. Mathers",
+  "en": {
+   "prompt": "What is the name of the lord of the mansion where Subaru works as a servant?",
+   "options": [
+    "Wilhelm",
+    "Roswaal L. Mathers",
+    "Reinhard",
+    "Julius"
+   ],
+   "explanation": "Roswaal is court magician and Emilia’s backer in the royal selection."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wie heißt der Untertitel von Re:Zero?",
+  "richtig": "Starting Life in Another World",
+  "en": {
+   "prompt": "What is the subtitle of Re:Zero?",
+   "options": [
+    "Starting Life in Another World",
+    "A New Beginning",
+    "The Hero’s Journey",
+    "Another World Diaries"
+   ],
+   "explanation": "In Japanese the series is called “Re:Zero kara Hajimeru Isekai Seikatsu.”"
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt der katzenartige Geist, der Emilia begleitet?",
+  "richtig": "Puck",
+  "en": {
+   "prompt": "What is the name of the cat-like spirit who accompanies Emilia?",
+   "options": [
+    "Beako",
+    "Patrasche",
+    "Puck",
+    "Kon"
+   ],
+   "explanation": "Puck affectionately calls Emilia his daughter."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt der stärkste Ritter des Königreichs, der „Schwertheilige“?",
+  "richtig": "Reinhard van Astrea",
+  "en": {
+   "prompt": "What is the name of the kingdom’s strongest knight, the “Sword Saint”?",
+   "options": [
+    "Reinhard van Astrea",
+    "Julius Juukulius",
+    "Wilhelm van Astrea",
+    "Al"
+   ],
+   "explanation": "Reinhard saves Subaru and Emilia from great danger right at the start."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt die Hauptfigur von Re:Zero?",
+  "richtig": "Subaru Natsuki",
+  "en": {
+   "prompt": "What is the name of the main character of Re:Zero?",
+   "options": [
+    "Kazuma Sato",
+    "Subaru Natsuki",
+    "Kirito",
+    "Naofumi Iwatani"
+   ],
+   "explanation": "Subaru is transported to a fantasy world as he leaves a convenience store."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie heißt die Hexe, die die Welt einst fast verschlungen hätte und Emilia ähnelt?",
+  "richtig": "Satella",
+  "en": {
+   "prompt": "What is the name of the witch who once almost devoured the world and resembles Emilia?",
+   "options": [
+    "Echidna",
+    "Typhon",
+    "Satella",
+    "Minerva"
+   ],
+   "explanation": "She is called the “Witch of Envy.”"
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie heißt die Sekte, die Subaru und Emilia immer wieder bedroht?",
+  "richtig": "The Witch Cult",
+  "en": {
+   "prompt": "What is the name of the cult that keeps threatening Subaru and Emilia?",
+   "options": [
+    "The White Hand",
+    "The Red Moon",
+    "The Sons of Time",
+    "The Witch Cult"
+   ],
+   "explanation": "Its leaders call themselves Archbishops of the Sins."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wie heißt die silberhaarige Halbelfe, der Subaru in der neuen Welt begegnet?",
+  "richtig": "Emilia",
+  "en": {
+   "prompt": "What is the name of the silver-haired half-elf Subaru meets in the new world?",
+   "options": [
+    "Emilia",
+    "Rem",
+    "Beatrice",
+    "Felt"
+   ],
+   "explanation": "Emilia is a candidate for the throne."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Wo arbeitet Subaru, nachdem Emilia ihn mitgenommen hat?",
+  "richtig": "As a servant in Roswaal’s mansion",
+  "en": {
+   "prompt": "Where does Subaru work after Emilia takes him in?",
+   "options": [
+    "In a tavern",
+    "In a smithy",
+    "On a farm",
+    "As a servant in Roswaal’s mansion"
+   ],
+   "explanation": "There he learns housework from Rem and Ram."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "In welchem Jahr startete der Re:Zero-Anime?",
+  "richtig": "2016",
+  "en": {
+   "prompt": "In which year did the Re:Zero anime start?",
+   "options": [
+    "2012",
+    "2014",
+    "2016",
+    "2018"
+   ],
+   "explanation": "The second season followed in 2020, the third in 2024."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "Warum hasst Wilhelm den Weißen Wal so sehr?",
+  "richtig": "The whale killed his wife Theresia",
+  "en": {
+   "prompt": "Why does Wilhelm hate the White Whale so much?",
+   "options": [
+    "The whale killed his wife Theresia",
+    "The whale swallowed his sword",
+    "The whale destroyed his village",
+    "The whale ate his horse"
+   ],
+   "explanation": "Theresia was the Sword Saint before Reinhard."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Was lernt Subaru über seine Rückkehr durch den Tod?",
+  "richtig": "The point he returns to can shift",
+  "en": {
+   "prompt": "What does Subaru learn about his Return by Death?",
+   "options": [
+    "The point he returns to can shift",
+    "He can trigger it as often as he likes without pain",
+    "He can take others with him",
+    "It only works at night"
+   ],
+   "explanation": "These save points shift without him being able to choose them."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Was tut Ley Batenkaitos, der Erzbischof der Völlerei, Rem an?",
+  "richtig": "He eats her name and her memories",
+  "en": {
+   "prompt": "What does Ley Batenkaitos, the Archbishop of Gluttony, do to Rem?",
+   "options": [
+    "He eats her name and her memories",
+    "He kidnaps her",
+    "He petrifies her",
+    "He turns her into a witch"
+   ],
+   "explanation": "Afterwards no one except Subaru remembers Rem."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Welchen falschen Namen nennt Emilia, als sie Subaru zum ersten Mal begegnet?",
+  "richtig": "Satella",
+  "en": {
+   "prompt": "What false name does Emilia give when she first meets Subaru?",
+   "options": [
+    "Rem",
+    "Satella",
+    "Echidna",
+    "Felt"
+   ],
+   "explanation": "She wants to scare him off – no one wants to hear that name."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Welches auffällige Merkmal hat Roswaals Gesicht?",
+  "richtig": "Clown-like makeup",
+  "en": {
+   "prompt": "What striking feature does Roswaal’s face have?",
+   "options": [
+    "An eyepatch",
+    "A scar",
+    "A long beard",
+    "Clown-like makeup"
+   ],
+   "explanation": "He also has eyes of different colours."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Wen ernennt Emilia zu ihrem Ritter?",
+  "richtig": "Subaru",
+  "en": {
+   "prompt": "Whom does Emilia appoint as her knight?",
+   "options": [
+    "Reinhard",
+    "Julius",
+    "Roswaal",
+    "Subaru"
+   ],
+   "explanation": "Subaru wanted to be her knight from the very beginning."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Wer hat Re:Zero geschrieben?",
+  "richtig": "Tappei Nagatsuki",
+  "en": {
+   "prompt": "Who wrote Re:Zero?",
+   "options": [
+    "Reki Kawahara",
+    "Natsume Akatsuki",
+    "Tappei Nagatsuki",
+    "Aneko Yusagi"
+   ],
+   "explanation": "The light novel’s illustrations are by Shinichiro Otsuka."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Wer ist Wilhelm van Astrea für Reinhard?",
+  "richtig": "His grandfather",
+  "en": {
+   "prompt": "Who is Wilhelm van Astrea to Reinhard?",
+   "options": [
+    "His father",
+    "His uncle",
+    "His grandfather",
+    "An unrelated teacher"
+   ],
+   "explanation": "Wilhelm is called the “Sword Devil.”"
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Wer steckt laut den Andeutungen der Geschichte hinter Subarus Fähigkeit?",
+  "richtig": "Satella, the Witch of Envy",
+  "en": {
+   "prompt": "According to the story’s hints, who is behind Subaru’s ability?",
+   "options": [
+    "Echidna",
+    "Satella, the Witch of Envy",
+    "Roswaal",
+    "Puck"
+   ],
+   "explanation": "She seems to love Subaru and keeps him bound to this world."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Wer wird der Ritter von Felt?",
+  "richtig": "Reinhard",
+  "en": {
+   "prompt": "Who becomes Felt’s knight?",
+   "options": [
+    "Julius",
+    "Wilhelm",
+    "Reinhard",
+    "Al"
+   ],
+   "explanation": "He discovers Felt’s suitability for the throne right at the start."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Wie heißt Subarus Landdrache, der ihn treu begleitet?",
+  "richtig": "Patrasche",
+  "en": {
+   "prompt": "What is the name of Subaru’s land dragon that loyally accompanies him?",
+   "options": [
+    "Puck",
+    "Beako",
+    "Frederica",
+    "Patrasche"
+   ],
+   "explanation": "Patrasche is a female land dragon who saves Subaru’s life several times."
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel von Re:Zero?",
+  "richtig": "“Redo”",
+  "en": {
+   "prompt": "What is the name of the opening of the first season of Re:Zero?",
+   "options": [
+    "“Redo”",
+    "“Paradisus-Paradoxum”",
+    "“Realize”",
+    "“Long shot”"
+   ],
+   "explanation": "It is sung by Konomi Suzuki."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Wie heißt der Kaufmann, der sich Subaru und Emilia im Heiligtum anschließt?",
+  "richtig": "Otto Suwen",
+  "en": {
+   "prompt": "What is the name of the merchant who joins Subaru and Emilia around the time of the Sanctuary?",
+   "options": [
+    "Russell",
+    "Otto Suwen",
+    "Ricardo",
+    "Kadomon"
+   ],
+   "explanation": "Otto can understand the language of animals."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wie heißt der Ritter mit Katzenohren, der Crusch dient und ein begnadeter Heiler ist?",
+  "richtig": "Ferris",
+  "en": {
+   "prompt": "What is the name of the cat-eared knight who serves Crusch and is a gifted healer?",
+   "options": [
+    "Julius",
+    "Ferris",
+    "Garfiel",
+    "Otto"
+   ],
+   "explanation": "Ferris’s real name is Felix Argyle."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt der Ritter, der Subaru nach der Kandidatenversammlung im Duell demütigt?",
+  "richtig": "Julius Juukulius",
+  "en": {
+   "prompt": "What is the name of the knight who humiliates Subaru in a duel after the candidates’ assembly?",
+   "options": [
+    "Julius Juukulius",
+    "Reinhard",
+    "Wilhelm",
+    "Al"
+   ],
+   "explanation": "Later the two become allies."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt der halbmenschliche Kämpfer, der das Heiligtum beschützt?",
+  "richtig": "Garfiel Tinsel",
+  "en": {
+   "prompt": "What is the name of the half-human fighter who protects the Sanctuary?",
+   "options": [
+    "Ricardo",
+    "Al",
+    "Garfiel Tinsel",
+    "Ferris"
+   ],
+   "explanation": "Garfiel can transform into a giant tiger."
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt der riesige Fisch-Dämon, den Subaru mit Crusch und Wilhelm jagt?",
+  "richtig": "The White Whale",
+  "en": {
+   "prompt": "What is the name of the giant mabeast Subaru hunts with Crusch and Wilhelm?",
+   "options": [
+    "The Great Rabbit",
+    "The White Whale",
+    "The Black Serpent",
+    "The Red Dragon"
+   ],
+   "explanation": "It is one of the three great mabeasts."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt die Folge der ersten Staffel, in der Rem Subaru ihre Liebe gesteht?",
+  "richtig": "“From Zero”",
+  "en": {
+   "prompt": "What is the title of the first-season episode in which Rem confesses her love to Subaru?",
+   "options": [
+    "“The White Whale”",
+    "“The Tea Party”",
+    "“The Knight”",
+    "“From Zero”"
+   ],
+   "explanation": "In this episode Subaru finds new courage after his deepest despair."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie heißt die Hexe der Gier, die Subaru zu einer Teeparty einlädt?",
+  "richtig": "Echidna",
+  "en": {
+   "prompt": "What is the name of the Witch of Greed who invites Subaru to a tea party?",
+   "options": [
+    "Satella",
+    "Minerva",
+    "Echidna",
+    "Carmilla"
+   ],
+   "explanation": "Her tea is made from her own body, as she reveals to Subaru."
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie viele Kandidatinnen treten bei der Königswahl in Lugunica an?",
+  "richtig": "Five",
+  "en": {
+   "prompt": "How many candidates take part in the royal selection in Lugunica?",
+   "options": [
+    "Three",
+    "Four",
+    "Six",
+    "Five"
+   ],
+   "explanation": "They are Emilia, Felt, Crusch, Priscilla and Anastasia."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wo erschien Re:Zero ursprünglich?",
+  "richtig": "As a web novel on “Shosetsuka ni Naro”",
+  "en": {
+   "prompt": "Where was Re:Zero originally published?",
+   "options": [
+    "As a web novel on “Shosetsuka ni Naro”",
+    "In Weekly Shonen Jump",
+    "As a video game",
+    "In a newspaper"
+   ],
+   "explanation": "Later it was published as a light novel by MF Bunko J."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "Bei welchem Verlag erscheint die Light Novel Re:Zero in Japan?",
+  "richtig": "MF Bunko J",
+  "en": {
+   "prompt": "With which imprint is the Re:Zero light novel published in Japan?",
+   "options": [
+    "Dengeki Bunko",
+    "Shueisha",
+    "MF Bunko J",
+    "Kodansha"
+   ],
+   "explanation": "MF Bunko J belongs to Kadokawa."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "In welchem Jahr erschien der erste Teil des Webromans Re:Zero?",
+  "richtig": "2012",
+  "en": {
+   "prompt": "In which year was the first part of the Re:Zero web novel published?",
+   "options": [
+    "2006",
+    "2009",
+    "2015",
+    "2012"
+   ],
+   "explanation": "From 2014 the story was also published as a light novel."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "Welche Erzbischöfin steht für die Sünde der Wollust?",
+  "richtig": "Capella Emerada Lugunica",
+  "en": {
+   "prompt": "Which archbishop represents the sin of Lust?",
+   "options": [
+    "Capella Emerada Lugunica",
+    "Sirius Romanee-Conti",
+    "Regulus Corneas",
+    "Petelgeuse"
+   ],
+   "explanation": "She can transform her own and other people’s bodies at will."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "Welche Hexe hat die großen Dämonenbestien wie den Weißen Wal erschaffen?",
+  "richtig": "Daphne, the Witch of Gluttony",
+  "en": {
+   "prompt": "Which witch created the great mabeasts such as the White Whale?",
+   "options": [
+    "Daphne, the Witch of Gluttony",
+    "Echidna, the Witch of Greed",
+    "Minerva, the Witch of Wrath",
+    "Typhon, the Witch of Pride"
+   ],
+   "explanation": "Daphne created them to end the world’s hunger."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "Welche Kandidatin ist eine erfolgreiche Händlerin aus Kararagi?",
+  "richtig": "Anastasia Hoshin",
+  "en": {
+   "prompt": "Which candidate is a successful merchant from Kararagi?",
+   "options": [
+    "Crusch Karsten",
+    "Priscilla Barielle",
+    "Felt",
+    "Anastasia Hoshin"
+   ],
+   "explanation": "Her fox scarf is actually an artificial spirit."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Welche Speise aus seiner Heimat stellt Subaru in der neuen Welt gern selbst her?",
+  "richtig": "Mayonnaise",
+  "en": {
+   "prompt": "Which food from his homeland does Subaru like to make himself in the new world?",
+   "options": [
+    "Ketchup",
+    "Mayonnaise",
+    "Soy sauce",
+    "Mustard"
+   ],
+   "explanation": "Subaru is a big fan of mayonnaise."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Welchen Spitznamen gibt Ram Subaru gern, um ihn zu necken?",
+  "richtig": "Barusu",
+  "en": {
+   "prompt": "What nickname does Ram like to give Subaru to tease him?",
+   "options": [
+    "Hero",
+    "Brother",
+    "Barusu",
+    "Kiddo"
+   ],
+   "explanation": "It is a deliberate twist of his name."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Welches Element nutzt Ram bevorzugt für ihre Magie?",
+  "richtig": "Wind",
+  "en": {
+   "prompt": "Which element does Ram prefer for her magic?",
+   "options": [
+    "Fire",
+    "Wind",
+    "Water",
+    "Earth"
+   ],
+   "explanation": "Since losing her horn, her power has been severely limited."
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Wer hat Ram einst ihr Horn genommen?",
+  "richtig": "Attackers from the Witch Cult",
+  "en": {
+   "prompt": "Who once took Ram’s horn?",
+   "options": [
+    "Rem",
+    "Roswaal",
+    "Elsa",
+    "Attackers from the Witch Cult"
+   ],
+   "explanation": "The attackers raided the oni village when the sisters were children."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Wer ist der Ritter der Kandidatin Priscilla, der einen Helm trägt?",
+  "richtig": "Al",
+  "en": {
+   "prompt": "Who is the knight of the candidate Priscilla who wears a helmet?",
+   "options": [
+    "Julius",
+    "Al",
+    "Ricardo",
+    "Garfiel"
+   ],
+   "explanation": "Like Subaru, Al was summoned from another world."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Wer schließt in der zweiten Staffel einen Vertrag mit Subaru als Geist?",
+  "richtig": "Beatrice",
+  "en": {
+   "prompt": "Who forms a contract with Subaru as a spirit in the second season?",
+   "options": [
+    "Puck",
+    "Patrasche",
+    "Beatrice",
+    "Echidna"
+   ],
+   "explanation": "With that she leaves the forbidden library after 400 years."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Wer zog Emilia im Wald von Elior auf?",
+  "richtig": "Fortuna",
+  "en": {
+   "prompt": "Who raised Emilia in the Elior Forest?",
+   "options": [
+    "Rem",
+    "Puck",
+    "Roswaal",
+    "Fortuna"
+   ],
+   "explanation": "Fortuna was Emilia’s aunt and adoptive mother."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Wie heißen Subarus Eltern in Japan?",
+  "richtig": "Kenichi and Naoko",
+  "en": {
+   "prompt": "What are the names of Subaru’s parents in Japan?",
+   "options": [
+    "Kazuma and Megumi",
+    "Takeshi and Yui",
+    "Hiroshi and Akiko",
+    "Kenichi and Naoko"
+   ],
+   "explanation": "Subaru meets them again in a trial of the Sanctuary."
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Wie heißen die drei großen Dämonenbestien neben dem Weißen Wal?",
+  "richtig": "The Great Rabbit and the Black Serpent",
+  "en": {
+   "prompt": "Which are the great mabeasts besides the White Whale?",
+   "options": [
+    "The Red Wolf and the Ice Bear",
+    "The Fire Toad and the Storm Bird",
+    "The Great Rabbit and the Black Serpent",
+    "The Giant Kraken and the Stone Golem"
+   ],
+   "explanation": "For centuries they have spread terror across the world."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Wie heißt das Ending der ersten Staffel von Re:Zero, das in vielen Folgen läuft?",
+  "richtig": "“STYX HELIX”",
+  "en": {
+   "prompt": "What is the name of the first-season ending of Re:Zero that plays in many episodes?",
+   "options": [
+    "“Stay Alive”",
+    "“STYX HELIX”",
+    "“Memento”",
+    "“Believe in you”"
+   ],
+   "explanation": "It is sung by MYTH & ROID."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Wie heißt der Erzbischof der Gier, der in der Wasserstadt auftaucht?",
+  "richtig": "Regulus Corneas",
+  "en": {
+   "prompt": "What is the name of the Archbishop of Greed who appears in the water city?",
+   "options": [
+    "Petelgeuse",
+    "Sirius",
+    "Regulus Corneas",
+    "Ley Batenkaitos"
+   ],
+   "explanation": "He considers himself perfect and has many “wives.”"
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Wie heißt die Kandidatin, deren Familie Herzöge sind und die den Weißen Wal mitjagt?",
+  "richtig": "Crusch Karsten",
+  "en": {
+   "prompt": "What is the name of the candidate from a ducal family who joins the White Whale hunt?",
+   "options": [
+    "Crusch Karsten",
+    "Anastasia Hoshin",
+    "Priscilla Barielle",
+    "Felt"
+   ],
+   "explanation": "Wilhelm serves in her house."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wie heißt die Wasserstadt, in der die dritte Staffel spielt?",
+  "richtig": "Priestella",
+  "en": {
+   "prompt": "What is the name of the water city where the third season takes place?",
+   "options": [
+    "Priestella",
+    "Irlam",
+    "Kararagi",
+    "Elior"
+   ],
+   "explanation": "In the city of water gates, the Witch Cult attacks with several archbishops."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie heißt die junge Tierbändigerin, die mit Elsa zusammenarbeitet?",
+  "richtig": "Meili Portroute",
+  "en": {
+   "prompt": "What is the name of the young beast tamer who works with Elsa?",
+   "options": [
+    "Meili Portroute",
+    "Petra Leyte",
+    "Frederica",
+    "Mimi"
+   ],
+   "explanation": "Later she lives with Roswaal."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie lautet Rems Antwort, als Subaru mit ihr fliehen will?",
+  "richtig": "She refuses and encourages him to face his task",
+  "en": {
+   "prompt": "What is Rem’s answer when Subaru wants to run away with her?",
+   "options": [
+    "She agrees immediately",
+    "She refuses and encourages him to face his task",
+    "She laughs at him",
+    "She leaves him"
+   ],
+   "explanation": "Afterwards Subaru decides to start again “from zero.”"
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie viele Folgen hat die erste Staffel von Re:Zero?",
+  "richtig": "25",
+  "en": {
+   "prompt": "How many episodes does the first season of Re:Zero have?",
+   "options": [
+    "12",
+    "13",
+    "24",
+    "25"
+   ],
+   "explanation": "A “Director’s Cut” version with longer episodes was released later."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wie wird der Ort genannt, an den Subaru nach einem Tod zurückkehrt?",
+  "richtig": "Save point",
+  "en": {
+   "prompt": "What is the point Subaru returns to after a death called?",
+   "options": [
+    "Save point",
+    "Return gate",
+    "Soul anchor",
+    "Time knot"
+   ],
+   "explanation": "Fans and Subaru himself name it like in a video game."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Womit droht Puck für den Fall, dass Emilia stirbt?",
+  "richtig": "He will freeze everything as the “Beast of the End”",
+  "en": {
+   "prompt": "What does Puck threaten to do if Emilia dies?",
+   "options": [
+    "He will kill Roswaal",
+    "He will return to the spirit world",
+    "He will freeze everything as the “Beast of the End”",
+    "He will curse Subaru"
+   ],
+   "explanation": "In one time loop he actually freezes everything into ice."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich wurde aus einem Supermarkt in eine andere Welt versetzt. (Re:Zero)",
+  "richtig": "Subaru Natsuki",
+  "en": {
+   "prompt": "Who am I? I was transported from a convenience store to another world. (Re:Zero)",
+   "options": [
+    "Kazuma Sato",
+    "Subaru Natsuki",
+    "Al",
+    "Otto Suwen"
+   ],
+   "explanation": "He returns to an earlier point in time after every death.",
+   "hints": [
+    "I wear a tracksuit.",
+    "I would love to be Emilia’s knight."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich arbeite als Dienstmädchen und habe eine Zwillingsschwester. (Re:Zero)",
+  "richtig": "Rem",
+  "en": {
+   "prompt": "Who am I? I work as a maid and have a twin sister. (Re:Zero)",
+   "options": [
+    "Ram",
+    "Petra",
+    "Frederica",
+    "Rem"
+   ],
+   "explanation": "She confesses her love to Subaru in the episode “From Zero.”",
+   "hints": [
+    "I wield a morning star in battle.",
+    "I have blue hair."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich habe silbernes Haar, und viele fürchten mich, weil ich einer Hexe ähnle. (Re:Zero)",
+  "richtig": "Emilia",
+  "en": {
+   "prompt": "Who am I? I have silver hair, and many fear me because I resemble a witch. (Re:Zero)",
+   "options": [
+    "Emilia",
+    "Satella",
+    "Echidna",
+    "Beatrice"
+   ],
+   "explanation": "She is running for the throne of Lugunica.",
+   "hints": [
+    "I am a half-elf.",
+    "My spirit Puck calls me his daughter."
+   ]
+  }
+ }
+]
