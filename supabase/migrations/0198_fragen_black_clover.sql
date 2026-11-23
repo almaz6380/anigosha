@@ -333,9 +333,9 @@ select public.seed_question('black_clover', 3, 3,
 
 select public.seed_question('black_clover', 3, 0,
   'Welche Fähigkeit besitzt Asta zusätzlich, obwohl er keine Magie hat?',
-  '["Er kann Ki spüren", "Er kann Gedanken lesen", "Er kann die Zeit verlangsamen", "Er kann unter Wasser atmen"]', 'Diese Lebensenergie lernt er im Land der aufgehenden Sonne zu nutzen.',
+  '["Er kann Ki spüren", "Er kann Gedanken lesen", "Er kann die Zeit verlangsamen", "Er kann unter Wasser atmen"]', 'Yami bringt ihm bei, Ki zu spüren; im Land der aufgehenden Sonne vertieft er es.',
   'What additional ability does Asta have even though he has no magic?',
-  '["He can sense ki", "He can read minds", "He can slow down time", "He can breathe underwater"]', 'He learns to use this life energy in the Land of the Rising Sun.');
+  '["He can sense ki", "He can read minds", "He can slow down time", "He can breathe underwater"]', 'Yami teaches him to sense ki; he deepens it in the Land of the Rising Sun.');
 
 select public.seed_question('black_clover', 3, 2,
   'Wie heißt das dritte Opening von Black Clover?',

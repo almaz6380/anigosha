@@ -326,9 +326,9 @@ select public.seed_question('dr_stone', 3, 1,
   '["Moss", "Bat droppings (guano)", "Bones", "Crystals"]', 'He needs saltpetre for nitric acid and gunpowder, among other things.');
 
 select public.seed_question('dr_stone', 3, 3,
-  'Wie viele Astronauten waren mit Byakuya während der Versteinerung im All?',
+  'Wie viele Menschen waren mit Byakuya während der Versteinerung im All?',
   '["Zwei", "Drei", "Vier", "Fünf"]', 'Mit ihren Nachkommen entstand später das Dorf.',
-  'How many astronauts were in space with Byakuya during the petrification?',
+  'How many people were in space with Byakuya during the petrification?',
   '["Two", "Three", "Four", "Five"]', 'The village later grew from their descendants.');
 
 select public.seed_question('dr_stone', 3, 0,

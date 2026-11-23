@@ -994,10 +994,10 @@
  {
   "nr": 62,
   "type": "mc",
-  "de": "Wie viele Astronauten waren mit Byakuya während der Versteinerung im All?",
+  "de": "Wie viele Menschen waren mit Byakuya während der Versteinerung im All?",
   "richtig": "Five",
   "en": {
-   "prompt": "How many astronauts were in space with Byakuya during the petrification?",
+   "prompt": "How many people were in space with Byakuya during the petrification?",
    "options": [
     "Two",
     "Three",
