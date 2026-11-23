@@ -281,5 +281,17 @@
       "cheating": "不正行為",
       "other": "その他"
     }
+  },
+  "wellapps": {
+    "titel": "WellAppsの他のアプリ",
+    "weltgeschichte": "世界史",
+    "zeile": {
+      "mahjong": "麻雀ソリティア、対戦、リーチ麻雀",
+      "fixthemix": "ジュースバーで色を仕分け",
+      "swaply": "悪い習慣を良い習慣に",
+      "weltgeschichte": "時代・年表・クイズ",
+      "watten": "アルプス地方の伝統カードゲーム",
+      "fullrep": "トレーニングと食事の記録"
+    }
   }
 }

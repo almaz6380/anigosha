@@ -10,6 +10,7 @@ import { AVATARE, avatarBild, setAvatar } from '../lib/avatare';
 import { blockierteSpieler, spielerEntblocken } from '../lib/spieler';
 import { Avatar } from '../components/Figur';
 import AppShell, { PageHeader } from '../components/AppShell';
+import MehrVonWellApps from '../components/MehrVonWellApps';
 import { braucht_homescreen, istNativ, pushAbmelden, pushAnmelden, pushIstAn, webPushMoeglich } from '../lib/push';
 import { adConsentAenderbar, changeAdConsent } from '../lib/ads';
 import {
@@ -653,7 +654,12 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs leise">
+      {/* Ganz unten, bei den Rechtslinks: ruhiger Ort, nie im Spiel. */}
+      <div className="mt-5">
+        <MehrVonWellApps />
+      </div>
+
+      <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs leise">
         <Link to="/legal/impressum">{t('legal.imprint')}</Link>
         <Link to="/legal/datenschutz">{t('legal.privacy')}</Link>
         <Link to="/legal/agb">{t('legal.terms')}</Link>

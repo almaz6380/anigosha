@@ -1600,6 +1600,18 @@ Starten mit `npx vite --config vite.pruefstand.config.ts --port 4501`. Er ist di
 Grundlage der Store-Screenshots (`tools/store-shots-pruefstand.mjs`) und der
 einzige Weg, angemeldete Bildschirme ohne Datenbank zu sehen.
 
+## „Mehr von WellApps" (23.11.2026)
+
+Querverweise auf die sechs anderen eigenen Apps, im Profil ganz unten über den Rechtslinks
+(`src/components/MehrVonWellApps.tsx`, eingebunden in `ProfilePage.tsx`). Nie im Quiz, nie im Dialog.
+- **Liste:** `src/lib/wellapps.ts` (id, Name, App-Store-ID, Android-Paket; `EIGENE_APP = 'anigosha'` wird ausgeblendet).
+  Sie wird **in allen sieben Apps identisch gepflegt** — wer sie hier ändert, zieht die anderen sechs Repos nach.
+- **App ergänzen:** Zeile in `wellapps.ts`, Symbol `public/wellapps/<id>.webp` (144×144, liegt offline im Paket),
+  Kurzzeile `wellapps.zeile.<id>` in **allen 15** `src/i18n/locales/*.json`.
+- **Link:** iOS → `apps.apple.com/app/id…`, sonst Google Play. Gewöhnlicher `<a target="_blank">`, kein Plugin:
+  Capacitor reicht fremde Adressen ans System weiter. Kein Klick-Tracking, nichts wird nachgeladen.
+- Am Gerät ungetestet (ob der Store wirklich außerhalb der WebView aufgeht).
+
 ## Konventionen
 
 - Mobile-first, alle Texte über i18n (korrekte Umlaute, nicht ae/oe/ue)

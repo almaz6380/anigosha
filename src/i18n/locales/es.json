@@ -293,5 +293,17 @@
       "cheating": "Trampas",
       "other": "Otro"
     }
+  },
+  "wellapps": {
+    "titel": "Más de WellApps",
+    "weltgeschichte": "Historia Universal",
+    "zeile": {
+      "mahjong": "Solitario mahjong, duelos y Riichi",
+      "fixthemix": "Ordena colores en el bar de zumos",
+      "swaply": "Cambia malos hábitos por buenos",
+      "weltgeschichte": "Épocas, línea de tiempo y quiz",
+      "watten": "Juegos de cartas clásicos de los Alpes",
+      "fullrep": "Registra entrenamiento y nutrición"
+    }
   }
 }

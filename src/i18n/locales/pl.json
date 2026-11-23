@@ -317,5 +317,17 @@
       "cheating": "Oszukiwanie",
       "other": "Inne"
     }
+  },
+  "wellapps": {
+    "titel": "Więcej od WellApps",
+    "weltgeschichte": "Historia świata",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, pojedynki i Riichi",
+      "fixthemix": "Sortuj kolory w barze z sokami",
+      "swaply": "Zamień złe nawyki na dobre",
+      "weltgeschichte": "Epoki, oś czasu i quiz",
+      "watten": "Klasyczne alpejskie gry karciane",
+      "fullrep": "Śledź treningi i odżywianie"
+    }
   }
 }

@@ -281,5 +281,17 @@
       "cheating": "Curang",
       "other": "Lainnya"
     }
+  },
+  "wellapps": {
+    "titel": "Lainnya dari WellApps",
+    "weltgeschichte": "Sejarah Dunia",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, duel & Riichi",
+      "fixthemix": "Sortir warna di bar jus",
+      "swaply": "Ganti kebiasaan buruk dengan yang baik",
+      "weltgeschichte": "Zaman, lini masa & kuis",
+      "watten": "Permainan kartu klasik Alpen",
+      "fullrep": "Pelacak latihan & nutrisi"
+    }
   }
 }

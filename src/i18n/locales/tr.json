@@ -293,5 +293,17 @@
       "cheating": "Hile",
       "other": "Diğer"
     }
+  },
+  "wellapps": {
+    "titel": "WellApps’ten daha fazlası",
+    "weltgeschichte": "Dünya Tarihi",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, düellolar ve Riichi",
+      "fixthemix": "Meyve suyu barında renkleri sırala",
+      "swaply": "Kötü alışkanlıkları iyileriyle değiştir",
+      "weltgeschichte": "Çağlar, zaman çizelgesi ve quiz",
+      "watten": "Klasik Alp kart oyunları",
+      "fullrep": "Antrenman ve beslenme takibi"
+    }
   }
 }
