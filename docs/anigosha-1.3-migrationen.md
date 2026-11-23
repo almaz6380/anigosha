@@ -22,7 +22,8 @@ Zug einspielen: erst die Übersetzungs-Migrationen (0201 ff., siehe unten) bauen
 | 6 | `0198_fragen_black_clover.sql` | Kategorie (36) + 67 Fragen DE/EN |
 | 7 | `0199_wer_bin_ich_13.sql` | 18 „Wer bin ich?“ DE/EN (3 je Serie), Emoji-Rätsel bleibt auf sort_order 40 |
 | 8 | `0200_kategorienamen_13.sql` | `categories.names` (ja/ko/th/ru/ar, bei der Apothekerin auch es/fr/pt/it/vi) |
-| 9 ff. | **noch zu bauen** | Übersetzungen, siehe unten |
+| 9–14 | `0201`–`0206_uebersetzung_<slug>.sql` | es/fr/pt je Serie (210 Einträge) |
+| 15–26 | `0207`–`0218_{a,b}_<slug>.sql` | a = it/id/tr/pl/vi, b = ja/ko/th/ru/ar (je 350) |
 
 ## Je Datei
 
@@ -33,7 +34,12 @@ Zug einspielen: erst die Übersetzungs-Migrationen (0201 ff., siehe unten) bauen
    13 Sprachen erst nach den Übersetzungs-Migrationen.
 4. Am Ende: `node tools/test-sprachen.mjs` (erwartet jetzt 37 Kategorien).
 
-## Übersetzungen (offen)
+## Übersetzungen (fertig, 23.11.2026)
+
+Alle 13 Sprachen gebaut, `pglast` parst 0193–0218. Anmerkungen der Übersetzer: `tools/uebersetzung/ue-1.3/FEHLER-*.md`.
+Nach 0218 haben alle 15 Sprachen je 420 Einträge mehr (2145 → 2565).
+
+### Rezept (so gebaut)
 
 Quelle liegt fertig im Repo: `tools/uebersetzung/quelle-1.3/<slug>.json` — 70 Einträge je
 Serie, mit dem Feld `richtig`. Erzeugt mit `tools/uebersetzung/export-lokal.mjs` aus den

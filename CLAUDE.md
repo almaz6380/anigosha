@@ -81,9 +81,11 @@ Android 1.3.0 / vc15, whatsNew in `store-assets/asc-texte.json` (17 Store-Sprach
 | Übersetzungsquelle für alle 13 weiteren Sprachen, mit `richtig` | `tools/uebersetzung/quelle-1.3/` |
 | Einspiel-Reihenfolge + Rezept für die Übersetzungs-Migrationen | `docs/anigosha-1.3-migrationen.md` |
 
-⚠ **Die 13 Übersetzungen fehlen noch** (es/fr/pt/it/id/tr/pl/vi/ja/ko/th/ru/ar, ~5.500 Einträge). Die Sitzung
-hatte kein Agent-Werkzeug, und Kind-Sitzungen hätten den Plan-Modus geerbt (blockieren). **0193 ff. erst
-zusammen mit den Übersetzungs-Migrationen einspielen** — sonst sind die Kategorien in 13 Sprachen leer.
+✅ **Übersetzungen fertig (23.11.2026):** 0201–0206 es/fr/pt, 0207–0218 Gruppe a/b, gebaut mit `bauen.mjs` aus
+`tools/uebersetzung/ue-1.3/`, `pglast` parst alle. Zwei Sachfehler dabei korrigiert (Dr. Stone: „Menschen“ statt
+„Astronauten“ bei Byakuya; Black Clover: Ki lernt Asta schon bei Yami). Nicht muttersprachlich gegengelesen.
+**Noch NICHT eingespielt:** 0193–0218 in einem Zug, je Trockenlauf (Rezept `docs/anigosha-1.3-migrationen.md`),
+danach `node tools/test-sprachen.mjs` (37 Kategorien). Braucht `SUPABASE_ACCESS_ANIGOSHA` (Umgebung „Fal-kie“).
 
 Geprüft: Zählskript (je Serie 67 MC, 22/22/23, 3 Rätsel mit je 2 Hinweisen, 4 verschiedene Optionen,
 kein DE-Prompt kollidiert mit den 2145 vorhandenen), `pglast` parst alle acht Dateien, `npm run build` grün.
