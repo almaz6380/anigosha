@@ -1,6 +1,12 @@
 # Anigosha 1.3 — Migrationen (Teil 1: sechs neue Serien)
 
-Stand 22.11.2026, Branch `claude/optimistic-darwin-k01rmb`. **Nichts davon ist eingespielt.**
+Stand 25.11.2026, Branch `claude/optimistic-darwin-k01rmb`. ✅ **0193–0218 sind eingespielt (25.11.2026)**, alle
+fehlerfrei. Vorher 2145 je Sprache / 31 Kategorien, nachher 2565 je Sprache (alle 15) / 37 Kategorien;
+`node tools/test-sprachen.mjs` grün.
+
+**Trockenlauf kumulativ, nicht je Datei:** Ab 0199 brauchen die Dateien Kategorien und Fragen der Vordateien —
+ein Einzel-Trockenlauf mit `rollback` scheitert dort zwangsläufig. Deshalb alle 26 Dateien in einer Transaktion
+(`begin;` … Zählabfrage … `rollback;`), dann echt Datei für Datei.
 
 ## ⚠ Erst einspielen, wenn die Übersetzungen da sind
 

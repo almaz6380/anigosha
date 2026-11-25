@@ -81,7 +81,7 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 
 ## 1.3 vorbereitet (Teil 1): sechs neue Serien (22.11.2026, Branch `claude/optimistic-darwin-k01rmb`)
 
-**Nichts eingespielt, nichts gebaut, nichts eingereicht.** Versionen stehen auf iOS 1.3.0 / Build 26,
+**Datenbank live seit 25.11.2026 (0193–0218, s. u.); nichts gebaut, nichts eingereicht.** Versionen stehen auf iOS 1.3.0 / Build 26,
 Android 1.3.0 / vc15, whatsNew in `store-assets/asc-texte.json` (17 Store-Sprachen) ist gesetzt.
 
 | Was | Wo |
@@ -98,8 +98,12 @@ Android 1.3.0 / vc15, whatsNew in `store-assets/asc-texte.json` (17 Store-Sprach
 ✅ **Übersetzungen fertig (23.11.2026):** 0201–0206 es/fr/pt, 0207–0218 Gruppe a/b, gebaut mit `bauen.mjs` aus
 `tools/uebersetzung/ue-1.3/`, `pglast` parst alle. Zwei Sachfehler dabei korrigiert (Dr. Stone: „Menschen“ statt
 „Astronauten“ bei Byakuya; Black Clover: Ki lernt Asta schon bei Yami). Nicht muttersprachlich gegengelesen.
-**Noch NICHT eingespielt:** 0193–0218 in einem Zug, je Trockenlauf (Rezept `docs/anigosha-1.3-migrationen.md`),
-danach `node tools/test-sprachen.mjs` (37 Kategorien). Braucht `SUPABASE_ACCESS_ANIGOSHA` (Umgebung „Fal-kie“).
+✅ **Eingespielt am 25.11.2026:** 0193–0218 nacheinander, alle fehlerfrei. Trockenlauf vorher **kumulativ** (alle 26
+Dateien in einer Transaktion + `rollback`) — Einzel-Trockenläufe ab 0199 scheitern zwangsläufig, weil sie Kategorien
+und Fragen der Vordateien brauchen. Gemessen: vorher 2145 je Sprache / 31 Kategorien, nachher **2565 je Sprache
+(alle 15) / 37 Kategorien**; `node tools/test-sprachen.mjs` grün (je Sprache 111/111 Kategorie×Stufe).
+⚠ **Die sechs Serien sind damit in Web und allen Store-Apps sichtbar** — ihre Farben (`kategorien.ts`) aber erst mit
+diesem Branch auf `main` (Web) bzw. 1.3.0 (Android live, iOS in Prüfung); ältere Fassungen zeigen vermutlich Standardfarbe.
 
 Geprüft: Zählskript (je Serie 67 MC, 22/22/23, 3 Rätsel mit je 2 Hinweisen, 4 verschiedene Optionen,
 kein DE-Prompt kollidiert mit den 2145 vorhandenen), `pglast` parst alle acht Dateien, `npm run build` grün.
