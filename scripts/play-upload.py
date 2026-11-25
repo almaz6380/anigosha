@@ -400,6 +400,31 @@ def zeige_status(tok, track='production'):
     print(json.dumps(tr, indent=2, ensure_ascii=False))
 
 
+
+# Apple-Locale (store-assets/asc-texte.json) -> Play-Locale. Seit 1.3.0 kommen die
+# Versionshinweise aus derselben Datei wie bei Apple, in jeder Store-Sprache —
+# vorher ging nur der de-DE-Text aus --notes raus, obwohl en-US Standardsprache ist.
+APPLE_ZU_PLAY = {'ar-SA': 'ar', 'de-DE': 'de-DE', 'en-US': 'en-US', 'es-ES': 'es-ES',
+                 'es-MX': 'es-419', 'fr-FR': 'fr-FR', 'id': 'id', 'it': 'it-IT', 'ja': 'ja-JP',
+                 'ko': 'ko-KR', 'pl': 'pl-PL', 'pt-BR': 'pt-BR', 'pt-PT': 'pt-PT',
+                 'ru': 'ru-RU', 'th': 'th', 'tr': 'tr-TR', 'vi': 'vi'}
+
+
+def versionshinweise():
+    pfad = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'store-assets', 'asc-texte.json')
+    try:
+        texte = json.load(open(pfad, encoding='utf-8'))
+    except (OSError, ValueError):
+        return []
+    notes = []
+    for apple, play in APPLE_ZU_PLAY.items():
+        t = (texte.get(apple) or {}).get('whatsNew')
+        if t:
+            if len(t) > 500:
+                raise SystemExit(f'Versionshinweis {apple}: {len(t)} Zeichen, Play erlaubt 500')
+            notes.append({'language': play, 'text': t})
+    return notes
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--aab', help='Pfad zur .aab (Neu-Upload)')
@@ -473,7 +498,11 @@ def main():
     else:
         release['status'] = 'inProgress'
         release['userFraction'] = a.fraction
-    if a.notes:
+    notes = versionshinweise()
+    if notes:
+        release['releaseNotes'] = notes
+        print(f'  Versionshinweise: {", ".join(n["language"] for n in notes)}')
+    elif a.notes:
         release['releaseNotes'] = [{'language': 'de-DE', 'text': a.notes}]
 
     call(tok, 'PUT', f'{API}/applications/{PKG}/edits/{eid}/tracks/{a.track}',
