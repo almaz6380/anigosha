@@ -305,5 +305,17 @@
       "cheating": "Imbrogli",
       "other": "Altro"
     }
+  },
+  "wellapps": {
+    "titel": "Altro da WellApps",
+    "weltgeschichte": "Storia del Mondo",
+    "zeile": {
+      "mahjong": "Solitario mahjong, duelli e Riichi",
+      "fixthemix": "Ordina i colori al bar dei succhi",
+      "swaply": "Sostituisci le cattive abitudini",
+      "weltgeschichte": "Epoche, linea del tempo e quiz",
+      "watten": "Giochi di carte classici delle Alpi",
+      "fullrep": "Monitora allenamento e alimentazione"
+    }
   }
 }

@@ -293,5 +293,17 @@
       "cheating": "Schummeln",
       "other": "Sonstiges"
     }
+  },
+  "wellapps": {
+    "titel": "Mehr von WellApps",
+    "weltgeschichte": "Weltgeschichte",
+    "zeile": {
+      "mahjong": "Mahjong-Solitaire, Duelle & Riichi",
+      "fixthemix": "Farben sortieren in der Saftbar",
+      "swaply": "Schlechte Gewohnheiten tauschen",
+      "weltgeschichte": "Epochen, Zeitleiste & Quiz",
+      "watten": "Kartenspiele mit dem doppeldeutschen Blatt",
+      "fullrep": "Training & Ernährung tracken"
+    }
   }
 }

@@ -293,5 +293,17 @@
       "cheating": "Cheating",
       "other": "Other"
     }
+  },
+  "wellapps": {
+    "titel": "More from WellApps",
+    "weltgeschichte": "World History",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, duels & Riichi",
+      "fixthemix": "Colour sorting at the juice bar",
+      "swaply": "Swap bad habits for good ones",
+      "weltgeschichte": "Eras, timeline & quiz",
+      "watten": "Classic Alpine card games",
+      "fullrep": "Workout & nutrition tracker"
+    }
   }
 }

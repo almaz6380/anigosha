@@ -281,5 +281,17 @@
       "cheating": "부정행위",
       "other": "기타"
     }
+  },
+  "wellapps": {
+    "titel": "WellApps의 다른 앱",
+    "weltgeschichte": "세계사",
+    "zeile": {
+      "mahjong": "마작 솔리테어, 대결 & 리치",
+      "fixthemix": "주스 바에서 색깔 정렬하기",
+      "swaply": "나쁜 습관을 좋은 습관으로",
+      "weltgeschichte": "시대, 연표 & 퀴즈",
+      "watten": "알프스 전통 카드 게임",
+      "fullrep": "운동 & 영양 기록"
+    }
   }
 }

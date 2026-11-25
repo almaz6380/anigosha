@@ -293,5 +293,17 @@
       "cheating": "Triche",
       "other": "Autre"
     }
+  },
+  "wellapps": {
+    "titel": "Plus de WellApps",
+    "weltgeschichte": "Histoire du monde",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, duels et Riichi",
+      "fixthemix": "Trie les couleurs au bar à jus",
+      "swaply": "Remplace tes mauvaises habitudes",
+      "weltgeschichte": "Époques, frise chronologique et quiz",
+      "watten": "Jeux de cartes alpins classiques",
+      "fullrep": "Suivi d’entraînement et de nutrition"
+    }
   }
 }

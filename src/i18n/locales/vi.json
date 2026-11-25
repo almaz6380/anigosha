@@ -281,5 +281,17 @@
       "cheating": "Gian lận",
       "other": "Khác"
     }
+  },
+  "wellapps": {
+    "titel": "Thêm từ WellApps",
+    "weltgeschichte": "Lịch sử thế giới",
+    "zeile": {
+      "mahjong": "Mahjong solitaire, đấu tay đôi & Riichi",
+      "fixthemix": "Sắp xếp màu ở quầy nước ép",
+      "swaply": "Đổi thói quen xấu lấy thói quen tốt",
+      "weltgeschichte": "Thời đại, dòng thời gian & đố vui",
+      "watten": "Trò chơi bài cổ điển vùng Alps",
+      "fullrep": "Theo dõi tập luyện & dinh dưỡng"
+    }
   }
 }
