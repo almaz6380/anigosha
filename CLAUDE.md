@@ -65,6 +65,20 @@ Store-Texte und E-Mail-Vorlagen für ES/FR/PT stehen noch aus.
 **Monetarisierung:** AdMob (Interstitial + Rewarded, personalisiert per UMP + ATT seit 1.1.1) + IAP „Werbung entfernen" (RevenueCat)
 **Vollständiger Plan:** ~/.claude/plans/appidee-ich-will-eine-async-moon.md
 
+## 1.3.0 AUSGELIEFERT (25.11.2026)
+
+- **Datenbank:** 0193–0218 eingespielt (Kind-Sitzung in Umgebung „Fal-kie“, gemeinsamer Trockenlauf aller
+  26 Dateien in einer Transaktion → 2565 je Sprache ×15, 37 Kategorien; dann echt, jede Datei OK).
+  ⚠ Einzel-Trockenläufe ab 0199 scheitern zwangsläufig (brauchen Kategorien/Fragen der Vordateien) —
+  deshalb gemeinsam in einer Transaktion trocken laufen lassen.
+- **Android vc15 (1.3.0) in Produktion an alle** (`android-release` 45621777778, Edit `04915485260077869953`
+  committet). `play-upload.py` setzt die Versionshinweise jetzt aus `store-assets/asc-texte.json`
+  (whatsNew, 17 Play-Sprachen über `APPLE_ZU_PLAY`), die Workflow-Eingabe `notes` ist nur noch Rückfall.
+- **iOS Build 26 eingereicht:** `ios-release` 45621771327 → `asc.yml` `version-anlegen 1.3.0` →
+  `build 26` → `texte-schreiben` → `einreichen`, Einreichung `04363df1-4bb4-4e3a-8bae-0867a5c41bdf`,
+  WAITING_FOR_REVIEW. Kauf APPROVED, fuhr nicht mit.
+- Mit drin: „Mehr von WellApps“ im Profil (vorher nur Web).
+
 ## 1.3 vorbereitet (Teil 1): sechs neue Serien (22.11.2026, Branch `claude/optimistic-darwin-k01rmb`)
 
 **Nichts eingespielt, nichts gebaut, nichts eingereicht.** Versionen stehen auf iOS 1.3.0 / Build 26,
