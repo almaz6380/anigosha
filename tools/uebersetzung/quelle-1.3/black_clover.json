@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "In welchem Alter erhalten die Menschen in Black Clover ihr Grimoire?",
+  "richtig": "At 15",
+  "en": {
+   "prompt": "At what age do people in Black Clover receive their grimoire?",
+   "options": [
+    "At 15",
+    "At 10",
+    "At 18",
+    "At birth"
+   ],
+   "explanation": "At first Asta gets none at all – until an old grimoire comes to him."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "Was ist Astas großes Ziel?",
+  "richtig": "To become the Wizard King",
+  "en": {
+   "prompt": "What is Asta’s great goal?",
+   "options": [
+    "To become the richest man",
+    "To become a dragon",
+    "To become the Wizard King",
+    "To leave the forest"
+   ],
+   "explanation": "His rival Yuno also wants to become the Wizard King."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "Was ist das Besondere an Asta in einer Welt voller Magie?",
+  "richtig": "He has no magical power at all",
+  "en": {
+   "prompt": "What is special about Asta in a world full of magic?",
+   "options": [
+    "He can fly",
+    "He has no magical power at all",
+    "He commands every element",
+    "He is immortal"
+   ],
+   "explanation": "He makes up for it with hard physical training."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Welche Art von Magie beherrscht Yuno vor allem?",
+  "richtig": "Wind magic",
+  "en": {
+   "prompt": "What kind of magic does Yuno mainly use?",
+   "options": [
+    "Wind magic",
+    "Fire magic",
+    "Water magic",
+    "Lightning magic"
+   ],
+   "explanation": "He is accompanied by the wind spirit Sylph, whom he calls Bell."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Welche Magie beherrscht Luck Voltia?",
+  "richtig": "Lightning magic",
+  "en": {
+   "prompt": "Which magic does Luck Voltia use?",
+   "options": [
+    "Lightning magic",
+    "Water magic",
+    "Mirror magic",
+    "Spatial magic"
+   ],
+   "explanation": "Luck smiles constantly and loves fighting above all else."
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Welche Magie nutzt Magna Swing von den Schwarzen Stieren?",
+  "richtig": "Fire magic",
+  "en": {
+   "prompt": "Which magic does Magna Swing of the Black Bulls use?",
+   "options": [
+    "Fire magic",
+    "Ice magic",
+    "Earth magic",
+    "Light magic"
+   ],
+   "explanation": "Magna likes to see himself as Asta’s big brother."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Welcher Magierritter-Truppe tritt Asta bei?",
+  "richtig": "The Black Bulls",
+  "en": {
+   "prompt": "Which Magic Knight squad does Asta join?",
+   "options": [
+    "The Golden Dawn",
+    "The Crimson Lion Kings",
+    "The Black Bulls",
+    "The Silver Eagles"
+   ],
+   "explanation": "The Black Bulls are considered the worst squad in the kingdom."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Welcher Truppe tritt Yuno bei?",
+  "richtig": "The Golden Dawn",
+  "en": {
+   "prompt": "Which squad does Yuno join?",
+   "options": [
+    "The Black Bulls",
+    "The Blue Rose Knights",
+    "The Green Mantises",
+    "The Golden Dawn"
+   ],
+   "explanation": "They are considered the strongest squad in the kingdom."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Welches Studio produzierte den Anime zu Black Clover?",
+  "richtig": "Studio Pierrot",
+  "en": {
+   "prompt": "Which studio produced the Black Clover anime?",
+   "options": [
+    "MAPPA",
+    "Studio Pierrot",
+    "Toei Animation",
+    "Madhouse"
+   ],
+   "explanation": "Pierrot is also known for the Naruto anime series."
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Wem macht Asta als Junge ständig einen Heiratsantrag?",
+  "richtig": "Sister Lily",
+  "en": {
+   "prompt": "Whom does Asta constantly propose to as a boy?",
+   "options": [
+    "Noelle",
+    "Mimosa",
+    "Vanessa",
+    "Sister Lily"
+   ],
+   "explanation": "The nun of the church refuses every time."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Wer hat den Manga Black Clover geschaffen?",
+  "richtig": "Yuki Tabata",
+  "en": {
+   "prompt": "Who created the Black Clover manga?",
+   "options": [
+    "Masashi Kishimoto",
+    "Kohei Horikoshi",
+    "Yuki Tabata",
+    "Tite Kubo"
+   ],
+   "explanation": "The manga started in Weekly Shonen Jump in 2015."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wie heißt Astas Rivale, der mit ihm in derselben Kirche aufwuchs?",
+  "richtig": "Yuno",
+  "en": {
+   "prompt": "What is the name of Asta’s rival, who grew up with him in the same church?",
+   "options": [
+    "Magna",
+    "Luck",
+    "Langris",
+    "Yuno"
+   ],
+   "explanation": "Yuno receives a grimoire with a four-leaf clover."
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wie heißt das Dorf, in dem Asta und Yuno aufgewachsen sind?",
+  "richtig": "Hage",
+  "en": {
+   "prompt": "What is the name of the village where Asta and Yuno grew up?",
+   "options": [
+    "Kiten",
+    "Nairn",
+    "Raque",
+    "Hage"
+   ],
+   "explanation": "Hage lies at the very edge of the Clover Kingdom."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wie heißt das Königreich, in dem Asta lebt?",
+  "richtig": "Clover Kingdom",
+  "en": {
+   "prompt": "What is the name of the kingdom Asta lives in?",
+   "options": [
+    "Diamond Kingdom",
+    "Spade Kingdom",
+    "Clover Kingdom",
+    "Heart Kingdom"
+   ],
+   "explanation": "The neighbouring kingdoms are named after the other card suits."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wie heißt das Mädchen aus dem Königshaus, das Wassermagie nutzt und den Schwarzen Stieren angehört?",
+  "richtig": "Noelle Silva",
+  "en": {
+   "prompt": "What is the name of the royal girl who uses water magic and belongs to the Black Bulls?",
+   "options": [
+    "Mimosa Vermillion",
+    "Noelle Silva",
+    "Vanessa Enoteca",
+    "Charmy Pappitson"
+   ],
+   "explanation": "At first Noelle can barely control her power."
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt der Kapitän der Schwarzen Stiere?",
+  "richtig": "Yami Sukehiro",
+  "en": {
+   "prompt": "What is the name of the captain of the Black Bulls?",
+   "options": [
+    "William Vangeance",
+    "Yami Sukehiro",
+    "Fuegoleon Vermillion",
+    "Nozel Silva"
+   ],
+   "explanation": "Yami comes from the Land of the Rising Sun."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt der aktuelle Zauberkönig zu Beginn der Geschichte?",
+  "richtig": "Julius Novachrono",
+  "en": {
+   "prompt": "What is the name of the current Wizard King at the start of the story?",
+   "options": [
+    "William Vangeance",
+    "Lumiere Silva",
+    "Julius Novachrono",
+    "Fuegoleon Vermillion"
+   ],
+   "explanation": "Julius is fascinated by every kind of magic – even Asta’s anti-magic."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt die Hauptfigur von Black Clover?",
+  "richtig": "Asta",
+  "en": {
+   "prompt": "What is the name of the main character of Black Clover?",
+   "options": [
+    "Asta",
+    "Yuno",
+    "Yami",
+    "Magna"
+   ],
+   "explanation": "Asta was born without any magic."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie lautet Astas Leitspruch?",
+  "richtig": "“Not giving up is my magic!”",
+  "en": {
+   "prompt": "What is Asta’s motto?",
+   "options": [
+    "“Magic is everything!”",
+    "“Not giving up is my magic!”",
+    "“Strength comes from blood!”",
+    "“The strongest wins!”"
+   ],
+   "explanation": "He repeats it again and again when things seem hopeless."
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie viele Blätter hat das Kleeblatt auf Astas Grimoire?",
+  "richtig": "Five",
+  "en": {
+   "prompt": "How many leaves does the clover on Asta’s grimoire have?",
+   "options": [
+    "Five",
+    "Three",
+    "Four",
+    "Seven"
+   ],
+   "explanation": "A devil dwells in the fifth leaf."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wie viele Folgen hat der Black-Clover-Anime?",
+  "richtig": "170",
+  "en": {
+   "prompt": "How many episodes does the Black Clover anime have?",
+   "options": [
+    "100",
+    "120",
+    "170",
+    "220"
+   ],
+   "explanation": "It ran from 2017 to 2021."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Womit kämpft Asta?",
+  "richtig": "With swords from his grimoire",
+  "en": {
+   "prompt": "What does Asta fight with?",
+   "options": [
+    "With a bow",
+    "With magic wands",
+    "With his bare fists alone",
+    "With swords from his grimoire"
+   ],
+   "explanation": "His swords cancel magic."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "In welches Magazin wechselte Black Clover 2023?",
+  "richtig": "Jump GIGA",
+  "en": {
+   "prompt": "Which magazine did Black Clover move to in 2023?",
+   "options": [
+    "Weekly Shonen Magazine",
+    "Young Jump",
+    "Shonen Jump+",
+    "Jump GIGA"
+   ],
+   "explanation": "Since then the series appears less often, but with longer chapters."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "Was erfährt man über Yunos Herkunft?",
+  "richtig": "He is a prince of the Spade Kingdom",
+  "en": {
+   "prompt": "What do we learn about Yuno’s origins?",
+   "options": [
+    "He is an elf",
+    "He is Asta’s brother",
+    "He is a prince of the Spade Kingdom",
+    "He is the Wizard King’s son"
+   ],
+   "explanation": "His family, the Grinberryalls, was driven out of the Spade Kingdom."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Welche Magie beherrscht Finral Roulacase?",
+  "richtig": "Spatial magic",
+  "en": {
+   "prompt": "Which magic does Finral Roulacase use?",
+   "options": [
+    "Fire magic",
+    "Spatial magic",
+    "Earth magic",
+    "Thread magic"
+   ],
+   "explanation": "With his portals he takes the Black Bulls anywhere."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Welche Magie beherrscht Zauberkönig Julius Novachrono?",
+  "richtig": "Time magic",
+  "en": {
+   "prompt": "Which magic does Wizard King Julius Novachrono use?",
+   "options": [
+    "Time magic",
+    "Light magic",
+    "Fire magic",
+    "Shadow magic"
+   ],
+   "explanation": "He is considered the strongest mage in the kingdom."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Welche Magie nutzt Vanessa Enoteca?",
+  "richtig": "Thread magic",
+  "en": {
+   "prompt": "Which magic does Vanessa Enoteca use?",
+   "options": [
+    "Mirror magic",
+    "Poison magic",
+    "Plant magic",
+    "Thread magic"
+   ],
+   "explanation": "Her cat, the Red Thread of Fate, can change fate."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Welche Magie nutzt Yami Sukehiro?",
+  "richtig": "Dark magic",
+  "en": {
+   "prompt": "Which magic does Yami Sukehiro use?",
+   "options": [
+    "Light magic",
+    "Fire magic",
+    "Dark magic",
+    "Ice magic"
+   ],
+   "explanation": "He urges his people to surpass their limits right here and now."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Welche Magie verwendet Noelles Cousine Mimosa Vermillion?",
+  "richtig": "Plant magic",
+  "en": {
+   "prompt": "Which magic does Noelle’s cousin Mimosa Vermillion use?",
+   "options": [
+    "Fire magic",
+    "Plant magic",
+    "Water magic",
+    "Ice magic"
+   ],
+   "explanation": "Mimosa is in love with Asta."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Wen vergöttert Gauche Adlai über alles?",
+  "richtig": "His little sister Marie",
+  "en": {
+   "prompt": "Whom does Gauche Adlai adore above all else?",
+   "options": [
+    "His little sister Marie",
+    "Yami",
+    "Noelle",
+    "Himself in the mirror"
+   ],
+   "explanation": "He uses mirror magic."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Wie heißen die drei Herrscher des Pik-Königreichs?",
+  "richtig": "The Dark Triad",
+  "en": {
+   "prompt": "What are the three rulers of the Spade Kingdom called?",
+   "options": [
+    "The Dark Triad",
+    "The Three Sages",
+    "The Black Kings",
+    "The Star Knights"
+   ],
+   "explanation": "Dante, Vanica and Zenon carry devils’ powers within them."
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Wie heißt das Mitglied der Schwarzen Stiere, das ständig isst und Watte-Magie nutzt?",
+  "richtig": "Charmy Pappitson",
+  "en": {
+   "prompt": "What is the name of the Black Bulls member who is always eating and uses cotton magic?",
+   "options": [
+    "Vanessa",
+    "Charmy Pappitson",
+    "Secre",
+    "Grey"
+   ],
+   "explanation": "With her magic, Charmy can also create food."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel von Black Clover?",
+  "richtig": "“Haruka Mirai”",
+  "en": {
+   "prompt": "What is the name of the first opening of Black Clover?",
+   "options": [
+    "“Black Rover”",
+    "“Guess Who Is Back”",
+    "“Sky & Blue”",
+    "“Haruka Mirai”"
+   ],
+   "explanation": "It is sung by Kankaku Piero."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Wie heißt das Wesen, das als kleiner schwarzer Vogel lange bei den Schwarzen Stieren lebt?",
+  "richtig": "Nero (Secre Swallowtail)",
+  "en": {
+   "prompt": "What is the name of the creature that lives with the Black Bulls for a long time as a small black bird?",
+   "options": [
+    "Nero (Secre Swallowtail)",
+    "Liebe",
+    "Bell",
+    "Red Thread"
+   ],
+   "explanation": "In truth she is a woman who was transformed into a bird 500 years ago."
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Wie heißt das erste Schwert, das Asta aus seinem Grimoire zieht?",
+  "richtig": "Demon-Slayer",
+  "en": {
+   "prompt": "What is the name of the first sword Asta draws from his grimoire?",
+   "options": [
+    "Demon-Destroyer",
+    "Demon-Dweller",
+    "Demon-Splitter",
+    "Demon-Slayer"
+   ],
+   "explanation": "The huge, heavy sword can cut through magic."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Wie heißt der Kapitän der Goldenen Morgenröte?",
+  "richtig": "William Vangeance",
+  "en": {
+   "prompt": "What is the name of the captain of the Golden Dawn?",
+   "options": [
+    "Nozel Silva",
+    "Fuegoleon Vermillion",
+    "William Vangeance",
+    "Charlotte Roselei"
+   ],
+   "explanation": "William wears a mask over a scar on his face."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wie heißt der Kinofilm zu Black Clover aus dem Jahr 2023?",
+  "richtig": "“Sword of the Wizard King”",
+  "en": {
+   "prompt": "What is the name of the 2023 Black Clover film?",
+   "options": [
+    "“Sword of the Wizard King”",
+    "“Black Clover: The Movie”",
+    "“Wizard King Rising”",
+    "“The Five-Leaf Grimoire”"
+   ],
+   "explanation": "It was released worldwide on Netflix."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt der Teufel, der in Astas Grimoire wohnt?",
+  "richtig": "Liebe",
+  "en": {
+   "prompt": "What is the name of the devil who lives in Asta’s grimoire?",
+   "options": [
+    "Lilith",
+    "Liebe",
+    "Zagred",
+    "Megicula"
+   ],
+   "explanation": "Later Asta and Liebe form a pact."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt der Vize-Kapitän der Schwarzen Stiere, der Schattenmagie nutzt?",
+  "richtig": "Nacht Faust",
+  "en": {
+   "prompt": "What is the name of the Black Bulls’ vice-captain, who uses shadow magic?",
+   "options": [
+    "Zora Ideale",
+    "Henry Legolant",
+    "Nacht Faust",
+    "Gordon Agrippa"
+   ],
+   "explanation": "Nacht has made pacts with several devils."
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt die Form, in der Asta die Kraft seines Teufels einsetzt?",
+  "richtig": "Black Asta",
+  "en": {
+   "prompt": "What is the name of the form in which Asta uses his devil’s power?",
+   "options": [
+    "White Asta",
+    "Black Asta",
+    "Red Asta",
+    "Devil Asta"
+   ],
+   "explanation": "Part of his body turns black."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt die Terrororganisation, die zu Beginn das Königreich angreift?",
+  "richtig": "The Eye of the Midnight Sun",
+  "en": {
+   "prompt": "What is the name of the terrorist organization that attacks the kingdom early on?",
+   "options": [
+    "The Dark Triad",
+    "The Diamond Warriors",
+    "The Purple Cult",
+    "The Eye of the Midnight Sun"
+   ],
+   "explanation": "Its leader is an elf named Licht."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie heißt die Wasserrüstung, die Noelle im Kampf trägt?",
+  "richtig": "Valkyrie Dress",
+  "en": {
+   "prompt": "What is the name of the water armour Noelle wears in battle?",
+   "options": [
+    "Dragon Scale",
+    "Sea Cloak",
+    "Wave Armour",
+    "Valkyrie Dress"
+   ],
+   "explanation": "With it, Noelle can finally use her magic with precision."
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie nennt Yuno seinen Windgeist Sylph?",
+  "richtig": "Bell",
+  "en": {
+   "prompt": "What does Yuno call his wind spirit Sylph?",
+   "options": [
+    "Nero",
+    "Liebe",
+    "Bell",
+    "Salamander"
+   ],
+   "explanation": "Bell is jealous of anyone who gets too close to Yuno."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wie viele Magierritter-Truppen gibt es im Klee-Königreich?",
+  "richtig": "Nine",
+  "en": {
+   "prompt": "How many Magic Knight squads are there in the Clover Kingdom?",
+   "options": [
+    "Five",
+    "Nine",
+    "Twelve",
+    "Seven"
+   ],
+   "explanation": "Each squad has its own emblem animal."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "Welche Abstammung hat Charmy Pappitson?",
+  "richtig": "She is half dwarf",
+  "en": {
+   "prompt": "What is Charmy Pappitson’s ancestry?",
+   "options": [
+    "She is an elf",
+    "She is a devil",
+    "She is a witch",
+    "She is half dwarf"
+   ],
+   "explanation": "This becomes clear when she discovers her second magic."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "Welche Fähigkeit besitzt Asta zusätzlich, obwohl er keine Magie hat?",
+  "richtig": "He can sense ki",
+  "en": {
+   "prompt": "What additional ability does Asta have even though he has no magic?",
+   "options": [
+    "He can sense ki",
+    "He can read minds",
+    "He can slow down time",
+    "He can breathe underwater"
+   ],
+   "explanation": "Yami teaches him to sense ki; he deepens it in the Land of the Rising Sun."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "Welche Magie nutzt Gordon Agrippa?",
+  "richtig": "Poison curse magic",
+  "en": {
+   "prompt": "Which magic does Gordon Agrippa use?",
+   "options": [
+    "Fire magic",
+    "Earth magic",
+    "Poison curse magic",
+    "Water magic"
+   ],
+   "explanation": "The quiet Gordon above all wishes for friends."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "Welche Magie nutzt Nozel Silva, Noelles älterer Bruder?",
+  "richtig": "Mercury magic",
+  "en": {
+   "prompt": "Which magic does Nozel Silva, Noelle’s older brother, use?",
+   "options": [
+    "Fire magic",
+    "Mirror magic",
+    "Spatial magic",
+    "Mercury magic"
+   ],
+   "explanation": "He leads the Silver Eagles squad."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "Welche Magie nutzt Zora Ideale?",
+  "richtig": "Trap magic",
+  "en": {
+   "prompt": "Which magic does Zora Ideale use?",
+   "options": [
+    "Fire magic",
+    "Mirror magic",
+    "Shadow magic",
+    "Trap magic"
+   ],
+   "explanation": "Zora despises knights who merely adorn themselves with their title."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Welches Volk wird in den Körpern von Menschen wiedergeboren und will Rache am Klee-Königreich?",
+  "richtig": "The elves",
+  "en": {
+   "prompt": "Which people are reincarnated in human bodies and seek revenge on the Clover Kingdom?",
+   "options": [
+    "The elves",
+    "The dwarves",
+    "The devils",
+    "The witches"
+   ],
+   "explanation": "Their souls were brought back by a spell of the Eye of the Midnight Sun."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Wem gehörte Astas fünfblättriges Grimoire ursprünglich?",
+  "richtig": "The elf Licht",
+  "en": {
+   "prompt": "Whom did Asta’s five-leaf grimoire originally belong to?",
+   "options": [
+    "Lumiere Silva Clover",
+    "The elf Licht",
+    "Yami Sukehiro",
+    "Julius Novachrono"
+   ],
+   "explanation": "Licht was once the leader of the elves."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Wer ist der eigentliche Endgegner der Geschichte, der lange in Zauberkönig Julius verborgen war?",
+  "richtig": "Lucius Zogratis",
+  "en": {
+   "prompt": "Who is the true final villain of the story, long hidden within Wizard King Julius?",
+   "options": [
+    "Lucius Zogratis",
+    "Dante Zogratis",
+    "Patri",
+    "Lilith"
+   ],
+   "explanation": "He wants to create a new world with “paladins.”"
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Wer ist in Wahrheit der Anführer des Auges der Mitternachtssonne, der sich als William Vangeance tarnt?",
+  "richtig": "Patri",
+  "en": {
+   "prompt": "Who is the true leader of the Eye of the Midnight Sun, disguised as William Vangeance?",
+   "options": [
+    "Licht",
+    "Patri",
+    "Rhya",
+    "Vetto"
+   ],
+   "explanation": "Patri is an elf reincarnated in William’s body."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Wie heißen die drei Mitglieder der Dunklen Triade?",
+  "richtig": "Dante, Vanica and Zenon",
+  "en": {
+   "prompt": "What are the names of the three members of the Dark Triad?",
+   "options": [
+    "Licht, Patri and Rhya",
+    "Dante, Vanica and Zenon",
+    "Lucius, Julius and Lumiere",
+    "Yami, Ichika and Ryuya"
+   ],
+   "explanation": "Each of them has a pact with a devil."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Wie heißt Astas Mutter, die einst den Teufel Liebe bei sich aufnahm?",
+  "richtig": "Richita",
+  "en": {
+   "prompt": "What is the name of Asta’s mother, who once took in the devil Liebe?",
+   "options": [
+    "Richita",
+    "Lily",
+    "Ichika",
+    "Tetia"
+   ],
+   "explanation": "She involuntarily absorbed magic from her surroundings."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Wie heißt Yamis Schwester, bei der Asta im Land der aufgehenden Sonne trainiert?",
+  "richtig": "Ichika",
+  "en": {
+   "prompt": "What is the name of Yami’s sister, with whom Asta trains in the Land of the Rising Sun?",
+   "options": [
+    "Nacht",
+    "Noelle",
+    "Ichika",
+    "Lily"
+   ],
+   "explanation": "Ichika is a master swordswoman."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Wie heißt das Mitglied der Schwarzen Stiere, das sich mit Verwandlungsmagie meist als jemand anderes zeigt?",
+  "richtig": "Grey",
+  "en": {
+   "prompt": "What is the name of the Black Bulls member who usually appears as someone else using transformation magic?",
+   "options": [
+    "Gordon",
+    "Grey",
+    "Henry",
+    "Zora"
+   ],
+   "explanation": "Grey is actually very shy."
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Wie heißt das dritte Opening von Black Clover?",
+  "richtig": "“Black Rover”",
+  "en": {
+   "prompt": "What is the name of the third opening of Black Clover?",
+   "options": [
+    "“Haruka Mirai”",
+    "“Guess Who Is Back”",
+    "“Black Rover”",
+    "“Rakugaki Page”"
+   ],
+   "explanation": "It is sung by Vickeblanka."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Wie heißt das dritte Schwert, das Asta erhält?",
+  "richtig": "Demon-Destroyer",
+  "en": {
+   "prompt": "What is the name of the third sword Asta obtains?",
+   "options": [
+    "Demon-Dweller",
+    "Demon-Devourer",
+    "Demon-Splitter",
+    "Demon-Destroyer"
+   ],
+   "explanation": "With it he can undo curses and spells clinging to things."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Wie heißt das zweite Schwert, das Asta erhält?",
+  "richtig": "Demon-Dweller",
+  "en": {
+   "prompt": "What is the name of the second sword Asta obtains?",
+   "options": [
+    "Demon-Destroyer",
+    "Demon-Splitter",
+    "Demon-Dweller",
+    "Demon-Devourer"
+   ],
+   "explanation": "It can absorb magic and release it again."
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Wie heißt der Kapitän der Grünen Gottesanbeterinnen?",
+  "richtig": "Jack the Ripper",
+  "en": {
+   "prompt": "Who is the captain of the Green Mantises?",
+   "options": [
+    "Kaiser Gueldre",
+    "Rill Boismortier",
+    "Jack the Ripper",
+    "Gerald Sorbet"
+   ],
+   "explanation": "With his slicing magic, Jack cuts through almost anything."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wie heißt der Kapitän der Purpurlöwen zu Beginn der Geschichte?",
+  "richtig": "Fuegoleon Vermillion",
+  "en": {
+   "prompt": "Who is the captain of the Crimson Lion Kings at the start of the story?",
+   "options": [
+    "Fuegoleon Vermillion",
+    "Mereoleona Vermillion",
+    "Rill Boismortier",
+    "Kaiser Gueldre"
+   ],
+   "explanation": "His older sister Mereoleona is even wilder than he is."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie heißt der Ort, an dem die Grimoires verliehen werden?",
+  "richtig": "The Grimoire Tower",
+  "en": {
+   "prompt": "What is the name of the place where grimoires are awarded?",
+   "options": [
+    "The royal palace",
+    "The church of Hage",
+    "The Grimoire Tower",
+    "The Witches’ Forest"
+   ],
+   "explanation": "At first Asta leaves empty-handed."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie heißt der Priester, der Asta und Yuno in der Kirche von Hage aufzog?",
+  "richtig": "Father Orsi",
+  "en": {
+   "prompt": "What is the name of the priest who raised Asta and Yuno in the church of Hage?",
+   "options": [
+    "Father Orsi",
+    "Father Leo",
+    "Father Licht",
+    "Father Julius"
+   ],
+   "explanation": "Together with Sister Lily he looked after the orphans."
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie heißt der Ritter, Finrals jüngerer Bruder, der bei der Goldenen Morgenröte dient?",
+  "richtig": "Langris Vaude",
+  "en": {
+   "prompt": "What is the name of the knight, Finral’s younger brother, who serves in the Golden Dawn?",
+   "options": [
+    "Klaus Lunettes",
+    "Alecdora Sandler",
+    "Hamon Caseus",
+    "Langris Vaude"
+   ],
+   "explanation": "At first Langris is jealous of and condescending towards Finral."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wie heißt der erste Zauberkönig des Klee-Königreichs?",
+  "richtig": "Lumiere Silva Clover",
+  "en": {
+   "prompt": "What is the name of the first Wizard King of the Clover Kingdom?",
+   "options": [
+    "Julius Novachrono",
+    "Licht",
+    "Nozel Silva",
+    "Lumiere Silva Clover"
+   ],
+   "explanation": "Lumiere was friends with the elf Licht."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Wie heißt die Truppe von Charlotte Roselei?",
+  "richtig": "The Blue Rose Knights",
+  "en": {
+   "prompt": "What is the name of Charlotte Roselei’s squad?",
+   "options": [
+    "The Silver Eagles",
+    "The Blue Rose Knights",
+    "The Coral Peacocks",
+    "The Green Mantises"
+   ],
+   "explanation": "Charlotte uses thorn magic and is secretly in love with Yami."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich wurde ohne jede Magie geboren und will trotzdem Zauberkönig werden. (Black Clover)",
+  "richtig": "Asta",
+  "en": {
+   "prompt": "Who am I? I was born without any magic and still want to become the Wizard King. (Black Clover)",
+   "options": [
+    "Asta",
+    "Yuno",
+    "Magna",
+    "Luck"
+   ],
+   "explanation": "His grimoire has a five-leaf clover.",
+   "hints": [
+    "I fight with anti-magic swords.",
+    "I belong to the Black Bulls."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich stamme aus dem Land der aufgehenden Sonne und führe die schlechteste Truppe des Königreichs. (Black Clover)",
+  "richtig": "Yami Sukehiro",
+  "en": {
+   "prompt": "Who am I? I come from the Land of the Rising Sun and lead the worst squad in the kingdom. (Black Clover)",
+   "options": [
+    "William Vangeance",
+    "Nacht Faust",
+    "Yami Sukehiro",
+    "Fuegoleon Vermillion"
+   ],
+   "explanation": "He urges his people to surpass their limits.",
+   "hints": [
+    "I use dark magic.",
+    "My squad is called the Black Bulls."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich wuchs als Waise in Hage auf und bin in Wahrheit ein Prinz. (Black Clover)",
+  "richtig": "Yuno",
+  "en": {
+   "prompt": "Who am I? I grew up as an orphan in Hage and am really a prince. (Black Clover)",
+   "options": [
+    "Asta",
+    "Yuno",
+    "Langris",
+    "Finral"
+   ],
+   "explanation": "His grimoire has a four-leaf clover.",
+   "hints": [
+    "My spirit Bell is rather jealous.",
+    "I belong to the Golden Dawn."
+   ]
+  }
+ }
+]

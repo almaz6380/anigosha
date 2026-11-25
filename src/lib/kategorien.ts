@@ -41,6 +41,12 @@ const FARBEN: Record<string, string> = {
   haikyu: '#e08a1e',
   one_punch_man: '#c9a21c',
   tokyo_revengers: '#2f7f8f',
+  vinland_saga: '#8a6a3c',
+  mob_psycho_100: '#5aa8d6',
+  dr_stone: '#5c9a32',
+  re_zero: '#7b6fd9',
+  apothecary_diaries: '#b8507a',
+  black_clover: '#3f4a5a',
   emoji_raetsel: '#e3a516',
 };
 

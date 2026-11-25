@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "Aus welchem Land stammt Thorfinn?",
+  "richtig": "Iceland",
+  "en": {
+   "prompt": "Which country does Thorfinn come from?",
+   "options": [
+    "Norway",
+    "Denmark",
+    "England",
+    "Iceland"
+   ],
+   "explanation": "His mother Helga and his sister Ylva stay behind there when he leaves."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "In welchem Magazin erschien Vinland Saga zuerst, bevor der Manga zur Monthly Afternoon wechselte?",
+  "richtig": "Weekly Shonen Magazine",
+  "en": {
+   "prompt": "In which magazine did Vinland Saga first appear before the manga moved to Monthly Afternoon?",
+   "options": [
+    "Weekly Shonen Jump",
+    "Young Jump",
+    "Weekly Shonen Magazine",
+    "Big Comic"
+   ],
+   "explanation": "After a few chapters the series moved to the monthly magazine."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "In welcher Epoche spielt Vinland Saga?",
+  "richtig": "In the Viking Age",
+  "en": {
+   "prompt": "In which era is Vinland Saga set?",
+   "options": [
+    "In Roman times",
+    "In the Thirty Years’ War",
+    "In the Viking Age",
+    "In the age of the samurai"
+   ],
+   "explanation": "The story begins around the year 1000 and features real historical figures."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Was baut Thorfinn zusammen mit Einar auf Ketils Hof an?",
+  "richtig": "Wheat",
+  "en": {
+   "prompt": "What does Thorfinn grow together with Einar on Ketil’s farm?",
+   "options": [
+    "Rice",
+    "Potatoes",
+    "Grapes",
+    "Wheat"
+   ],
+   "explanation": "The two want to buy their freedom with the harvest."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Was ist Thorfinn im zweiten Teil der Geschichte, der Farm-Saga?",
+  "richtig": "A slave",
+  "en": {
+   "prompt": "What is Thorfinn in the second part of the story, the Farmland Saga?",
+   "options": [
+    "A merchant",
+    "A monk",
+    "A mercenary leader",
+    "A slave"
+   ],
+   "explanation": "He is sold to the farm of the wealthy landowner Ketil in Denmark."
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Was verlangt Thorfinn von Askeladd als Lohn für seine Taten im Kampf?",
+  "richtig": "A duel",
+  "en": {
+   "prompt": "What does Thorfinn ask Askeladd for as a reward for his deeds in battle?",
+   "options": [
+    "A duel",
+    "Gold",
+    "A ship",
+    "His freedom"
+   ],
+   "explanation": "Askeladd grants him duels when Thorfinn kills enemy commanders."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Welche Waffe benutzt Thorfinn als junger Krieger bevorzugt?",
+  "richtig": "Short daggers",
+  "en": {
+   "prompt": "Which weapon does Thorfinn prefer as a young warrior?",
+   "options": [
+    "A battle axe",
+    "A spear",
+    "Short daggers",
+    "A bow"
+   ],
+   "explanation": "He inherited one of the daggers from his father."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Welcher Prinz wird in Vinland Saga später König von England?",
+  "richtig": "Canute",
+  "en": {
+   "prompt": "Which prince later becomes King of England in Vinland Saga?",
+   "options": [
+    "Canute",
+    "Harald",
+    "Olaf",
+    "Ragnar"
+   ],
+   "explanation": "At first he is a shy young prince who barely speaks."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Welches Land ist mit „Vinland“ gemeint?",
+  "richtig": "An area in North America",
+  "en": {
+   "prompt": "Which land is meant by “Vinland”?",
+   "options": [
+    "Greenland",
+    "An area in North America",
+    "Scotland",
+    "An island in the Mediterranean"
+   ],
+   "explanation": "The Vikings gave this name to the land they reached around the year 1000."
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Welches Studio produzierte die erste Staffel des Vinland-Saga-Animes?",
+  "richtig": "Wit Studio",
+  "en": {
+   "prompt": "Which studio produced the first season of the Vinland Saga anime?",
+   "options": [
+    "MAPPA",
+    "Bones",
+    "Wit Studio",
+    "ufotable"
+   ],
+   "explanation": "The studio MAPPA took over for the second season."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Welches Studio produzierte die zweite Staffel von Vinland Saga?",
+  "richtig": "MAPPA",
+  "en": {
+   "prompt": "Which studio produced the second season of Vinland Saga?",
+   "options": [
+    "Wit Studio",
+    "MAPPA",
+    "Production I.G",
+    "Madhouse"
+   ],
+   "explanation": "It aired in 2023 and tells of Thorfinn’s time as a slave on a farm."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wer erzählt dem kleinen Thorfinn von Vinland, einem Land ohne Krieg?",
+  "richtig": "Leif Erikson",
+  "en": {
+   "prompt": "Who tells little Thorfinn about Vinland, a land without war?",
+   "options": [
+    "Askeladd",
+    "Thorkell",
+    "Bjorn",
+    "Leif Erikson"
+   ],
+   "explanation": "Leif later searches for Thorfinn for years to bring him home."
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wer hat den Manga Vinland Saga geschrieben und gezeichnet?",
+  "richtig": "Makoto Yukimura",
+  "en": {
+   "prompt": "Who wrote and drew the manga Vinland Saga?",
+   "options": [
+    "Hiromu Arakawa",
+    "Kentaro Miura",
+    "Makoto Yukimura",
+    "Hajime Isayama"
+   ],
+   "explanation": "Yukimura first became known for the science-fiction manga Planetes."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wer tötet Thorfinns Vater in Vinland Saga?",
+  "richtig": "Askeladd",
+  "en": {
+   "prompt": "Who kills Thorfinn’s father in Vinland Saga?",
+   "options": [
+    "Askeladd",
+    "Thorkell",
+    "Canute",
+    "Leif Erikson"
+   ],
+   "explanation": "Afterwards Thorfinn joins Askeladd’s band so that he can one day kill him in a duel."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wessen Truppe schließt sich Thorfinn als Kind an?",
+  "richtig": "Askeladd’s mercenary band",
+  "en": {
+   "prompt": "Whose band does Thorfinn join as a child?",
+   "options": [
+    "Askeladd’s mercenary band",
+    "The Jomsvikings",
+    "King Sweyn’s bodyguard",
+    "Thorkell’s army"
+   ],
+   "explanation": "He only stays there because he wants to kill Askeladd."
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt Thorfinns Mutter?",
+  "richtig": "Helga",
+  "en": {
+   "prompt": "What is the name of Thorfinn’s mother?",
+   "options": [
+    "Ylva",
+    "Gudrid",
+    "Helga",
+    "Arnheid"
+   ],
+   "explanation": "She lives in Iceland with her daughter Ylva."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt Thorfinns Vater in Vinland Saga?",
+  "richtig": "Thors",
+  "en": {
+   "prompt": "What is the name of Thorfinn’s father in Vinland Saga?",
+   "options": [
+    "Floki",
+    "Thors",
+    "Bjorn",
+    "Ketil"
+   ],
+   "explanation": "He was once one of the most feared warriors of the Jomsvikings."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt Thorfinns ältere Schwester?",
+  "richtig": "Ylva",
+  "en": {
+   "prompt": "What is the name of Thorfinn’s older sister?",
+   "options": [
+    "Helga",
+    "Ylva",
+    "Arnheid",
+    "Gudrid"
+   ],
+   "explanation": "She lives with their mother Helga in Iceland."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie heißt der Mitsklave, mit dem Thorfinn auf Ketils Hof Freundschaft schließt?",
+  "richtig": "Einar",
+  "en": {
+   "prompt": "What is the name of the fellow slave Thorfinn befriends on Ketil’s farm?",
+   "options": [
+    "Olmar",
+    "Einar",
+    "Thorgil",
+    "Snake"
+   ],
+   "explanation": "Einar lost his whole family in the war."
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie heißt der riesige, kampfbegeisterte Krieger, der für England gegen die Dänen kämpft?",
+  "richtig": "Thorkell",
+  "en": {
+   "prompt": "What is the name of the huge, battle-loving warrior who fights for England against the Danes?",
+   "options": [
+    "Thorkell",
+    "Floki",
+    "Snake",
+    "Thorgil"
+   ],
+   "explanation": "He fights for the sheer joy of battle and later switches sides."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wie heißt die Bande der Krieger, der Thors einst angehörte?",
+  "richtig": "The Jomsvikings",
+  "en": {
+   "prompt": "What is the name of the band of warriors Thors once belonged to?",
+   "options": [
+    "The Varangian Guard",
+    "The Jomsvikings",
+    "The Berserkers of Uppsala",
+    "The pirates of Gotland"
+   ],
+   "explanation": "Thors faked his death to leave the Jomsvikings."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Wie heißt die Hauptfigur von Vinland Saga?",
+  "richtig": "Thorfinn",
+  "en": {
+   "prompt": "What is the name of the main character of Vinland Saga?",
+   "options": [
+    "Thorfinn",
+    "Askeladd",
+    "Thorkell",
+    "Canute"
+   ],
+   "explanation": "Thorfinn is the son of the Icelandic warrior Thors."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "Mit welcher Waffe jagt Hild Thorfinn, um ihren Vater zu rächen?",
+  "richtig": "With a crossbow",
+  "en": {
+   "prompt": "With which weapon does Hild hunt Thorfinn to avenge her father?",
+   "options": [
+    "With a crossbow",
+    "With a spear",
+    "With throwing knives",
+    "With a sling"
+   ],
+   "explanation": "Thorfinn had killed her father during his time as a warrior."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "Von wem stammt Askeladd mütterlicherseits ab, wie er selbst erzählt?",
+  "richtig": "From King Arthur (Artorius)",
+  "en": {
+   "prompt": "According to his own story, from whom is Askeladd descended on his mother’s side?",
+   "options": [
+    "From King Arthur (Artorius)",
+    "From Julius Caesar",
+    "From Charlemagne",
+    "From Odin"
+   ],
+   "explanation": "His mother Lydia was a Welshwoman who told him the legend."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Was hat Thorfinn während seiner Zeit als Sklave immer wieder?",
+  "richtig": "Nightmares about the people he killed",
+  "en": {
+   "prompt": "What does Thorfinn repeatedly experience during his time as a slave?",
+   "options": [
+    "Bouts of fever",
+    "Visions of Vinland",
+    "Memory loss",
+    "Nightmares about the people he killed"
+   ],
+   "explanation": "In his dreams he meets the dead and also his father."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Welche berühmten Worte richtet Thors an seinen Sohn?",
+  "richtig": "“You have no enemies. No one has any enemies.”",
+  "en": {
+   "prompt": "Which famous words does Thors say to his son?",
+   "options": [
+    "“Revenge is the right of the strong.”",
+    "“You have no enemies. No one has any enemies.”",
+    "“A warrior fears only shame.”",
+    "“The sword decides everything.”"
+   ],
+   "explanation": "Only as an adult does Thorfinn understand what his father meant."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Welchem echten König ist Canutes Vater in Vinland Saga nachempfunden?",
+  "richtig": "Sweyn Forkbeard",
+  "en": {
+   "prompt": "Which real king is Canute’s father in Vinland Saga based on?",
+   "options": [
+    "Harald Bluetooth",
+    "Olaf Tryggvason",
+    "Sweyn Forkbeard",
+    "Erik the Red"
+   ],
+   "explanation": "The historical Sweyn Forkbeard conquered England in 1013."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Welchen Spitznamen trägt Ketil, weil er früher ein berühmter Krieger gewesen sein soll?",
+  "richtig": "Iron Fist Ketil",
+  "en": {
+   "prompt": "Which nickname does Ketil bear because he is said to have been a famous warrior?",
+   "options": [
+    "Ketil Bloodaxe",
+    "Iron Fist Ketil",
+    "Ketil the Tall",
+    "Ketil Snake-Eye"
+   ],
+   "explanation": "In truth he was far less heroic than the name suggests."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Welches Land will Askeladd um jeden Preis vor den Dänen schützen?",
+  "richtig": "Wales",
+  "en": {
+   "prompt": "Which country does Askeladd want to protect from the Danes at all costs?",
+   "options": [
+    "Scotland",
+    "Ireland",
+    "Wales",
+    "Northumbria"
+   ],
+   "explanation": "It is his mother’s homeland."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Welches Ziel verfolgt der erwachsene Thorfinn nach der Farm-Saga?",
+  "richtig": "To build a peaceful land without war or slavery in Vinland",
+  "en": {
+   "prompt": "What goal does the adult Thorfinn pursue after the Farmland Saga?",
+   "options": [
+    "To build a peaceful land without war or slavery in Vinland",
+    "To become King of Iceland",
+    "To lead the Jomsvikings",
+    "To kill Canute"
+   ],
+   "explanation": "He wants to atone for his guilt as a warrior in a peaceful way."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Wen heiratet Thorfinn im späteren Verlauf der Geschichte?",
+  "richtig": "Gudrid",
+  "en": {
+   "prompt": "Whom does Thorfinn marry later in the story?",
+   "options": [
+    "Arnheid",
+    "Hild",
+    "Ylva",
+    "Gudrid"
+   ],
+   "explanation": "Gudrid dreams of seeing the world as a seafarer."
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Wen tötet Askeladd vor dem versammelten Hof, um Canute zu schützen?",
+  "richtig": "King Sweyn",
+  "en": {
+   "prompt": "Whom does Askeladd kill in front of the assembled court to protect Canute?",
+   "options": [
+    "Thorkell",
+    "King Sweyn",
+    "Floki",
+    "Ragnar"
+   ],
+   "explanation": "Afterwards Askeladd himself is killed by Canute."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Wen tötet Askeladd, damit Canute nicht länger von ihm abhängig ist?",
+  "richtig": "Ragnar, Canute’s guardian",
+  "en": {
+   "prompt": "Whom does Askeladd kill so that Canute is no longer dependent on him?",
+   "options": [
+    "Bjorn",
+    "Ragnar, Canute’s guardian",
+    "Floki",
+    "Willibald"
+   ],
+   "explanation": "Ragnar had protected the prince since childhood."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Wer gibt den Auftrag, Thors aus dem Weg zu räumen?",
+  "richtig": "Floki",
+  "en": {
+   "prompt": "Who gives the order to get rid of Thors?",
+   "options": [
+    "Thorkell",
+    "King Sweyn",
+    "Canute",
+    "Floki"
+   ],
+   "explanation": "The leader of the Jomsvikings hires Askeladd for the job."
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Wer tötet Askeladd?",
+  "richtig": "Canute",
+  "en": {
+   "prompt": "Who kills Askeladd?",
+   "options": [
+    "Thorfinn",
+    "Thorkell",
+    "Bjorn",
+    "Canute"
+   ],
+   "explanation": "With this act, Canute robs Thorfinn of the revenge he had lived for."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Wie heißt Askeladds rechte Hand, der vor dem Kampf Pilze isst, um in Raserei zu geraten?",
+  "richtig": "Bjorn",
+  "en": {
+   "prompt": "What is the name of Askeladd’s right-hand man, who eats mushrooms before battle to go berserk?",
+   "options": [
+    "Bjorn",
+    "Atli",
+    "Snake",
+    "Garm"
+   ],
+   "explanation": "The mushrooms turn him into a berserker."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wie heißt das Baby, das Thorfinn und Gudrid aufnehmen?",
+  "richtig": "Karli",
+  "en": {
+   "prompt": "What is the name of the baby Thorfinn and Gudrid take in?",
+   "options": [
+    "Olmar",
+    "Karli",
+    "Einar",
+    "Sven"
+   ],
+   "explanation": "Thorfinn finds it in a destroyed village."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt der Anführer der Wachleute auf Ketils Hof, ein fähiger Schwertkämpfer?",
+  "richtig": "Snake",
+  "en": {
+   "prompt": "What is the name of the leader of the guards on Ketil’s farm, a skilled swordsman?",
+   "options": [
+    "Thorgil",
+    "Olmar",
+    "Bjorn",
+    "Snake"
+   ],
+   "explanation": "He is impressed by Thorfinn’s fighting skill."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt der Großbauer, auf dessen Hof Thorfinn als Sklave arbeitet?",
+  "richtig": "Ketil",
+  "en": {
+   "prompt": "What is the name of the landowner on whose farm Thorfinn works as a slave?",
+   "options": [
+    "Halfdan",
+    "Snake",
+    "Ketil",
+    "Thorgil"
+   ],
+   "explanation": "He is a rather mild master until circumstances shake him."
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt der trunksüchtige Priester, der Canute begleitet und über die Liebe spricht?",
+  "richtig": "Willibald",
+  "en": {
+   "prompt": "What is the name of the drunken priest who accompanies Canute and talks about love?",
+   "options": [
+    "Ragnar",
+    "Thorgil",
+    "Willibald",
+    "Floki"
+   ],
+   "explanation": "His thoughts about true love change Canute’s view of the world."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt die Sklavin, die auf Ketils Hof lebt und mit der sich Einar anfreundet?",
+  "richtig": "Arnheid",
+  "en": {
+   "prompt": "What is the name of the slave woman on Ketil’s farm whom Einar befriends?",
+   "options": [
+    "Arnheid",
+    "Gudrid",
+    "Ylva",
+    "Hild"
+   ],
+   "explanation": "She was separated from her husband and enslaved."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie täuscht Thors seinen Abschied von den Jomswikingern?",
+  "richtig": "He fakes his death in a storm",
+  "en": {
+   "prompt": "How does Thors fake his departure from the Jomsvikings?",
+   "options": [
+    "He fakes his death in a storm",
+    "He buys his freedom",
+    "He wins a duel against Floki",
+    "He flees during a feast"
+   ],
+   "explanation": "Since then he has lived unrecognized as a farmer in Iceland."
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie viele Folgen hat die erste Staffel des Vinland-Saga-Animes?",
+  "richtig": "24",
+  "en": {
+   "prompt": "How many episodes does the first season of the Vinland Saga anime have?",
+   "options": [
+    "12",
+    "24",
+    "26",
+    "13"
+   ],
+   "explanation": "The second season also has 24 episodes."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wohin kehrt Thorfinn nach seiner Freilassung von Ketils Hof zuerst zurück?",
+  "richtig": "To Iceland",
+  "en": {
+   "prompt": "Where does Thorfinn first return after being freed from Ketil’s farm?",
+   "options": [
+    "To England",
+    "To Greenland",
+    "To Iceland",
+    "To Norway"
+   ],
+   "explanation": "There he sees his mother and sister again after many years."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "In welchem Jahr erschien das erste Kapitel von Vinland Saga?",
+  "richtig": "2005",
+  "en": {
+   "prompt": "In which year was the first chapter of Vinland Saga published?",
+   "options": [
+    "2001",
+    "2005",
+    "2009",
+    "2012"
+   ],
+   "explanation": "The first chapters appeared in Weekly Shonen Magazine."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "In welchem Land liegt Ketils Hof?",
+  "richtig": "In Denmark",
+  "en": {
+   "prompt": "In which country is Ketil’s farm located?",
+   "options": [
+    "In England",
+    "In Norway",
+    "In Denmark",
+    "In Sweden"
+   ],
+   "explanation": "Thorfinn is sold there as a slave after Askeladd’s death."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "In welcher Verwandtschaft steht Thorkell zu Thorfinn?",
+  "richtig": "He is his great-uncle (Helga’s uncle)",
+  "en": {
+   "prompt": "How is Thorkell related to Thorfinn?",
+   "options": [
+    "He is his paternal uncle",
+    "He is his cousin",
+    "He is his great-uncle (Helga’s uncle)",
+    "He is not related to him"
+   ],
+   "explanation": "Thorkell is the uncle of Thorfinn’s mother Helga."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "Warum lässt König Canute in der Farm-Saga Ketils Hof beschlagnahmen?",
+  "richtig": "Canute needs the rich land to finance his realm",
+  "en": {
+   "prompt": "Why does King Canute have Ketil’s farm confiscated in the Farmland Saga?",
+   "options": [
+    "Ketil insulted him",
+    "Ketil evaded taxes",
+    "Ketil freed slaves",
+    "Canute needs the rich land to finance his realm"
+   ],
+   "explanation": "By now Canute has become a calculating ruler."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "Was schwört sich Thorfinn am Ende der Farm-Saga, nachdem er seine Vergangenheit annimmt?",
+  "richtig": "Never to kill again and to have no more enemies",
+  "en": {
+   "prompt": "What does Thorfinn vow at the end of the Farmland Saga after accepting his past?",
+   "options": [
+    "Never to kill again and to have no more enemies",
+    "To honour Askeladd’s grave",
+    "To serve Canute",
+    "To make a pilgrimage to Rome"
+   ],
+   "explanation": "He wants to prove that one can live without violence."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Was verspricht Ketil Thorfinn und Einar, wenn sie genug Geld verdienen?",
+  "richtig": "That they may buy their freedom",
+  "en": {
+   "prompt": "What does Ketil promise Thorfinn and Einar if they earn enough money?",
+   "options": [
+    "A ship of their own",
+    "A place in his bodyguard",
+    "His daughter’s hand",
+    "That they may buy their freedom"
+   ],
+   "explanation": "For this, the two clear a piece of forest and farm it."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Welche echte historische Figur stand Pate für den erwachsenen Thorfinn?",
+  "richtig": "Thorfinn Karlsefni",
+  "en": {
+   "prompt": "Which real historical figure inspired the adult Thorfinn?",
+   "options": [
+    "Leif Erikson",
+    "Erik the Red",
+    "Harald Hardrada",
+    "Thorfinn Karlsefni"
+   ],
+   "explanation": "The historical Thorfinn Karlsefni tried to found a settlement in North America."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Welchen Ort verteidigt Thorkell für die Engländer gegen die Dänen unter König Sweyn?",
+  "richtig": "London Bridge",
+  "en": {
+   "prompt": "Which place does Thorkell defend for the English against the Danes under King Sweyn?",
+   "options": [
+    "Hastings",
+    "York",
+    "London Bridge",
+    "Winchester"
+   ],
+   "explanation": "Thorkell fights there on the English side against Sweyn’s Danes."
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Welchen Titel trug Thors bei den Jomswikingern wegen seiner Kampfkraft?",
+  "richtig": "The Troll of Jom",
+  "en": {
+   "prompt": "What title did Thors bear among the Jomsvikings because of his fighting prowess?",
+   "options": [
+    "The Wolf of Wollin",
+    "The Troll of Jom",
+    "The Bear of the North",
+    "Odin’s Axe"
+   ],
+   "explanation": "Even Thorkell acknowledged him as the strongest warrior."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Welcher historischen Figur entspricht Thorkell in Vinland Saga?",
+  "richtig": "Thorkell the Tall",
+  "en": {
+   "prompt": "Which historical figure does Thorkell correspond to in Vinland Saga?",
+   "options": [
+    "Thorkell the Tall",
+    "Thorkell the Wise",
+    "Thorkell Leifsson",
+    "Thorkell Serpent-Tongue"
+   ],
+   "explanation": "The historical Thorkell the Tall was a leader of the Jomsvikings."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Wer bringt Thorfinn nach Askeladds Tod als Sklaven nach Dänemark, bevor Ketil ihn kauft?",
+  "richtig": "Slave traders",
+  "en": {
+   "prompt": "Who takes Thorfinn to Denmark as a slave after Askeladd’s death, before Ketil buys him?",
+   "options": [
+    "Leif Erikson",
+    "Slave traders",
+    "Thorkell",
+    "Floki"
+   ],
+   "explanation": "At that point Thorfinn is empty inside and does not resist."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Wer verhilft Canute dazu, sich von einem schüchternen Jungen zu einem entschlossenen Anführer zu wandeln, indem er ihm die Welt erklärt?",
+  "richtig": "Willibald",
+  "en": {
+   "prompt": "Who helps Canute transform from a shy boy into a determined leader by explaining the world to him?",
+   "options": [
+    "Thorkell",
+    "Ragnar",
+    "Floki",
+    "Willibald"
+   ],
+   "explanation": "After Ragnar’s death, Willibald’s words about love open Canute’s eyes."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Wie beendet Thorfinn den Konflikt mit Canute auf Ketils Hof?",
+  "richtig": "Unarmed, he endures a hundred punches to be allowed to speak with Canute",
+  "en": {
+   "prompt": "How does Thorfinn end the conflict with Canute on Ketil’s farm?",
+   "options": [
+    "He kills Canute in a duel",
+    "He flees with the slaves",
+    "Unarmed, he endures a hundred punches to be allowed to speak with Canute",
+    "He offers Canute his services as a warrior"
+   ],
+   "explanation": "Only then is Canute willing to hear him out."
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Wie heißt Askeladds Mutter?",
+  "richtig": "Lydia",
+  "en": {
+   "prompt": "What is the name of Askeladd’s mother?",
+   "options": [
+    "Helga",
+    "Arnheid",
+    "Gudrid",
+    "Lydia"
+   ],
+   "explanation": "She was a slave from Wales."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Wie heißt Askeladds Vater, den Askeladd selbst getötet hat?",
+  "richtig": "Olaf",
+  "en": {
+   "prompt": "What is the name of Askeladd’s father, whom Askeladd killed himself?",
+   "options": [
+    "Olaf",
+    "Floki",
+    "Sweyn",
+    "Halfdan"
+   ],
+   "explanation": "Olaf was a Danish chieftain who had enslaved Askeladd’s mother Lydia."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Wie heißt Ketils jüngerer Sohn, der unbedingt ein Krieger werden möchte?",
+  "richtig": "Olmar",
+  "en": {
+   "prompt": "What is the name of Ketil’s younger son, who desperately wants to become a warrior?",
+   "options": [
+    "Thorgil",
+    "Olmar",
+    "Snake",
+    "Einar"
+   ],
+   "explanation": "His older brother Thorgil serves in King Canute’s army."
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel des Vinland-Saga-Animes?",
+  "richtig": "“Mukanjyo”",
+  "en": {
+   "prompt": "What is the name of the opening of the first season of the Vinland Saga anime?",
+   "options": [
+    "“Mukanjyo”",
+    "“Kaikai Kitan”",
+    "“Unravel”",
+    "“Gurenge”"
+   ],
+   "explanation": "It is by the band Survive Said the Prophet."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wie heißt das Opening der zweiten Staffel von Vinland Saga?",
+  "richtig": "“River”",
+  "en": {
+   "prompt": "What is the name of the opening of the second season of Vinland Saga?",
+   "options": [
+    "“River”",
+    "“Mukanjyo”",
+    "“Dark Crow”",
+    "“Torches”"
+   ],
+   "explanation": "It is sung by Anonymouz."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie heißt der Anführer der Jomswikinger, der Thors’ Tod in Auftrag gab?",
+  "richtig": "Floki",
+  "en": {
+   "prompt": "What is the name of the leader of the Jomsvikings who ordered Thors’ death?",
+   "options": [
+    "Floki",
+    "Thorkell",
+    "Sigurd",
+    "Garm"
+   ],
+   "explanation": "Later Floki also tries to get rid of Thorfinn."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie heißt der Mann, dessen Sohn Sigurd Gudrid heiraten sollte?",
+  "richtig": "Halfdan",
+  "en": {
+   "prompt": "What is the name of the man whose son Sigurd was supposed to marry Gudrid?",
+   "options": [
+    "Ketil",
+    "Halfdan",
+    "Thorgil",
+    "Floki"
+   ],
+   "explanation": "Gudrid flees this marriage and joins Thorfinn."
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie heißt der Sohn von König Sweyn, der Canutes älterer Bruder ist und in Dänemark herrschen soll?",
+  "richtig": "Harald",
+  "en": {
+   "prompt": "What is the name of King Sweyn’s son who is Canute’s older brother and meant to rule in Denmark?",
+   "options": [
+    "Olaf",
+    "Thorgil",
+    "Harald",
+    "Ragnar"
+   ],
+   "explanation": "Sweyn saw him as heir, not Canute."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wie lautet Askeladds eigentlicher Name, den er nur selten preisgibt?",
+  "richtig": "Lucius Artorius Castus",
+  "en": {
+   "prompt": "What is Askeladd’s real name, which he rarely reveals?",
+   "options": [
+    "Lucius Aurelius",
+    "Arthur Pendragon",
+    "Lucius Artorius Castus",
+    "Marcus Ambrosius"
+   ],
+   "explanation": "The name points to his Roman-Welsh ancestry."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Wie viele feindliche Anführer musste Thorfinn jeweils töten, um sich ein Duell mit Askeladd zu verdienen?",
+  "richtig": "One",
+  "en": {
+   "prompt": "How many enemy leaders did Thorfinn have to kill each time to earn a duel with Askeladd?",
+   "options": [
+    "Five",
+    "One",
+    "Ten",
+    "Three"
+   ],
+   "explanation": "For each enemy leader he killed, he got one duel."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich habe meinen Vater als Kind verloren und schwor, seinen Mörder im Duell zu töten. (Vinland Saga)",
+  "richtig": "Thorfinn",
+  "en": {
+   "prompt": "Who am I? I lost my father as a child and swore to kill his murderer in a duel. (Vinland Saga)",
+   "options": [
+    "Thorfinn",
+    "Canute",
+    "Einar",
+    "Olmar"
+   ],
+   "explanation": "Later he wants to build a land without war in Vinland.",
+   "hints": [
+    "I fight with two short daggers.",
+    "My father Thors was once a Jomsviking."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich führe eine Söldnertruppe und gebe mich als einfacher Däne aus. (Vinland Saga)",
+  "richtig": "Askeladd",
+  "en": {
+   "prompt": "Who am I? I lead a mercenary band and pretend to be a simple Dane. (Vinland Saga)",
+   "options": [
+    "Thorkell",
+    "Floki",
+    "Askeladd",
+    "Bjorn"
+   ],
+   "explanation": "His real name is Lucius Artorius Castus.",
+   "hints": [
+    "My mother was a slave from Wales.",
+    "A young Icelander follows me because he wants to kill me."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Als junger Prinz sprach ich kaum ein Wort und versteckte mich hinter meinem Erzieher. (Vinland Saga)",
+  "richtig": "Canute",
+  "en": {
+   "prompt": "Who am I? As a young prince I barely said a word and hid behind my guardian. (Vinland Saga)",
+   "options": [
+    "Olaf",
+    "Canute",
+    "Thorgil",
+    "Harald"
+   ],
+   "explanation": "He later becomes King of England and Denmark.",
+   "hints": [
+    "A drunken priest talked to me about love.",
+    "My father is King Sweyn."
+   ]
+  }
+ }
+]

@@ -1,0 +1,1134 @@
+[
+ {
+  "nr": 0,
+  "type": "mc",
+  "de": "In welchem Magazin erschien Dr. Stone?",
+  "richtig": "Weekly Shonen Jump",
+  "en": {
+   "prompt": "In which magazine was Dr. Stone published?",
+   "options": [
+    "Weekly Shonen Magazine",
+    "Monthly Afternoon",
+    "Weekly Shonen Jump",
+    "Young Jump"
+   ],
+   "explanation": "The manga ran from 2017 to 2022."
+  }
+ },
+ {
+  "nr": 1,
+  "type": "mc",
+  "de": "In wen ist Taiju verliebt?",
+  "richtig": "Yuzuriha Ogawa",
+  "en": {
+   "prompt": "Who is Taiju in love with?",
+   "options": [
+    "Kohaku",
+    "Yuzuriha Ogawa",
+    "Ruri",
+    "Suika"
+   ],
+   "explanation": "He wanted to confess his love to her at the exact moment the petrification struck."
+  }
+ },
+ {
+  "nr": 2,
+  "type": "mc",
+  "de": "Was baut Senku für das Dorf, um in der Nacht Licht zu haben?",
+  "richtig": "A light bulb",
+  "en": {
+   "prompt": "What does Senku build for the village to have light at night?",
+   "options": [
+    "Torches",
+    "A light bulb",
+    "A campfire",
+    "Candles"
+   ],
+   "explanation": "For the villagers, the first electric light is a miracle."
+  }
+ },
+ {
+  "nr": 3,
+  "type": "mc",
+  "de": "Was geschieht zu Beginn von Dr. Stone mit der gesamten Menschheit?",
+  "richtig": "It turns to stone",
+  "en": {
+   "prompt": "What happens to all of humanity at the start of Dr. Stone?",
+   "options": [
+    "It falls asleep",
+    "It disappears without a trace",
+    "It becomes invisible",
+    "It turns to stone"
+   ],
+   "explanation": "A strange green light petrifies all humans at the same time."
+  }
+ },
+ {
+  "nr": 4,
+  "type": "mc",
+  "de": "Was trägt die kleine Suika auf dem Kopf?",
+  "richtig": "A melon rind",
+  "en": {
+   "prompt": "What does little Suika wear on her head?",
+   "options": [
+    "A straw hat",
+    "A wooden helmet",
+    "A crown",
+    "A melon rind"
+   ],
+   "explanation": "Without it, the near-sighted Suika doesn’t dare go among people."
+  }
+ },
+ {
+  "nr": 5,
+  "type": "mc",
+  "de": "Welchen Beruf hatte Gen Asagiri vor der Versteinerung?",
+  "richtig": "Mentalist",
+  "en": {
+   "prompt": "What was Gen Asagiri’s profession before the petrification?",
+   "options": [
+    "Doctor",
+    "Mentalist",
+    "Cook",
+    "Police officer"
+   ],
+   "explanation": "He is a master of deception and reading people."
+  }
+ },
+ {
+  "nr": 6,
+  "type": "mc",
+  "de": "Welches Getränk stellt Senku her, um Gen Asagiri für sich zu gewinnen?",
+  "richtig": "Cola",
+  "en": {
+   "prompt": "Which drink does Senku make to win Gen Asagiri over?",
+   "options": [
+    "Coffee",
+    "Ramune",
+    "Cola",
+    "Beer"
+   ],
+   "explanation": "Gen was so thrilled by the taste of the old world that he switched sides."
+  }
+ },
+ {
+  "nr": 7,
+  "type": "mc",
+  "de": "Welches Studio produziert den Anime zu Dr. Stone?",
+  "richtig": "TMS Entertainment",
+  "en": {
+   "prompt": "Which studio produces the Dr. Stone anime?",
+   "options": [
+    "MAPPA",
+    "TMS Entertainment",
+    "Bones",
+    "Toei Animation"
+   ],
+   "explanation": "TMS also animates Detective Conan, among others."
+  }
+ },
+ {
+  "nr": 8,
+  "type": "mc",
+  "de": "Wer bricht Senku zu Beginn der Geschichte das Genick?",
+  "richtig": "Tsukasa Shishio",
+  "en": {
+   "prompt": "Who breaks Senku’s neck early in the story?",
+   "options": [
+    "Tsukasa Shishio",
+    "Hyoga",
+    "Magma",
+    "Taiju Oki"
+   ],
+   "explanation": "Senku only survives because petrification heals the fracture."
+  }
+ },
+ {
+  "nr": 9,
+  "type": "mc",
+  "de": "Wer hat den Manga Dr. Stone gezeichnet?",
+  "richtig": "Boichi",
+  "en": {
+   "prompt": "Who drew the manga Dr. Stone?",
+   "options": [
+    "Boichi",
+    "Yusei Matsui",
+    "Eiichiro Oda",
+    "Kohei Horikoshi"
+   ],
+   "explanation": "The story was written by Riichiro Inagaki."
+  }
+ },
+ {
+  "nr": 10,
+  "type": "mc",
+  "de": "Wie heißt Kohakus kranke Schwester, die Priesterin des Dorfes?",
+  "richtig": "Ruri",
+  "en": {
+   "prompt": "What is the name of Kohaku’s sick sister, the village priestess?",
+   "options": [
+    "Suika",
+    "Yuzuriha",
+    "Ruri",
+    "Homura"
+   ],
+   "explanation": "Senku wants to cure her with medicine."
+  }
+ },
+ {
+  "nr": 11,
+  "type": "mc",
+  "de": "Wie heißt Senkus starker, gutmütiger bester Freund?",
+  "richtig": "Taiju Oki",
+  "en": {
+   "prompt": "What is the name of Senku’s strong, good-natured best friend?",
+   "options": [
+    "Chrome",
+    "Gen Asagiri",
+    "Taiju Oki",
+    "Ryusui Nanami"
+   ],
+   "explanation": "Taiju is the second to awaken from petrification."
+  }
+ },
+ {
+  "nr": 12,
+  "type": "mc",
+  "de": "Wie heißt das Dorf, auf das Senku in der Steinwelt trifft?",
+  "richtig": "Ishigami Village",
+  "en": {
+   "prompt": "What is the name of the village Senku finds in the stone world?",
+   "options": [
+    "Kakariko",
+    "Hage",
+    "Konoha",
+    "Ishigami Village"
+   ],
+   "explanation": "It was founded by Senku’s father and his companions."
+  }
+ },
+ {
+  "nr": 13,
+  "type": "mc",
+  "de": "Wie heißt das blonde Mädchen aus dem Dorf, eine geschickte Kämpferin?",
+  "richtig": "Kohaku",
+  "en": {
+   "prompt": "What is the name of the blonde village girl who is a skilled fighter?",
+   "options": [
+    "Ruri",
+    "Kohaku",
+    "Yuzuriha",
+    "Suika"
+   ],
+   "explanation": "She is one of the strongest fighters in the village."
+  }
+ },
+ {
+  "nr": 14,
+  "type": "mc",
+  "de": "Wie heißt der alte Handwerker im Dorf, der für Senku alles baut?",
+  "richtig": "Kaseki",
+  "en": {
+   "prompt": "What is the name of the old craftsman in the village who builds everything for Senku?",
+   "options": [
+    "Kaseki",
+    "Kokuyo",
+    "Jasper",
+    "Turquoise"
+   ],
+   "explanation": "His name means “fossil” in Japanese."
+  }
+ },
+ {
+  "nr": 15,
+  "type": "mc",
+  "de": "Wie heißt der junge Dorfbewohner, der sich „Zauberer“ nennt und Steine sammelt?",
+  "richtig": "Chrome",
+  "en": {
+   "prompt": "What is the name of the young villager who calls himself a “sorcerer” and collects stones?",
+   "options": [
+    "Chrome",
+    "Kaseki",
+    "Kinro",
+    "Ginro"
+   ],
+   "explanation": "Chrome becomes Senku’s most important partner in science."
+  }
+ },
+ {
+  "nr": 16,
+  "type": "mc",
+  "de": "Wie heißt der starke Kämpfer, der als „stärkster Primat der Oberstufe“ gilt?",
+  "richtig": "Tsukasa Shishio",
+  "en": {
+   "prompt": "What is the name of the strong fighter known as the “strongest primate high schooler”?",
+   "options": [
+    "Hyoga",
+    "Kinro",
+    "Magma",
+    "Tsukasa Shishio"
+   ],
+   "explanation": "Tsukasa wants a world without the corrupt adults of the past."
+  }
+ },
+ {
+  "nr": 17,
+  "type": "mc",
+  "de": "Wie heißt die Hauptfigur von Dr. Stone?",
+  "richtig": "Senku Ishigami",
+  "en": {
+   "prompt": "What is the name of the main character of Dr. Stone?",
+   "options": [
+    "Taiju Oki",
+    "Senku Ishigami",
+    "Tsukasa Shishio",
+    "Gen Asagiri"
+   ],
+   "explanation": "Senku is a young scientific genius."
+  }
+ },
+ {
+  "nr": 18,
+  "type": "mc",
+  "de": "Wie hielt sich Senku während seiner Versteinerung bei Bewusstsein?",
+  "richtig": "He counted the seconds",
+  "en": {
+   "prompt": "How did Senku stay conscious during his petrification?",
+   "options": [
+    "He sang songs",
+    "He worked out formulas",
+    "He slept",
+    "He counted the seconds"
+   ],
+   "explanation": "That way he knew exactly how much time had passed when he woke up."
+  }
+ },
+ {
+  "nr": 19,
+  "type": "mc",
+  "de": "Wie lautet Senkus berühmter Ausspruch, wenn er sich sicher ist?",
+  "richtig": "“Ten billion percent!”",
+  "en": {
+   "prompt": "What is Senku’s famous phrase when he is sure of something?",
+   "options": [
+    "“Ten billion percent!”",
+    "“Believe in science!”",
+    "“One hundred percent!”",
+    "“The formula never lies!”"
+   ],
+   "explanation": "He likes to exaggerate how sure he is."
+  }
+ },
+ {
+  "nr": 20,
+  "type": "mc",
+  "de": "Wie nennt Senku sein Vorhaben, die Zivilisation wiederaufzubauen?",
+  "richtig": "Kingdom of Science",
+  "en": {
+   "prompt": "What does Senku call his project to rebuild civilization?",
+   "options": [
+    "Empire of Might",
+    "New Order",
+    "Kingdom of Science",
+    "Stone Age Republic"
+   ],
+   "explanation": "With science he wants to bring everyone back."
+  }
+ },
+ {
+  "nr": 21,
+  "type": "mc",
+  "de": "Womit werden versteinerte Menschen in Dr. Stone wiederbelebt?",
+  "richtig": "With a mixture of nitric acid and alcohol",
+  "en": {
+   "prompt": "What are petrified people revived with in Dr. Stone?",
+   "options": [
+    "With a mixture of nitric acid and alcohol",
+    "With seawater",
+    "With lightning",
+    "With a herbal tea"
+   ],
+   "explanation": "Senku discovers the revival fluid after years of experimenting."
+  }
+ },
+ {
+  "nr": 22,
+  "type": "mc",
+  "de": "An welcher Krankheit leidet Ruri?",
+  "richtig": "Pneumonia",
+  "en": {
+   "prompt": "What illness does Ruri suffer from?",
+   "options": [
+    "Measles",
+    "Flu",
+    "Tuberculosis",
+    "Pneumonia"
+   ],
+   "explanation": "Senku produces a sulfa drug to cure her."
+  }
+ },
+ {
+  "nr": 23,
+  "type": "mc",
+  "de": "In welchem Jahr erwacht Senku nach seiner Berechnung?",
+  "richtig": "5738",
+  "en": {
+   "prompt": "In which year does Senku awaken, according to his calculation?",
+   "options": [
+    "5738",
+    "3019",
+    "4102",
+    "6000"
+   ],
+   "explanation": "Senku counted the seconds almost without error."
+  }
+ },
+ {
+  "nr": 24,
+  "type": "mc",
+  "de": "Was ist Kaseki von Beruf?",
+  "richtig": "Craftsman",
+  "en": {
+   "prompt": "What is Kaseki’s profession?",
+   "options": [
+    "Craftsman",
+    "Hunter",
+    "Fisherman",
+    "Warrior"
+   ],
+   "explanation": "When he gets excited, his shirt tends to burst off his body."
+  }
+ },
+ {
+  "nr": 25,
+  "type": "mc",
+  "de": "Was ist Senkus großes letztes Ziel in der Geschichte?",
+  "richtig": "To fly to the moon",
+  "en": {
+   "prompt": "What is Senku’s great final goal in the story?",
+   "options": [
+    "To build a tower",
+    "To become emperor",
+    "To become immortal",
+    "To fly to the moon"
+   ],
+   "explanation": "He suspects the origin of the petrification there."
+  }
+ },
+ {
+  "nr": 26,
+  "type": "mc",
+  "de": "Was nutzt Senku, um mit Tsukasas Reich aus der Ferne zu kommunizieren?",
+  "richtig": "A telephone",
+  "en": {
+   "prompt": "What does Senku use to communicate remotely during the Stone Wars?",
+   "options": [
+    "Smoke signals",
+    "Carrier pigeons",
+    "A telephone",
+    "Mirrors"
+   ],
+   "explanation": "Building the telephone was decisive for the stone world war."
+  }
+ },
+ {
+  "nr": 27,
+  "type": "mc",
+  "de": "Welche Waffe benutzt Hyōga?",
+  "richtig": "A spear",
+  "en": {
+   "prompt": "Which weapon does Hyoga use?",
+   "options": [
+    "A sword",
+    "A spear",
+    "An axe",
+    "A bow and arrow"
+   ],
+   "explanation": "Hyoga is one of the most dangerous fighters in Tsukasa’s empire."
+  }
+ },
+ {
+  "nr": 28,
+  "type": "mc",
+  "de": "Welches Medikament stellt Senku für Ruri her?",
+  "richtig": "A sulfa drug",
+  "en": {
+   "prompt": "Which medicine does Senku make for Ruri?",
+   "options": [
+    "Aspirin",
+    "Penicillin",
+    "A sulfa drug",
+    "Insulin"
+   ],
+   "explanation": "The village needs many intermediate steps and tools to make it."
+  }
+ },
+ {
+  "nr": 29,
+  "type": "mc",
+  "de": "Welches Problem hat Kinrō, das Senku mit einer Erfindung löst?",
+  "richtig": "He is near-sighted",
+  "en": {
+   "prompt": "What problem does Kinro have that Senku solves with an invention?",
+   "options": [
+    "He is near-sighted",
+    "He is deaf",
+    "He limps",
+    "He is afraid of heights"
+   ],
+   "explanation": "Senku makes glasses for him."
+  }
+ },
+ {
+  "nr": 30,
+  "type": "mc",
+  "de": "Wen schickt Tsukasa, um zu prüfen, ob Senku wirklich tot ist?",
+  "richtig": "Gen Asagiri",
+  "en": {
+   "prompt": "Who is sent by Tsukasa to check whether Senku is really dead?",
+   "options": [
+    "Taiju",
+    "Yuzuriha",
+    "Gen Asagiri",
+    "Kohaku"
+   ],
+   "explanation": "Gen lies to Tsukasa and later joins Senku."
+  }
+ },
+ {
+  "nr": 31,
+  "type": "mc",
+  "de": "Wie heißen die beiden Brüder, die das Dorftor bewachen?",
+  "richtig": "Kinro and Ginro",
+  "en": {
+   "prompt": "What are the names of the two brothers who guard the village gate?",
+   "options": [
+    "Chrome and Kaseki",
+    "Magma and Mantle",
+    "Hyoga and Homura",
+    "Kinro and Ginro"
+   ],
+   "explanation": "Kinro is dutiful, Ginro rather lazy."
+  }
+ },
+ {
+  "nr": 32,
+  "type": "mc",
+  "de": "Wie heißt Senkus Vater, ein Astronaut?",
+  "richtig": "Byakuya Ishigami",
+  "en": {
+   "prompt": "What is the name of Senku’s father, an astronaut?",
+   "options": [
+    "Ryusui Nanami",
+    "Byakuya Ishigami",
+    "Xeno Wingfield",
+    "Stanley Snyder"
+   ],
+   "explanation": "He was in space during the petrification and thus escaped it."
+  }
+ },
+ {
+  "nr": 33,
+  "type": "mc",
+  "de": "Wie heißt Tsukasas jüngere Schwester, die er beschützen will?",
+  "richtig": "Mirai",
+  "en": {
+   "prompt": "What is the name of Tsukasa’s younger sister, whom he wants to protect?",
+   "options": [
+    "Ruri",
+    "Mirai",
+    "Kohaku",
+    "Homura"
+   ],
+   "explanation": "She was in a coma before the petrification."
+  }
+ },
+ {
+  "nr": 34,
+  "type": "mc",
+  "de": "Wie heißt das Opening der ersten Staffel von Dr. Stone?",
+  "richtig": "“Good Morning World!”",
+  "en": {
+   "prompt": "What is the name of the opening of the first season of Dr. Stone?",
+   "options": [
+    "“Gurenge”",
+    "“Kaikai Kitan”",
+    "“Unravel”",
+    "“Good Morning World!”"
+   ],
+   "explanation": "It is by the band BURNOUT SYNDROMES."
+  }
+ },
+ {
+  "nr": 35,
+  "type": "mc",
+  "de": "Wie heißt das Schiff, das Senku und seine Leute bauen?",
+  "richtig": "Perseus",
+  "en": {
+   "prompt": "What is the name of the ship Senku and his crew build?",
+   "options": [
+    "Titanic",
+    "Argo",
+    "Nautilus",
+    "Perseus"
+   ],
+   "explanation": "They sail to Treasure Island on it."
+  }
+ },
+ {
+  "nr": 36,
+  "type": "mc",
+  "de": "Wie heißt das Turnier im Dorf, dessen Sieger die Priesterin heiraten darf?",
+  "richtig": "The Grand Bowl tournament",
+  "en": {
+   "prompt": "What is the name of the village tournament whose winner may marry the priestess?",
+   "options": [
+    "The Grand Bowl tournament",
+    "The Festival of Stones",
+    "The Moon Contest",
+    "The Fire Festival"
+   ],
+   "explanation": "Chrome competes in order to save Ruri with Senku’s medicine."
+  }
+ },
+ {
+  "nr": 37,
+  "type": "mc",
+  "de": "Wie heißt der Dorfälteste, der Vater von Kohaku und Ruri?",
+  "richtig": "Kokuyo",
+  "en": {
+   "prompt": "What is the name of the village chief, the father of Kohaku and Ruri?",
+   "options": [
+    "Kaseki",
+    "Kokuyo",
+    "Jasper",
+    "Ginro"
+   ],
+   "explanation": "At first he deeply distrusts Senku."
+  }
+ },
+ {
+  "nr": 38,
+  "type": "mc",
+  "de": "Wie heißt der Kapitän, für den Senku ein Segelschiff baut?",
+  "richtig": "Ryusui Nanami",
+  "en": {
+   "prompt": "What is the name of the captain for whom Senku builds a sailing ship?",
+   "options": [
+    "Taiju Oki",
+    "Ryusui Nanami",
+    "Ukyo Saionji",
+    "Francois"
+   ],
+   "explanation": "Ryusui is a wealthy heir who “wants everything.”"
+  }
+ },
+ {
+  "nr": 39,
+  "type": "mc",
+  "de": "Wie heißt der Scharfschütze und Soldat an Xenos Seite?",
+  "richtig": "Stanley Snyder",
+  "en": {
+   "prompt": "Who is the sniper and soldier at Xeno’s side?",
+   "options": [
+    "Stanley Snyder",
+    "Ibara",
+    "Kinro",
+    "Ryusui"
+   ],
+   "explanation": "The soldier is Xeno’s most loyal friend."
+  }
+ },
+ {
+  "nr": 40,
+  "type": "mc",
+  "de": "Wie heißt der Streit zwischen Senkus Königreich der Wissenschaft und Tsukasas Reich der Kraft?",
+  "richtig": "The Stone Wars",
+  "en": {
+   "prompt": "What is the conflict between Senku’s Kingdom of Science and Tsukasa’s Empire of Might called?",
+   "options": [
+    "The Great War",
+    "The Stone Wars",
+    "The Knowledge Dispute",
+    "The Winter War"
+   ],
+   "explanation": "Senku wants to win it with as few casualties as possible."
+  }
+ },
+ {
+  "nr": 41,
+  "type": "mc",
+  "de": "Wie heißt der Wissenschaftler aus Amerika, der Senkus früherer Lehrer war?",
+  "richtig": "Xeno Houston Wingfield",
+  "en": {
+   "prompt": "What is the name of the American scientist who was Senku’s former teacher?",
+   "options": [
+    "Stanley Snyder",
+    "Byakuya Ishigami",
+    "Xeno Houston Wingfield",
+    "Ukyo Saionji"
+   ],
+   "explanation": "Xeno builds his own kingdom of science in America."
+  }
+ },
+ {
+  "nr": 42,
+  "type": "mc",
+  "de": "Wie heißt die Waffe, mit der Menschen versteinert werden können?",
+  "richtig": "Medusa",
+  "en": {
+   "prompt": "What is the name of the weapon that can petrify people?",
+   "options": [
+    "Medusa",
+    "Gorgon",
+    "Basilisk",
+    "Petrus"
+   ],
+   "explanation": "On Treasure Island, the ruler Ibara uses it."
+  }
+ },
+ {
+  "nr": 43,
+  "type": "mc",
+  "de": "Wie viele Jahre nach der Versteinerung erwacht Senku etwa?",
+  "richtig": "About 3,700 years",
+  "en": {
+   "prompt": "About how many years after the petrification does Senku awaken?",
+   "options": [
+    "About 300 years",
+    "About 1,000 years",
+    "About 3,700 years",
+    "About 10,000 years"
+   ],
+   "explanation": "He calculates that he woke up in the year 5738."
+  }
+ },
+ {
+  "nr": 44,
+  "type": "mc",
+  "de": "Aus welchem Land stammt der Zeichner Boichi?",
+  "richtig": "South Korea",
+  "en": {
+   "prompt": "Which country does the artist Boichi come from?",
+   "options": [
+    "South Korea",
+    "Japan",
+    "China",
+    "Taiwan"
+   ],
+   "explanation": "Boichi has lived and worked in Japan for years."
+  }
+ },
+ {
+  "nr": 45,
+  "type": "mc",
+  "de": "In welchem Jahr startete der Anime zu Dr. Stone?",
+  "richtig": "2019",
+  "en": {
+   "prompt": "In which year did the Dr. Stone anime start?",
+   "options": [
+    "2019",
+    "2016",
+    "2021",
+    "2023"
+   ],
+   "explanation": "It is produced by studio TMS Entertainment."
+  }
+ },
+ {
+  "nr": 46,
+  "type": "mc",
+  "de": "Was entdeckt Senku über die Wirkung der Versteinerung auf den Körper?",
+  "richtig": "It heals injuries",
+  "en": {
+   "prompt": "What does Senku discover about how petrification affects the body?",
+   "options": [
+    "It makes people age",
+    "It makes people stronger",
+    "It heals injuries",
+    "It erases memories"
+   ],
+   "explanation": "That is why he survived Tsukasa’s attack."
+  }
+ },
+ {
+  "nr": 47,
+  "type": "mc",
+  "de": "Was ist der „Dampfgorilla“ in Dr. Stone?",
+  "richtig": "A steam-powered car",
+  "en": {
+   "prompt": "What is the “Steam Gorilla” in Dr. Stone?",
+   "options": [
+    "A combat robot",
+    "A warship",
+    "A steam-powered car",
+    "A locomotive"
+   ],
+   "explanation": "Senku builds it to transport heavy loads through the stone world."
+  }
+ },
+ {
+  "nr": 48,
+  "type": "mc",
+  "de": "Welchen Spitznamen hat das Wiederbelebungsmittel aus Salpetersäure und Alkohol?",
+  "richtig": "Nital",
+  "en": {
+   "prompt": "What is the nickname of the revival fluid made of nitric acid and alcohol?",
+   "options": [
+    "Stone water",
+    "Elixir of life",
+    "Nital",
+    "Senku juice"
+   ],
+   "explanation": "The mixture is known from metalworking."
+  }
+ },
+ {
+  "nr": 49,
+  "type": "mc",
+  "de": "Welchen Untertitel trägt die zweite Staffel des Dr.-Stone-Animes?",
+  "richtig": "Stone Wars",
+  "en": {
+   "prompt": "What is the subtitle of the second season of the Dr. Stone anime?",
+   "options": [
+    "New World",
+    "Science Future",
+    "Ryusui",
+    "Stone Wars"
+   ],
+   "explanation": "It tells of the fight against Tsukasa’s Empire of Might."
+  }
+ },
+ {
+  "nr": 50,
+  "type": "mc",
+  "de": "Welcher bekannte Mangaka schrieb die Geschichte zu Dr. Stone?",
+  "richtig": "Riichiro Inagaki",
+  "en": {
+   "prompt": "Which well-known writer wrote the story of Dr. Stone?",
+   "options": [
+    "Tite Kubo",
+    "Kazue Kato",
+    "Kohei Horikoshi",
+    "Riichiro Inagaki"
+   ],
+   "explanation": "Inagaki previously also wrote Eyeshield 21."
+  }
+ },
+ {
+  "nr": 51,
+  "type": "mc",
+  "de": "Welches Gericht kocht Senku, um Dorfbewohner als Helfer zu gewinnen?",
+  "richtig": "Ramen",
+  "en": {
+   "prompt": "Which dish does Senku cook to win villagers over as helpers?",
+   "options": [
+    "Ramen",
+    "Curry",
+    "Sushi",
+    "Pizza"
+   ],
+   "explanation": "He makes the noodles from millet."
+  }
+ },
+ {
+  "nr": 52,
+  "type": "mc",
+  "de": "Welches Material sammelt Senku in großer Menge aus Fledermaushöhlen, um Salpeter herzustellen?",
+  "richtig": "Bat droppings (guano)",
+  "en": {
+   "prompt": "Which material does Senku collect in large quantities from bat caves to make saltpetre?",
+   "options": [
+    "Moss",
+    "Bat droppings (guano)",
+    "Bones",
+    "Crystals"
+   ],
+   "explanation": "He needs saltpetre for nitric acid and gunpowder, among other things."
+  }
+ },
+ {
+  "nr": 53,
+  "type": "mc",
+  "de": "Wie heißt der Bogenschütze mit dem besonderen Gehör, der als Sonar für die Perseus dient?",
+  "richtig": "Ukyo Saionji",
+  "en": {
+   "prompt": "What is the name of the archer with exceptional hearing who serves as the Perseus’s sonar?",
+   "options": [
+    "Francois",
+    "Stanley",
+    "Kinro",
+    "Ukyo Saionji"
+   ],
+   "explanation": "Before the petrification, Ukyo was a navy sonar specialist."
+  }
+ },
+ {
+  "nr": 54,
+  "type": "mc",
+  "de": "Wie heißt der Herrscher der Schatzinsel, der die Medusa missbraucht?",
+  "richtig": "Ibara",
+  "en": {
+   "prompt": "What is the name of the ruler of Treasure Island who abuses the Medusa?",
+   "options": [
+    "Ibara",
+    "Moz",
+    "Kirisame",
+    "Soyuz"
+   ],
+   "explanation": "He keeps the true ruler petrified and governs in his place."
+  }
+ },
+ {
+  "nr": 55,
+  "type": "mc",
+  "de": "Wie heißt der Krieger aus Tsukasas Reich, der zum Verräter wird und Tsukasa schwer verletzt?",
+  "richtig": "Hyoga",
+  "en": {
+   "prompt": "Which warrior from Tsukasa’s empire becomes a traitor and badly wounds Tsukasa?",
+   "options": [
+    "Magma",
+    "Ukyo",
+    "Homura",
+    "Hyoga"
+   ],
+   "explanation": "Hyoga wants only the strongest to be revived."
+  }
+ },
+ {
+  "nr": 56,
+  "type": "mc",
+  "de": "Wie heißt der Mann aus Tsukasas Reich, der mit Senku die Kunst der Täuschung teilt und sich als „Fledermaus“ bezeichnet?",
+  "richtig": "Gen Asagiri",
+  "en": {
+   "prompt": "Which man from Tsukasa’s empire calls himself a “bat” because he switches sides at will?",
+   "options": [
+    "Gen Asagiri",
+    "Ukyo",
+    "Hyoga",
+    "Magma"
+   ],
+   "explanation": "Gen changes sides as it suits him."
+  }
+ },
+ {
+  "nr": 57,
+  "type": "mc",
+  "de": "Wie heißt die Kämpferin aus Tsukasas Reich, die als Spionin geschickt klettert und schleicht?",
+  "richtig": "Homura",
+  "en": {
+   "prompt": "What is the name of the fighter from Tsukasa’s empire who is a skilled climbing spy?",
+   "options": [
+    "Kohaku",
+    "Yuzuriha",
+    "Homura",
+    "Ruri"
+   ],
+   "explanation": "She follows Hyoga loyally."
+  }
+ },
+ {
+  "nr": 58,
+  "type": "mc",
+  "de": "Wie heißt die Siedlung, die Senkus Team in Amerika gründet?",
+  "richtig": "Corn City",
+  "en": {
+   "prompt": "What is the name of the settlement Senku’s team founds in America?",
+   "options": [
+    "Corn City",
+    "New York",
+    "Stone City",
+    "Liberty Town"
+   ],
+   "explanation": "There the team grows corn in large quantities."
+  }
+ },
+ {
+  "nr": 59,
+  "type": "mc",
+  "de": "Wie heißt die amerikanische Sängerin, die mit Byakuya auf der Raumstation war?",
+  "richtig": "Lillian Weinberg",
+  "en": {
+   "prompt": "What is the name of the American singer who was on the space station with Byakuya?",
+   "options": [
+    "Connie Lee",
+    "Darya Nikitina",
+    "Lillian Weinberg",
+    "Mirai Shishio"
+   ],
+   "explanation": "Her voice is one of the few recordings from the old world."
+  }
+ },
+ {
+  "nr": 60,
+  "type": "mc",
+  "de": "Wie heißt die letzte Staffel des Dr.-Stone-Animes?",
+  "richtig": "Science Future",
+  "en": {
+   "prompt": "What is the final season of the Dr. Stone anime called?",
+   "options": [
+    "Stone Wars",
+    "New World",
+    "Ryusui",
+    "Science Future"
+   ],
+   "explanation": "It tells the finale up to the flight to the moon."
+  }
+ },
+ {
+  "nr": 61,
+  "type": "mc",
+  "de": "Wie lange dauert es etwa, bis Taiju nach Senku erwacht?",
+  "richtig": "Half a year",
+  "en": {
+   "prompt": "About how long after Senku does Taiju awaken?",
+   "options": [
+    "A week",
+    "Half a year",
+    "Ten years",
+    "Two days"
+   ],
+   "explanation": "In that time, Senku has already prepared a lot."
+  }
+ },
+ {
+  "nr": 62,
+  "type": "mc",
+  "de": "Wie viele Menschen waren mit Byakuya während der Versteinerung im All?",
+  "richtig": "Five",
+  "en": {
+   "prompt": "How many people were in space with Byakuya during the petrification?",
+   "options": [
+    "Two",
+    "Three",
+    "Four",
+    "Five"
+   ],
+   "explanation": "The village later grew from their descendants."
+  }
+ },
+ {
+  "nr": 63,
+  "type": "mc",
+  "de": "Wie viele Sammelbände umfasst der Manga Dr. Stone?",
+  "richtig": "26",
+  "en": {
+   "prompt": "How many volumes does the Dr. Stone manga comprise?",
+   "options": [
+    "20",
+    "26",
+    "32",
+    "38"
+   ],
+   "explanation": "There is also the spin-off “Dr. Stone Reboot: Byakuya.”"
+  }
+ },
+ {
+  "nr": 64,
+  "type": "mc",
+  "de": "Wie wird Tsukasa nach seiner schweren Verletzung am Leben erhalten?",
+  "richtig": "He is frozen in a cold-sleep chamber",
+  "en": {
+   "prompt": "How is Tsukasa kept alive after being badly wounded?",
+   "options": [
+    "He is frozen in a cold-sleep chamber",
+    "With a magic potion",
+    "Through a transplant",
+    "He is petrified immediately"
+   ],
+   "explanation": "Senku promises to heal him later with the help of petrification."
+  }
+ },
+ {
+  "nr": 65,
+  "type": "mc",
+  "de": "Wo befinden sich die Hauptgegner, die Senku die „Why-Man“ nennt?",
+  "richtig": "On the moon",
+  "en": {
+   "prompt": "Where are the main antagonists that Senku calls the “Why-Man”?",
+   "options": [
+    "Under the sea",
+    "In America",
+    "On the moon",
+    "In Antarctica"
+   ],
+   "explanation": "They send mysterious radio signals to Earth."
+  }
+ },
+ {
+  "nr": 66,
+  "type": "mc",
+  "de": "Wofür ist Yuzuriha mit ihrem handwerklichen Geschick unverzichtbar?",
+  "richtig": "She puts shattered stone statues back together",
+  "en": {
+   "prompt": "What is Yuzuriha indispensable for thanks to her handicraft skills?",
+   "options": [
+    "She cooks for everyone",
+    "She puts shattered stone statues back together",
+    "She guards the prisoners",
+    "She makes weapons"
+   ],
+   "explanation": "Tsukasa smashes the statues of adults he does not want to revive."
+  }
+ },
+ {
+  "nr": 67,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich habe während der Versteinerung über 3700 Jahre lang die Sekunden gezählt. (Dr. Stone)",
+  "richtig": "Senku Ishigami",
+  "en": {
+   "prompt": "Who am I? During petrification I counted the seconds for more than 3,700 years. (Dr. Stone)",
+   "options": [
+    "Taiju Oki",
+    "Chrome",
+    "Senku Ishigami",
+    "Gen Asagiri"
+   ],
+   "explanation": "He wants to rebuild civilization with science.",
+   "hints": [
+    "My favourite phrase is “ten billion percent.”",
+    "My father Byakuya was an astronaut."
+   ]
+  }
+ },
+ {
+  "nr": 68,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich war vor der Versteinerung ein bekannter Mentalist. (Dr. Stone)",
+  "richtig": "Gen Asagiri",
+  "en": {
+   "prompt": "Who am I? Before the petrification I was a famous mentalist. (Dr. Stone)",
+   "options": [
+    "Gen Asagiri",
+    "Ryusui Nanami",
+    "Ukyo Saionji",
+    "Kaseki"
+   ],
+   "explanation": "He likes to call himself a bat that switches sides.",
+   "hints": [
+    "For a cola I switched sides.",
+    "Tsukasa sent me to check whether Senku was dead."
+   ]
+  }
+ },
+ {
+  "nr": 69,
+  "type": "who_am_i",
+  "de": "Wer bin ich? Ich nenne mich selbst einen Zauberer und sammle seltsame Steine. (Dr. Stone)",
+  "richtig": "Chrome",
+  "en": {
+   "prompt": "Who am I? I call myself a sorcerer and collect strange stones. (Dr. Stone)",
+   "options": [
+    "Kinro",
+    "Kaseki",
+    "Ginro",
+    "Chrome"
+   ],
+   "explanation": "He becomes Senku’s most important partner in science.",
+   "hints": [
+    "I live in Ishigami Village.",
+    "I am in love with the priestess Ruri."
+   ]
+  }
+ }
+]
